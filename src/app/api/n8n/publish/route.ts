@@ -48,6 +48,10 @@ export async function POST(req: NextRequest) {
   }
 
   const imageUrl = typeof body.image_url === 'string' ? body.image_url.trim() : null;
+  const excerpt = typeof body.excerpt === 'string' ? body.excerpt.trim() : null;
+  const category = typeof body.category === 'string' ? body.category.trim() : 'general';
+  const featured = body.featured === true || body.featured === 1 ? 1 : 0;
+
   const rawTags = body.tags;
   const tagsArray: string[] = Array.isArray(rawTags)
     ? rawTags.filter((t) => typeof t === 'string')
@@ -56,6 +60,14 @@ export async function POST(req: NextRequest) {
     : [];
   const tags = JSON.stringify(tagsArray);
 
+  const rawTeams = body.teams;
+  const teamsArray: string[] = Array.isArray(rawTeams)
+    ? rawTeams.filter((t) => typeof t === 'string')
+    : typeof rawTeams === 'string'
+    ? rawTeams.split(',').map((t) => t.trim()).filter(Boolean)
+    : [];
+  const teams = JSON.stringify(teamsArray);
+
   const slug =
     typeof body.slug === 'string' && body.slug.trim()
       ? body.slug.trim()
@@ -63,12 +75,12 @@ export async function POST(req: NextRequest) {
 
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
 
+  const insertSql = `INSERT INTO articles (slug, title_ar, body_ar, excerpt_ar, source_url, source, tags, teams, category, featured, published, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`;
+  const insertArgs = [slug, title, content, excerpt, sourceUrl, source, tags, teams, category, featured, imageUrl];
+
   try {
-    const result = await db.execute({
-      sql: `INSERT INTO articles (slug, title_ar, body_ar, source_url, source, tags, published, image_url)
-            VALUES (?, ?, ?, ?, ?, ?, 1, ?)`,
-      args: [slug, title, content, sourceUrl, source, tags, imageUrl],
-    });
+    const result = await db.execute({ sql: insertSql, args: insertArgs });
 
     return NextResponse.json({
       success: true,
@@ -81,11 +93,7 @@ export async function POST(req: NextRequest) {
     if (err?.message?.includes('UNIQUE constraint failed')) {
       const retry = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
       try {
-        const result = await db.execute({
-          sql: `INSERT INTO articles (slug, title_ar, body_ar, source_url, source, tags, published, image_url)
-                VALUES (?, ?, ?, ?, ?, ?, 1, ?)`,
-          args: [retry, title, content, sourceUrl, source, tags, imageUrl],
-        });
+        const result = await db.execute({ sql: insertSql.replace('VALUES (?', `VALUES ('${retry}',`).replace('(?, ?, ?, ?', '(?, ?, ?, ?'), args: [retry, ...insertArgs.slice(1)] });
         return NextResponse.json({
           success: true,
           id: result.lastInsertRowid,

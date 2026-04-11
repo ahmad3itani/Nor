@@ -5,12 +5,25 @@ import { ar } from 'date-fns/locale';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import ViewTracker from '@/components/news/ViewTracker';
 
 export const revalidate = 300; // ISR 5 minutes
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
 
 type Props = { params: { slug: string } };
+
+const CATEGORY_LABELS: Record<string, string> = {
+  transfers: 'انتقالات',
+  injuries: 'إصابات',
+  'match-report': 'تقرير مباراة',
+  analysis: 'تحليل',
+  general: 'أخبار',
+};
+
+function categoryLabel(cat: string): string {
+  return CATEGORY_LABELS[cat] || 'أخبار';
+}
 
 function parseTags(raw: string | null): string[] {
   if (!raw) return [];
@@ -158,14 +171,23 @@ export default async function ArticlePage({ params }: Props) {
         <article className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           {/* ── Main content ── */}
           <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 md:p-10 shadow-2xl">
+            <ViewTracker slug={params.slug} />
             <div className="flex flex-wrap items-center gap-3 mb-6 font-ibm text-sm text-neutral-400">
               <span className="bg-nor-green/10 text-nor-green px-3 py-1 rounded-full font-readex font-medium">
                 {article.source}
               </span>
+              {article.category && article.category !== 'general' && (
+                <span className="bg-neutral-800 text-neutral-300 px-3 py-1 rounded-full font-readex text-xs">
+                  {categoryLabel(article.category)}
+                </span>
+              )}
               <span>•</span>
               <time dateTime={publishedAt.toISOString()}>{timeAgo}</time>
               <span>•</span>
               <span>{readingTime} دقائق قراءة</span>
+              {article.views > 0 && (
+                <><span>•</span><span>{article.views.toLocaleString('ar-EG')} مشاهدة</span></>
+              )}
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold font-amiri leading-tight mb-8 text-white">

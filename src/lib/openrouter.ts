@@ -15,7 +15,10 @@ const SYSTEM_PROMPT = `
 {
   "title": "العنوان الصحفي المثير والمختصر",
   "body": "النص الكامل للمقال مع الفقرات مقسمة بشكل جيد ومريحة للقراءة",
-  "tags": ["كلمة مفتاحية 1", "كلمة مفتاحية 2", "كلمة مفتاحية 3"]
+  "excerpt": "ملخص جذاب للخبر في جملة أو جملتين (بين 100 و160 حرفاً)",
+  "tags": ["كلمة مفتاحية 1", "كلمة مفتاحية 2", "كلمة مفتاحية 3"],
+  "teams": ["اسم الفريق 1", "اسم الفريق 2"],
+  "category": "one of: transfers | injuries | match-report | analysis | general"
 }
 `;
 
@@ -54,7 +57,10 @@ ${contextString ? `\nمعلومات إحصائية إضافية قد تفيدك 
     return {
       title_ar: resultObj.title,
       body_ar: resultObj.body,
-      tags: JSON.stringify(resultObj.tags || [])
+      excerpt_ar: resultObj.excerpt || null,
+      tags: JSON.stringify(resultObj.tags || []),
+      teams: JSON.stringify(resultObj.teams || []),
+      category: resultObj.category || 'general',
     };
   } catch (error) {
     console.error('Failed to rewrite article via OpenRouter:', error);

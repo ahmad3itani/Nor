@@ -57,16 +57,21 @@ export async function dbRun(
 
 const SCHEMA_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS articles (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug       TEXT UNIQUE NOT NULL,
-    title_ar   TEXT NOT NULL,
-    body_ar    TEXT NOT NULL,
-    source_url TEXT NOT NULL,
-    source     TEXT NOT NULL,
-    tags       TEXT,
-    published  INTEGER DEFAULT 1,
-    image_url  TEXT,
-    created_at TEXT DEFAULT (datetime('now'))
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug        TEXT UNIQUE NOT NULL,
+    title_ar    TEXT NOT NULL,
+    body_ar     TEXT NOT NULL,
+    excerpt_ar  TEXT,
+    source_url  TEXT NOT NULL,
+    source      TEXT NOT NULL,
+    tags        TEXT,
+    teams       TEXT,
+    category    TEXT DEFAULT 'general',
+    published   INTEGER DEFAULT 1,
+    featured    INTEGER DEFAULT 0,
+    views       INTEGER DEFAULT 0,
+    image_url   TEXT,
+    created_at  TEXT DEFAULT (datetime('now'))
   )`,
   `CREATE TABLE IF NOT EXISTS rss_seen (
     url     TEXT PRIMARY KEY,
@@ -108,6 +113,8 @@ const SCHEMA_STATEMENTS = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_articles_created   ON articles(created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published, created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_articles_category  ON articles(category, created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_articles_featured  ON articles(featured, created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_match_results_date ON match_results(match_date)`,
   `CREATE INDEX IF NOT EXISTS idx_pipeline_runs_date ON pipeline_runs(started_at DESC)`,
 ];

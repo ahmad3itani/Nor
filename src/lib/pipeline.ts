@@ -32,9 +32,9 @@ export async function runNewsPipeline() {
         const slug = generateSlug(item.source, item.url);
 
         await db.execute({
-          sql: `INSERT INTO articles (slug, title_ar, body_ar, source_url, source, tags, image_url)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-          args: [slug, result.title_ar, result.body_ar, item.url, item.source, result.tags, item.image || null],
+          sql: `INSERT INTO articles (slug, title_ar, body_ar, excerpt_ar, source_url, source, tags, teams, category, image_url)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          args: [slug, result.title_ar, result.body_ar, result.excerpt_ar ?? null, item.url, item.source, result.tags, result.teams ?? null, result.category ?? 'general', item.image || null],
         });
 
         await markRssItemSeen(item.url);

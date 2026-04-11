@@ -8,6 +8,8 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const q = searchParams.get('q')?.trim() || '';
     const source = searchParams.get('source')?.trim() || '';
+    const category = searchParams.get('category')?.trim() || '';
+    const featuredOnly = searchParams.get('featured') === '1';
     const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 50);
     const offset = Math.max(parseInt(searchParams.get('offset') || '0', 10), 0);
 
@@ -21,6 +23,13 @@ export async function GET(request: Request) {
     if (source) {
       conditions.push('source = ?');
       args.push(source);
+    }
+    if (category) {
+      conditions.push('category = ?');
+      args.push(category);
+    }
+    if (featuredOnly) {
+      conditions.push('featured = 1');
     }
 
     const whereClause = `WHERE ${conditions.join(' AND ')}`;

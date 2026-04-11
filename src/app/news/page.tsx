@@ -1,5 +1,6 @@
 import NewsFeed from '@/components/news/NewsFeed';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import MostRead from '@/components/news/MostRead';
 
 export const metadata = {
   title: 'آخر أخبار كرة القدم العاجلة اليوم | نور',
@@ -25,7 +26,7 @@ export const metadata = {
 
 export default function NewsPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       <Breadcrumbs items={[{ label: 'الأخبار' }]} />
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-nor-green/10 border border-nor-green/20 rounded-full text-nor-green text-xs font-readex">
@@ -39,7 +40,13 @@ export default function NewsPage() {
           انتقالات اللاعبين، نتائج المباريات، إصابات النجوم، وتحليلات تكتيكية — تُكتب بالعربية تلقائياً من أبرز المصادر العالمية
         </p>
       </div>
-      <NewsFeed />
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+        <NewsFeed />
+        <aside className="space-y-6">
+          <MostRead />
+        </aside>
+      </div>
     </div>
   );
 }
