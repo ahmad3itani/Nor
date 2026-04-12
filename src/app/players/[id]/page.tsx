@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       return {
         title: `${player.name} | إحصائيات اللاعب - نور`,
         description: `إحصائيات ${player.name} الكاملة: ${statistics[0]?.goals?.total || 0} أهداف، ${statistics[0]?.goals?.assists || 0} تمريرة حاسمة في ${statistics[0]?.league?.name || 'الموسم الحالي'}.`,
-        openGraph: { title: `${player.name} | نور`, images: [player.photo], type: 'profile', locale: 'ar_SA' },
+        openGraph: { title: `${player.name} | غولياذور`, images: [player.photo], type: 'profile', locale: 'ar_SA' },
       };
     }
   } catch {}
-  return { title: 'بيانات اللاعب | نور' };
+  return { title: 'بيانات اللاعب | غولياذور' };
 }
 
 export default async function PlayerProfilePage({ params }: { params: { id: string } }) {

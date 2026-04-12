@@ -10,7 +10,7 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://goaliador.com';
 
 export default function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
   // JSON-LD BreadcrumbList

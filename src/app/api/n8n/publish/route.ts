@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       ? body.slug.trim()
       : generateSlug(title);
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://goaliador.com';
 
   const insertSql = `INSERT INTO articles (slug, title_ar, body_ar, excerpt_ar, source_url, source, tags, teams, category, featured, published, image_url)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`;

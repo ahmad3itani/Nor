@@ -17,25 +17,36 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     if (data?.[0]) {
       const m = data[0];
       return {
-        title: `${m.teams.home.name} ضد ${m.teams.away.name} | نور`,
+        title: `${m.teams.home.name} ضد ${m.teams.away.name} | غولياذور`,
         description: `${m.league.name} - ${m.teams.home.name} ${m.goals?.home ?? ''} - ${m.goals?.away ?? ''} ${m.teams.away.name}. تفاصيل المباراة، الإحصائيات، التشكيلات.`,
         openGraph: { title: `${m.teams.home.name} vs ${m.teams.away.name}`, type: 'article', locale: 'ar_SA' },
       };
     }
   } catch {}
-  return { title: 'تفاصيل المباراة | نور' };
+  return { title: 'تفاصيل المباراة | غولياذور' };
 }
 
 export default async function MatchDetailsPage({ params }: { params: { id: string } }) {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || `http://localhost:${process.env.PORT || 3000}`;
-  const res = await fetch(`${url}/api/football/match/${params.id}`);
-  if (!res.ok) {
+  let match: any;
+  try {
+    const [fixtureData, statsData, eventsData, lineupsData] = await Promise.allSettled([
+      footballApi.getFixtureDetails(params.id),
+      footballApi.getFixtureStatistics(params.id),
+      footballApi.getFixtureEvents(params.id),
+      footballApi.getFixtureLineups(params.id),
+    ]);
+    const fixture = fixtureData.status === 'fulfilled' ? fixtureData.value?.[0] : null;
+    if (!fixture) {
+      return <div className="text-center p-10 text-white font-readex">تعذر تحميل بيانات المباراة</div>;
+    }
+    match = {
+      ...fixture,
+      statistics: statsData.status === 'fulfilled' ? (statsData.value ?? []) : [],
+      events: eventsData.status === 'fulfilled' ? (eventsData.value ?? []) : [],
+      lineups: lineupsData.status === 'fulfilled' ? (lineupsData.value ?? []) : [],
+    };
+  } catch {
     return <div className="text-center p-10 text-white font-readex">تعذر تحميل بيانات المباراة</div>;
-  }
-  
-  const match = await res.json();
-  if (match.error) {
-     return <div className="text-center p-10 font-readex">{match.error}</div>;
   }
 
   const isLive = match.fixture.status.short === '1H' || match.fixture.status.short === '2H' || match.fixture.status.short === 'HT';

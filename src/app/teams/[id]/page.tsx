@@ -13,11 +13,11 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       return {
         title: `${team.name} | ملف الفريق - نور`,
         description: `كل شيء عن ${team.name}: إحصائيات الموسم، قائمة اللاعبين، النتائج الأخيرة، الانتقالات. تأسس ${team.founded} في ${team.country}.`,
-        openGraph: { title: `${team.name} | نور`, images: [team.logo], type: 'website', locale: 'ar_SA' },
+        openGraph: { title: `${team.name} | غولياذور`, images: [team.logo], type: 'website', locale: 'ar_SA' },
       };
     }
   } catch {}
-  return { title: 'ملف الفريق | نور' };
+  return { title: 'ملف الفريق | غولياذور' };
 }
 
 export default async function TeamProfilePage({ params }: { params: { id: string } }) {

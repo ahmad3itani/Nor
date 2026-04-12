@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { dbAll } from '@/lib/db';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://goaliador.com';
 
 const staticRoutes: MetadataRoute.Sitemap = [
   { url: `${SITE_URL}/`,                lastModified: new Date(), changeFrequency: 'hourly',  priority: 1.0 },

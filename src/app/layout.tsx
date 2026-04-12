@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import LiveTicker from '@/components/layout/LiveTicker';
 import Providers from '@/components/providers/Providers';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://goaliador.com';
 
 const ibmPlex = localFont({
   src: './fonts/GeistVF.woff',
@@ -34,8 +34,8 @@ const almarai = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: 'نور | منصة كرة القدم الذكية',
-    template: '%s | نور',
+    default: 'غولياذور | منصة كرة القدم الذكية',
+    template: '%s | غولياذور',
   },
   manifest: '/manifest.json',
   icons: {
@@ -48,18 +48,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: SITE_URL },
   openGraph: {
-    title: 'نور | منصة كرة القدم الذكية',
+    title: 'غولياذور | منصة كرة القدم الذكية',
     description: 'منصة عربية ذكية لكرة القدم. أخبار لحظية، نتائج مباشرة، وتحليلات بالذكاء الاصطناعي.',
     url: SITE_URL,
     type: 'website',
     locale: 'ar_SA',
-    siteName: 'نور - nōr',
+    siteName: 'غولياذور - Goaliador',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'نور | منصة كرة القدم الذكية',
+    title: 'غولياذور | منصة كرة القدم الذكية',
     description: 'أخبار كرة القدم، نتائج مباشرة، وإحصائيات شاملة بالعربية.',
-    site: '@norFootball',
+    site: '@goaliador',
   },
   robots: {
     index: true,
@@ -76,7 +76,7 @@ const orgJsonLd = {
     {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
-      name: 'نور - nōr',
+      name: 'غولياذور - Goaliador',
       url: SITE_URL,
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
       sameAs: [],
@@ -85,7 +85,7 @@ const orgJsonLd = {
       '@type': 'WebSite',
       '@id': `${SITE_URL}/#website`,
       url: SITE_URL,
-      name: 'نور - nōr',
+      name: 'غولياذور - Goaliador',
       description: 'منصة عربية ذكية لكرة القدم',
       inLanguage: 'ar',
       publisher: { '@id': `${SITE_URL}/#organization` },

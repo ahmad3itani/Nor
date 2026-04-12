@@ -9,7 +9,7 @@ import ViewTracker from '@/components/news/ViewTracker';
 
 export const revalidate = 300; // ISR 5 minutes
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nor.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://goaliador.com';
 
 type Props = { params: { slug: string } };
 
@@ -59,11 +59,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: article.title_ar,
       description: desc,
       url: articleUrl,
-      siteName: 'نور - nōr',
+      siteName: 'غولياذور - Goaliador',
       locale: 'ar_SA',
       type: 'article',
       publishedTime: article.created_at,
-      authors: ['نور - nōr'],
+      authors: ['غولياذور - Goaliador'],
       images: article.image_url
         ? [{ url: article.image_url, alt: article.title_ar }]
         : [],
@@ -134,12 +134,12 @@ export default async function ArticlePage({ params }: Props) {
     } : {}),
     author: {
       '@type': 'Organization',
-      name: 'نور - nōr',
+      name: 'غولياذور - Goaliador',
       url: SITE_URL,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'نور - nōr',
+      name: 'غولياذور - Goaliador',
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
@@ -152,7 +152,7 @@ export default async function ArticlePage({ params }: Props) {
     },
     keywords: tags.join(', '),
     articleSection: 'كرة القدم',
-    copyrightHolder: { '@type': 'Organization', name: 'نور - nōr' },
+    copyrightHolder: { '@type': 'Organization', name: 'غولياذور - Goaliador' },
   };
 
   return (

@@ -34,9 +34,9 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2">
-            <span className="font-readex text-xl font-bold tracking-tighter text-nor-green">nōr</span>
+            <span className="font-readex text-xl font-bold tracking-tighter text-nor-green">Goaliador</span>
             <span className="text-base font-medium text-neutral-500">|</span>
-            <span className="font-amiri text-xl text-white">نور</span>
+            <span className="font-amiri text-xl text-white">غولياذور</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-4">

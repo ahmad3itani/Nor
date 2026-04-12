@@ -10,11 +10,11 @@ import HomeFeaturedMatches from '@/components/home/HomeFeaturedMatches';
 import HomeQuickLinks from '@/components/home/HomeQuickLinks';
 
 export const metadata = {
-  title: 'نور | منصة كرة القدم الذكية',
+  title: 'غولياذور | منصة كرة القدم الذكية',
   description: 'أخبار كرة القدم، نتائج المباريات الحية، ترتيب الدوريات، إحصائيات اللاعبين والفرق. تغطية شاملة لجميع الدوريات العالمية والعربية بالذكاء الاصطناعي.',
   keywords: ['كرة القدم', 'الدوري الإنجليزي', 'الدوري السعودي', 'نتائج المباريات', 'أخبار الرياضة', 'إحصائيات'],
   openGraph: {
-    title: 'نور | منصة كرة القدم الذكية',
+    title: 'غولياذور | منصة كرة القدم الذكية',
     description: 'منصة إعلامية رياضية ذكية - أخبار، نتائج، إحصائيات لحظية لجميع الدوريات',
     type: 'website',
     locale: 'ar_SA',
