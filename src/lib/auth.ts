@@ -69,6 +69,26 @@ export async function verifySessionToken(token: string): Promise<boolean> {
   }
 }
 
+/**
+ * Use this in every admin API route to check either:
+ *  1. A valid session cookie (browser requests from the admin UI), or
+ *  2. A Bearer ADMIN_SECRET header (server-to-server / scripts)
+ */
+export async function isAdminRequest(req: { cookies: { get: (n: string) => { value: string } | undefined }; headers: { get: (n: string) => string | null } }): Promise<boolean> {
+  // 1. Session cookie
+  const token = req.cookies.get(COOKIE_NAME)?.value;
+  if (token && await verifySessionToken(token)) return true;
+
+  // 2. Bearer ADMIN_SECRET fallback (server-to-server)
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (adminSecret) {
+    const auth = req.headers.get('authorization') || '';
+    if (auth === `Bearer ${adminSecret}`) return true;
+  }
+
+  return false;
+}
+
 export function verifyPassword(input: string): boolean {
   const expected = process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS;
   if (!expected) return false;

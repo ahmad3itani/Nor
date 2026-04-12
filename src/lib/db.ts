@@ -146,6 +146,15 @@ export async function ensureOperationalTables() {
       finished_at TEXT
     )`, args: [] },
     { sql: `CREATE INDEX IF NOT EXISTS idx_pipeline_runs_started_at ON pipeline_runs(started_at DESC)`, args: [] },
+    { sql: `CREATE TABLE IF NOT EXISTS pipeline_config (
+      key        TEXT PRIMARY KEY,
+      value      TEXT NOT NULL,
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`, args: [] },
+    { sql: `INSERT OR IGNORE INTO pipeline_config (key, value) VALUES ('paused', 'false')`, args: [] },
+    { sql: `INSERT OR IGNORE INTO pipeline_config (key, value) VALUES ('max_per_run', '10')`, args: [] },
+    { sql: `INSERT OR IGNORE INTO pipeline_config (key, value) VALUES ('max_per_day', '50')`, args: [] },
+    { sql: `INSERT OR IGNORE INTO pipeline_config (key, value) VALUES ('feed_overrides', '{}')`, args: [] },
   ]);
 }
 

@@ -1,17 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db, ensureOperationalTables } from '@/lib/db';
 import { runNewsPipeline } from '@/lib/pipeline';
+import { isAdminRequest } from '@/lib/auth';
 
-function isAuthorized(request: Request) {
-  const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret) {
-    return process.env.NODE_ENV !== 'production';
-  }
-  return request.headers.get('authorization') === `Bearer ${adminSecret}`;
-}
-
-export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+export async function GET(request: NextRequest) {
+  if (!await isAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -38,8 +31,8 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+export async function POST(request: NextRequest) {
+  if (!await isAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

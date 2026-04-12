@@ -15,6 +15,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
 
+  // Login page renders full-screen without sidebar
+  if (pathname === '/admin/login') return <>{children}</>;
+
+
   async function handleLogout() {
     await fetch('/api/admin/auth/logout', { method: 'POST' });
     router.replace('/admin/login');

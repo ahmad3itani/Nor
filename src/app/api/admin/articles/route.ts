@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { isAdminRequest } from '@/lib/auth';
 
 function generateSlug(title: string): string {
   const base = title
@@ -13,16 +14,8 @@ function generateSlug(title: string): string {
   return base ? `${base}-${suffix}` : `article-${suffix}`;
 }
 
-function isAuthorized(req: NextRequest): boolean {
-  const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret) return process.env.NODE_ENV !== 'production';
-  const auth = req.headers.get('authorization') || '';
-  if (auth.startsWith('Bearer ')) return auth.slice(7) === adminSecret;
-  return new URL(req.url).searchParams.get('secret') === adminSecret;
-}
-
 export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) {
+  if (!await isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -64,7 +57,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) {
+  if (!await isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

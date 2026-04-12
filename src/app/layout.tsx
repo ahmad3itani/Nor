@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { headers } from 'next/headers';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -98,7 +99,10 @@ const orgJsonLd = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const isAdmin = headersList.get('x-is-admin') === '1';
+
   return (
     <html lang="ar" dir="rtl" className="dark">
       <head>
@@ -109,12 +113,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${ibmPlex.variable} ${amiri.variable} ${readexPro.variable} ${almarai.variable} font-ibm bg-nor-black text-nor-white min-h-screen flex flex-col`}>
         <Providers>
-          <LiveTicker />
-          <Header />
-          <main className="flex-grow container mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
-            {children}
-          </main>
-          <Footer />
+          {isAdmin ? (
+            // Admin routes: no header/footer/ticker — admin layout handles its own chrome
+            <>{children}</>
+          ) : (
+            <>
+              <LiveTicker />
+              <Header />
+              <main className="flex-grow container mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
+                {children}
+              </main>
+              <Footer />
+            </>
+          )}
         </Providers>
       </body>
     </html>

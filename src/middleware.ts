@@ -7,13 +7,19 @@ export async function middleware(request: NextRequest) {
 
   if (!pathname.startsWith('/admin')) return NextResponse.next();
 
-  // Login page is always accessible
-  if (pathname === '/admin/login') return NextResponse.next();
+  // Login page — always accessible, just mark as admin route
+  if (pathname === '/admin/login') {
+    const res = NextResponse.next();
+    res.headers.set('x-is-admin', '1');
+    return res;
+  }
 
   // Check session cookie
   const token = request.cookies.get(COOKIE_NAME)?.value;
   if (token && await verifySessionToken(token)) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    res.headers.set('x-is-admin', '1');
+    return res;
   }
 
   // Not authenticated — redirect to login

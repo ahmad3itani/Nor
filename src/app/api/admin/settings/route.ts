@@ -1,26 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureOperationalTables } from '@/lib/db';
 import { RSS_FEEDS } from '@/lib/rss-listener';
-import { verifySessionToken, COOKIE_NAME } from '@/lib/auth';
-
-async function isAuthorized(req: NextRequest): Promise<boolean> {
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  if (token && await verifySessionToken(token)) return true;
-  // Also allow Bearer ADMIN_SECRET for server-to-server calls
-  const adminSecret = process.env.ADMIN_SECRET;
-  if (adminSecret) {
-    const auth = req.headers.get('authorization') || '';
-    if (auth === `Bearer ${adminSecret}`) return true;
-  }
-  return false;
-}
+import { isAdminRequest } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
-  if (!await isAuthorized(req)) {
+  if (!await isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
+    await ensureOperationalTables();
     const rows = await db.execute({ sql: 'SELECT key, value FROM pipeline_config', args: [] });
     const cfg: Record<string, string> = {};
     for (const row of rows.rows as any[]) cfg[(row as any).key] = (row as any).value;
@@ -46,7 +35,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!await isAuthorized(req)) {
+  if (!await isAdminRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
