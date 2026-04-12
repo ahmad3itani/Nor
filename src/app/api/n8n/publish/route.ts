@@ -92,8 +92,9 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     if (err?.message?.includes('UNIQUE constraint failed')) {
       const retry = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
+      const retryArgs = [retry, ...insertArgs.slice(1)];
       try {
-        const result = await db.execute({ sql: insertSql.replace('VALUES (?', `VALUES ('${retry}',`).replace('(?, ?, ?, ?', '(?, ?, ?, ?'), args: [retry, ...insertArgs.slice(1)] });
+        const result = await db.execute({ sql: insertSql, args: retryArgs });
         return NextResponse.json({
           success: true,
           id: result.lastInsertRowid,
