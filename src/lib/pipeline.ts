@@ -8,9 +8,60 @@ function generateSlug(source: string, titleStr: string) {
   return `${source.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${hash}`;
 }
 
+async function getConfig(): Promise<{
+  paused: boolean;
+  maxPerRun: number;
+  maxPerDay: number;
+  feedOverrides: Record<string, boolean>;
+}> {
+  try {
+    const rows = await db.execute({ sql: 'SELECT key, value FROM pipeline_config', args: [] });
+    const cfg: Record<string, string> = {};
+    for (const row of rows.rows as any[]) cfg[row.key] = row.value;
+
+    return {
+      paused: cfg.paused === 'true',
+      maxPerRun: Math.max(1, parseInt(cfg.max_per_run || '10', 10)),
+      maxPerDay: Math.max(1, parseInt(cfg.max_per_day || '50', 10)),
+      feedOverrides: JSON.parse(cfg.feed_overrides || '{}'),
+    };
+  } catch {
+    return { paused: false, maxPerRun: 10, maxPerDay: 50, feedOverrides: {} };
+  }
+}
+
+async function getTodayCount(): Promise<number> {
+  try {
+    const result = await db.execute({
+      sql: `SELECT COUNT(*) as count FROM articles WHERE created_at >= date('now')`,
+      args: [],
+    });
+    return (result.rows[0] as any)?.count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 export async function runNewsPipeline() {
   await ensureOperationalTables();
-  console.log('🔄 Starting news pipeline...');
+
+  const config = await getConfig();
+
+  if (config.paused) {
+    console.log('⏸ Pipeline is paused. Skipping.');
+    return { newItemsFound: 0, processedCount: 0, skipped: true, reason: 'paused' };
+  }
+
+  const todayCount = await getTodayCount();
+  if (todayCount >= config.maxPerDay) {
+    console.log(`🚫 Daily limit reached (${todayCount}/${config.maxPerDay}). Skipping.`);
+    return { newItemsFound: 0, processedCount: 0, skipped: true, reason: 'daily_limit', todayCount, maxPerDay: config.maxPerDay };
+  }
+
+  const remaining = config.maxPerDay - todayCount;
+  const runLimit = Math.min(config.maxPerRun, remaining);
+
+  console.log(`🔄 Starting news pipeline... (limit: ${runLimit}, today: ${todayCount}/${config.maxPerDay})`);
 
   const runResult = await db.execute({
     sql: `INSERT INTO pipeline_runs (pipeline_name, status) VALUES (?, ?)`,
@@ -18,13 +69,13 @@ export async function runNewsPipeline() {
   });
   const runId = runResult.lastInsertRowid;
 
-  const newItems = await fetchNewRssItems();
+  const newItems = await fetchNewRssItems(config.feedOverrides);
   console.log(`Found ${newItems.length} new RSS items.`);
 
   let processed = 0;
   try {
     for (const item of newItems) {
-      if (processed >= 5) break;
+      if (processed >= runLimit) break;
 
       try {
         console.log(`Processing: [${item.source}] ${item.title}`);

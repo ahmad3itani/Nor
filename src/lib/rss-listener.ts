@@ -12,8 +12,13 @@ const parser = new Parser({
 });
 
 const RSS_FEEDS = [
-  { source: "Sky Sports", url: "https://www.skysports.com/rss/12040" },
-  { source: "BBC Sport", url: "https://feeds.bbci.co.uk/sport/football/rss.xml" },
+  { source: "Sky Sports",    url: "https://www.skysports.com/rss/12040" },
+  { source: "BBC Sport",     url: "https://feeds.bbci.co.uk/sport/football/rss.xml" },
+  { source: "ESPN FC",       url: "https://www.espn.com/espn/rss/soccer/news" },
+  { source: "Goal",          url: "https://www.goal.com/feeds/en/news" },
+  { source: "90min",         url: "https://www.90min.com/posts.rss" },
+  { source: "The Guardian",  url: "https://www.theguardian.com/football/rss" },
+  { source: "Fabrizio Romano", url: "https://fabrizioromano.substack.com/feed" },
 ];
 
 function extractImage(item: any): string | undefined {
@@ -30,10 +35,14 @@ function extractImage(item: any): string | undefined {
   return undefined;
 }
 
-export async function fetchNewRssItems() {
+export { RSS_FEEDS };
+
+export async function fetchNewRssItems(feedOverrides: Record<string, boolean> = {}) {
   const newItems = [];
 
   for (const feedConfig of RSS_FEEDS) {
+    // If the feed has an explicit override set to false, skip it
+    if (feedOverrides[feedConfig.source] === false) continue;
     try {
       const feed = await parser.parseURL(feedConfig.url);
 

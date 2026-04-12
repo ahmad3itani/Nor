@@ -111,6 +111,16 @@ const SCHEMA_STATEMENTS = [
     started_at       TEXT DEFAULT (datetime('now')),
     finished_at      TEXT
   )`,
+  `CREATE TABLE IF NOT EXISTS pipeline_config (
+    key        TEXT PRIMARY KEY,
+    value      TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now'))
+  )`,
+  `INSERT OR IGNORE INTO pipeline_config (key, value) VALUES
+    ('paused',       'false'),
+    ('max_per_run',  '10'),
+    ('max_per_day',  '50'),
+    ('feed_overrides', '{}')`,
   `CREATE INDEX IF NOT EXISTS idx_articles_created   ON articles(created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published, created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_articles_category  ON articles(category, created_at DESC)`,
