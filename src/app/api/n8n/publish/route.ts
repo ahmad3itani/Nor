@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      id: result.lastInsertRowid,
+      id: Number(result.lastInsertRowid),
       slug,
       url: `${SITE_URL}/news/${slug}`,
     }, { status: 201 });
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
         const result = await db.execute({ sql: insertSql, args: retryArgs });
         return NextResponse.json({
           success: true,
-          id: result.lastInsertRowid,
+          id: Number(result.lastInsertRowid),
           slug: retry,
           url: `${SITE_URL}/news/${retry}`,
         }, { status: 201 });
