@@ -64,5 +64,9 @@ signal weapon_granted(id: String)
 ## A breakable secret wall or hidden route was opened.
 signal secret_found(id: String)
 signal player_healed(health: int)
+## Boss fight lifecycle (HUD boss bar, music state).
+signal boss_started(boss: Node2D, title: String)
+signal boss_phase_changed(boss: Node2D, phase: int)
+signal boss_defeated(boss_id: String)
 ## Tuning panel asks to discard live edits and reload the active preset from disk.
 signal movement_config_reload_requested

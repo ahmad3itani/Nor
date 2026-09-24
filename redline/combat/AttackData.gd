@@ -39,6 +39,8 @@ extends Resource
 @export_group("Attacker motion")
 ## Forward speed set on the attacker at the start (ground lunge).
 @export var lunge_speed: float = 60.0
+## Vertical speed set at the start of the active phase (leaps). 0 = none.
+@export var lunge_vertical: float = 0.0
 ## Fraction of existing horizontal speed kept when attacking out of a run/dash.
 @export_range(0.0, 1.0) var momentum_keep: float = 0.5
 @export var ground_friction: float = 900.0
@@ -46,6 +48,11 @@ extends Resource
 @export var sets_air_velocity: bool = false
 @export var air_velocity_y: float = -40.0
 @export var air_gravity_scale: float = 0.5
+
+@export_group("Chaining")
+## Enemy combos: when this attack's active window ends, wind up the follow-up
+## immediately (its startup is the readable gap between hits).
+@export var follow_up: AttackData
 
 @export_group("Projectile")
 ## Null for melee. When set, the attack fires projectiles instead of using the hitbox.

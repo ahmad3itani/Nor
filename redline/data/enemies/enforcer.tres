@@ -1,0 +1,75 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Baton2"]
+script = ExtResource("1_attack")
+cancel_time = 0.0
+poise_damage = 0.0
+damage = 1.0
+id = &"enforcer_baton_2"
+startup = 0.22
+active = 0.1
+recovery = 0.55
+knockback = Vector2(210, -130)
+hitstop = 0.08
+hitbox = Rect2(0, -34, 32, 30)
+lunge_speed = 150.0
+ground_friction = 600.0
+camera_trauma = 0.15
+swing_sfx = &"enemy_attack"
+
+[sub_resource type="Resource" id="Baton1"]
+script = ExtResource("1_attack")
+cancel_time = 0.0
+poise_damage = 0.0
+damage = 1.0
+id = &"enforcer_baton_1"
+startup = 0.45
+active = 0.1
+recovery = 0.1
+knockback = Vector2(90, -40)
+hitstop = 0.06
+hitbox = Rect2(0, -32, 30, 26)
+lunge_speed = 110.0
+ground_friction = 600.0
+follow_up = SubResource("Baton2")
+swing_sfx = &"enemy_attack"
+
+[sub_resource type="Resource" id="Lunge"]
+script = ExtResource("1_attack")
+cancel_time = 0.0
+poise_damage = 0.0
+damage = 1.0
+id = &"enforcer_lunge"
+startup = 0.55
+active = 0.25
+recovery = 0.6
+knockback = Vector2(180, -120)
+hitstop = 0.07
+hitbox = Rect2(-4, -30, 34, 22)
+lunge_speed = 330.0
+ground_friction = 300.0
+swing_sfx = &"enemy_attack"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"enforcer"
+display_name = "Enforcer"
+max_health = 80.0
+max_poise = 32.0
+stagger_time = 0.8
+mass = 2.0
+armored = true
+move_speed = 60.0
+accel = 600.0
+body_size = Vector2(14, 30)
+aggro_range = 220.0
+attack_cooldown = 1.0
+reactor_reward = 25.0
+scrap_drop = 20
+style_value = 90.0
+color = Color(0.7, 0.28, 0.3, 1)
+elite = true
+attacks = Array[ExtResource("1_attack")]([SubResource("Baton1"), SubResource("Lunge")])

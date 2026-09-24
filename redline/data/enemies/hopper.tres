@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Pounce"]
+script = ExtResource("1_attack")
+cancel_time = 0.0
+poise_damage = 0.0
+damage = 1.0
+id = &"hopper_pounce"
+startup = 0.5
+active = 0.55
+recovery = 0.45
+knockback = Vector2(140, -150)
+hitstop = 0.06
+hitbox = Rect2(-9, -20, 18, 20)
+lunge_speed = 150.0
+lunge_vertical = -300.0
+ground_friction = 0.0
+swing_sfx = &"enemy_attack"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"hopper"
+display_name = "Hopper"
+max_health = 24.0
+max_poise = 8.0
+stagger_time = 0.5
+mass = 0.9
+move_speed = 60.0
+accel = 700.0
+body_size = Vector2(12, 16)
+aggro_range = 220.0
+attack_cooldown = 1.2
+reactor_reward = 10.0
+scrap_drop = 5
+style_value = 40.0
+color = Color(0.46, 0.7, 0.48, 1)
+attacks = Array[ExtResource("1_attack")]([SubResource("Pounce")])

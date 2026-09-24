@@ -14,3 +14,7 @@ extends Resource
 @export var tracer_length: float = 8.0
 ## Extra targets the projectile passes through before stopping.
 @export_range(0, 8) var pierce: int = 0
+## Shockwave: spawns one projectile each way along the ground at foot height,
+## ignoring aim. Readable answer: jump over it.
+@export var ground_wave: bool = false
+@export var wave_height: float = 6.0

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+
+[sub_resource type="Resource" id="P"]
+script = ExtResource("3_proj")
+speed = 330.0
+lifetime = 1.4
+pellets = 1
+color = Color(1, 0.23, 0.31, 1)
+tracer_length = 10.0
+
+[sub_resource type="Resource" id="Bolt"]
+script = ExtResource("1_attack")
+cancel_time = 0.0
+poise_damage = 0.0
+damage = 1.0
+id = &"watcher_bolt"
+startup = 0.9
+active = 0.05
+recovery = 0.8
+knockback = Vector2(120, -90)
+hitstop = 0.05
+hitbox = Rect2(0, 0, 1, 1)
+lunge_speed = 0.0
+projectile = SubResource("P")
+swing_sfx = &"enemy_shoot"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"watcher"
+display_name = "Watcher"
+max_health = 18.0
+max_poise = 6.0
+stagger_time = 0.8
+mass = 99.0
+move_speed = 0.0
+accel = 0.0
+friction = 9999.0
+flying = true
+anchored = true
+body_size = Vector2(12, 12)
+aggro_range = 320.0
+attack_cooldown = 1.8
+reactor_reward = 8.0
+scrap_drop = 4
+style_value = 35.0
+color = Color(0.42, 0.4, 0.5, 1)
+attacks = Array[ExtResource("1_attack")]([SubResource("Bolt")])

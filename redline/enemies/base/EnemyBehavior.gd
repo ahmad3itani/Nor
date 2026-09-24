@@ -12,6 +12,11 @@ func setup(owner_enemy: Enemy) -> void:
 	enemy = owner_enemy
 
 
+## Called every physics tick in any state (phase checks, timers).
+func tick(_delta: float) -> void:
+	pass
+
+
 ## Desired velocity while engaging the target. Also responsible for facing.
 func engage_velocity(_delta: float) -> Vector2:
 	return Vector2.ZERO

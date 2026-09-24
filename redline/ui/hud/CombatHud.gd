@@ -25,6 +25,8 @@ const LORE_SECONDS := 8.0
 var _lore_title: String = ""
 var _lore_text: String = ""
 var _lore_time: float = 0.0
+var _boss: Enemy
+var _boss_title: String = ""
 
 
 func _ready() -> void:
@@ -59,6 +61,10 @@ func _ready() -> void:
 	EventBus.hint_requested.connect(func(t: String, s: float) -> void:
 		_hint = t
 		_hint_time = s)
+	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void:
+		_boss = b as Enemy
+		_boss_title = title)
+	EventBus.boss_defeated.connect(func(_id: String) -> void: _boss = null)
 	EventBus.memory_fragment_found.connect(func(f: Resource) -> void:
 		var frag := f as MemoryFragmentData
 		if frag:
@@ -147,6 +153,20 @@ func _draw_hud() -> void:
 		_root.draw_rect(Rect2(card.position, Vector2(2, card.size.y)), Color(0.62, 0.85, 1.0, a))
 		_root.draw_string(font, card.position + Vector2(8, 11), _lore_title, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 12, FONT_SIZE, Color(0.62, 0.85, 1.0, a))
 		_root.draw_multiline_string(font, card.position + Vector2(8, 22), _lore_text, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 14, FONT_SIZE, -1, Color(1, 1, 1, a))
+
+	# Boss bar (bottom centre), with the phase-2 threshold marked.
+	if _boss and is_instance_valid(_boss) and not _boss.is_dead():
+		var bw := 220.0
+		var bar_r := Rect2((view.x - bw) * 0.5, view.y - 22, bw, 4)
+		_draw_centered(font, _boss_title, bar_r.position.y - 3, FONT_SIZE, Color.WHITE)
+		_root.draw_rect(bar_r, DIM)
+		var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
+		_root.draw_rect(Rect2(bar_r.position, Vector2(bw * f, 4)), RED)
+		_root.draw_rect(Rect2(bar_r.position + Vector2(bw * 0.5, -1), Vector2(1, 6)), Color.WHITE)
+		if _boss.ai == Enemy.AI.STAGGER:
+			_draw_centered(font, "STAGGERED", bar_r.end.y + 8, FONT_SIZE - 1, Color("ffcf5a"))
+	elif _boss and (not is_instance_valid(_boss) or _boss.is_dead()):
+		_boss = null
 
 	# Room banner on entry.
 	if _banner_time > 0.0:

@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/Enemy.gd" id="1_enemy"]
+[ext_resource type="Resource" path="res://data/enemies/enforcer.tres" id="2_data"]
+[ext_resource type="Script" path="res://enemies/behaviors/EnforcerBehavior.gd" id="3_behavior"]
+[ext_resource type="Script" path="res://combat/Hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://enemies/base/EnemyVisual.gd" id="5_visual"]
+
+[node name="Enforcer" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("1_enemy")
+data = ExtResource("2_data")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("3_behavior")
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("5_visual")

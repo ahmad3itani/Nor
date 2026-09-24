@@ -26,6 +26,8 @@ extends Resource
 @export var max_fall_speed: float = 420.0
 ## Flying enemies ignore gravity until staggered/launched/killed.
 @export var flying: bool = false
+## Mounted (wall/ceiling sentries): never moves, falls or gets knocked back.
+@export var anchored: bool = false
 @export var body_size: Vector2 = Vector2(12, 26)
 
 @export_group("Awareness & attacks")
@@ -45,6 +47,10 @@ extends Resource
 
 @export_group("Look")
 @export var color: Color = Color("c75b5b")
+## Elites get a gold outline and bigger rewards (bible §16 elites).
+@export var elite: bool = false
+## Seconds between death and removal; bosses linger for a readable finish.
+@export var death_time: float = 0.45
 
 
 func validate() -> PackedStringArray:
@@ -58,6 +64,13 @@ func validate() -> PackedStringArray:
 	for a in attacks:
 		errors.append_array(a.validate())
 		# Readability rule (bible §17): enemy wind-ups must be long enough to see.
+		# Follow-ups may be quicker: the first hit already telegraphed the combo.
 		if a.startup < 0.3:
 			errors.append("%s/%s: telegraph (startup) shorter than 0.3s" % [id, a.id])
+		var f := a.follow_up
+		while f:
+			errors.append_array(f.validate())
+			if f.startup < 0.15:
+				errors.append("%s/%s: follow-up gap shorter than 0.15s" % [id, f.id])
+			f = f.follow_up
 	return errors

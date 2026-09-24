@@ -41,6 +41,8 @@ var _impacted: Dictionary = {}
 var _wall_slammed: bool = false
 var _has_token: bool = false
 var _stagger_duration: float = 0.0
+## Multiplies wind-up time (bosses speed up in later phases). Never below 0.6.
+var telegraph_scale: float = 1.0
 
 @onready var behavior: EnemyBehavior = $Behavior
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -74,6 +76,8 @@ func body_rect() -> Rect2:
 
 
 func is_airborne_physics() -> bool:
+	if data.anchored:
+		return false
 	return not data.flying or ai == AI.STAGGER or ai == AI.LAUNCHED or ai == AI.DEAD
 
 
@@ -93,6 +97,7 @@ func _physics_process(delta: float) -> void:
 		hitstop_timer -= delta
 		return
 	ai_time += delta
+	behavior.tick(delta)
 	flash_timer = maxf(flash_timer - delta, 0.0)
 	attack_cooldown = maxf(attack_cooldown - delta, 0.0)
 	_acquire_target()
@@ -106,7 +111,7 @@ func _physics_process(delta: float) -> void:
 			_engage(delta)
 		AI.WINDUP:
 			_brake(delta)
-			if ai_time >= current_attack.startup:
+			if ai_time >= current_attack.startup * maxf(telegraph_scale, 0.6):
 				_begin_active()
 		AI.ACTIVE:
 			_run_active(delta)
@@ -126,7 +131,7 @@ func _physics_process(delta: float) -> void:
 				set_ai(AI.STAGGER)
 		AI.DEAD:
 			_check_body_impacts()
-			if ai_time >= DEATH_FLIGHT_TIME or (ai_time > 0.1 and is_on_floor()):
+			if ai_time >= data.death_time or (data.death_time <= DEATH_FLIGHT_TIME and ai_time > 0.1 and is_on_floor()):
 				_pop()
 				return
 
@@ -185,6 +190,16 @@ func _separation() -> Vector2:
 	return push
 
 
+## True if nothing solid blocks the straight line to the target (ranged units).
+func has_line_of_sight() -> bool:
+	if target == null:
+		return false
+	var from := global_position + Vector2(0, -data.body_size.y * 0.5)
+	var to := target.global_position + Vector2(0, -16)
+	var params := PhysicsRayQueryParameters2D.create(from, to, CombatLayers.WORLD)
+	return get_world_2d().direct_space_state.intersect_ray(params).is_empty()
+
+
 func _aim_at_target() -> Vector2:
 	if target == null:
 		return Vector2(facing, 0)
@@ -194,19 +209,29 @@ func _aim_at_target() -> Vector2:
 
 func _begin_active() -> void:
 	set_ai(AI.ACTIVE)
-	if current_attack.projectile:
+	var proj := current_attack.projectile
+	if proj and proj.ground_wave:
+		for dir in [-1, 1]:
+			Projectile.spawn(get_parent(), self, current_attack, global_position + Vector2(dir * data.body_size.x * 0.5, -proj.wave_height),
+				Vector2(dir, 0), CombatLayers.PLAYER_HURTBOX)
+		EventBus.camera_shake_requested.emit(current_attack.camera_trauma)
+	elif proj:
 		attack_aim = _aim_at_target()
 		var muzzle := global_position + Vector2(0, -data.body_size.y * 0.5)
-		for i in current_attack.projectile.pellets:
-			Projectile.spawn(get_parent(), self, current_attack, muzzle, attack_aim, CombatLayers.PLAYER_HURTBOX)
-		AudioManager.play_sfx(current_attack.swing_sfx)
-	else:
+		var spread := proj.spread_deg
+		for i in proj.pellets:
+			var offset := 0.0 if proj.pellets == 1 else lerpf(-spread * 0.5, spread * 0.5, float(i) / (proj.pellets - 1))
+			Projectile.spawn(get_parent(), self, current_attack, muzzle, attack_aim.rotated(deg_to_rad(offset)), CombatLayers.PLAYER_HURTBOX)
+	if not proj or proj.ground_wave:
 		velocity.x = facing * current_attack.lunge_speed
-		AudioManager.play_sfx(current_attack.swing_sfx)
+		if current_attack.lunge_vertical != 0.0:
+			velocity.y = current_attack.lunge_vertical
+	AudioManager.play_sfx(current_attack.swing_sfx)
 
 
 func _run_active(delta: float) -> void:
-	if current_attack.projectile == null:
+	# Zero-damage moves (Krail's backstep) are pure movement: no hit delivery.
+	if current_attack.projectile == null and current_attack.damage > 0.0:
 		var rect := current_attack.world_hitbox(global_position, facing)
 		for box in CombatQuery.hurtboxes_in_rect(get_world_2d(), rect, CombatLayers.PLAYER_HURTBOX):
 			var key := box.get_instance_id()
@@ -217,9 +242,19 @@ func _run_active(delta: float) -> void:
 			var result := box.receive(hit)
 			if result == CombatResult.HIT or result == CombatResult.KILLED:
 				hitstop_timer = current_attack.hitstop * Settings.hitstop_scale
-		velocity.x = move_toward(velocity.x, 0.0, current_attack.ground_friction * delta)
+		if is_on_floor() and current_attack.lunge_vertical == 0.0:
+			velocity.x = move_toward(velocity.x, 0.0, current_attack.ground_friction * delta)
 	if ai_time >= current_attack.active:
-		set_ai(AI.RECOVER)
+		if current_attack.follow_up:
+			current_attack = current_attack.follow_up
+			_attack_hit_ids.clear()
+			facing = int(signf(target.global_position.x - global_position.x)) if target and absf(target.global_position.x - global_position.x) > 4.0 else facing
+			attack_aim = _aim_at_target()
+			ai = AI.WINDUP
+			ai_time = 0.0
+			AudioManager.play_sfx(&"enemy_telegraph")
+		else:
+			set_ai(AI.RECOVER)
 
 
 func _request_token() -> bool:
@@ -266,7 +301,9 @@ func receive_hit(hit: HitInfo) -> int:
 	hitstop_timer = hit.attack.hitstop * scale_stop
 
 	var kb := hit.knockback / data.mass
-	var resisting := data.armored and not staggered and ai != AI.STAGGER and ai != AI.LAUNCHED
+	if data.anchored:
+		kb = Vector2.ZERO
+	var resisting := data.anchored or (data.armored and not staggered and ai != AI.STAGGER and ai != AI.LAUNCHED)
 	if resisting:
 		# Armor: only a shove, and it stays planted.
 		velocity.x = kb.x * data.armor_knockback_scale
@@ -301,7 +338,9 @@ func _die(hit: HitInfo) -> void:
 
 
 func _pop() -> void:
-	HitSpark.spawn(get_parent(), global_position + Vector2(0, -data.body_size.y * 0.5), Vector2.UP, data.color, 16, 160.0)
+	var bursts := 4 if data.death_time > DEATH_FLIGHT_TIME else 1
+	for i in bursts:
+		HitSpark.spawn(get_parent(), global_position + Vector2(randf_range(-8, 8) * i, -data.body_size.y * 0.5), Vector2.UP, data.color, 16, 160.0 + 40.0 * i)
 	queue_free()
 
 

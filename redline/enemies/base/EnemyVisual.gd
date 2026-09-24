@@ -33,7 +33,7 @@ func _draw() -> void:
 	if enemy.flash_timer > 0.0:
 		color = FLASH_COLOR
 	draw_rect(body, color)
-	draw_rect(body, Color(0, 0, 0, 0.6), false, 1.0)
+	draw_rect(body, Color("ffcf5a") if data.elite else Color(0, 0, 0, 0.6), false, 1.0)
 	var eye_x := 1.0 if enemy.facing > 0 else -4.0
 	draw_rect(Rect2(Vector2(eye_x, -size.y + 4.0) + shake, Vector2(3, 2)), Color("1a1320"))
 	enemy.behavior.draw_extras(self)
