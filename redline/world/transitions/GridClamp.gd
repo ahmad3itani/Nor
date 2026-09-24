@@ -22,10 +22,6 @@ const AMBER := Color("ffb347")
 const RED := Color("e8283c")
 const LAMP_OFF := Color("3a3030")
 const LAMPS := 5
-## The teaching line shows at the latest this long after arming (after the
-## boss intro card), or earlier when the boss first walks under the clamp.
-const HINT_DELAY := 4.0
-const HINT_SECONDS := 3.5
 
 @export var clamp_id: String = ""
 @export var circuits: Array[StringName] = []
@@ -60,7 +56,10 @@ var _origin_y: float = 0.0
 var _armed_time: float = 0.0
 var _hint_pending: bool = false
 var _tripper: Player
-var _excepted: Array[Enemy] = []
+## Instance ids of enemies the resting slab ignores until the rise ends. Ids,
+## not typed references: one may be freed before then (a typed loop variable
+## over a freed instance errors before any validity check can run).
+var _excepted: Array[int] = []
 var _shape_node: CollisionShape2D
 var _rect_shape: RectangleShape2D
 var _hazard_attack: AttackData
@@ -225,22 +224,25 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_hint() -> void:
-	if not _hint_pending:
+	if not _hint_pending or timing == null:
+		return
+	# Never during the boss intro card, even if the boss starts under it.
+	if _armed_time < timing.hint_min:
 		return
 	var under := false
 	if boss != null and not boss.is_dead():
 		var r := boss.body_rect()
 		under = r.position.x < global_position.x + width and r.end.x > global_position.x
-	if not under and _armed_time < HINT_DELAY:
+	if not under and _armed_time < timing.hint_delay:
 		return
 	_hint_pending = false
 	if Game.has_flag("hint_" + arm_hint_id):
 		return
 	Game.set_flag("hint_" + arm_hint_id)
-	EventBus.hint_requested.emit(arm_hint, HINT_SECONDS)
+	EventBus.hint_requested.emit(arm_hint, timing.hint_seconds)
 	for circuit in circuits:
 		for b in Breaker.on_circuit(get_tree(), circuit):
-			b.pulse(HINT_SECONDS)
+			b.pulse(timing.hint_seconds)
 
 
 ## The drop lands: resolve everything under the slab.
@@ -261,7 +263,7 @@ func _slam() -> void:
 		# The slab rests on whatever it hit: no physics fight with it.
 		if not e.is_dead():
 			e.add_collision_exception_with(self)
-			_excepted.append(e)
+			_excepted.append(e.get_instance_id())
 	_hit_player()
 	last_staggered = staggered
 	AudioManager.play_sfx(&"boss_slam")
@@ -278,8 +280,10 @@ func _hit_for(a: AttackData, e: Enemy) -> HitInfo:
 	return hit
 
 
-## Standing Rook in the press: 1 pip and a shove out sideways. Low Rook
-## (16 px) fits under the 24 px slot and is safe.
+## Standing Rook in the press: 1 pip and a shove out sideways, to the side
+## nearer his centre unless a wall or block is there (then the other side), so
+## he is never placed inside geometry. Low Rook (16 px) fits under the 24 px
+## slot and is safe.
 func _hit_player() -> void:
 	var room := _room()
 	if room == null or not is_instance_valid(room.player):
@@ -293,18 +297,39 @@ func _hit_player() -> void:
 	var cx := global_position.x + width * 0.5
 	var side := -1.0 if p.global_position.x < cx else 1.0
 	var half := r.size.x * 0.5
-	var out_x := global_position.x - half - 1.0 if side < 0.0 else global_position.x + width + half + 1.0
-	p.global_position.x = out_x
+	if not _side_free(p, side, r):
+		side = -side
+	p.global_position.x = _out_x(side, half)
 	if not p.combat.dead and p.combat.hurt_invuln_timer <= 0.0:
 		var kb := Vector2(side * p.combat.config.hurt_knockback.x, p.combat.config.hurt_knockback.y)
 		p.combat.take_damage(1, kb, attack.hitstop if attack else 0.08, true, "clamp")
 	else:
-		p.combat.shove(Vector2(side * 120.0, -60.0))
+		# Only reached from the slam, which needs timing.
+		p.combat.shove(Vector2(side * timing.shove.x, timing.shove.y))
+
+
+## Where Rook's centre goes when shoved out on `side` (1 px clear).
+func _out_x(side: float, half: float) -> float:
+	return global_position.x - half - 1.0 if side < 0.0 else global_position.x + width + half + 1.0
+
+
+## True if Rook's standing body fits just outside the footprint on `side`
+## (solid world only: one-way platforms never block a body sideways).
+func _side_free(p: Player, side: float, r: Rect2) -> bool:
+	var shape := RectangleShape2D.new()
+	shape.size = r.size - Vector2(1.0, 1.0)
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = shape
+	q.transform = Transform2D(0.0, Vector2(_out_x(side, r.size.x * 0.5), r.get_center().y))
+	q.collision_mask = CombatLayers.WORLD
+	q.exclude = [get_rid(), p.get_rid()]
+	return get_world_2d().direct_space_state.intersect_shape(q, 1).is_empty()
 
 
 func _clear_exceptions() -> void:
-	for e in _excepted:
-		if is_instance_valid(e):
+	for id in _excepted:
+		var e := instance_from_id(id) as Enemy
+		if e != null:
 			e.remove_collision_exception_with(self)
 	_excepted.clear()
 

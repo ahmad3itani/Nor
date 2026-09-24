@@ -160,6 +160,84 @@ func test_sliding_rook_safe_standing_rook_hit_and_pushed_out() -> void:
 		"and stays out while it holds (x %.1f)" % p.global_position.x)
 
 
+## A wall on the near side: the shove picks the free side instead of
+## pushing Rook into geometry.
+func test_standing_rook_shoved_to_free_side() -> void:
+	var room := await _enter()
+	var p := room.player
+	var c := _clamp(room)
+	_freeze(_krail(room))
+	await _start_arena(room)
+	var wall := GrayboxBlock.new()
+	wall.size = Vector2(26, 48)
+	room.add_child(wall)
+	wall.position = Vector2(150, -48)
+	p.teleport(Vector2(200, 0))  # west of the centre (208): west is nearer
+	await physics_frames(3)
+	_breaker(room).trip()
+	await physics_frames(_slam_frames(c))
+	var half := p.config.standing_size.x * 0.5
+	check(p.global_position.x - half >= 240.0, "shoved east, away from the wall at 150..176 (x %.1f)" % p.global_position.x)
+	check(p.combat.last_damage_source == "clamp", "still takes the pip (%s)" % p.combat.last_damage_source)
+
+
+## A slide caught mid-slide under the slab at the slam frame is safe: the
+## run starts so the slide carries Rook across the footprint as it lands.
+func test_slide_in_progress_at_slam_is_safe() -> void:
+	var room := await _enter()
+	var p := room.player
+	var c := _clamp(room)
+	_freeze(_krail(room))
+	await _start_arena(room)
+	p.teleport(Vector2(130, 0))
+	await physics_frames(2)
+	var input := ScriptedInputSource.new()
+	p.input_source = input
+	var at_slam: Array = []
+	var record := func(_id: String, _st: bool) -> void:
+		at_slam.append([p.global_position.x, p.is_low, p.current_state_id()])
+	EventBus.clamp_dropped.connect(record)
+	_breaker(room).trip()
+	# From x 130 the run + slide is at the footprint's centre ~30 frames in.
+	await physics_frames(int(round((c.timing.warn + c.timing.drop) * 60.0)) - 30)
+	input.move_x = 1
+	for f in 60:
+		await physics_frames(1)
+		if absf(p.velocity.x) > 120.0:
+			input.down_held = true
+		if not at_slam.is_empty():
+			break
+	EventBus.clamp_dropped.disconnect(record)
+	check(at_slam.size() == 1, "the clamp slammed during the slide: %s" % str(at_slam))
+	if at_slam.size() == 1:
+		var x: float = at_slam[0][0]
+		var half := p.config.low_size.x * 0.5
+		check(x + half > 176.0 and x - half < 240.0, "Rook is under the footprint at the slam (x %.1f)" % x)
+		check(at_slam[0][1] and at_slam[0][2] == &"slide", "and mid-slide (%s)" % str(at_slam[0]))
+	check(p.combat.health == p.combat.config.max_health, "a slide under the slam costs nothing (%d, %s)" % [p.combat.health, p.combat.last_damage_source])
+
+
+## A lesser enemy under the slab dies as on spikes, and it is not a stagger.
+func test_needle_under_clamp_dies() -> void:
+	var room := await _enter()
+	var c := _clamp(room)
+	_freeze(_krail(room))
+	await _start_arena(room)
+	var needle := (load("res://enemies/variants/Needle.tscn") as PackedScene).instantiate() as Enemy
+	needle.ai_enabled = false
+	room.add_child(needle)
+	needle.global_position = Vector2(208, 0)
+	await physics_frames(2)
+	check(c.footprint().intersects(needle.body_rect()), "the Needle stands under the clamp")
+	_breaker(room).trip()
+	await physics_frames(_slam_frames(c))
+	check(drops == [["wt_clamp", false]], "clamp_dropped(wt_clamp, not staggered): %s" % str(drops))
+	check(not is_instance_valid(needle) or needle.is_dead(), "the Needle dies outright under the slab")
+	# The slab's collision exceptions survive a freed enemy through the rise.
+	await physics_frames(int(ceil((c.timing.hold + c.timing.rise) * 60.0)) + 60)
+	check(c.state == GridClamp.State.READY, "the clamp rises and re-arms normally (%s)" % c.state_name())
+
+
 func test_inert_before_arena_start() -> void:
 	var room := await _enter()
 	var c := _clamp(room)
@@ -203,26 +281,44 @@ func test_arm_hint_once() -> void:
 	await _start_arena(room)
 	var armed_at := Engine.get_physics_frames()
 	# Krail stays at 330 (outside the footprint): the line waits 4.0 s.
-	await physics_frames(int(GridClamp.HINT_DELAY * 60.0) + 5)
+	await physics_frames(int(c.timing.hint_delay * 60.0) + 5)
 	check(hints.size() == 1, "one teaching line within 4.0 s: %s" % str(hints))
 	if hints.size() == 1:
-		check_near(float(hints[0] - armed_at) / 60.0, GridClamp.HINT_DELAY, 0.15, "the line lands 4.0 s after arming")
+		check_near(float(hints[0] - armed_at) / 60.0, c.timing.hint_delay, 0.15, "the line lands 4.0 s after arming")
 	check(Game.has_flag("hint_t_clamp"), "hint flag set")
 	check(_breaker(room).is_lit(), "the breaker lamps pulse with the line")
-	# Earlier when Krail walks under the clamp.
+	# Tripping it twice in the same session (a second arm of the cycle)
+	# shows nothing more.
+	var first_hints := hints.size()
+	_freeze(_krail(room))  # no fight during the 8 s re-arm wait
+	_breaker(room).trip()
+	await physics_frames(int(ceil(c.timing.rearm * 60.0)) + 10)
+	check(c.state == GridClamp.State.READY and c.rearm_left <= 0.0, "re-armed after one cycle (%s)" % c.state_name())
+	_breaker(room).trip()
+	await physics_frames(_slam_frames(c))
+	check(drops.size() == 2, "both trips drop the clamp: %s" % str(drops))
+	check(hints.size() == first_hints, "a second trip shows no line: %s" % str(hints))
+	# Earlier when Krail stands under the clamp, but never inside the intro
+	# (hint_min), even though he is under it from the start.
 	Game.new_game()
 	hints.clear()
 	room = await _enter()
+	c = _clamp(room)
+	_krail(room).global_position = Vector2(208, 0)
 	await _start_arena(room)
 	armed_at = Engine.get_physics_frames()
 	_krail(room).global_position = Vector2(208, 0)
-	await physics_frames(10)
-	check(hints.size() == 1 and float(hints[0] - armed_at) / 60.0 < 1.0, "Krail under the clamp brings the line forward: %s" % str(hints))
+	await physics_frames(int(c.timing.hint_min * 60.0) - 10)
+	check(hints.is_empty(), "no line during the intro (%.1f s): %s" % [c.timing.hint_min, str(hints)])
+	await physics_frames(20)
+	check(hints.size() == 1 and float(hints[0] - armed_at) / 60.0 < c.timing.hint_delay - 1.0,
+		"Krail under the clamp brings the line forward: %s" % str(hints))
 	# Re-arming later (a retry: same profile, room reloaded) shows nothing.
 	hints.clear()
 	room = await _enter()
+	c = _clamp(room)
 	await _start_arena(room)
-	await physics_frames(int(GridClamp.HINT_DELAY * 60.0) + 30)
+	await physics_frames(int(c.timing.hint_delay * 60.0) + 30)
 	check(hints.is_empty(), "the line is shown once per profile: %s" % str(hints))
 	# The validator sees the hint flag and the circuit.
 	var v := ContentValidator.new().check_room(FIXTURE, false)

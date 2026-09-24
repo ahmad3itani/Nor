@@ -15,6 +15,16 @@ extends Resource
 ## drop per `rearm`, so it is a punish tool, not a loop. The breaker lamps
 ## show the recharge.
 @export var rearm: float = 8.0
+## Arm hint (the one-time teaching line): shown `hint_delay` s after the
+## arena starts, or earlier when the boss first walks under the clamp, but
+## never before `hint_min` s (the boss intro card owns that moment).
+@export var hint_delay: float = 4.0
+@export var hint_min: float = 1.0
+## How long the line and the breaker lamp pulse stay up.
+@export var hint_seconds: float = 3.5
+## Push given to a standing Rook who is already invulnerable at the slam (no
+## pip to take, but he still leaves the press). px/s, +x = away from centre.
+@export var shove: Vector2 = Vector2(120, -60)
 
 
 func cycle() -> float:
@@ -27,6 +37,8 @@ func validate() -> PackedStringArray:
 		errors.append("clamp timing: warn must be >= 0.3 s (readable telegraph)")
 	if drop <= 0.0 or hold <= 0.0 or rise <= 0.0:
 		errors.append("clamp timing: drop, hold and rise must be > 0")
+	if hint_min < 0.0 or hint_min > hint_delay or hint_seconds <= 0.0:
+		errors.append("clamp timing: need 0 <= hint_min <= hint_delay and hint_seconds > 0")
 	if rearm < cycle():
 		errors.append("clamp timing: rearm (%.2f) is shorter than one cycle (%.2f)" % [rearm, cycle()])
 	return errors
