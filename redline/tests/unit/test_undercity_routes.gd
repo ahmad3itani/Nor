@@ -346,8 +346,181 @@ func _shaft_close_in(target: Enemy) -> void:
 	bot.input.move_x = 0
 
 
+## FirstPursuit (tools/roomgen/uc_first_pursuit.py): the slide lesson, the
+## Collector eye chase ("keep moving"), pair 2 and Orr's radio. Kit: blade.
+const FIRST_PURSUIT := "res://world/rooms/undercity/FirstPursuit.tscn"
+## From from_shaft through pair 2 (the eye is live; other enemies pacified).
+## The cart-stack hop and the well run-jump stop under the eye for less than
+## its 1.0 s lock time, so this route is never locked.
+const FIRST_PURSUIT_TO_PAIR := [["run", 150], ["slide", 440], ["run", 990], ["jump", 1030], ["run", 1270],
+	["runjump", 1296, 1410], ["run", 1560], ["slide", 1790], ["run", 2730], ["attack", 3], ["run", 3170],
+	["attack", 3], ["run", 3300], ["attack", 3]]
+## Section A and B only: the eye test stops at 1200, the checkpoint test at 1900.
+const FIRST_PURSUIT_TO_CART := [["run", 150], ["slide", 440], ["run", 990], ["jump", 1030]]
+
+
+## The room's CollectorEye (null once it freed itself post-win).
+func _first_pursuit_eye() -> CeilingTracker:
+	var room := SceneRouter.current_room as Room
+	if room == null:
+		return null
+	return room.find_child("CollectorEye", true, false) as CeilingTracker
+
+
+## Samples the eye every physics frame into `seen` (max x, states seen): a
+## Dictionary the caller owns. The caller disconnects the returned Callable.
+func _first_pursuit_watch(eye: CeilingTracker, seen: Dictionary) -> Callable:
+	seen["max_x"] = -INF
+	seen["states"] = []
+	var cb := func() -> void:
+		if not is_instance_valid(eye):
+			return
+		seen["max_x"] = maxf(float(seen["max_x"]), eye.position.x)
+		var sname := eye.state_name()
+		if not (seen["states"] as Array).has(sname):
+			(seen["states"] as Array).append(sname)
+	get_tree().physics_frame.connect(cb)
+	return cb
+
+
+## Counts every Collector eye bolt spawned into `room`.
+func _first_pursuit_count_bolts(room: Room, bolts: Array) -> Callable:
+	var cb := func(n: Node) -> void:
+		if n is Projectile and (n as Projectile).attack != null and (n as Projectile).attack.id == &"collector_eye_bolt":
+			bolts.append(1)
+	room.child_entered_tree.connect(cb)
+	return cb
+
+
+## Waits for a death respawn (a room reload) after `from`.
+func _first_pursuit_wait_room_change(from: Node, frames := 300) -> bool:
+	for i in frames:
+		await physics_frames(1)
+		if SceneRouter.current_room != from and is_instance_valid(SceneRouter.current_room) and not SceneRouter.transitioning:
+			await physics_frames(3)
+			return true
+	return false
+
+
 func test_first_pursuit_route() -> void:
-	print("PENDING: FirstPursuit")
+	_campaign(true)
+	await _enter(FIRST_PURSUIT, &"from_shaft")
+	var eye := _first_pursuit_eye()
+	check(eye != null, "FirstPursuit has no CollectorEye before the boss")
+	if eye == null:
+		return
+	var seen := {}
+	var cb := _first_pursuit_watch(eye, seen)
+	var ok: bool = await _run(FIRST_PURSUIT_TO_PAIR)
+	check(Game.state.last_entry_id == "pursuit_mid", "crossing x 1816 should move the respawn to pursuit_mid (got '%s')" % Game.state.last_entry_id)
+	if ok:
+		# The radio's 24 px use area is 3978..4002; Rook (12 wide) overlaps it
+		# from 3972, so the spec's 3960 would stop short of it.
+		ok = await _run([["run", 3980], ["interact"]])
+	if ok:
+		check(dialogue_box.is_open(), "the radio should open a conversation")
+		await _close_dialogue()
+		ok = await _run([["run", 4116]])
+	get_tree().physics_frame.disconnect(cb)
+	check((seen["states"] as Array).has("TRACK"), "the eye should have tracked Rook: %s" % str(seen["states"]))
+	check(not (seen["states"] as Array).has("LOCK") and eye.lock_count == 0, "the critical route must never be locked: %s" % str(seen["states"]))
+	check(float(seen["max_x"]) <= 1620.0, "the eye left its rail: max x %.1f" % float(seen["max_x"]))
+	check(Game.has_flag("met_orr_radio"), "the radio call should set met_orr_radio")
+	check(Game.state.last_entry_id == "pursuit_mid", "no Anchor here: the respawn stays pursuit_mid")
+	if _assert_exit(1, UC + "BrokenLift.tscn", &"from_pursuit") and ok:
+		if await _run([["exit", 1]]):
+			check(SceneRouter.current_room.name == "BrokenLift", "the east door leads to the Broken Lift")
+
+
+## Secret 2: the high-ledge cache, reached by a taught run-jump (96 px).
+func test_first_pursuit_cache() -> void:
+	_campaign(true)
+	await _enter(FIRST_PURSUIT, &"from_shaft")
+	var ok: bool = await _run(FIRST_PURSUIT_TO_PAIR)
+	if ok:
+		# ["run", 3600] settles the landing drift first (runjump's run-up
+		# treats a backward drift as "already at speed" and jumps on the spot);
+		# ["run", 3750] clears the far ledge (x 3776) so Rook drops to the floor.
+		await _run([["run", 3470], ["jump", 3470], ["jump", 3530], ["jump", 3590], ["run", 3600], ["runjump", 3676, 3790],
+			["run", 3806], ["attack", 3], ["run", 3856], ["run", 3750], ["run", 4116]])
+	check(Game.is_collected("uc_pursuit_cache"), "the cache wall should be broken")
+	check(Game.is_collected("sb_uc_pursuit_cache"), "the cache scrap should be collected")
+
+
+## Standing still under the eye: exactly one LOCK and one bolt, then nothing
+## more inside the cooldown.
+func test_first_pursuit_eye() -> void:
+	_campaign(true)
+	await _enter(FIRST_PURSUIT, &"from_shaft")
+	var eye := _first_pursuit_eye()
+	check(eye != null, "FirstPursuit has no CollectorEye")
+	if eye == null:
+		return
+	var room := SceneRouter.current_room as Room
+	var bolts: Array = []
+	var bcb := _first_pursuit_count_bolts(room, bolts)
+	if not await _run(FIRST_PURSUIT_TO_CART + [["run", 1200]]):
+		room.child_entered_tree.disconnect(bcb)
+		return
+	var p := room.player
+	var reached := false
+	for f in 360:
+		if eye.state == CeilingTracker.State.TRACK and absf(eye.position.x - p.global_position.x) <= eye.config.cone_half_width:
+			reached = true
+			break
+		await physics_frames(1)
+	check(reached, "the eye never reached Rook at 1200 (eye x %.1f, %s)" % [eye.position.x, eye.state_name()])
+	await physics_frames(roundi((eye.config.lock_time + eye.config.windup + 0.1) * 60.0))
+	check(eye.lock_count == 1, "standing should lock exactly once (got %d)" % eye.lock_count)
+	check(bolts.size() == 1, "one bolt should fire (got %d)" % bolts.size())
+	await physics_frames(90)  # 1.5 s, inside the 1.6 s cooldown
+	check(eye.lock_count == 1, "no second LOCK inside the cooldown (got %d)" % eye.lock_count)
+	room.child_entered_tree.disconnect(bcb)
+
+
+## A death in section C respawns at pursuit_mid with full health and the eye
+## already gone, so the respawn is never hunted and A and B are not replayed.
+func test_first_pursuit_checkpoint() -> void:
+	_campaign(true)
+	await _enter(FIRST_PURSUIT, &"from_shaft")
+	if not await _run(FIRST_PURSUIT_TO_CART + [["run", 1270], ["runjump", 1296, 1410], ["run", 1560], ["slide", 1790], ["run", 1900]]):
+		return
+	var room := SceneRouter.current_room as Room
+	room.player.combat.take_damage(room.player.combat.health, Vector2.ZERO, 0.0, true)
+	check(await _first_pursuit_wait_room_change(room), "death did not reload the room")
+	var r := SceneRouter.current_room as Room
+	check(r.name == "FirstPursuit", "respawned in %s, not FirstPursuit" % r.name)
+	check(absf(r.player.global_position.x - 1820.0) < 24.0 and absf(r.player.global_position.y) < 4.0,
+		"the respawn should be pursuit_mid (1820, 0), got %s" % r.player.global_position.round())
+	check(r.player.combat.health == r.player.combat.config.max_health and not r.player.combat.dead, "the respawn should restore full health")
+	var eye := _first_pursuit_eye()
+	check(eye != null and eye.state == CeilingTracker.State.GONE, "the eye should load GONE at pursuit_mid")
+	if eye == null:
+		return
+	var seen := {}
+	var cb := _first_pursuit_watch(eye, seen)
+	bot = RouteBot.new(get_tree(), r.player)
+	await _run([["run", 1840], ["slide", 1610], ["run", 1420], ["runjump", 1384, 1270], ["run", 1190],
+		["jump", 1130], ["run", 800]])
+	get_tree().physics_frame.disconnect(cb)
+	check(seen["states"] == ["GONE"], "walking back west must never wake the eye: %s" % str(seen["states"]))
+	# The east door: arriving from the Broken Lift skips the chase too.
+	await _enter(FIRST_PURSUIT, &"from_lift")
+	eye = _first_pursuit_eye()
+	check(eye != null and eye.state == CeilingTracker.State.GONE, "entering at from_lift should load the eye GONE")
+
+
+## After the Collector Drone: no eye, and the hatch hangs open and dark.
+func test_first_pursuit_post_win() -> void:
+	_campaign(true)
+	Game.set_flag("collector_drone_defeated")
+	await _enter(FIRST_PURSUIT, &"from_shaft")
+	check(_first_pursuit_eye() == null, "no CollectorEye may exist after the boss")
+	var room := SceneRouter.current_room as Room
+	var dead := room.find_child("HatchDead", true, false) as CanvasItem
+	var live := room.find_child("HatchLive", true, false) as CanvasItem
+	check(dead != null and dead.visible, "HatchDead should show after the boss")
+	check(live != null and not live.visible, "the red hatch ring should go dark after the boss")
 
 
 func test_broken_lift_route() -> void:
