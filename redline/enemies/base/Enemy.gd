@@ -27,7 +27,9 @@ var ai: AI = AI.IDLE
 var ai_time: float = 0.0
 var health: float
 var poise: float
-var facing: int = -1
+## Authored facing (-1 left, 1 right). Exported so rooms can place enemies
+## looking either way; _ready keeps it until perception turns them.
+@export var facing: int = -1
 var target: Player
 var current_attack: AttackData
 ## Direction locked at the end of the wind-up (projectile attacks aim here).

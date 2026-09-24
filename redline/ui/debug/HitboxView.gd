@@ -27,6 +27,11 @@ func _draw() -> void:
 			if s is CollisionShape2D and (s as CollisionShape2D).shape is RectangleShape2D:
 				var size := ((s as CollisionShape2D).shape as RectangleShape2D).size
 				draw_rect(Rect2((s as Node2D).global_position - size * 0.5, size), HURT, false, 1.0)
+	# Set-piece mechanics (M7: scanners, clamps, chase lines...) draw their own
+	# debug shapes. Implementers draw in global coordinates on this canvas.
+	for n in room.find_children("*", "", true, false):
+		if n.has_method("debug_draw"):
+			n.debug_draw(self)
 	for n in room.find_children("*", "Enemy", true, false):
 		var e := n as Enemy
 		if e.current_attack and e.ai == Enemy.AI.ACTIVE and not e.current_attack.projectile:

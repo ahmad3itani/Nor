@@ -388,11 +388,15 @@ static func _source_of(hit: HitInfo) -> String:
 ## knock=false for damage over time (reactor burnout): no stun, no knockback.
 ## `source` names what hurt Rook (enemy/attack, hazard, pit, burnout) so
 ## playtest telemetry can report death causes.
-func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown") -> int:
+func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown", nonlethal: bool = false) -> int:
 	if dead:
 		return CombatResult.IGNORED
 	last_damage_source = source
 	amount = ceili(amount * Game.circuit_mult(&"damage_taken"))
+	# Teaching set pieces (M7) may hurt but never kill: clamp after the
+	# circuit multiplier so a damage-taken penalty can't sneak a death in.
+	if nonlethal:
+		amount = maxi(0, mini(amount, health - 1))
 	if amount >= health and Game.circuit_value(&"emergency_loop") > 0.0 and not Game.has_flag("emergency_loop_spent"):
 		# Emergency Loop: survive once per rest at 1 pip.
 		amount = health - 1
@@ -414,6 +418,16 @@ func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bo
 		EventBus.player_died.emit()
 		return CombatResult.KILLED
 	return CombatResult.HIT
+
+
+## A push with no damage (M7: a set piece shoves Rook back). Reuses the hurt
+## state for its short loss of control, but grants no invulnerability and
+## emits no player_damaged, so it never reads as a hit.
+func shove(v: Vector2) -> void:
+	if dead:
+		return
+	player.velocity = v
+	player.state_machine.force_state(&"hurt")
 
 
 func _check_hazards() -> void:
