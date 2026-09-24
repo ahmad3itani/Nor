@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MemoryFragmentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/MemoryFragmentData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "mf_undercity_01"
+title = "It Won't Come Out"
+text = "Cold steel under your back. Gloved hands on your chest, pulling. Something inside pulls back harder. \"It won't come out.\" A long pause. \"Then leave it in him. The Collector can take both.\""
