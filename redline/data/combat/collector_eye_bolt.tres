@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="2_proj"]
+
+[sub_resource type="Resource" id="P"]
+script = ExtResource("2_proj")
+speed = 150.0
+lifetime = 2.4
+pellets = 1
+color = Color(1, 0.231373, 0.309804, 1)
+tracer_length = 10.0
+
+[resource]
+script = ExtResource("1_attack")
+id = &"collector_eye_bolt"
+startup = 0.0
+active = 0.05
+recovery = 0.0
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(120, -100)
+hitstop = 0.05
+hitbox = Rect2(0, 0, 1, 1)
+lunge_speed = 0.0
+projectile = SubResource("P")
+swing_sfx = &"enemy_shoot"

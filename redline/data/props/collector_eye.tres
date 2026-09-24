@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TrackerConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/props/TrackerConfig.gd" id="1_cfg"]
+[ext_resource type="Resource" path="res://data/combat/collector_eye_bolt.tres" id="2_bolt"]
+
+[resource]
+script = ExtResource("1_cfg")
+speed = 110.0
+cone_half_width = 32.0
+floor_y = 0.0
+lock_time = 1.0
+windup = 0.6
+cooldown = 1.6
+emerge_time = 0.8
+retract_time = 0.8
+sweep_time = 0.6
+attack = ExtResource("2_bolt")
