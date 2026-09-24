@@ -163,7 +163,8 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 			"tracker_lock":
 				_inc(r["tracker_locks"], "%s / %s" % [room, e.get("id", "")])
 			"scanner":
-				_inc(r["scanner_trips"], "%s / %s (mode %d)" % [room, e.get("id", ""), int(e.get("mode", 0))])
+				_inc(r["scanner_trips"], "%s %s / %s (mode %d)" % [
+					"calibration" if bool(e.get("calibration", false)) else "live", room, e.get("id", ""), int(e.get("mode", 0))])
 			"clamp":
 				_inc(r["clamp_drops"], "%s%s" % [e.get("id", ""), " (staggered boss)" if bool(e.get("staggered", false)) else ""])
 			"breaker":
@@ -578,7 +579,10 @@ func _set_piece_markdown(r: Dictionary) -> String:
 	md.append("")
 	md.append(_table("Chase catches by checkpoint", r["chase_catches"]))
 	md.append(_table("Collector eye locks by room / eye", r["tracker_locks"]))
-	md.append(_table("Scanner trips by room / beam", r["scanner_trips"]))
+	# Errata #15: live and calibration trips are separate rows ("live ..." /
+	# "calibration ..."), so a calibration beam that trips often reads as
+	# teaching, not as failure.
+	md.append(_table("Scanner trips by kind / room / beam", r["scanner_trips"]))
 	md.append(_table("Grid clamp drops", r["clamp_drops"]))
 	md.append(_table("Breakers struck by room / circuit", r["breakers"]))
 	return "\n".join(md)

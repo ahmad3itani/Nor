@@ -10,6 +10,10 @@ extends Node
 
 const CONFIG := preload("res://data/playtest/playtest_config.tres")
 const DIR := "user://playtests"
+## Flags worth a timeline entry (M7 Undercity onboarding beats). Every other
+## flag is left out to keep session files small; hint_* flags are always kept.
+## Tuning note: add a flag here when a new onboarding beat needs timing data.
+const RECORDED_FLAGS: PackedStringArray = ["core_hud_hidden", "got_pulse_blade", "got_service_pistol", "met_orr_radio", "uc_ward_shutter"]
 
 var config: PlaytestConfig = CONFIG
 ## Where session files go (tests point this at a temp folder).
@@ -77,7 +81,7 @@ func _ready() -> void:
 	EventBus.breaker_hit.connect(func(circuit: StringName) -> void: _event("breaker", {"circuit": String(circuit)}))
 	EventBus.shutter_passed.connect(func(id: String, margin: float) -> void:
 		_event("shutter", {"id": id, "margin": snappedf(margin, 0.01)}))
-	EventBus.scanner_tripped.connect(func(id: String, mode: int) -> void: _event("scanner", {"id": id, "mode": mode}))
+	EventBus.scanner_tripped.connect(_on_scanner_tripped)
 	EventBus.clamp_dropped.connect(func(id: String, staggered: bool) -> void: _event("clamp", {"id": id, "staggered": staggered}))
 	EventBus.chase_started.connect(func(id: String) -> void: _event("chase_start", {"id": id}))
 	EventBus.chase_caught.connect(func(id: String, cp: int) -> void: _event("chase_caught", {"id": id, "cp": cp}))
@@ -238,8 +242,31 @@ func _on_player_state_changed(_from: StringName, to: StringName) -> void:
 
 
 func _on_flag_changed(id: String, value: Variant) -> void:
-	if id.begins_with("hint_") or config.recorded_flags.has(id):
+	if id.begins_with("hint_") or RECORDED_FLAGS.has(id):
 		_event("flag", {"id": id, "value": value})
+
+
+## Errata #15: scanner trips are reported split into live and calibration.
+## The typed signal carries no marker, so the beam is looked up by the
+## roomgen name Hazards/Scanner_<beam_id> and its data read duck-typed
+## (ScannerBeam lands in M6): calibration = its ScannerData deals 0 damage.
+## A missing node or data counts as live.
+func _on_scanner_tripped(id: String, mode: int) -> void:
+	_event("scanner", {"id": id, "mode": mode, "calibration": _is_calibration_beam(id)})
+
+
+func _is_calibration_beam(id: String) -> bool:
+	var room := SceneRouter.current_room
+	if room == null:
+		return false
+	var beam := room.get_node_or_null(NodePath("Hazards/Scanner_" + id))
+	if beam == null:
+		return false
+	var data: Variant = beam.get("data")
+	if not (data is Object) or data == null:
+		return false
+	var dmg: Variant = (data as Object).get("damage")
+	return dmg != null and int(dmg) == 0
 
 
 ## The boss_id of the arena in the current room that runs this boss ("" when

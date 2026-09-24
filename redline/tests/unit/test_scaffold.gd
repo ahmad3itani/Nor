@@ -415,6 +415,7 @@ func test_set_piece_tables() -> void:
 		{"type": "chase_done", "room": "RainlineChase", "id": "rainline", "seconds": 60.0, "catches": 1, "min_lead": 0.5},
 		{"type": "tracker_lock", "room": "FirstPursuit", "id": "Eye1"},
 		{"type": "scanner", "room": "SecurityStation", "id": "roof", "mode": 1},
+		{"type": "scanner", "room": "SecurityStation", "id": "cal", "mode": 0, "calibration": true},
 		{"type": "clamp", "room": "WardenTower", "id": "c1", "staggered": true},
 		{"type": "breaker", "room": "PowerBlock", "circuit": "grid_a"},
 	]))
@@ -423,9 +424,43 @@ func test_set_piece_tables() -> void:
 	check(int(r["chase_catches"].get("rainline CP2", 0)) == 1, "chase catches by checkpoint")
 	check(int(r["tracker_locks"].get("FirstPursuit / Eye1", 0)) == 1, "tracker locks by room/id")
 	check(int(r["clamp_drops"].get("c1 (staggered boss)", 0)) == 1, "clamp drops")
+	check(int(r["scanner_trips"].get("live SecurityStation / roof (mode 1)", 0)) == 1, "live scanner trip: %s" % str(r["scanner_trips"]))
+	check(int(r["scanner_trips"].get("calibration SecurityStation / cal (mode 0)", 0)) == 1, "calibration scanner trip")
 	var md := a.render_markdown(r)
 	for t in ["| s1 | 2 |", "Chase catches by checkpoint", "Collector eye locks", "Scanner trips", "Grid clamp drops", "Breakers struck"]:
 		check(md.contains(t), "set piece report missing '%s'" % t)
+
+
+## Errata #15: the recorder marks a trip as calibration when the beam's data
+## deals 0 damage, found by the roomgen name Hazards/Scanner_<id>; an unknown
+## beam counts as live.
+func test_recorder_marks_calibration_scanner() -> void:
+	_record()
+	var room := await _enter("res://tests/fixtures/WorldA.tscn", &"start")
+	var hazards := room.get_node_or_null("Hazards")
+	if hazards == null:
+		hazards = Node2D.new()
+		hazards.name = "Hazards"
+		room.add_child(hazards)
+	var beam_script := GDScript.new()
+	beam_script.source_code = "extends Node\nvar data: Resource = null\n"
+	beam_script.reload()
+	var data_script := GDScript.new()
+	data_script.source_code = "extends Resource\nvar damage: int = 0\n"
+	data_script.reload()
+	var beam := Node.new()
+	beam.name = "Scanner_cal"
+	beam.set_script(beam_script)
+	var data: Resource = data_script.new()
+	beam.set("data", data)
+	hazards.add_child(beam)
+	EventBus.scanner_tripped.emit("cal", 0)
+	EventBus.scanner_tripped.emit("missing", 1)
+	var trips := Playtest.session.events_of("scanner")
+	check(trips.size() == 2, "two scanner events expected")
+	if trips.size() == 2:
+		check(trips[0]["calibration"] == true, "damage-0 beam should record calibration: %s" % str(trips[0]))
+		check(trips[1]["calibration"] == false, "unknown beam should record live: %s" % str(trips[1]))
 
 
 func test_recorder_stamps_boss_id_and_pt() -> void:

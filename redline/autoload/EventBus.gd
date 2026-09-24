@@ -86,7 +86,7 @@ signal breaker_hit(circuit: StringName)
 signal shutter_passed(shutter_id: String, margin_s: float)
 ## A scanner beam saw Rook. mode is the ScannerData mode when tripped
 ## (LOW/HIGH/FULL). It does not say live vs calibration (calibration =
-## damage 0); the analyzer tells those apart by beam_id until M6 adds a marker.
+## damage 0): Playtest looks the beam up by name and reads its data instead.
 signal scanner_tripped(beam_id: String, mode: int)
 ## A grid clamp dropped; staggered_boss = it landed on a boss and staggered it.
 signal clamp_dropped(clamp_id: String, staggered_boss: bool)
