@@ -49,6 +49,10 @@ func _ready() -> void:
 				active_spawn_index = i
 
 	player = player_scene.instantiate()
+	# Enter the physics space at the spawn, not at the room origin: a body that
+	# appears inside an exit rect for even one step fires it (the Collector
+	# Bay's west door sits on its origin), so respawn() below is too late.
+	player.position = to_local(active_spawn().global_position)
 	add_child(player)
 	camera = PlayerCamera.new()
 	camera.config = camera_config
