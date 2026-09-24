@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ShopData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://progression/ShopData.gd" id="1"]
+[ext_resource type="Script" path="res://progression/ShopItem.gd" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"shop_iko"
+title = "Iko  —  Black Market"
+items = Array[ExtResource("2")]([])
