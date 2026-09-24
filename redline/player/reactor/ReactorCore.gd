@@ -10,7 +10,11 @@ extends Node
 
 var config: ReactorConfig
 var charge: float = 0.0
-var _flow_zones: int = 0
+## FlowZones Rook is inside (FlowZone -> true); each brings its own drain
+## scale and floor. Anonymous entries (enter_flow() with no zone: tests, code
+## paths without a node) count as a plain zone: scale 1.0, no floor.
+var _zones: Dictionary = {}
+var _anon_zones: int = 0
 var _burnout_timer: float = 0.0
 var _heartbeat_timer: float = 0.0
 var _was_critical: bool = false
@@ -34,17 +38,49 @@ func apply_mode(index: int) -> void:
 
 
 func in_flow() -> bool:
-	return _flow_zones > 0
+	return _anon_zones > 0 or not _zones.is_empty()
 
 
-func enter_flow() -> void:
-	_flow_zones += 1
+func enter_flow(zone: FlowZone = null) -> void:
+	if zone == null:
+		_anon_zones += 1
+	else:
+		_zones[zone] = true
 	_emit()
 
 
-func exit_flow() -> void:
-	_flow_zones = maxi(_flow_zones - 1, 0)
+func exit_flow(zone: FlowZone = null) -> void:
+	if zone == null:
+		_anon_zones = maxi(_anon_zones - 1, 0)
+	else:
+		_zones.erase(zone)
 	_emit()
+
+
+## Overlapping zones never stack: the harshest scale wins (M7).
+func drain_scale() -> float:
+	var s := 1.0 if _anon_zones > 0 else 0.0
+	for z: Variant in _zones:
+		if is_instance_valid(z):
+			s = maxf(s, (z as FlowZone).drain_scale)
+	return s
+
+
+## The highest floor of the zones Rook is inside (0 = drains to empty).
+func drain_floor() -> float:
+	var f := 0.0
+	for z: Variant in _zones:
+		if is_instance_valid(z):
+			f = maxf(f, (z as FlowZone).drain_floor)
+	return f
+
+
+## A zone freed with Rook inside (room change) never sends body_exited;
+## drop it before it is read (calling into a freed node crashes 4.3).
+func _prune_zones() -> void:
+	for z: Variant in _zones.keys():
+		if not is_instance_valid(z):
+			_zones.erase(z)
 
 
 func is_critical() -> bool:
@@ -62,12 +98,18 @@ func gain(amount: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_prune_zones()
 	if player.combat.dead or player.hitstop_timer > 0.0:
 		return
 	if not in_flow():
 		_burnout_timer = 0.0
 		return
-	charge = maxf(charge - config.drain_per_second * _drain_factor() * delta, 0.0)
+	# A floored zone stops the drain at its floor; gains still lift the Core
+	# above it. Since charge never reaches 0 there, burnout never starts.
+	var floor_charge := drain_floor()
+	if charge > floor_charge:
+		var drain := config.drain_per_second * _drain_factor() * drain_scale() * delta
+		charge = maxf(charge - drain, floor_charge)
 	if charge <= 0.0:
 		_burnout_timer += delta
 		if _burnout_timer >= config.burnout_interval:
