@@ -1,8 +1,20 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Watcher.tscn" id="scene_Watcher"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="scene_Hopper"]
+[ext_resource type="Resource" path="res://data/npcs/orr_radio.tres" id="npc_orr_radio"]
+[ext_resource type="Script" path="res://interactables/NPC.gd" id="npc"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
@@ -36,27 +48,261 @@ theme = ExtResource("theme")
 script = ExtResource("director")
 max_attackers = 1
 
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -560)
+script = ExtResource("block")
+size = Vector2(16, 464)
+
+[node name="CeilingLowA" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -560)
+script = ExtResource("block")
+size = Vector2(608, 340)
+
+[node name="RecessTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(560, -560)
+script = ExtResource("block")
+size = Vector2(48, 300)
+
+[node name="CeilingLowB" type="StaticBody2D" parent="Geometry"]
+position = Vector2(608, -560)
+script = ExtResource("block")
+size = Vector2(44, 340)
+
+[node name="CeilingHigh" type="StaticBody2D" parent="Geometry"]
+position = Vector2(652, -560)
+script = ExtResource("block")
+size = Vector2(1332, 40)
+
+[node name="FloorA" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(748, 96)
+
+[node name="WallRightTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1984, -560)
+script = ExtResource("block")
+size = Vector2(16, 224)
+
+[node name="WallRightLow" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1984, -240)
+script = ExtResource("block")
+size = Vector2(16, 336)
+
+[node name="WatcherBracket" type="StaticBody2D" parent="Geometry"]
+position = Vector2(418, -200)
+script = ExtResource("block")
+size = Vector2(4, 40)
+
+[node name="Watcher1" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(420, -202)
+
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(120, -96)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "market_shoot"
+text = "[{action}] shoot - aim with the move keys"
+action = &"ranged"
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(560, -236)
+script = ExtResource("wall")
+size = Vector2(48, 16)
+persist_id = "uc_tunnel_panel"
+max_health = 12.0
+scrap_inside = 30
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(600, -250)
+script = ExtResource("neon")
+size = Vector2(4, 20)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 1
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(300, 0)
+script = ExtResource("decor")
+kind = 4
+size = Vector2(300, 60)
+color = Color(0.3, 0.22, 0.17, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(60, -214)
+script = ExtResource("neon")
+size = Vector2(36, 4)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 3
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(250, -214)
+script = ExtResource("neon")
+size = Vector2(36, 4)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 3
+
+[node name="Step1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(700, -48)
+script = ExtResource("block")
+size = Vector2(160, 144)
+
+[node name="Step2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(860, -96)
+script = ExtResource("block")
+size = Vector2(160, 192)
+
+[node name="Step3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1020, -144)
+script = ExtResource("block")
+size = Vector2(160, 240)
+
+[node name="Step4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1180, -192)
+script = ExtResource("block")
+size = Vector2(160, 288)
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(690, -300)
+script = ExtResource("flow")
+size = Vector2(650, 300)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(940, -98)
+
+[node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(1260, -194)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(730, -48)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(890, -96)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(1050, -144)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(1210, -192)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(1400, -240)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="TopFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1340, -240)
+script = ExtResource("block")
+size = Vector2(644, 336)
+
+[node name="NPC_orr_radio" type="Area2D" parent="Interactables"]
+position = Vector2(1880, -240)
+script = ExtResource("npc")
+profile = ExtResource("npc_orr_radio")
+facing = -1
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(1880, -280)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(18, 14)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor8" type="Node2D" parent="Props"]
+position = Vector2(1660, -240)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(120, 40)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon4" type="Node2D" parent="Props"]
+position = Vector2(1936, -330)
+script = ExtResource("neon")
+size = Vector2(40, 6)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 3
+flicker = false
+
+[node name="Decor9" type="Node2D" parent="Props"]
+position = Vector2(1950, -240)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 72)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1440, -288)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1500, -336)
+script = ExtResource("block")
+size = Vector2(100, 8)
+one_way = true
+
+[node name="ShardLedge" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1830, -336)
+script = ExtResource("block")
+size = Vector2(60, 16)
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(1860, -336)
+script = ExtResource("collect")
+persist_id = "cs_uc_tunnel_dash"
+kind = 2
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(1700, -360)
+script = ExtResource("marker")
+kind = 0
+label = "Too wide to jump"
+resolved_when = "ability:dash"
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(1500, -436)
+script = ExtResource("hint")
+size = Vector2(100, 100)
+hint_id = "alley_gap"
+text = "Too far to jump. Maybe later."
+
 [node name="Spawn_from_bay" type="Marker2D" parent="Spawns"]
 position = Vector2(-20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_bay"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-52, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_relay" type="Marker2D" parent="Spawns"]
 position = Vector2(1956, -240)
 script = ExtResource("spawn")
 spawn_id = &"from_relay"
 facing = -1
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1924, -240)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
