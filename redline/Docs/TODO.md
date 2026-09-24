@@ -1,6 +1,18 @@
 # REDLINE TODO
 
-## Now: M3 gate, the §44 vertical-slice test (humans)
+## Now: run the M4 playtest (humans)
+- [ ] Recruit 5–8 external testers (2+ on a controller, 1+ non-dev machine) and run sessions as described in `PLAYTEST_KIT.md`.
+- [ ] Collect the `session_*.json` files and note sheets, then run `devtools/PlaytestReport.tscn`.
+- [ ] Confirm or overrule D-038 to D-041 (especially D-039 recording default and D-041 §44 thresholds).
+- [ ] Send the report and notes back. Next: data-driven changes per failing §44 line, then a second round.
+- [ ] Pick the slide-jump arm from the variant comparison and moments (D-036/D-042).
+
+## M4 follow-ups (after the first round)
+- [ ] Switch recording default off for any public/demo build (D-039).
+- [ ] Add the next experiment arm only after D-036 is decided (D-042).
+- [ ] If testers quit early, record a lighter "exit survey" on quit to title.
+
+## M3 gate, the §44 vertical-slice test (humans; run it with the M4 kit)
 - [ ] External playtesters play New Game → end card. Use the checklist in `M3_VERTICAL_SLICE_REPORT.md` §6 and record the end-card time and deaths.
 - [ ] Confirm or overrule the flagged decisions D-026 (placeholder art/audio), D-027, D-028 (6 of 10 rooms), D-033 (no map) and D-036 (slide-jump strength) in `DECISIONS.md`.
 - [ ] Decide who produces the production art and audio, and whether §44 runs on placeholders (D-026).

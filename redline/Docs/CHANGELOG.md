@@ -1,5 +1,43 @@
 # REDLINE Changelog
 
+## 0.4.0-m4: Validation tooling (awaiting the human playtest)
+
+Bible §36 M4 instrumentation. The playtest itself needs external testers (D-038). Report: `M4_VALIDATION_REPORT.md`. Kit: `PLAYTEST_KIT.md`.
+
+### Recording (`autoload/Playtest.gd`, `playtest/`)
+- One local JSON session per New Game or Continue. Nothing is sent anywhere; recording is disclosed on the title screen and can be turned off in Settings.
+- **Records:**
+  - rooms and dwell time;
+  - damage and deaths with cause;
+  - pits, heals and Anchors;
+  - secrets, quests, dialogue, purchases and loadouts;
+  - hints, boss attempts and phases, and pauses;
+  - hits and kills per attack, and style peaks;
+  - position samples;
+  - controller vs keyboard time;
+  - the real frame-time histogram per room, and hardware.
+- `take_damage()` carries a damage source (D-043).
+- **Experiment arms** (`PlaytestVariant`): baseline vs a stronger slide-jump (D-036), rotated per session or pinned in Settings.
+
+### Feedback
+- Pause menu **Report a moment**: a tag, an optional note, and the player's position.
+- **§44 survey:** 13 button-only questions, 10 of them scored against §44 (D-041). It's offered at the end of the slice and in the pause menu.
+
+### Analysis
+- `devtools/PlaytestReport.tscn` builds `REPORT.md` plus room heatmaps. It covers:
+  - the §44 scorecard;
+  - completion and deaths;
+  - confusion signals;
+  - favourite mechanics;
+  - controls;
+  - performance;
+  - the variant comparison.
+- RouteBot slide-jumps take a lead distance. The D-036 hypothesis is measured and locked in by a test.
+
+### Tooling and tests
+- 146 tests (16 new).
+- The capture tour shows the moment and survey screens.
+
 ## 0.3.0-m3: Vertical Slice (awaiting the human playtest)
 
 All M3 scope from bible §36 except production art/audio (D-026). Development stops here for the §44 playtest. Report: `M3_VERTICAL_SLICE_REPORT.md`.

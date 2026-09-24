@@ -31,3 +31,9 @@
 | K-27 | World | Dying again before you recover a Scrap cache loses the older cache (D-031). This is intended, but it can feel harsh. The Settings toggle turns Scrap loss off. | Info | Design confirmation wanted. |
 | K-28 | Tools | `RouteBot` proves that rooms are *traversable* with enemies disabled. It doesn't prove they're fun or fair with enemies on, and it doesn't fight the boss (boss behavior has its own tests). | Info | By design. Humans judge fights. |
 | K-29 | UI | Menus and hints use the default font at native resolution. There's no pixel font or final UI art yet. Long hint strings can wrap near the screen edges on narrow aspect ratios (only 16:9 has been checked). | Low | UI art pass. |
+| K-30 | Playtest | Frame times are wall-clock per rendered frame, including vsync waits. On a 60 Hz display the average reads ~16.7 ms even with headroom. Use the spike counts and the 33 ms+ buckets as the stutter signal. | Info | By design; documented in the report. |
+| K-31 | Playtest | Idle-span detection can't tell reading or thinking from being lost. | Info | Cross-check with moments and facilitator notes. |
+| K-32 | Playtest | The first frames after a room load include one-off loading spikes (e.g. one 55 ms frame entering the Warden Tower in a bot run). | Low | Repeated spikes are the problem; singles on entry are expected. |
+| K-33 | Playtest | A crash keeps the session up to the last autosave (every 20 s, and on every death). | Info | `autosave_interval` in `PlaytestConfig`. |
+| K-34 | Playtest | No exported build is committed: `export_presets.cfg` stays gitignored, and export templates must be installed in the editor. | Info | Steps in `PLAYTEST_KIT.md` §2. |
+

@@ -171,3 +171,33 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 
 ## D-037: Music is procedural stems mixed by game state
 - `MusicDirector` renders five synced stems (pad, bass, drums, arp, lead; 96 BPM, A minor) once at startup on a worker thread, then fades layers by state: title, hub, explore, flow (combat), boss and aftermath. Real music later supplies five equal-length stems per district with the same names (Art Bible §10). Headless runs skip rendering.
+
+---
+
+# M4: Validation
+
+## D-038: M4 delivers the measuring equipment; the measurement needs people (FLAG)
+- Bible §36 M4 is "playtest and measure … change design before scaling". Playtesting needs external humans, and this environment has none.
+- **Decision:** build everything a playtest needs so that one round produces decision-ready data: local session recording, in-game moment reports, a §44 survey, a report generator with heatmaps, one experiment arm, and a facilitator kit.
+- Design changes are **not** made up front: changing things before measuring would defeat the point of M4. M4 closes after at least one human round and the data-driven changes that follow it.
+
+## D-039: Recording is on by default, local only, and disclosed (FLAG: privacy call)
+- Sessions go to `user://playtests` on the tester's machine. There is no networking code. The title screen states that recording is on and where the files go; *Settings → Playtest recording* turns it off, which also ends the current session. Files hold no names or accounts.
+- **Why on by default:** the build exists to be playtested, and a facilitator forgetting a toggle loses a tester.
+- **Needs a human call:** switch the default to off (`Settings.playtest_recording`) for any public or demo build.
+
+## D-040: New top-level `playtest/` folder (FLAG, low risk)
+- Bible §31 has no folder for validation tooling that ships inside the game. `PlaytestSession`, `PlaytestConfig`, `PlaytestVariant`, `SurveyQuestion` and `PlaytestAnalyzer` live in `playtest/`, the recorder is `autoload/Playtest.gd`, and the tuning is in `data/playtest/`. The whole folder can be dropped from a release build.
+
+## D-041: How the §44 "most of the following" is scored (FLAG: interpretation)
+- Each of the 10 §44 lines has one survey question. A tester passes a line with a 4 or 5 on a 1–5 agree scale, a "yes", or naming any enemy (anything but "none").
+- A line is **met** when at least 60% of the testers who answered pass it. The slice **passes** when at least 6 of the 10 lines are met. All three thresholds are data (`PlaytestConfig.pass_ratio`, `criteria_needed`, `SurveyQuestion.pass_at`).
+- The survey adds three informational questions (controls, getting lost, favourite activity) that aren't scored.
+
+## D-042: One experiment at a time, applied to a copy
+- `PlaytestVariant` overrides data on a duplicate of the movement config, so the shipped preset never changes. Auto mode rotates arms per session, starting from a random per-install offset so each tester's first session doesn't always land on the same arm. Facilitators can pin an arm.
+- Only one experiment runs: the slide-jump strength (D-036). With 5–8 testers, each extra arm halves the data per arm. More variants can be added as data once this question is settled.
+
+## D-043: Damage carries its source
+- `PlayerCombat.take_damage()` gets a `source` string ("needle/needle_stab", "hazard", "pit", "burnout"), kept as `last_damage_source`. Telemetry reads it on `player_damaged` and `player_died`. No new coupling: combat doesn't know telemetry exists.
+

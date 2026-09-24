@@ -2,9 +2,6 @@ class_name PlaytestConfig
 extends Resource
 ## Everything the M4 playtest instrumentation is tuned by (bible §37.3).
 
-## Record sessions unless the player turns it off in Settings. Files stay on
-## the tester's machine (user://playtests); nothing is ever sent anywhere.
-@export var record_by_default: bool = true
 ## Position sample rate for heatmaps and idle/confusion detection.
 @export var sample_interval: float = 0.5
 ## Session file is rewritten this often, so a crash loses at most this much.
