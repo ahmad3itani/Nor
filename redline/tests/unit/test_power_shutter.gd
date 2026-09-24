@@ -214,14 +214,28 @@ func test_launched_needle_trips_neither_breaker_nor_secret_wall() -> void:
 	needle.global_position = Vector2(120, -12)
 	needle.set_ai(Enemy.AI.LAUNCHED)
 	needle.velocity = Vector2(-360, -60)
-	await physics_frames(30)
+	var crossed := false
+	for f in 30:
+		await physics_frames(1)
+		if is_instance_valid(needle) and needle.body_rect().intersects(fb.hurtbox_rect()):
+			crossed = true
+	check(crossed, "the launched Needle must actually fly through the breaker's hurtbox")
 	check(fb.trips == 0 and trips.is_empty(), "a launched body must not trip a breaker (%s)" % str(trips))
 	# ...and into the secret wall.
-	if is_instance_valid(needle) and not needle.is_dead():
-		needle.global_position = Vector2(680, -12)
-		needle.set_ai(Enemy.AI.LAUNCHED)
-		needle.velocity = Vector2(360, -60)
-		await physics_frames(30)
+	check(is_instance_valid(needle) and not needle.is_dead(), "the Needle must survive the first throw for the wall half")
+	if not is_instance_valid(needle) or needle.is_dead():
+		EventBus.secret_found.disconnect(on_secret)
+		return
+	needle.global_position = Vector2(680, -12)
+	needle.set_ai(Enemy.AI.LAUNCHED)
+	needle.velocity = Vector2(360, -60)
+	var wall_rect := Rect2(wall.global_position, wall.size).grow(1.0)
+	var hit_wall := false
+	for f in 30:
+		await physics_frames(1)
+		if is_instance_valid(needle) and needle.body_rect().intersects(wall_rect):
+			hit_wall = true
+	check(hit_wall, "the launched Needle must actually reach the secret wall")
 	check(is_instance_valid(wall) and is_equal_approx(wall.health, wall.max_health), "a launched body must not damage a secret wall")
 	check(secrets.is_empty(), "no secret should be found: %s" % str(secrets))
 	EventBus.secret_found.disconnect(on_secret)
@@ -340,6 +354,45 @@ func test_never_crushes() -> void:
 		"a standing Rook holds the drop at open height (%s, gap %.0f)" % [s.state_name(), s.gap])
 
 
+## A column that ends above the floor: the panel still reaches the floor, so
+## the closed shutter blocks a crawl and the slot sits 24 px above the floor.
+func test_floor_gap_column_still_seals() -> void:
+	var room := await _enter()
+	var p := room.player
+	var s := PowerShutter.new()
+	s.name = "Shutter_G"
+	s.shutter_id = "G"
+	s.circuit = &"t1"
+	s.timing = load("res://data/level/shutter_run.tres") as ShutterTiming
+	s.latch_flag = "t_gap_latched"
+	s.size = Vector2(16, 176)
+	s.position = Vector2(300, -200)  # column ends at -24: a 24 px floor gap
+	room.add_child(s)
+	await physics_frames(2)
+	check_near(s.full_height(), 200.0, 0.01, "the panel travels down to the real floor")
+	check(s.content_errors(room).is_empty(), "a 24 px floor gap validates: %s" % str(s.content_errors(room)))
+	# Closed: a crouched crawl west from 340 stops at the panel.
+	var input := _scripted(p)
+	p.teleport(Vector2(340, 0))
+	input.down_held = true
+	await physics_frames(4)
+	input.move_x = -1
+	await physics_frames(90)
+	input.move_x = 0
+	check(p.is_low, "Rook crawled low")
+	check(p.global_position.x - p.config.low_size.x * 0.5 >= 316.0 - 0.5, "a closed shutter blocks the crawl under a floor gap (x %.1f)" % p.global_position.x)
+	input.down_held = false
+	# In the slot the panel's bottom is slot_height above the floor (y -24).
+	p.teleport(Vector2(380, 0))  # run-up room for the slide
+	_breaker(room, "t_fb").trip()
+	await physics_frames(_frames(s.timing.open + s.timing.drop + 0.05))
+	check(s.state == PowerShutter.State.SLOT, "slot state expected, got %s" % s.state_name())
+	check_near(s.global_position.y + s.full_height() - s.gap, -s.slot_height, 0.01, "the slot is measured from the floor")
+	var bot := RouteBot.new(get_tree(), p)
+	var ok: bool = await bot.run([["slide", 250]])
+	check(ok and Game.has_flag("t_gap_latched"), "a slide passes the floor-gap slot and latches it (x %.0f, %s)" % [p.global_position.x, bot.failure])
+
+
 func test_rearm_refreshes_timer() -> void:
 	var room := await _enter()
 	var s := _shutter(room)
@@ -387,6 +440,14 @@ func test_validator_breaker_too_high_is_error() -> void:
 	check(ok.errors.is_empty(), "grid_shutter should validate: %s" % str(ok.errors))
 	check("\n".join(ok.warnings).contains("circuit:t2"), "t2 has no consumer in the fixture: %s" % str(ok.warnings))
 	check(ok.produced.has("t_latched") and ok.consumed.has("circuit:t1"), "shutter flags reach the flag graph")
+	# Gate's open_flag does nothing on a shutter, so setting it is an error.
+	var stub := Node2D.new()
+	var s := PowerShutter.new()
+	s.shutter_id = "O"
+	s.open_flag = "some_flag"
+	stub.add_child(s)
+	check("\n".join(s.content_errors(stub)).contains("open_flag"), "open_flag on a PowerShutter is an error")
+	stub.free()
 
 
 ## The grid fixtures still match tools/roomgen/fixtures_grid.py (-B: no

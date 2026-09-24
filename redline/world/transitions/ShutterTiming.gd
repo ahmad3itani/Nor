@@ -15,6 +15,10 @@ extends Resource
 @export var slot: float = 0.6
 ## The slot closes; red lamps.
 @export var seal: float = 0.15
+## Countdown tick period while OPEN (1 Hz), then while WARN (4 Hz): the
+## audio half of the telegraph, readable without looking at the lamps.
+@export var tick: float = 1.0
+@export var warn_tick: float = 0.25
 
 
 ## Seconds from the breaker hit until the shutter is closed again.
@@ -32,4 +36,6 @@ func validate() -> PackedStringArray:
 		errors.append("shutter timing: slot must be >= 0.55 s (a crawl past 16 px takes 0.51 s)")
 	if drop <= 0.0 or seal <= 0.0:
 		errors.append("shutter timing: drop and seal must be > 0")
+	if tick <= 0.0 or warn_tick <= 0.0 or warn_tick > tick:
+		errors.append("shutter timing: tick and warn_tick must be > 0, warn_tick <= tick")
 	return errors

@@ -11,6 +11,13 @@ extends Gate
 ## SEAL -> CLOSED; LATCHED is terminal. It manages its own collider height
 ## (Gate's shape node, resized here); Gate.gd itself is untouched. Origin:
 ## top-left of the column, like Gate.
+##
+## The panel always reaches the real floor: if the authored column ends above
+## it (the validator allows up to 48 px), the panel extends down over that
+## gap, so a closed or sealed shutter can never be crawled or walked under
+## and the slot is exactly `slot_height` above the floor. Gate's `open_flag`
+## and `closed` have no effect here (the panel follows `gap`); the validator
+## rejects an open_flag on a shutter.
 
 enum State { CLOSED, OPEN, WARN, DROP, SLOT, SEAL, LATCHED }
 
@@ -34,8 +41,8 @@ const LAMP_BASE := 40.0
 var state: State = State.CLOSED
 ## Seconds since the last breaker hit (the pass-margin clock).
 var t_open: float = 0.0
-## Open gap under the panel, px from its bottom edge (0 = closed,
-## size.y = fully retracted).
+## Open gap under the panel, px up from the floor (0 = closed,
+## full_height() = fully retracted).
 var gap: float = 0.0
 ## Margin of the last pass (seconds; small = a close call). NAN before one.
 var last_margin: float = NAN
@@ -46,7 +53,8 @@ var _flash: float = 0.0
 var _holding: bool = false
 ## Side of the column Rook was last fully on (-1 west, 1 east, 0 unknown).
 var _side: int = 0
-## Gap already left between the column's bottom and the floor under it.
+## Gap between the authored column's bottom and the floor under it; the
+## panel covers it too.
 var _floor_gap: float = 0.0
 var _rect_shape: RectangleShape2D
 
@@ -70,6 +78,18 @@ func _ready() -> void:
 
 # --- Gate overrides: the collider follows `gap`, not `closed` ----------------------
 
+## Gate's open_flag and closed do nothing on a shutter: keep them out of the
+## inspector so an author does not rely on them.
+func _validate_property(property: Dictionary) -> void:
+	if property.name == "open_flag" or property.name == "closed":
+		property.usage = PROPERTY_USAGE_NO_EDITOR
+
+
+## Panel travel: the column plus the floor gap under it (top to real floor).
+func full_height() -> float:
+	return size.y + _floor_gap
+
+
 func _rebuild() -> void:
 	if not is_inside_tree():
 		return
@@ -83,7 +103,7 @@ func _apply() -> void:
 	if _shape_node == null:
 		queue_redraw()
 		return
-	var h := size.y - gap
+	var h := full_height() - gap
 	# Set directly, not deferred: a breaker hit and a teleport in the same
 	# tick must see the doorway already open (breaker hits come from hit
 	# queries, never from an Area2D overlap callback).
@@ -100,14 +120,14 @@ func _apply() -> void:
 
 
 func _set_gap(value: float) -> void:
-	gap = clampf(value, 0.0, size.y)
-	closed = gap < size.y
+	gap = clampf(value, 0.0, full_height())
+	closed = gap < full_height()
 	_apply()
 
 
-## Panel gap while the slot is showing: the floor gap already counts.
+## Panel gap while the slot is showing: `slot_height` above the real floor.
 func slot_gap() -> float:
-	return clampf(slot_height - _floor_gap, 0.0, size.y)
+	return clampf(slot_height, 0.0, full_height())
 
 
 # --- Circuit ----------------------------------------------------------------------
@@ -123,7 +143,7 @@ func _on_breaker_hit(c: StringName) -> void:
 	_tick_left = 0.0
 	_holding = false
 	_set_state(State.OPEN)
-	_set_gap(size.y)
+	_set_gap(full_height())
 	if was_down:
 		AudioManager.play_sfx(&"gate")
 	for b in Breaker.on_circuit(get_tree(), circuit):
@@ -144,7 +164,7 @@ func _set_state(s: State) -> void:
 func _latch(announce: bool) -> void:
 	state = State.LATCHED
 	_holding = false
-	_set_gap(size.y)
+	_set_gap(full_height())
 	if latch_flag != "" and not Game.has_flag(latch_flag):
 		Game.set_flag(latch_flag)
 	if announce:
@@ -166,7 +186,7 @@ func _physics_process(delta: float) -> void:
 			_tick_left -= delta
 			if _tick_left <= 0.0:
 				AudioManager.play_sfx(&"ui_tick")
-				_tick_left = 0.25 if state == State.WARN else 1.0
+				_tick_left = timing.warn_tick if state == State.WARN else timing.tick
 			if left <= 0.0:
 				_set_state(State.DROP)
 				_gap_from = gap
@@ -175,7 +195,7 @@ func _physics_process(delta: float) -> void:
 			queue_redraw()
 		State.DROP:
 			t_open += delta
-			if _advance(delta, timing.drop, _gap_from, slot_gap(), size.y - slot_gap()):
+			if _advance(delta, timing.drop, _gap_from, slot_gap(), full_height() - slot_gap()):
 				_set_state(State.SLOT)
 		State.SLOT:
 			t_open += delta
@@ -185,7 +205,7 @@ func _physics_process(delta: float) -> void:
 				_gap_from = gap
 		State.SEAL:
 			t_open += delta
-			if _advance(delta, timing.seal, _gap_from, 0.0, size.y + _floor_gap):
+			if _advance(delta, timing.seal, _gap_from, 0.0, full_height()):
 				_set_state(State.CLOSED)
 	_track_pass()
 
@@ -228,7 +248,7 @@ func _track_pass() -> void:
 	var r := _player_rect(p)
 	var x0 := global_position.x
 	var x1 := x0 + size.x
-	if r.end.y <= global_position.y or r.position.y >= global_position.y + size.y + _floor_gap:
+	if r.end.y <= global_position.y or r.position.y >= global_position.y + full_height():
 		_side = 0  # above or below the column: not a crossing
 		return
 	var side := 0
@@ -306,11 +326,11 @@ static func _player_rect(p: Player) -> Rect2:
 # --- Telegraph --------------------------------------------------------------------
 
 func _draw() -> void:
-	var floor_y := size.y + _floor_gap
+	var floor_y := full_height()
 	# Posts: the column frame, so an open shutter still reads as a doorway.
 	draw_rect(Rect2(-3, 0, 2, floor_y), COLOR_STRIPE)
 	draw_rect(Rect2(size.x + 1, 0, 2, floor_y), COLOR_STRIPE)
-	var panel_h := size.y - gap
+	var panel_h := floor_y - gap
 	if panel_h > 0.5:
 		var col := COLOR_PANEL
 		if state == State.SEAL or state == State.CLOSED and t_open > 0.0:
@@ -352,7 +372,7 @@ func _draw() -> void:
 
 ## HitboxView hook: collider, state, time left and last margin (global).
 func debug_draw(canvas: CanvasItem) -> void:
-	canvas.draw_rect(Rect2(global_position, Vector2(size.x, size.y - gap)), Color(1.0, 0.7, 0.28, 0.9), false, 1.0)
+	canvas.draw_rect(Rect2(global_position, Vector2(size.x, full_height() - gap)), Color(1.0, 0.7, 0.28, 0.9), false, 1.0)
 	var m := "-" if is_nan(last_margin) else "%.2f" % last_margin
 	var text := "%s %s %.2fs m %s%s" % [shutter_id, state_name(), time_left(), m, " HOLD" if _holding else ""]
 	canvas.draw_string(ThemeDB.fallback_font, global_position + Vector2(-8, -4), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
@@ -379,6 +399,8 @@ func content_errors(room: Node) -> PackedStringArray:
 		out.append("shutter %s has no circuit" % shutter_id)
 	if timing == null:
 		out.append("shutter %s has no timing" % shutter_id)
+	if open_flag != "":
+		out.append("shutter %s sets Gate's open_flag, which a shutter ignores (use latch_flag)" % shutter_id)
 	var p := Breaker.room_position(self, room)
 	var bottom := p.y + size.y
 	var f := Breaker.floor_below(room, p.x, p.x + size.x, bottom)
