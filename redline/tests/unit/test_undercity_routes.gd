@@ -841,8 +841,155 @@ func test_collector_bay_wiring() -> void:
 	check(_collector_bay_gate("ArenaGateLeft").closed, "the left gate shuts on a tunnel-side entry too")
 
 
+## EscapeTunnel: the pistol lesson, the FZ3 climb and the exit to the Relay.
+## The Watcher is the only live enemy (it is the lesson); the Needle and the
+## Hopper are pacified and cut down on the way up. Each Watcher shot is its
+## own step from x 222 facing east: "shoot ... diag" holds the facing
+## direction, so a volley walks Rook out of the diagonal line.
 func test_escape_tunnel_route() -> void:
-	print("PENDING: EscapeTunnel")
+	_campaign(true, true, true)
+	Game.set_flag("collector_drone_defeated")
+	await _escape_tunnel_enter(&"from_bay", true)
+	var watcher := _escape_tunnel_enemy(&"watcher")
+	check(watcher != null, "the tunnel should hold a Watcher")
+	var volley := []
+	for i in 3:
+		volley += [["run", 200], ["run", 222], ["shoot", 1, "diag"]]
+	if not await _run(volley):
+		return
+	await physics_frames(20)
+	check(not is_instance_valid(watcher) or watcher.health <= 0.0, "three diagonal pistol shots should kill the Watcher")
+	if not await _run([
+		["run", 672], ["jump", 730], ["run", 832], ["jump", 890], ["attack", 3], ["run", 992], ["jump", 1050],
+		["run", 1152], ["jump", 1210], ["attack", 3], ["run", 1312], ["jump", 1370], ["run", 1930],
+	]):
+		return
+	_assert_exit(1, LL + "Relay.tscn", &"from_undercity")
+	_assert_exit(-1, UC + "CollectorBay.tscn", &"from_tunnel")
+	if await _run([["exit", 1]]):
+		check(SceneRouter.current_room.name == "Relay", "the east mouth leads up into the Relay")
+
+
+## Secret 3: the panel over the recess is out of blade reach and breaks to
+## two pistol shots straight up; its 30 Scrap reaches Rook.
+func test_tunnel_panel() -> void:
+	_campaign(true, true, true)
+	await _enter(UC + "EscapeTunnel.tscn", &"from_bay")
+	var scrap := Game.state.total_scrap()
+	await _run([["run", 584], ["shoot", 3, "up"], ["wait", 90]])
+	check(Game.is_collected("uc_tunnel_panel"), "pistol shots up should break the recess panel")
+	check(Game.state.total_scrap() == scrap + 30, "the panel should give 30 Scrap (got %d)" % (Game.state.total_scrap() - scrap))
+
+
+## Secret 4 is a Dash revisit: the shard ledge is out of reach without Dash
+## and reached with it, from the -336 step (like test_dash_shard_needs_dash).
+func test_tunnel_dash_shard() -> void:
+	_campaign(true, true, true)
+	var steps := [["run", 1470], ["jump", 1470], ["jump", 1550], ["dashjump", 1598, 1860]]
+	await _enter(UC + "EscapeTunnel.tscn", &"from_relay")
+	await bot.run(steps)
+	check(not Game.is_collected("cs_uc_tunnel_dash"), "tunnel dash shard reachable without Dash")
+	Game.set_ability(&"dash", true)
+	await _enter(UC + "EscapeTunnel.tscn", &"from_relay")
+	var ok: bool = await bot.run(steps)
+	check(ok and Game.is_collected("cs_uc_tunnel_dash"), "tunnel dash shard unreachable with Dash: %s" % bot.failure)
+
+
+## Without Dash no dodge-jump + air dodge timing reaches the shard, from
+## either climbing step (the 230 px gap sits past the 210-225 estimate).
+func test_tunnel_dash_shard_negative_sweep() -> void:
+	_campaign(true, true, true)
+	var starts := [
+		[1598, [["run", 1470], ["jump", 1470], ["jump", 1550]]],   # the -336 step, x 1500..1600
+		[1498, [["run", 1470], ["jump", 1470]]],                   # the -288 step, x 1440..1500
+	]
+	for start: Array in starts:
+		for d in 28:
+			await _enter(UC + "EscapeTunnel.tscn", &"from_relay")
+			if not await _run(start[1]):
+				return
+			# The step itself fails (it lands short of x); only the shard matters.
+			await bot.run([["dodgejump_airdodge", start[0], 1850, d]])
+			check(not Game.is_collected("cs_uc_tunnel_dash"), "dodge-jump + air dodge (edge %d, delay %d) reached the dash shard" % [start[0], d])
+			if Game.is_collected("cs_uc_tunnel_dash"):
+				return
+
+
+## FZ3's pace per mode (D-085, K-50): Normal from 70 and Assist from 90
+## spend 20 s on the steps with the two in-zone kills, Challenge from 100
+## makes an 8 s pass. Only Normal and Challenge may never burn; Assist keeps
+## more than half its Core.
+func test_fz3_pace() -> void:
+	var saved := Settings.reactor_mode
+	_campaign(true, true, true)
+	var normal := await _escape_tunnel_fz3(0, 70.0, 20.0)
+	check(normal.kills == 2, "Normal: the Needle and the Hopper should die in FZ3 (kills %d)" % normal.kills)
+	check(normal.burnout == 0, "Normal from 70: 20 s in FZ3 should not burn (%d burnout hits, Core %.1f)" % [normal.burnout, normal.charge])
+	var assist := await _escape_tunnel_fz3(1, 90.0, 20.0)
+	check(assist.charge > 50.0, "Assist from 90: the Core should stay above 50 after 20 s (%.1f)" % assist.charge)
+	var challenge := await _escape_tunnel_fz3(2, 100.0, 8.0)
+	check(challenge.burnout == 0, "Challenge from 100: an 8 s pass should not burn (%d)" % challenge.burnout)
+	Settings.reactor_mode = saved
+
+
+## Enters the tunnel with every enemy pacified except (keep_watcher) the
+## Watcher, the pistol lesson's live target.
+func _escape_tunnel_enter(entry: StringName, keep_watcher: bool, drain_off := true) -> RouteBot:
+	await _enter(UC + "EscapeTunnel.tscn", entry, false)
+	var room := SceneRouter.current_room as Room
+	for e in room.find_children("*", "Enemy", true, false):
+		var enemy := e as Enemy
+		if enemy.ai_enabled and not (keep_watcher and enemy.data.id == &"watcher"):
+			enemy.ai_enabled = false
+			enemy.set_ai(Enemy.AI.IDLE)
+	if drain_off:
+		room.player.reactor.config = room.player.reactor.config.duplicate()
+		room.player.reactor.config.drain_per_second = 0.0
+	return bot
+
+
+func _escape_tunnel_enemy(id: StringName) -> Enemy:
+	for e in SceneRouter.current_room.find_children("*", "Enemy", true, false):
+		if (e as Enemy).data.id == id:
+			return e as Enemy
+	return null
+
+
+## Plays FZ3 in a Core mode from a start charge: climb the steps cutting down
+## the pacified Needle and Hopper, stand on Step 4 until `seconds` have
+## passed inside the zone, then step out onto the top floor. Returns the
+## burnout hits, the kills and the Core at the end.
+func _escape_tunnel_fz3(mode: int, start: float, seconds: float) -> Dictionary:
+	Settings.reactor_mode = mode
+	await _enter(UC + "EscapeTunnel.tscn", &"from_bay", true, false)
+	var p := (SceneRouter.current_room as Room).player
+	p.reactor.apply_mode(mode)
+	p.reactor.charge = start
+	var tally := {"burnout": 0, "kills": 0, "frames": 0}
+	var on_damage := func(_amount: int, _health: int) -> void:
+		if is_instance_valid(p) and p.combat.last_damage_source == "burnout":
+			tally.burnout += 1
+	var on_kill := func(_enemy: Node2D, _hit: HitInfo) -> void:
+		tally.kills += 1
+	var on_frame := func() -> void:
+		if is_instance_valid(p) and p.reactor.in_flow():
+			tally.frames += 1
+	EventBus.player_damaged.connect(on_damage)
+	EventBus.enemy_killed.connect(on_kill)
+	get_tree().physics_frame.connect(on_frame)
+	var ok := await _run([
+		["run", 672], ["jump", 730], ["run", 832], ["jump", 890], ["run", 912], ["attack", 3], ["run", 992], ["jump", 1050],
+		["run", 1152], ["jump", 1210], ["run", 1232], ["attack", 3], ["run", 1300],
+	])
+	while ok and tally.frames < int(seconds * 60.0) and is_instance_valid(p):
+		await physics_frames(1)
+	if ok:
+		await _run([["run", 1312], ["jump", 1400]])
+	var charge := p.reactor.charge if is_instance_valid(p) else -1.0
+	get_tree().physics_frame.disconnect(on_frame)
+	EventBus.enemy_killed.disconnect(on_kill)
+	EventBus.player_damaged.disconnect(on_damage)
+	return {"burnout": tally.burnout, "kills": tally.kills, "charge": charge, "seconds": tally.frames / 60.0}
 
 
 func test_full_undercity_walk() -> void:
