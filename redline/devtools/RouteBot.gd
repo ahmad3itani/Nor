@@ -15,8 +15,11 @@ extends RefCounted
 ##                                  apart; aim "fwd", "up" or "diag" (up+facing)
 ##   ["dodge", x]                   run toward x, dodge; ok if on the floor after
 ##   ["dodgejump_airdodge", edge, x, delay_frames]
-##                                  dodge-jump, then air-dodge after
-##                                  delay_frames airborne frames; land near x
+##                                  dodge-jump, then air-dodge on the first
+##                                  airborne frame >= delay_frames that the
+##                                  dodge cooldown allows (~18 frames after
+##                                  the ground dodge ends); fails if no air
+##                                  dodge fired, else lands near x
 
 var tree: SceneTree
 var player: Player
@@ -126,18 +129,22 @@ func _do(step: Array) -> bool:
 				for f in 24:
 					await _frame()
 					if lost_player:
+						_release_aim()
 						return false
-			input.up_held = false
-			input.move_x = 0
+			_release_aim()
 			return true
 		"dodge":
 			if not await _run_to(float(step[1]), 2.0, true):
 				return false
 			input.press_dodge()
+			# The run keeps its momentum into the dodge, then stops: the next
+			# step starts from rest rather than inheriting a held direction.
 			for f in 16:
 				await _frame()
 				if lost_player:
+					input.move_x = 0
 					return false
+			input.move_x = 0
 			return player.is_on_floor()
 		"dodgejump_airdodge":
 			return await _technique_jump(float(step[1]), float(step[2]), &"dodge", 14.0, int(step[3]))
@@ -174,10 +181,18 @@ func _run_to(x: float, tolerance: float = 3.0, keep_speed: bool = false) -> bool
 	return false
 
 
+## "shoot" releases everything on every exit, so aim never leaks into the
+## next step (or the respawned player).
+func _release_aim() -> void:
+	input.up_held = false
+	input.move_x = 0
+
+
 func _jump_to(x: float, air_dodge_after: int = 0) -> bool:
 	input.press_jump()
 	var airborne := false
 	var air_frames := 0
+	var air_dodged := false
 	for f in 240:
 		_steer(x)
 		await _frame()
@@ -188,8 +203,15 @@ func _jump_to(x: float, air_dodge_after: int = 0) -> bool:
 		if not player.is_on_floor():
 			airborne = true
 			air_frames += 1
-			if air_dodge_after > 0 and air_frames == air_dodge_after:
-				input.press_dodge()
+			# Keep pressing from the requested frame until the dodge state is
+			# entered: the ground dodge's cooldown (0.3 s) can swallow an
+			# early single press, and a step that silently skips the air
+			# dodge would prove nothing.
+			if air_dodge_after > 0 and not air_dodged and air_frames >= air_dodge_after:
+				if player.current_state_id() == &"dodge":
+					air_dodged = true
+				else:
+					input.press_dodge()
 		elif airborne:
 			# Let horizontal speed settle so the next step starts clean.
 			for g in 4:
@@ -197,6 +219,8 @@ func _jump_to(x: float, air_dodge_after: int = 0) -> bool:
 				await _frame()
 				if lost_player:
 					return false
+			if air_dodge_after > 0 and not air_dodged:
+				return false
 			return absf(_dx(x)) < 40.0
 	return false
 

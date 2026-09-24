@@ -14,4 +14,7 @@ func content_flags() -> Dictionary:
 
 
 func content_errors(_room: Node) -> PackedStringArray:
+	# An empty declaration stands in for nothing: an authoring mistake.
+	if produces.is_empty():
+		return PackedStringArray(["FlagDeclaration declares no flags"])
 	return PackedStringArray(["WARN: stub flag declaration: %s" % ", ".join(produces)])

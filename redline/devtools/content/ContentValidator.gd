@@ -47,9 +47,8 @@ func run() -> ContentValidator:
 ## require_on_map = false skips the world-map check (test fixtures are never
 ## on the map).
 func check_room(path: String, require_on_map: bool = true) -> ContentValidator:
-	var room := (load(path) as PackedScene).instantiate() as Room
+	var room := _instantiate_room(path, true)
 	if room == null:
-		errors.append("room %s: not a Room scene" % path.get_file().get_basename())
 		return self
 	RoomTemplate.expand_all(room)
 	_require_on_map = require_on_map
@@ -173,7 +172,7 @@ func validate_rooms() -> void:
 			if not f.ends_with(".tscn"):
 				continue
 			var path := "%s/%s" % [dir, f]
-			var room := (load(path) as PackedScene).instantiate() as Room
+			var room := _instantiate_room(path, false)
 			if room == null:
 				continue
 			RoomTemplate.expand_all(room)
@@ -181,6 +180,26 @@ func validate_rooms() -> void:
 				stats["rooms"] += 1
 				_check_world_room(room, path, persistent)
 			room.free()
+
+
+## Loads and instantiates a room scene. A missing scene or a non-Room root
+## returns null (the stray node is freed, never orphaned); report = true
+## records why as an error.
+func _instantiate_room(path: String, report: bool) -> Room:
+	var id := path.get_file().get_basename()
+	var packed := load(path) as PackedScene if ResourceLoader.exists(path) else null
+	if packed == null:
+		if report:
+			errors.append("room %s: cannot load scene %s" % [id, path])
+		return null
+	var node := packed.instantiate()
+	if node is Room:
+		return node as Room
+	if report:
+		errors.append("room %s: not a Room scene" % id)
+	if node != null:
+		node.free()
+	return null
 
 
 func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void:

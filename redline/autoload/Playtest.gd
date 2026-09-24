@@ -30,11 +30,6 @@ var _was_paused: bool = false
 var _player: Player
 var _dodge_seen: bool = false
 
-## Flags worth a timeline entry (M7 Undercity onboarding beats). Every other
-## flag is left out to keep session files small; hint_* flags are always kept.
-const RECORDED_FLAGS: PackedStringArray = ["core_hud_hidden", "got_pulse_blade", "got_service_pistol", "met_orr_radio", "uc_ward_shutter"]
-
-
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	EventBus.room_entered.connect(_on_room_entered)
@@ -243,7 +238,7 @@ func _on_player_state_changed(_from: StringName, to: StringName) -> void:
 
 
 func _on_flag_changed(id: String, value: Variant) -> void:
-	if id.begins_with("hint_") or RECORDED_FLAGS.has(id):
+	if id.begins_with("hint_") or config.recorded_flags.has(id):
 		_event("flag", {"id": id, "value": value})
 
 

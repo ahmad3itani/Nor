@@ -26,7 +26,11 @@ var spawns: Array[SpawnMarker] = []
 var active_spawn_index: int = 0
 ## Optional pit handler (M7 chase/escape rooms): called with the player when a
 ## pit is fallen into. Returning true means it handled the fall (no pip, no
-## last-safe teleport), so a set piece can own its own recovery.
+## last-safe teleport), so a set piece can own its own recovery. Contract:
+## the pit check runs every physics frame, so an override that returns true
+## must move the player back above the kill line that same call, or it is
+## called again next frame until it does. Anything but true (including no
+## return value) falls through to the normal pit.
 var pit_override: Callable
 
 
@@ -112,7 +116,7 @@ func _physics_process(_delta: float) -> void:
 
 ## Pits hurt but never send you back to an Anchor (bible §2.8 fast recovery).
 func _pit_fall() -> void:
-	if pit_override.is_valid() and bool(pit_override.call(player)):
+	if pit_override.is_valid() and pit_override.call(player) == true:
 		return
 	player.combat.take_damage(1, Vector2.ZERO, 0.0, false, "pit")
 	if player.combat.dead:

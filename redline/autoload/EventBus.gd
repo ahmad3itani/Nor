@@ -84,8 +84,9 @@ signal breaker_hit(circuit: StringName)
 ## Rook got under a timed power shutter before it dropped. margin_s is the
 ## time that was left on its countdown (small = a close call).
 signal shutter_passed(shutter_id: String, margin_s: float)
-## A scanner beam saw Rook. mode is the beam's state when tripped
-## (ScannerBeam defines it: live vs calibration).
+## A scanner beam saw Rook. mode is the ScannerData mode when tripped
+## (LOW/HIGH/FULL). It does not say live vs calibration (calibration =
+## damage 0); the analyzer tells those apart by beam_id until M6 adds a marker.
 signal scanner_tripped(beam_id: String, mode: int)
 ## A grid clamp dropped; staggered_boss = it landed on a boss and staggered it.
 signal clamp_dropped(clamp_id: String, staggered_boss: bool)

@@ -19,6 +19,9 @@ extends Resource
 @export_range(1, 10) var criteria_needed: int = 6
 ## Position samples closer than this (px) count as "not moving" for idle spans.
 @export var idle_radius: float = 8.0
+## Flags worth a timeline entry (M7 Undercity onboarding beats). Every other
+## flag is left out to keep session files small; hint_* flags are always kept.
+@export var recorded_flags: PackedStringArray = ["core_hud_hidden", "got_pulse_blade", "got_service_pistol", "met_orr_radio", "uc_ward_shutter"]
 ## Tags offered by the "Report a moment" menu.
 @export var moment_tags: PackedStringArray = []
 @export var variants: Array[PlaytestVariant] = []
