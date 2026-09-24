@@ -76,6 +76,20 @@ func _tour() -> void:
 	_input.move_x = 0
 	await _frames(18)
 	await _shot("05_falling_look_down")
-	await _frames(60)
-	await _shot("06_after_hard_landing")
+	for i in 120:
+		await _frames(1)
+		if room.player.is_on_floor():
+			break
+	await _frames(4)
+	await _shot("06_hard_landing_dust")
+
+	await _goto(room, &"start")
+	var panel := get_tree().root.find_child("TuningPanel", true, false) as CanvasLayer
+	if panel:
+		panel.visible = true
+	_input.move_x = 1
+	await _frames(25)
+	_input.down_held = true
+	await _frames(8)
+	await _shot("07_tuning_panel_slide_dust")
 	get_tree().quit()

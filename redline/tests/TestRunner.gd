@@ -25,14 +25,14 @@ func _run() -> void:
 		var suite: RedlineTestCase = script.new()
 		add_child(suite)
 		for method in suite.get_method_list():
-			var name: String = method["name"]
-			if not name.begins_with("test_"):
+			var method_name: String = method["name"]
+			if not method_name.begins_with("test_"):
 				continue
 			total += 1
-			suite._current_test = "%s::%s" % [file.get_basename(), name]
+			suite._current_test = "%s::%s" % [file.get_basename(), method_name]
 			var before := suite.failures.size()
 			await suite.before_each()
-			await suite.call(name)
+			await suite.call(method_name)
 			await suite.after_each()
 			var ok := suite.failures.size() == before
 			if not ok:

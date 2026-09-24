@@ -254,3 +254,17 @@ func test_one_way_can_be_jumped_through_from_below() -> void:
 	input.press_jump()
 	await physics_frames(60)
 	check_near(player.global_position.y, -40.0, 0.6, "did not land on the one-way platform")
+
+
+func test_jump_height_holds_at_120hz() -> void:
+	# Tuning must not depend on tick rate (the F8 high-refresh experiment).
+	Engine.physics_ticks_per_second = 120
+	await physics_frames(2)
+	await _spawn_grounded()
+	input.press_jump()
+	var min_y := 0.0
+	for i in 120:
+		await physics_frames(1)
+		min_y = minf(min_y, player.global_position.y)
+	Engine.physics_ticks_per_second = 60
+	check_near(-min_y, cfg.jump_height, 1.5, "held jump height at 120 Hz")
