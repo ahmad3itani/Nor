@@ -13,17 +13,7 @@ static func compute() -> Dictionary:
 	for room in Game.world_map.rooms:
 		var inst := (load(room.room_path) as PackedScene).instantiate()
 		RoomTemplate.expand_all(inst)
-		for n in inst.find_children("*", "", true, false):
-			if n is Collectible and (n as Collectible).kind == Collectible.Kind.SCRAP_BUNDLE:
-				r["bundles"] += (n as Collectible).scrap_amount
-			elif n is BreakableWall:
-				r["walls"] += (n as BreakableWall).scrap_inside
-			elif n is Enemy and (n as Enemy).data:
-				var drop := (n as Enemy).data.scrap_drop
-				if (n as Enemy).data.id == "warden_krail":
-					r["boss"] += drop
-				else:
-					r["enemies_first_clear"] += drop
+		tally(inst, r)
 		inst.free()
 	for f in DirAccess.get_files_at("res://data/quests"):
 		if f.ends_with(".tres"):
@@ -50,3 +40,19 @@ static func compute() -> Dictionary:
 	r["per_clear"] = r["enemies_first_clear"]
 	r["coverage"] = float(r["one_time"]) / maxi(1, r["sinks"])
 	return r
+
+
+## Adds one (expanded) room's placed Scrap to `r`. Bosses are one-time
+## income (data.boss), never part of a respawning re-clear.
+static func tally(inst: Node, r: Dictionary) -> void:
+	for n in inst.find_children("*", "", true, false):
+		if n is Collectible and (n as Collectible).kind == Collectible.Kind.SCRAP_BUNDLE:
+			r["bundles"] += (n as Collectible).scrap_amount
+		elif n is BreakableWall:
+			r["walls"] += (n as BreakableWall).scrap_inside
+		elif n is Enemy and (n as Enemy).data:
+			var drop := (n as Enemy).data.scrap_drop
+			if (n as Enemy).data.boss:
+				r["boss"] += drop
+			else:
+				r["enemies_first_clear"] += drop

@@ -75,10 +75,26 @@ static func unlock_all() -> void:
 	EventBus.loadout_changed.emit()
 
 
-## Re-arm Warden Krail (clear the win) and drop Rook at the arena door with
-## full health: iterate on the fight without replaying the tower.
-static func quick_boss_restart() -> void:
-	Game.state.flags.erase("warden_krail_defeated")
+## Boss id -> [room path, entry at the arena door]. The Collector's room is
+## written as a format string: CollectorBay lands with the Undercity rooms,
+## and the content scanner only checks literal paths.
+static func boss_restart_target(boss_id: String) -> Array:
+	match boss_id:
+		"warden_krail":
+			return ["res://world/rooms/lowlight/WardenTower.tscn", &"from_bell"]
+		"collector_drone":
+			return ["res://world/rooms/%s/%s.tscn" % ["undercity", "CollectorBay"], &"from_lift"]
+	return []
+
+
+## Re-arm a boss (clear the win) and drop Rook at the arena door with full
+## health: iterate on the fight without replaying the way there.
+static func quick_boss_restart(boss_id: String = "warden_krail") -> void:
+	var target := boss_restart_target(boss_id)
+	if target.is_empty() or not ResourceLoader.exists(target[0]):
+		push_warning("quick_boss_restart: no arena room for %s" % boss_id)
+		return
+	Game.state.flags.erase("%s_defeated" % boss_id)
 	# Heal the live player too: leaving the room captures its state.
 	var room := SceneRouter.current_room as Room
 	if room and is_instance_valid(room.player):
@@ -86,7 +102,7 @@ static func quick_boss_restart() -> void:
 	Game.state.health = -1
 	Game.state.injectors = -1
 	Game.state.reactor_charge = -1.0
-	SceneRouter.transition_to("res://world/rooms/lowlight/WardenTower.tscn", &"from_bell")
+	SceneRouter.transition_to(target[0], target[1])
 
 
 static func enemy_scenes() -> PackedStringArray:
