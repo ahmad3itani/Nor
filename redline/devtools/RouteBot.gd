@@ -11,6 +11,12 @@ extends RefCounted
 ##   ["slide", x]                   run then hold down until at x (tunnels)
 ##   ["interact"] / ["attack", n] / ["heavy", n] / ["wait", frames]
 ##   ["exit", dir]                  move in dir until the room changes
+##   ["shoot", n, aim]              fire the ranged weapon n times, 24 frames
+##                                  apart; aim "fwd", "up" or "diag" (up+facing)
+##   ["dodge", x]                   run toward x, dodge; ok if on the floor after
+##   ["dodgejump_airdodge", edge, x, delay_frames]
+##                                  dodge-jump, then air-dodge after
+##                                  delay_frames airborne frames; land near x
 
 var tree: SceneTree
 var player: Player
@@ -110,6 +116,31 @@ func _do(step: Array) -> bool:
 			for f in int(step[1]):
 				await _frame()
 			return true
+		"shoot":
+			var aim := String(step[2]) if step.size() > 2 else "fwd"
+			input.up_held = aim == "up" or aim == "diag"
+			if aim == "diag":
+				input.move_x = player.facing
+			for n in int(step[1]):
+				input.press_ranged()
+				for f in 24:
+					await _frame()
+					if lost_player:
+						return false
+			input.up_held = false
+			input.move_x = 0
+			return true
+		"dodge":
+			if not await _run_to(float(step[1]), 2.0, true):
+				return false
+			input.press_dodge()
+			for f in 16:
+				await _frame()
+				if lost_player:
+					return false
+			return player.is_on_floor()
+		"dodgejump_airdodge":
+			return await _technique_jump(float(step[1]), float(step[2]), &"dodge", 14.0, int(step[3]))
 		"exit":
 			var room := SceneRouter.current_room
 			input.move_x = int(step[1])
@@ -143,9 +174,10 @@ func _run_to(x: float, tolerance: float = 3.0, keep_speed: bool = false) -> bool
 	return false
 
 
-func _jump_to(x: float) -> bool:
+func _jump_to(x: float, air_dodge_after: int = 0) -> bool:
 	input.press_jump()
 	var airborne := false
+	var air_frames := 0
 	for f in 240:
 		_steer(x)
 		await _frame()
@@ -155,6 +187,9 @@ func _jump_to(x: float) -> bool:
 		# through the apex keeps the apex-hang gravity (bible §5 feel tech).
 		if not player.is_on_floor():
 			airborne = true
+			air_frames += 1
+			if air_dodge_after > 0 and air_frames == air_dodge_after:
+				input.press_dodge()
 		elif airborne:
 			# Let horizontal speed settle so the next step starts clean.
 			for g in 4:
@@ -166,7 +201,9 @@ func _jump_to(x: float) -> bool:
 	return false
 
 
-func _technique_jump(edge: float, x: float, kind: StringName, slide_lead: float = 14.0) -> bool:
+## air_dodge_after > 0 adds an air dodge that many airborne frames into the
+## jump (M7 dodge-jump + air-dodge teaching gaps).
+func _technique_jump(edge: float, x: float, kind: StringName, slide_lead: float = 14.0, air_dodge_after: int = 0) -> bool:
 	var dir := signf(x - player.global_position.x)
 	input.move_x = int(dir)
 	for f in 900:
@@ -189,7 +226,7 @@ func _technique_jump(edge: float, x: float, kind: StringName, slide_lead: float 
 				if g >= 4 and (edge - player.global_position.x) * dir < 2.0:
 					break
 			input.down_held = false
-			return await _jump_to(x)
+			return await _jump_to(x, air_dodge_after)
 		# Jump at the very edge (centre just past it, feet still on the ground).
 		if to_edge < 1.0:
 			input.down_held = false
