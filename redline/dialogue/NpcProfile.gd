@@ -7,6 +7,13 @@ extends Resource
 @export var color: Color = Color("9a8fb5")
 ## Role shown on the map's NPC pins ("Mechanic"); empty = no pin.
 @export var map_label: String = ""
+## False for voices without a body (radios, terminals, notes): NPC skips the
+## placeholder figure and the room draws the object itself (decor + a small
+## cyan LED neon), so the prop reads as a thing, not a person (M7).
+@export var figure: bool = true
+## Verb on the interact prompt: "Talk" for people, "Listen" for a radio,
+## "Read" for a terminal or note.
+@export var verb: String = "Talk"
 @export var rules: Array[NpcDialogueRule] = []
 
 
@@ -21,6 +28,8 @@ func validate() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if npc_id == "" or display_name == "":
 		errors.append("npc profile missing id/name")
+	if verb.strip_edges() == "":
+		errors.append("%s: empty prompt verb" % npc_id)
 	if rules.is_empty():
 		errors.append("%s has no dialogue rules" % npc_id)
 	elif not rules[rules.size() - 1].requires_flags.is_empty():

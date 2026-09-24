@@ -29,7 +29,8 @@ static func room_info(room_path: String) -> Dictionary:
 			info["anchors"].append({"id": String((n as Anchor).anchor_id), "pos": p})
 		elif n is NPC and (n as NPC).profile:
 			var prof := (n as NPC).profile
-			info["npcs"].append({"id": prof.npc_id, "name": prof.display_name, "role": prof.map_label, "pos": p})
+			info["npcs"].append({"id": prof.npc_id, "name": prof.display_name, "role": prof.map_label, "pos": p,
+				"present_when": (n as NPC).present_when.duplicate()})
 		elif n is Gate:
 			info["gates"].append({"rect": Rect2(p, (n as Gate).size), "flag": (n as Gate).open_flag, "closed": (n as Gate).closed})
 		elif n is RoomExit:
@@ -50,6 +51,12 @@ static func room_info(room_path: String) -> Dictionary:
 	inst.free()
 	_cache[room_path] = info
 	return info
+
+
+## The scan is static (cached per scene), so presence is evaluated when the
+## map draws: an NPC whose present_when fails has no pin and no hover text.
+static func npc_present(n: Dictionary) -> bool:
+	return NPC.conditions_pass(n.get("present_when", PackedStringArray()))
 
 
 static func local_pos(n: Node, root: Node) -> Vector2:

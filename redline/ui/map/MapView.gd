@@ -100,7 +100,7 @@ func hover_text() -> String:
 	var info := WorldMapIndex.room_info(r.room_path)
 	var text := "%s  —  %s" % [info["district_name"], info["name"]]
 	var best := 18.0 / zoom()
-	for n: Dictionary in info["npcs"]:
+	for n: Dictionary in visible_npcs(info):
 		if _visited(r) and (r.offset + n["pos"]).distance_to(cursor) < best:
 			text += "   ·   %s (%s)" % [n["name"], n["role"]] if n["role"] != "" else ""
 	for a: Dictionary in info["anchors"]:
@@ -110,6 +110,16 @@ func hover_text() -> String:
 
 
 # --- Visibility rules ---------------------------------------------------------
+
+## NPCs currently in the room (present_when, M7): a character who moved on
+## loses their pin here and gains one where they went.
+static func visible_npcs(info: Dictionary) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for n: Dictionary in info.get("npcs", []):
+		if WorldMapIndex.npc_present(n):
+			out.append(n)
+	return out
+
 
 func _visited(r: MapRoomData) -> bool:
 	return state.visited_rooms.has(r.room_path)
@@ -211,7 +221,7 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			draw_circle(p, 4.0, COL_GATE)
 			draw_string(font, p + Vector2(-2, 3), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, COL_BG)
 	if _visited(r):
-		for n: Dictionary in info["npcs"]:
+		for n: Dictionary in visible_npcs(info):
 			if n["role"] == "":
 				continue
 			var p := to_screen(r.offset + n["pos"] + Vector2(0, -14))
