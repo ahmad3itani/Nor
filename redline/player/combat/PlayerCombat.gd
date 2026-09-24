@@ -241,7 +241,7 @@ func _try_fire(input: PlayerInputFrame) -> void:
 		# Even fan instead of random spread: readable and deterministic.
 		var offset := 0.0 if pellets == 1 else lerpf(-spread * 0.5, spread * 0.5, float(i) / (pellets - 1))
 		var p := Projectile.spawn(player.get_parent(), player, w.shot, muzzle, aim.rotated(deg_to_rad(offset)),
-			CombatLayers.ENEMY_HURTBOX, tags)
+			CombatLayers.ENEMY_HURTBOX, tags, player.global_position + Vector2(0, w.muzzle_offset.y))
 		p.impacted.connect(_on_projectile_impact.bind(p))
 	_apply_recoil(w, aim)
 	AudioManager.play_sfx(w.fire_sfx)

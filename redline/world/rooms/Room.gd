@@ -34,6 +34,7 @@ func _ready() -> void:
 	camera.make_current()
 	respawn()
 	camera.follow(player)
+	EventBus.player_died.connect(_on_player_died)
 	EventBus.player_spawned.emit(player)
 
 
@@ -41,6 +42,14 @@ func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("reset"):
 		respawn()
 	elif player.global_position.y > bounds.end.y + kill_margin:
+		respawn()
+
+
+## Near-instant restart (bible §7): a short beat to read what killed you.
+func _on_player_died() -> void:
+	var delay := player.combat.config.respawn_delay
+	await get_tree().create_timer(delay, false, true).timeout
+	if is_instance_valid(player) and player.combat.dead:
 		respawn()
 
 

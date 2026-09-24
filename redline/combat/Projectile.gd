@@ -12,10 +12,15 @@ var target_mask: int = CombatLayers.ENEMY_HURTBOX
 var tags: Array[StringName] = []
 var _life: float = 0.0
 var _trail_from: Vector2
+## First ray starts here (the shooter's body) instead of the muzzle, so
+## point-blank shots hit an enemy the muzzle is already inside of.
+var _first_ray_from: Vector2
+var _first_tick: bool = true
 
 
 static func spawn(parent: Node, p_attacker: Node2D, p_attack: AttackData, at: Vector2,
-		direction: Vector2, p_target_mask: int, p_tags: Array[StringName] = []) -> Projectile:
+		direction: Vector2, p_target_mask: int, p_tags: Array[StringName] = [],
+		ray_origin: Vector2 = Vector2.INF) -> Projectile:
 	var p := Projectile.new()
 	p.attack = p_attack
 	p.attacker = p_attacker
@@ -25,6 +30,7 @@ static func spawn(parent: Node, p_attacker: Node2D, p_attack: AttackData, at: Ve
 	p._life = p_attack.projectile.lifetime
 	p.position = at
 	p._trail_from = at
+	p._first_ray_from = ray_origin if ray_origin != Vector2.INF else at
 	parent.add_child(p)
 	return p
 
@@ -39,6 +45,11 @@ func _physics_process(delta: float) -> void:
 	var params := PhysicsRayQueryParameters2D.create(from, to, CombatLayers.WORLD | target_mask)
 	params.collide_with_areas = true
 	params.collide_with_bodies = true
+	if _first_tick:
+		_first_tick = false
+		params.from = _first_ray_from
+		# The shooter may be standing inside the target (overlapping bodies).
+		params.hit_from_inside = true
 	var result := get_world_2d().direct_space_state.intersect_ray(params)
 	_trail_from = from
 	if result.is_empty():
@@ -51,7 +62,10 @@ func _physics_process(delta: float) -> void:
 	if box:
 		var dir := velocity.normalized()
 		var kb := dir * attack.knockback.x + Vector2(0.0, attack.knockback.y)
-		var hit := HitInfo.create(attacker, attack, kb, dir, tags)
+		# The shooter may have died while the shot was in flight; never hand a
+		# freed object to receivers (calling into it crashes the engine).
+		var source: Node2D = attacker if is_instance_valid(attacker) else null
+		var hit := HitInfo.create(source, attack, kb, dir, tags)
 		hit.source_position = from
 		outcome = box.receive(hit)
 	HitSpark.spawn(get_parent(), global_position, -velocity.normalized(), attack.projectile.color, 4)

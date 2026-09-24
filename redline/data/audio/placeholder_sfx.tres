@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SfxBank" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="SfxBank" load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
 [ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
@@ -107,6 +107,240 @@ volume_db = -16.0
 pitch_jitter = 0.0
 cooldown = 0.0
 
+[sub_resource type="Resource" id="Sfx_slash"]
+script = ExtResource("1_def")
+id = &"slash"
+wave = 3
+duration = 0.07
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.55
+volume_db = -15.0
+pitch_jitter = 0.12
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_slash_heavy"]
+script = ExtResource("1_def")
+id = &"slash_heavy"
+wave = 3
+duration = 0.13
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.35
+volume_db = -11.0
+pitch_jitter = 0.08
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_hit"]
+script = ExtResource("1_def")
+id = &"hit"
+wave = 0
+duration = 0.07
+freq_start = 520.0
+freq_end = 160.0
+noise_mix = 0.5
+tone = 0.5
+volume_db = -9.0
+pitch_jitter = 0.1
+cooldown = 0.02
+
+[sub_resource type="Resource" id="Sfx_hit_heavy"]
+script = ExtResource("1_def")
+id = &"hit_heavy"
+wave = 0
+duration = 0.14
+freq_start = 300.0
+freq_end = 60.0
+noise_mix = 0.6
+tone = 0.3
+volume_db = -6.0
+pitch_jitter = 0.06
+cooldown = 0.03
+
+[sub_resource type="Resource" id="Sfx_block"]
+script = ExtResource("1_def")
+id = &"block"
+wave = 1
+duration = 0.09
+freq_start = 1400.0
+freq_end = 1100.0
+noise_mix = 0.2
+tone = 0.7
+volume_db = -12.0
+pitch_jitter = 0.05
+cooldown = 0.03
+
+[sub_resource type="Resource" id="Sfx_shoot_pistol"]
+script = ExtResource("1_def")
+id = &"shoot_pistol"
+wave = 0
+duration = 0.08
+freq_start = 900.0
+freq_end = 200.0
+noise_mix = 0.6
+tone = 0.6
+volume_db = -13.0
+pitch_jitter = 0.06
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_shoot_scatter"]
+script = ExtResource("1_def")
+id = &"shoot_scatter"
+wave = 3
+duration = 0.2
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.22
+volume_db = -7.0
+pitch_jitter = 0.05
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_empty"]
+script = ExtResource("1_def")
+id = &"empty"
+wave = 1
+duration = 0.04
+freq_start = 1800.0
+freq_end = 1800.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -18.0
+pitch_jitter = 0.0
+cooldown = 0.05
+
+[sub_resource type="Resource" id="Sfx_reload"]
+script = ExtResource("1_def")
+id = &"reload"
+wave = 1
+duration = 0.1
+freq_start = 700.0
+freq_end = 1200.0
+noise_mix = 0.1
+tone = 0.6
+volume_db = -18.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_enemy_telegraph"]
+script = ExtResource("1_def")
+id = &"enemy_telegraph"
+wave = 2
+duration = 0.16
+freq_start = 700.0
+freq_end = 1100.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -16.0
+pitch_jitter = 0.03
+cooldown = 0.05
+
+[sub_resource type="Resource" id="Sfx_enemy_attack"]
+script = ExtResource("1_def")
+id = &"enemy_attack"
+wave = 3
+duration = 0.1
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.3
+volume_db = -15.0
+pitch_jitter = 0.1
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_enemy_shoot"]
+script = ExtResource("1_def")
+id = &"enemy_shoot"
+wave = 2
+duration = 0.14
+freq_start = 500.0
+freq_end = 250.0
+noise_mix = 0.1
+tone = 0.6
+volume_db = -14.0
+pitch_jitter = 0.05
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_enemy_die"]
+script = ExtResource("1_def")
+id = &"enemy_die"
+wave = 3
+duration = 0.3
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.18
+volume_db = -8.0
+pitch_jitter = 0.1
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_player_hurt"]
+script = ExtResource("1_def")
+id = &"player_hurt"
+wave = 0
+duration = 0.2
+freq_start = 400.0
+freq_end = 90.0
+noise_mix = 0.4
+tone = 0.35
+volume_db = -7.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_perfect_dodge"]
+script = ExtResource("1_def")
+id = &"perfect_dodge"
+wave = 2
+duration = 0.25
+freq_start = 600.0
+freq_end = 1500.0
+noise_mix = 0.0
+tone = 0.9
+volume_db = -10.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_heartbeat"]
+script = ExtResource("1_def")
+id = &"heartbeat"
+wave = 2
+duration = 0.12
+freq_start = 70.0
+freq_end = 50.0
+noise_mix = 0.0
+tone = 0.25
+volume_db = -8.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_burnout"]
+script = ExtResource("1_def")
+id = &"burnout"
+wave = 0
+duration = 0.18
+freq_start = 120.0
+freq_end = 70.0
+noise_mix = 0.3
+tone = 0.2
+volume_db = -9.0
+pitch_jitter = 0.0
+cooldown = 0.3
+
+[sub_resource type="Resource" id="Sfx_rank_up"]
+script = ExtResource("1_def")
+id = &"rank_up"
+wave = 1
+duration = 0.14
+freq_start = 660.0
+freq_end = 990.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -15.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
 [resource]
 script = ExtResource("2_bank")
-sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn")])
+sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up")])

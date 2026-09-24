@@ -50,8 +50,9 @@ func _process(_delta: float) -> void:
 
 func _build_text() -> String:
 	var lines: PackedStringArray = []
-	lines.append("REDLINE M1 MOVEMENT LAB   FPS %d   phys %.2fms   x%.2f   %dHz interp %s" % [
-		Engine.get_frames_per_second(),
+	var room := SceneRouter.current_room as Room
+	lines.append("REDLINE %s   FPS %d   phys %.2fms   x%.2f   %dHz interp %s" % [
+		room.room_name.to_upper() if room else "LAB", Engine.get_frames_per_second(),
 		Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 		Engine.time_scale, Engine.physics_ticks_per_second,
 		"ON" if get_tree().physics_interpolation else "off"])
@@ -68,8 +69,17 @@ func _build_text() -> String:
 	lines.append("last jump  h %.1fpx   d %.1fpx   air %.2fs" % [m.last_jump_height, m.last_jump_distance, m.last_airtime])
 	lines.append("count  jump %d  slide %d  dodge %d  dash %d" % [m.jumps, m.slides, m.dodges, m.dashes])
 	lines.append("preset %s   dash %s   spawn %s" % [p.config.preset_name, "ON" if p.abilities.dash else "off", _spawn_label])
+	var c := p.combat
+	var atk := String(c.current_attack.id) if c.current_attack else "-"
+	var w := c.ranged_weapon()
+	lines.append("hp %d/%d  combo %d  atk %s  hitstop %.2f  %s %d  hang %d" % [
+		c.health, c.config.max_health, c.combo_index, atk, p.hitstop_timer,
+		w.id if w else "-", int(c.ammo.get(w.id, 0)) if w else 0, c.air_hang_left])
+	lines.append("core %.1f %s [%s]  style %s %.0f" % [p.reactor.charge, "FLOW" if p.reactor.in_flow() else "safe",
+		p.reactor.config.mode_name, p.style.meter.rank_name(), p.style.meter.points])
 	lines.append("[F1] overlay [R] reset [Tab] station [F2] dash [F3] tune [F4] slowmo")
 	lines.append("[F5] reload [F6] preset [F7] interp [F8] tick rate")
+	lines.append("[F9] ranged [F10] enemies [F11] core mode [F12] switch lab")
 	return "\n".join(lines)
 
 

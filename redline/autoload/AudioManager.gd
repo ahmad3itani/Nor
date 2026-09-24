@@ -76,3 +76,10 @@ func _ensure_bus() -> void:
 	var idx := AudioServer.bus_count - 1
 	AudioServer.set_bus_name(idx, SFX_BUS)
 	AudioServer.set_bus_send(idx, &"Master")
+
+
+func _exit_tree() -> void:
+	# Stop voices so playbacks aren't leaked when the game quits mid-sound.
+	for v in _voices:
+		v.stop()
+		v.stream = null

@@ -11,6 +11,8 @@ const STATE_COLORS := {
 	&"air": Color("c9d6ff"),
 	&"dodge": Color("58e0e8"),
 	&"dash": Color("e8283c"),
+	&"melee": Color("ffd9de"),
+	&"hurt": Color("ff5a6a"),
 }
 const VISOR_COLOR := Color("e8283c")
 const IFRAME_COLOR := Color("ffffff")
@@ -71,7 +73,13 @@ func _draw() -> void:
 	# Body anchored at the feet so squash keeps contact with the floor.
 	var size := _body_size() * _scale
 	var body := Rect2(Vector2(-size.x * 0.5, -size.y), size).abs()
-	draw_rect(body, _body_color())
+	var body_color := _body_color()
+	# Blink while post-hit invulnerable so the grace period is readable.
+	if player.combat.hurt_invuln_timer > 0.0 and int(player.combat.hurt_invuln_timer * 20.0) % 2 == 0:
+		body_color.a = 0.35
+	if player.combat.dead:
+		body_color = body_color.darkened(0.5)
+	draw_rect(body, body_color)
 	draw_rect(body, Color(0, 0, 0, 0.6), false, 1.0)
 	# Visor: a 4x2 slit near the head on the facing side reads direction at a glance.
 	var visor_y := body.position.y + minf(5.0, size.y * 0.25)

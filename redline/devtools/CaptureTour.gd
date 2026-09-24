@@ -1,11 +1,12 @@
 extends Node
 ## Renders a scripted tour of the Movement Lab to PNGs for reports/PR review.
-##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir
+##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=combat]
 ## Needs a real (or virtual, e.g. xvfb-run) display; headless has no renderer.
 
 const MAIN := preload("res://Main.tscn")
 
 var _out_dir := "user://captures"
+var _tour_name := "movement"
 var _input := ScriptedInputSource.new()
 
 
@@ -13,9 +14,16 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			_out_dir = arg.trim_prefix("--out=")
+		elif arg.begins_with("--tour="):
+			_tour_name = arg.trim_prefix("--tour=")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
-	add_child(MAIN.instantiate())
-	_tour.call_deferred()
+	var main := MAIN.instantiate()
+	main.start_room = "res://world/rooms/CombatLab.tscn" if _tour_name == "combat" else "res://world/rooms/MovementLab.tscn"
+	add_child(main)
+	if _tour_name == "combat":
+		_combat_tour.call_deferred()
+	else:
+		_tour.call_deferred()
 
 
 func _frames(n: int) -> void:
@@ -92,4 +100,74 @@ func _tour() -> void:
 	_input.down_held = true
 	await _frames(8)
 	await _shot("07_tuning_panel_slide_dust")
+	get_tree().quit()
+
+
+func _combat_tour() -> void:
+	await _frames(5)
+	var room := SceneRouter.current_room as Room
+	room.player.input_source = _input
+	await _goto(room, &"dummies")
+	_input.move_x = 1
+	await _frames(10)
+	_input.move_x = 0
+	for i in 2:
+		_input.press_light()
+		await _frames(9)
+	_input.press_light()
+	await _frames(6)
+	await _shot("c01_blade_finisher_on_dummy")
+	await _frames(40)
+
+	for spawner in get_tree().get_nodes_in_group(&"enemy_spawners"):
+		(spawner as EnemySpawner).spawn()
+	await _goto(room, &"dummies")
+	_input.move_x = 1
+	for i in 60:
+		await _frames(1)
+		if room.player.global_position.x >= 172.0:
+			break
+	_input.move_x = 0
+	_input.up_held = true
+	_input.press_heavy()
+	await _frames(16)
+	_input.up_held = false
+	_input.press_jump()
+	await _frames(14)
+	_input.press_light()
+	await _frames(5)
+	await _shot("c02_launcher_air_follow_up")
+	await _frames(60)
+
+	# Arena 1: stand among the needles and wait for a wind-up.
+	await _goto(room, &"arena1")
+	room.player.respawn(Vector2(640, -2))
+	for i in 240:
+		await _frames(1)
+		var winding := get_tree().get_nodes_in_group(&"enemies").filter(func(e: Node) -> bool:
+			return (e as Enemy).ai == Enemy.AI.WINDUP and (e as Enemy).ai_time > 0.25)
+		if not winding.is_empty():
+			break
+	await _shot("c03_needle_telegraph")
+	await _frames(30)
+
+	await _goto(room, &"arena2")
+	room.player.combat.cycle_ranged()
+	room.player.respawn(Vector2(1400, -2))
+	_input.move_x = 1
+	await _frames(20)
+	_input.move_x = 0
+	_input.press_ranged()
+	await _frames(3)
+	await _shot("c04_scattergun_vs_shield")
+	await _frames(30)
+
+	await _goto(room, &"arena3")
+	room.player.reactor.charge = 8.0
+	for i in 300:
+		await _frames(1)
+		if not get_tree().get_nodes_in_group(&"enemies").filter(func(e: Node) -> bool:
+				return (e as Enemy).data.flying and (e as Enemy).ai == Enemy.AI.WINDUP and (e as Enemy).ai_time > 0.4).is_empty():
+			break
+	await _shot("c05_drone_aim_critical_core")
 	get_tree().quit()

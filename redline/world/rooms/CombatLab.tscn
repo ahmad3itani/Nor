@@ -1,0 +1,278 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="1_room"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="2_block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="3_spawn"]
+[ext_resource type="Script" path="res://devtools/MovementLabController.gd" id="4_movelab"]
+[ext_resource type="Script" path="res://devtools/CombatLabController.gd" id="5_combatlab"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="6_flow"]
+[ext_resource type="Script" path="res://world/hazards/SpikeHazard.gd" id="7_spikes"]
+[ext_resource type="Script" path="res://world/rooms/EnemySpawner.gd" id="8_spawner"]
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="9_director"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="10_needle"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Shield.tscn" id="11_shield"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="12_drone"]
+
+[node name="CombatLab" type="Node2D"]
+script = ExtResource("1_room")
+room_name = "Combat Lab"
+bounds = Rect2(-64, -480, 2240, 576)
+
+[node name="MovementLabController" type="Node" parent="."]
+script = ExtResource("4_movelab")
+
+[node name="CombatLabController" type="Node" parent="."]
+script = ExtResource("5_combatlab")
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("9_director")
+
+[node name="Flow" type="Node2D" parent="."]
+
+[node name="Flow_Arena1" type="Area2D" parent="Flow"]
+position = Vector2(380, -300)
+script = ExtResource("6_flow")
+size = Vector2(760, 300)
+
+[node name="Flow_Arena2" type="Area2D" parent="Flow"]
+position = Vector2(1180, -300)
+script = ExtResource("6_flow")
+size = Vector2(640, 300)
+
+[node name="Flow_Arena3" type="Area2D" parent="Flow"]
+position = Vector2(1840, -440)
+script = ExtResource("6_flow")
+size = Vector2(320, 440)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -480)
+script = ExtResource("2_block")
+size = Vector2(16, 576)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2160, -480)
+script = ExtResource("2_block")
+size = Vector2(16, 576)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("2_block")
+size = Vector2(2208, 96)
+
+[node name="SlamWall_A1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1092, -48)
+script = ExtResource("2_block")
+size = Vector2(16, 48)
+
+[node name="Plat_A1a" type="StaticBody2D" parent="Geometry"]
+position = Vector2(520, -56)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Plat_A1b" type="StaticBody2D" parent="Geometry"]
+position = Vector2(640, -112)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Plat_A1c" type="StaticBody2D" parent="Geometry"]
+position = Vector2(960, -64)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Plat_A2a" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1400, -60)
+script = ExtResource("2_block")
+size = Vector2(96, 8)
+one_way = true
+
+[node name="Plat_A3a" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1900, -70)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Plat_A3b" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2020, -140)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Plat_A3c" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1900, -210)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="Spikes_A1" type="Area2D" parent="Geometry"]
+position = Vector2(820, -8)
+script = ExtResource("7_spikes")
+size = Vector2(64, 8)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Dummy_Needle" type="Marker2D" parent="Enemies"]
+position = Vector2(190, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = false
+facing = -1
+auto_respawn_delay = 1.5
+
+[node name="Dummy_Needle2" type="Marker2D" parent="Enemies"]
+position = Vector2(236, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = false
+facing = -1
+auto_respawn_delay = 1.5
+
+[node name="Dummy_Shield" type="Marker2D" parent="Enemies"]
+position = Vector2(300, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("11_shield")
+ai_enabled = false
+facing = -1
+auto_respawn_delay = 1.5
+
+[node name="A1_Needle1" type="Marker2D" parent="Enemies"]
+position = Vector2(700, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A1_Needle2" type="Marker2D" parent="Enemies"]
+position = Vector2(760, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A1_Needle3" type="Marker2D" parent="Enemies"]
+position = Vector2(1000, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A2_Shield1" type="Marker2D" parent="Enemies"]
+position = Vector2(1450, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("11_shield")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A2_Shield2" type="Marker2D" parent="Enemies"]
+position = Vector2(1620, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("11_shield")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A2_Needle" type="Marker2D" parent="Enemies"]
+position = Vector2(1700, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 4.0
+
+[node name="A3_Drone1" type="Marker2D" parent="Enemies"]
+position = Vector2(1980, -150)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("12_drone")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 5.0
+
+[node name="A3_Drone2" type="Marker2D" parent="Enemies"]
+position = Vector2(2100, -200)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("12_drone")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 5.0
+
+[node name="A3_Needle" type="Marker2D" parent="Enemies"]
+position = Vector2(2080, 0)
+script = ExtResource("8_spawner")
+enemy_scene = ExtResource("10_needle")
+ai_enabled = true
+facing = -1
+auto_respawn_delay = 5.0
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"start"
+label = "safe start"
+is_default = true
+
+[node name="Spawn_dummies" type="Marker2D" parent="Spawns"]
+position = Vector2(130, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"dummies"
+label = "practice dummies"
+
+[node name="Spawn_arena1" type="Marker2D" parent="Spawns"]
+position = Vector2(420, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"arena1"
+label = "arena 1: needles + spikes"
+
+[node name="Spawn_arena2" type="Marker2D" parent="Spawns"]
+position = Vector2(1210, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"arena2"
+label = "arena 2: shields"
+
+[node name="Spawn_arena3" type="Marker2D" parent="Spawns"]
+position = Vector2(1860, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"arena3"
+label = "arena 3: drones"
+
+[node name="Labels" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0.55)
+
+[node name="Label0" type="Label" parent="Labels"]
+offset_left = 20.0
+offset_top = -60.0
+theme_override_font_sizes/font_size = 8
+text = "SAFE: no core drain.  DUMMIES ->"
+
+[node name="Label1" type="Label" parent="Labels"]
+offset_left = 120.0
+offset_top = -90.0
+theme_override_font_sizes/font_size = 8
+text = "J light (x3)  I heavy  up+I launcher  air J/I  O shoot"
+
+[node name="Label2" type="Label" parent="Labels"]
+offset_left = 420.0
+offset_top = -150.0
+theme_override_font_sizes/font_size = 8
+text = "ARENA 1  launch them into spikes / the wall / each other"
+
+[node name="Label3" type="Label" parent="Labels"]
+offset_left = 1210.0
+offset_top = -150.0
+theme_override_font_sizes/font_size = 8
+text = "ARENA 2  guards: go behind, above, or heavy"
+
+[node name="Label4" type="Label" parent="Labels"]
+offset_left = 1850.0
+offset_top = -260.0
+theme_override_font_sizes/font_size = 8
+text = "ARENA 3  drones: shoot, air attacks, dodge bolts"
