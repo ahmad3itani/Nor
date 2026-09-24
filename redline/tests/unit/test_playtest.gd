@@ -180,3 +180,30 @@ func test_moment_menu_saves_tag_with_note() -> void:
 	var m: Array = Playtest.session.events_of("moment")
 	check(m.size() == 1 and m[0]["tag"] == "Bug" and m[0]["note"] == "fell through floor", "moment not saved: %s" % [m])
 	menu.queue_free()
+
+
+## The D-036 experiment's hypothesis, measured in the real room: with the
+## stronger slide-jump a sloppy slide (starting 40 px early) still clears the
+## Neon Roofs gap while a plain run-jump from the lip still does not, so the
+## gap becomes a real slide-jump gate. Baseline needs a precise slide.
+func _gap_attempt(variant_id: String, steps: Array) -> bool:
+	SceneRouter.goto_room("res://world/rooms/lowlight/NeonRoofs.tscn", &"from_stack")
+	await physics_frames(3)
+	var room := SceneRouter.current_room as Room
+	for e in room.find_children("*", "Enemy", true, false):
+		(e as Enemy).ai_enabled = false
+		(e as Enemy).set_ai(Enemy.AI.IDLE)
+	Playtest.config.variant(variant_id).apply_to_player(room.player)
+	var bot := RouteBot.new(get_tree(), room.player)
+	await physics_frames(5)
+	await bot.run([["run", 370], ["runjump", 396, 520]] + steps)
+	return bot.player.global_position.y < -90.0 and bot.player.global_position.x > 872.0
+
+
+func test_strong_slide_jump_variant_turns_the_gap_into_a_gate() -> void:
+	var sloppy := [["slidejump", 762, 900, 40.0]]
+	var run_jump := [["runjump", 764, 900]]
+	check(not await _gap_attempt("baseline", sloppy), "baseline: a slide started 40 px early should fall short")
+	check(await _gap_attempt("strong_slide_jump", sloppy), "strong variant: a sloppy slide-jump should clear")
+	check(not await _gap_attempt("strong_slide_jump", run_jump), "strong variant: a plain run-jump must still fall short")
+	check(await _gap_attempt("baseline", [["slidejump", 762, 900]]), "baseline: a precise slide-jump clears")

@@ -5,7 +5,7 @@ extends RefCounted
 ##   ["run", x]                     run until at x
 ##   ["jump", x]                    jump (held), steer to x, until landed
 ##   ["runjump", edge, x]           run to edge, jump, steer to x, land
-##   ["slidejump", edge, x]         run, slide, jump out of the slide at edge
+##   ["slidejump", edge, x, lead?]  run, slide `lead` px before edge (14), jump at edge
 ##   ["dodgejump", edge, x]         run, dodge near edge, jump mid-dodge
 ##   ["dashjump", edge, x]          same with Dash (needs the unlock)
 ##   ["slide", x]                   run then hold down until at x (tunnels)
@@ -87,7 +87,7 @@ func _do(step: Array) -> bool:
 				return false
 			return await _jump_to(float(step[2]))
 		"slidejump":
-			return await _technique_jump(float(step[1]), float(step[2]), &"slide")
+			return await _technique_jump(float(step[1]), float(step[2]), &"slide", float(step[3]) if step.size() > 3 else 14.0)
 		"dodgejump", "dashjump":
 			return await _technique_jump(float(step[1]), float(step[2]), &"dodge")
 		"slide":
@@ -166,7 +166,7 @@ func _jump_to(x: float) -> bool:
 	return false
 
 
-func _technique_jump(edge: float, x: float, kind: StringName) -> bool:
+func _technique_jump(edge: float, x: float, kind: StringName, slide_lead: float = 14.0) -> bool:
 	var dir := signf(x - player.global_position.x)
 	input.move_x = int(dir)
 	for f in 900:
@@ -176,7 +176,7 @@ func _technique_jump(edge: float, x: float, kind: StringName) -> bool:
 		var to_edge := (edge - player.global_position.x) * dir
 		# Slide at the lip: friction bleeds ~4 px/s per frame, so a slide-jump
 		# only out-ranges a run-jump when the jump comes 2-4 frames into it.
-		if kind == &"slide" and to_edge < 14.0 and player.current_state_id() != &"slide":
+		if kind == &"slide" and to_edge < slide_lead and player.current_state_id() != &"slide":
 			input.down_held = true
 		# Dodge so its jump-cancel window (0.08 s, ~22 px) opens at the lip,
 		# then jump as the centre crosses the edge.
