@@ -1,0 +1,132 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="PackedScene" path="res://bosses/CollectorDrone.tscn" id="scene_CollectorDrone"]
+[ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/boss_reward_collectible.tscn" id="scene_reward"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="boss_collector_arena" type="Node2D"]
+script = ExtResource("room")
+room_name = "Collector Bay fixture"
+bounds = Rect2(0, -240, 480, 270)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, -240)
+script = ExtResource("block")
+size = Vector2(480, 16)
+
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, -224)
+script = ExtResource("block")
+size = Vector2(16, 128)
+
+[node name="VentRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, -224)
+script = ExtResource("block")
+size = Vector2(48, 88)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(448, -224)
+script = ExtResource("block")
+size = Vector2(32, 128)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, 0)
+script = ExtResource("block")
+size = Vector2(480, 96)
+
+[node name="DoorLeftPlug" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, -96)
+script = ExtResource("block")
+size = Vector2(16, 96)
+
+[node name="DoorRightPlug" type="StaticBody2D" parent="Geometry"]
+position = Vector2(464, -96)
+script = ExtResource("block")
+size = Vector2(16, 96)
+
+[node name="ArenaGateLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(40, -92)
+script = ExtResource("gate")
+size = Vector2(16, 92)
+
+[node name="ExitGate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(448, -96)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+closed = true
+open_flag = "collector_drone_defeated"
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(96, -40)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(200, -80)
+script = ExtResource("block")
+size = Vector2(104, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(344, -40)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, -92)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(28, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="CollectorDrone1" parent="Enemies" instance=ExtResource("scene_CollectorDrone")]
+position = Vector2(252, -144)
+
+[node name="BossArena" type="Area2D" parent="Triggers"]
+position = Vector2(72, -224)
+script = ExtResource("arena")
+size = Vector2(376, 224)
+boss_id = "collector_drone"
+boss_title = "COLLECTOR DRONE"
+boss_subtitle = "Undercity Recovery Unit"
+intro_time = 2.6
+reward_position = Vector2(252, 0)
+boss_path = NodePath("../../Enemies/CollectorDrone1")
+gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
+reward_scene = ExtResource("scene_reward")

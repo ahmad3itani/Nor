@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="1_collect"]
+
+[node name="BossRewardCollectible" type="Area2D"]
+script = ExtResource("1_collect")
+persist_id = "test_collector_reward"
+scrap_amount = 10
