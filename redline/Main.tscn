@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://ui/debug/DebugOverlay.gd" id="2_debug"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://ui/menus/MomentMenu.gd" id="14_moment"]
 [ext_resource type="Script" path="res://ui/menus/SurveyMenu.gd" id="15_survey"]
 [ext_resource type="Script" path="res://ui/menus/MapMenu.gd" id="16_map"]
+[ext_resource type="Script" path="res://ui/menus/DevConsole.gd" id="17_dev"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -73,6 +74,9 @@ script = ExtResource("15_survey")
 
 [node name="MapMenu" type="CanvasLayer" parent="Menus"]
 script = ExtResource("16_map")
+
+[node name="DevConsole" type="CanvasLayer" parent="Menus"]
+script = ExtResource("17_dev")
 
 [node name="FadeLayer" type="CanvasLayer" parent="."]
 layer = 90

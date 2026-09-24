@@ -12,7 +12,7 @@ const SCAN_DIRS: PackedStringArray = ["res://autoload", "res://bosses", "res://c
 	"res://audio"]
 const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight"]
 ## Menu ids MenuHost knows besides shop_<id>.
-const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map"]
+const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map", "dev"]
 ## Flags set by code rather than data (kept here so the flag lint knows them).
 const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen"]
 ## Flags only there for bookkeeping; never "unused".

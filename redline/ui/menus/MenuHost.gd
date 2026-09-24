@@ -12,6 +12,7 @@ extends Node
 @onready var moment: MenuScreen = $MomentMenu
 @onready var survey: MenuScreen = $SurveyMenu
 @onready var map_menu: MenuScreen = $MapMenu
+@onready var dev_console: MenuScreen = $DevConsole
 
 
 func _ready() -> void:
@@ -29,6 +30,8 @@ func _process(_delta: float) -> void:
 		open(&"pause")
 	elif in_world and Input.is_action_just_pressed("map") and (SceneRouter.current_room as Room).world_room:
 		open(&"map")
+	elif in_world and Input.is_action_just_pressed("debug_console") and DevActions.available():
+		open(&"dev")
 
 
 func any_open() -> bool:
@@ -60,6 +63,8 @@ func open(menu_id: StringName) -> void:
 		survey.open_menu()
 	elif menu_id == &"map":
 		map_menu.open_menu()
+	elif menu_id == &"dev":
+		dev_console.open_menu()
 	elif String(menu_id).begins_with("shop_"):
 		var data := load("res://data/shops/%s.tres" % menu_id) as ShopData
 		if data:

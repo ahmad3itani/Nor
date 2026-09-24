@@ -266,7 +266,23 @@ func _ui_tour() -> void:
 	Playtest.end_session("capture")
 	DirAccess.remove_absolute(Playtest.session_path)
 	await _map_shots(menus)
+	await _dev_shots(menus)
 	get_tree().quit()
+
+
+## M6 dev tools: hitbox view + perf graph over a live fight, then the console.
+func _dev_shots(menus: Node) -> void:
+	var console := menus.get_node("DevConsole")
+	console._toggle_hitboxes()
+	console._toggle_perf()
+	var e := DevActions.spawn_enemy("res://enemies/variants/Needle.tscn")
+	e.ai_enabled = true
+	await _frames(70)
+	await _shot("u12_hitboxes_perf")
+	EventBus.menu_requested.emit(&"dev")
+	await _frames(5)
+	await _shot("u13_dev_console")
+	(console as MenuScreen).close_menu()
 
 
 ## M5 map: a half-explored profile (route floors swept, Market stash and
