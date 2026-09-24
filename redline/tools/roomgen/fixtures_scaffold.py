@@ -1,10 +1,10 @@
 """M7 scaffold test fixtures, written with roomgen, plus a self-test of the
 M7 helper contract.
 
-Run from redline/:
-    python3 tools/roomgen/fixtures_scaffold.py             # write tests/fixtures/scaffold_*.tscn
-    python3 tools/roomgen/fixtures_scaffold.py --check     # self-test, then exit 1 if the fixtures drifted
-    python3 tools/roomgen/fixtures_scaffold.py --selftest  # only the in-memory helper assertions
+Run from redline/ (-B: do not rewrite the tracked __pycache__):
+    python3 -B tools/roomgen/fixtures_scaffold.py             # write tests/fixtures/scaffold_*.tscn
+    python3 -B tools/roomgen/fixtures_scaffold.py --check     # self-test, then exit 1 if the fixtures drifted
+    python3 -B tools/roomgen/fixtures_scaffold.py --selftest  # only the in-memory helper assertions
 
 The self-test builds throwaway rooms in memory and asserts on the emitted
 node text: the room scripts those helpers name (ScannerBeam, GridClamp...)

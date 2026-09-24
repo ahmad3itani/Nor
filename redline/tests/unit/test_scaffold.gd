@@ -7,6 +7,7 @@ const RELAY := "res://world/rooms/lowlight/Relay.tscn"
 const PIT := "res://tests/fixtures/scaffold_pit.tscn"
 const PROTOCOL := "res://tests/fixtures/scaffold_protocol.tscn"
 const NEEDLE := preload("res://enemies/variants/Needle.tscn")
+const PLAYER_SCENE := preload("res://player/Player.tscn")
 const TEST_DIR := "user://test_scaffold_playtests"
 
 var root: Node2D
@@ -59,13 +60,15 @@ func _enter(path: String, entry: StringName) -> Room:
 
 
 ## Runs a python roomgen script from redline/ (the scripts use relative paths).
+## -B keeps python from rewriting tools/roomgen/__pycache__: every gate runs
+## this suite, and tracked .pyc churn would leak into parallel branches' commits.
 func _python(script: String) -> int:
 	var probe: Array = []
 	if OS.execute("sh", ["-c", "command -v python3"], probe) != 0:
 		push_warning("python3 not found: %s not run here (it is part of the gate)" % script)
 		return 0
 	var out: Array = []
-	var code := OS.execute("sh", ["-c", "cd '%s' && python3 %s --check" % [ProjectSettings.globalize_path("res://"), script]], out, true)
+	var code := OS.execute("sh", ["-c", "cd '%s' && python3 -B %s --check" % [ProjectSettings.globalize_path("res://"), script]], out, true)
 	if code != 0:
 		print(out)
 	return code
@@ -147,6 +150,38 @@ func test_dodge_step() -> void:
 	check(states.has(&"dodge"), "dodge step should enter the dodge state (%s)" % str(states))
 
 
+## M7 air-dodge teaching gap: a dodge-jump across a GapChallenge with an air
+## dodge 10 airborne frames in. The step must land near the target, and both
+## dodges (ground, then air) must really fire.
+func test_dodgejump_airdodge_step() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var gap := GapChallenge.new()
+	gap.technique = "dodge_jump"
+	world.add_child(gap)
+	gap.build()
+	var p: Player = PLAYER_SCENE.instantiate()
+	p.config = load("res://data/movement/default_movement.tres")
+	p.abilities = PlayerAbilities.new()
+	world.add_child(p)
+	p.respawn(Vector2(-140, -2))
+	await physics_frames(5)
+	var dodges: Array = []
+	var on_state := func(_from: StringName, to: StringName) -> void:
+		if to == &"dodge":
+			dodges.append({"air": not p.is_on_floor(), "left": p.air_dodges_left})
+	EventBus.player_state_changed.connect(on_state)
+	var before := p.metrics.dodges
+	var bot := RouteBot.new(get_tree(), p)
+	var ok: bool = await bot.run([["dodgejump_airdodge", 2.0, gap.gap_width() + 40.0, 10]])
+	EventBus.player_state_changed.disconnect(on_state)
+	check(ok, "dodgejump_airdodge step failed: %s (at %s)" % [bot.failure, p.global_position])
+	check(dodges.size() == 2 and p.metrics.dodges - before == 2, "expected a ground and an air dodge: %s" % str(dodges))
+	check(dodges.any(func(d: Dictionary) -> bool: return d["air"]), "no dodge happened airborne: %s" % str(dodges))
+	var start_left: int = p.config.air_dodges
+	check(dodges.any(func(d: Dictionary) -> bool: return d["left"] < start_left), "air dodge did not spend air_dodges_left: %s" % str(dodges))
+
+
 # --- Room / player / enemy hooks --------------------------------------------------
 
 func test_nonlethal_clamps_after_multiplier() -> void:
@@ -197,6 +232,20 @@ func test_pit_override_called() -> void:
 	check(not calls.is_empty(), "pit override was not called")
 	check(p.combat.health == hp, "override should prevent the pit pip")
 	check(p.global_position.y > room.bounds.end.y, "override should prevent the last-safe teleport (at %s)" % p.global_position)
+
+
+func test_hitbox_view_calls_debug_draw() -> void:
+	var room := await _enter(PROTOCOL, &"start")
+	var probe := room.find_child("ProtocolProbe", true, false)
+	check(probe != null, "protocol fixture has no ProtocolProbe")
+	if probe == null:
+		return
+	var view := HitboxView.new()
+	root.add_child(view)
+	for i in 3:
+		await get_tree().process_frame
+	check(int(probe.get("debug_draw_calls")) > 0, "HitboxView should call debug_draw on room nodes")
+	view.queue_free()
 
 
 func test_enemy_facing_export() -> void:
