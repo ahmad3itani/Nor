@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/props/CeilingTracker.gd" id="1_tracker"]
+[ext_resource type="Resource" path="res://data/props/collector_eye.tres" id="2_cfg"]
+
+[node name="CollectorEye" type="Node2D"]
+script = ExtResource("1_tracker")
+config = ExtResource("2_cfg")
