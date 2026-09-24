@@ -58,3 +58,7 @@ All football data routes live under `/api/football/` and proxy to the API-Footba
 ### Styling
 
 Tailwind CSS with RTL support (`tailwindcss-rtl`). The layout uses a custom dark theme (`bg-nor-black`, `text-nor-white`). The HTML root is always `lang="ar" dir="rtl" class="dark"`.
+
+## REDLINE (separate project in `redline/`)
+
+`redline/` holds an unrelated Godot 4.3 game project (REDLINE). It has its own `redline/CLAUDE.md`, docs and tests, and is not part of the Next.js build. See `redline/README.md`.
