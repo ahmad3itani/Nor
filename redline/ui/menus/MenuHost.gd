@@ -11,6 +11,7 @@ extends Node
 @onready var title: MenuScreen = $TitleMenu
 @onready var moment: MenuScreen = $MomentMenu
 @onready var survey: MenuScreen = $SurveyMenu
+@onready var map_menu: MenuScreen = $MapMenu
 
 
 func _ready() -> void:
@@ -23,9 +24,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("pause") and not any_open() and not get_tree().paused \
-			and SceneRouter.current_room is Room and not SceneRouter.transitioning:
+	var in_world := SceneRouter.current_room is Room and not SceneRouter.transitioning and not get_tree().paused and not any_open()
+	if in_world and Input.is_action_just_pressed("pause"):
 		open(&"pause")
+	elif in_world and Input.is_action_just_pressed("map") and (SceneRouter.current_room as Room).world_room:
+		open(&"map")
 
 
 func any_open() -> bool:
@@ -55,6 +58,8 @@ func open(menu_id: StringName) -> void:
 		moment.open_menu()
 	elif menu_id == &"survey":
 		survey.open_menu()
+	elif menu_id == &"map":
+		map_menu.open_menu()
 	elif String(menu_id).begins_with("shop_"):
 		var data := load("res://data/shops/%s.tres" % menu_id) as ShopData
 		if data:

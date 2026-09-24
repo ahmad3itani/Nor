@@ -12,6 +12,7 @@ func rebuild() -> void:
 		add_label("%s  —  %s" % [room.district_name, room.room_name], UiTheme.MUTED)
 	add_button("Resume", close_menu)
 	if room and room.world_room:
+		add_button("Map", _open.bind(&"map"))
 		add_button("Journal", _open.bind(&"journal"))
 	if Playtest.is_recording():
 		add_button("Report a moment (playtest)", _open.bind(&"moment"))

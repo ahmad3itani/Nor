@@ -139,3 +139,46 @@ func test_migrates_v2_save_to_v3() -> void:
 	var s := GameState.from_dict(migrated)
 	check(s.anchors_rested == ["res://world/rooms/lowlight/ApartmentStack.tscn|stack_mid"], "respawn Anchor should join the transit network")
 	check(MapProgress.knows_outline(s, map.room("Relay")) and not MapProgress.knows_outline(s, map.room("MarketRun")), "outlines come from visited rooms")
+
+
+func test_map_menu_opens_draws_and_pins() -> void:
+	var root := Node2D.new()
+	add_child(root)
+	SceneRouter.register_world_root(root)
+	SceneRouter.goto_room("res://world/rooms/lowlight/Relay.tscn", &"start")
+	await physics_frames(8)
+	check(MapProgress.explored_count(Game.state, "Relay") > 0, "entering a room should reveal around Rook")
+	var menu: MenuScreen = load("res://ui/menus/MapMenu.gd").new()
+	add_child(menu)
+	menu.open_menu()
+	await get_tree().process_frame
+	var view: MapView = menu.view
+	check(view != null and view.current_room == "Relay", "map should centre on the current room")
+	check(view.room_at(view.cursor) != null, "cursor starts inside the current room")
+	check(view.hover_text().contains("Relay"), "hover names the room: %s" % view.hover_text())
+	check(view.toggle_pin_at_cursor() and Game.state.map_pins.size() == 1, "pin placed at the cursor")
+	view.cursor = Vector2(-99999, -99999)
+	check(not view.toggle_pin_at_cursor(), "no pins outside known rooms")
+	check(MapMenu_completion().contains("The Relay"), "completion stats missing")
+	view.queue_redraw()
+	await get_tree().process_frame
+	menu.close_menu()
+	check(not get_tree().paused, "map should unpause on close")
+	menu.queue_free()
+	SceneRouter.current_room = null
+	SceneRouter.world_root = null
+	root.queue_free()
+	await physics_frames(2)
+
+
+func MapMenu_completion() -> String:
+	return load("res://ui/menus/MapMenu.gd").completion_text()
+
+
+func test_unknown_rooms_stay_hidden_until_base_map() -> void:
+	var view := MapView.new()
+	view.setup(map, Game.state, "Relay", Vector2.ZERO)
+	check(view.room_at(map.room("MarketRun").offset + Vector2(100, -50)) == null, "unvisited room must be hidden")
+	Game.set_flag("map_lowlight")
+	check(view.room_at(map.room("MarketRun").offset + Vector2(100, -50)) != null, "base map reveals outlines")
+	view.free()

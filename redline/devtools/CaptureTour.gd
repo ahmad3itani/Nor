@@ -265,4 +265,38 @@ func _ui_tour() -> void:
 	survey.close_menu()
 	Playtest.end_session("capture")
 	DirAccess.remove_absolute(Playtest.session_path)
+	await _map_shots(menus)
 	get_tree().quit()
+
+
+## M5 map: a half-explored profile (route floors swept, Market stash and
+## Stack unexplored), a pin, a dropped cache, the lens, Nix's base map.
+func _map_shots(menus: Node) -> void:
+	var map := Game.world_map
+	for id in ["Relay", "FloodedAlley", "MarketRun", "ApartmentStack"]:
+		var r := map.room(id)
+		Game.state.visited_rooms.append(r.room_path)
+		var b: Rect2 = WorldMapIndex.room_info(r.room_path)["bounds"]
+		var x := b.position.x
+		while x < b.end.x - (600.0 if id == "MarketRun" else 0.0):
+			for y in [-20.0, -140.0]:
+				if id == "ApartmentStack":
+					for fy in [-20.0, -210.0, -400.0]:
+						Game.map_reveal(r.room_path, Vector2(minf(x, 600), fy))
+				else:
+					Game.map_reveal(r.room_path, Vector2(x, y))
+			x += 64.0
+	Game.rest_at_anchor(map.room("Relay").room_path, "relay")
+	Game.set_flag("map_lowlight")
+	Game.set_flag("map_lens")
+	Game.toggle_pin("MarketRun", Vector2(1500, -150))
+	Game.state.dropped_scrap = {"room": map.room("FloodedAlley").room_path, "x": 900.0, "y": 0.0, "amount": 40}
+	EventBus.menu_requested.emit(&"map")
+	await _frames(5)
+	await _shot("u10_map")
+	var view: MapView = menus.get_node("MapMenu").view
+	view.zoom_index = 0
+	view.cursor = map.room("ApartmentStack").offset
+	await _frames(3)
+	await _shot("u11_map_zoomed_out")
+	(menus.get_node("MapMenu") as MenuScreen).close_menu()
