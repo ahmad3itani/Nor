@@ -170,6 +170,10 @@ pointing/emulate_touch_from_mouse=false
 2d_physics/layer_1="world"
 2d_physics/layer_2="player"
 2d_physics/layer_3="one_way"
+2d_physics/layer_4="enemy"
+2d_physics/layer_5="hurtbox_player"
+2d_physics/layer_6="hurtbox_enemy"
+2d_physics/layer_7="hazard"
 
 [physics]
 

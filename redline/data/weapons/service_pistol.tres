@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2_weapon"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+
+[sub_resource type="Resource" id="Proj"]
+script = ExtResource("3_proj")
+speed = 620.0
+lifetime = 0.55
+pellets = 1
+spread_deg = 0.0
+color = Color(1, 0.89, 0.54, 1)
+tracer_length = 10.0
+
+[sub_resource type="Resource" id="Shot"]
+script = ExtResource("1_attack")
+id = &"pistol_shot"
+startup = 0.0
+active = 0.0
+recovery = 0.0
+cancel_time = 0.0
+damage = 6.0
+poise_damage = 3.0
+knockback = Vector2(40, 0)
+hitstop = 0.02
+style_tag = &"pistol"
+style_points = 8.0
+reactor_gain = 0.5
+projectile = SubResource("Proj")
+hit_sfx = &"hit"
+
+[resource]
+script = ExtResource("2_weapon")
+id = &"service_pistol"
+display_name = "Service Pistol"
+kind = 1
+shot = SubResource("Shot")
+fire_interval = 0.14
+ammo_max = 10
+reload_time = 0.9
+ground_recoil = 15.0
+air_recoil = 30.0
+muzzle_offset = Vector2(9, -21)
+fire_sfx = &"shoot_pistol"

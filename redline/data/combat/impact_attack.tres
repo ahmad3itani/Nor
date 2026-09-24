@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"launched_impact"
+active = 0.01
+damage = 14.0
+poise_damage = 20.0
+knockback = Vector2(0, -120)
+hitstop = 0.07
+hitbox = Rect2(0, 0, 1, 1)
+cancel_time = 0.0
+camera_trauma = 0.2
+style_tag = &"environmental"
+style_points = 45.0
+reactor_gain = 3.0
+hit_sfx = &"hit_heavy"

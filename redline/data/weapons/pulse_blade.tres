@@ -1,0 +1,160 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2_weapon"]
+
+[sub_resource type="Resource" id="L1"]
+script = ExtResource("1_attack")
+id = &"blade_light_1"
+startup = 0.05
+active = 0.06
+recovery = 0.14
+cancel_time = 0.11
+evade_cancel_time = 0.05
+damage = 10.0
+poise_damage = 8.0
+knockback = Vector2(70, 0)
+hitstop = 0.05
+hitbox = Rect2(2, -30, 26, 22)
+style_tag = &"blade_light"
+style_points = 18.0
+lunge_speed = 70.0
+swing_sfx = &"slash"
+hit_sfx = &"hit"
+
+[sub_resource type="Resource" id="L2"]
+script = ExtResource("1_attack")
+id = &"blade_light_2"
+startup = 0.05
+active = 0.06
+recovery = 0.14
+cancel_time = 0.11
+evade_cancel_time = 0.05
+damage = 10.0
+poise_damage = 8.0
+knockback = Vector2(70, 0)
+hitstop = 0.05
+hitbox = Rect2(0, -32, 28, 24)
+style_tag = &"blade_light"
+style_points = 18.0
+lunge_speed = 70.0
+swing_sfx = &"slash"
+hit_sfx = &"hit"
+
+[sub_resource type="Resource" id="L3"]
+script = ExtResource("1_attack")
+id = &"blade_light_3"
+startup = 0.08
+active = 0.08
+recovery = 0.22
+cancel_time = 0.2
+evade_cancel_time = 0.05
+damage = 14.0
+poise_damage = 16.0
+knockback = Vector2(210, -90)
+hitstop = 0.08
+hitbox = Rect2(0, -34, 32, 30)
+style_tag = &"blade_finisher"
+style_points = 30.0
+lunge_speed = 110.0
+swing_sfx = &"slash"
+hit_sfx = &"hit_heavy"
+camera_trauma = 0.15
+
+[sub_resource type="Resource" id="Heavy"]
+script = ExtResource("1_attack")
+id = &"blade_heavy"
+startup = 0.16
+active = 0.08
+recovery = 0.3
+cancel_time = 0.28
+evade_cancel_time = 0.2
+damage = 22.0
+poise_damage = 30.0
+knockback = Vector2(300, -120)
+hitstop = 0.1
+hitbox = Rect2(0, -36, 38, 34)
+breaks_guard = true
+camera_trauma = 0.25
+style_tag = &"blade_heavy"
+style_points = 40.0
+reactor_gain = 2.0
+lunge_speed = 140.0
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[sub_resource type="Resource" id="Launcher"]
+script = ExtResource("1_attack")
+id = &"blade_launcher"
+startup = 0.1
+active = 0.08
+recovery = 0.24
+cancel_time = 0.16
+evade_cancel_time = 0.12
+damage = 12.0
+poise_damage = 30.0
+knockback = Vector2(20, -390)
+hitstop = 0.07
+hitbox = Rect2(-2, -44, 26, 44)
+camera_trauma = 0.12
+style_tag = &"blade_launcher"
+style_points = 35.0
+lunge_speed = 40.0
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[sub_resource type="Resource" id="AirLight"]
+script = ExtResource("1_attack")
+id = &"blade_air_light"
+startup = 0.04
+active = 0.06
+recovery = 0.12
+cancel_time = 0.1
+evade_cancel_time = 0.04
+damage = 8.0
+poise_damage = 8.0
+knockback = Vector2(40, -150)
+hitstop = 0.05
+hitbox = Rect2(-4, -38, 32, 36)
+style_tag = &"blade_air"
+style_points = 22.0
+lunge_speed = 0.0
+sets_air_velocity = true
+air_velocity_y = -60.0
+air_gravity_scale = 0.35
+swing_sfx = &"slash"
+
+[sub_resource type="Resource" id="AirHeavy"]
+script = ExtResource("1_attack")
+id = &"blade_air_heavy"
+startup = 0.08
+active = 0.1
+recovery = 0.2
+cancel_time = 0.18
+evade_cancel_time = 0.1
+damage = 16.0
+poise_damage = 24.0
+knockback = Vector2(90, 360)
+hitstop = 0.08
+hitbox = Rect2(-6, -22, 32, 34)
+breaks_guard = true
+camera_trauma = 0.2
+style_tag = &"blade_spike"
+style_points = 35.0
+lunge_speed = 0.0
+sets_air_velocity = true
+air_velocity_y = -20.0
+air_gravity_scale = 0.6
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[resource]
+script = ExtResource("2_weapon")
+id = &"pulse_blade"
+display_name = "Pulse Blade"
+kind = 0
+light_chain = Array[ExtResource("1_attack")]([SubResource("L1"), SubResource("L2"), SubResource("L3")])
+heavy = SubResource("Heavy")
+launcher = SubResource("Launcher")
+air_light = SubResource("AirLight")
+air_heavy = SubResource("AirHeavy")
