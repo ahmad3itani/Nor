@@ -218,7 +218,9 @@ func _begin_active() -> void:
 				Vector2(dir, 0), CombatLayers.PLAYER_HURTBOX)
 		EventBus.camera_shake_requested.emit(current_attack.camera_trauma)
 	elif proj:
-		attack_aim = _aim_at_target()
+		# lock_aim: the behavior froze the telegraph line; fire along it.
+		if not current_attack.lock_aim:
+			attack_aim = _aim_at_target()
 		var muzzle := global_position + Vector2(0, -data.body_size.y * 0.5)
 		var spread := proj.spread_deg
 		for i in proj.pellets:
@@ -281,8 +283,9 @@ func receive_hit(hit: HitInfo) -> int:
 		return CombatResult.IGNORED
 	last_hit = hit
 	var scale_stop := Settings.hitstop_scale
+	var poise_dmg := _poise_damage_of(hit)
 	if behavior.blocks(hit):
-		poise -= hit.attack.poise_damage * 0.5
+		poise -= poise_dmg * 0.5
 		velocity.x = signf(hit.knockback.x) * 50.0 / data.mass
 		flash_timer = 0.06
 		hitstop_timer = hit.attack.hitstop * 0.5 * scale_stop
@@ -295,7 +298,7 @@ func receive_hit(hit: HitInfo) -> int:
 	if ai == AI.STAGGER or ai == AI.LAUNCHED:
 		dmg *= 1.0 + hit.bonus_vs_staggered
 	health -= dmg
-	poise -= hit.attack.poise_damage
+	poise -= poise_dmg
 	var staggered := poise <= 0.0
 	if staggered:
 		poise = data.max_poise
@@ -324,6 +327,18 @@ func receive_hit(hit: HitInfo) -> int:
 		set_ai(AI.ENGAGE)
 	EventBus.enemy_damaged.emit(self, hit, CombatResult.HIT)
 	return CombatResult.HIT
+
+
+## Poise this hit removes: ranged hits scale by data.ranged_poise_scale, and
+## a downed enemy with poise_locked_while_down takes none (one knockdown per
+## poise bar, never a stun-lock).
+func _poise_damage_of(hit: HitInfo) -> float:
+	if data.poise_locked_while_down and (ai == AI.STAGGER or ai == AI.LAUNCHED):
+		return 0.0
+	var p := hit.attack.poise_damage
+	if hit.has_tag(&"ranged"):
+		p *= data.ranged_poise_scale
+	return p
 
 
 func _die(hit: HitInfo) -> void:

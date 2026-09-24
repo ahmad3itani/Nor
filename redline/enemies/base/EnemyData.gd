@@ -17,6 +17,12 @@ extends Resource
 ## Armored enemies shrug off most knockback unless staggered or launched.
 @export var armored: bool = false
 @export_range(0.0, 1.0) var armor_knockback_scale: float = 0.15
+## One knockdown per poise bar: while STAGGER or LAUNCHED, poise damage is
+## ignored, so a downed enemy can't be re-broken into a stun-lock (bosses).
+@export var poise_locked_while_down: bool = false
+## Multiplies poise damage from hits tagged &"ranged" (player shots), so a
+## gun can chip health without farming knockdowns (Collector: 0.3).
+@export var ranged_poise_scale: float = 1.0
 
 @export_group("Movement")
 @export var move_speed: float = 50.0
@@ -35,6 +41,9 @@ extends Resource
 @export var attacks: Array[AttackData] = []
 ## Pause between the end of one attack and the next wind-up.
 @export var attack_cooldown: float = 1.0
+## Shortest allowed opener wind-up (bible §17 readability). Bosses that must
+## build confidence (§23 first boss) raise it; validate() enforces it.
+@export var min_telegraph: float = 0.3
 ## Decision-making for ModularBehavior (M6 reusable modules). Bosses with
 ## bespoke behavior scripts leave it empty.
 @export var brain: EnemyBrain
@@ -47,6 +56,8 @@ extends Resource
 @export var reactor_reward: float = 12.0
 @export var style_value: float = 40.0
 @export var scrap_drop: int = 5
+## A district boss: EconomyAudit counts its drop under "boss", not per-clear.
+@export var boss: bool = false
 
 @export_group("Look")
 @export var color: Color = Color("c75b5b")
@@ -73,8 +84,8 @@ func validate() -> PackedStringArray:
 		errors.append_array(a.validate())
 		# Readability rule (bible §17): enemy wind-ups must be long enough to see.
 		# Follow-ups may be quicker: the first hit already telegraphed the combo.
-		if a.startup < 0.3:
-			errors.append("%s/%s: telegraph (startup) shorter than 0.3s" % [id, a.id])
+		if a.startup < min_telegraph:
+			errors.append("%s/%s: telegraph (startup) shorter than %.2fs" % [id, a.id, min_telegraph])
 		var f := a.follow_up
 		while f:
 			errors.append_array(f.validate())

@@ -57,6 +57,10 @@ extends Resource
 @export_group("Projectile")
 ## Null for melee. When set, the attack fires projectiles instead of using the hitbox.
 @export var projectile: ProjectileData
+## Enemy shots: fire along the enemy's `attack_aim` as the behavior left it
+## (a telegraph line that freezes before the shot) instead of re-aiming at
+## fire time. EnemyVisual then draws that same line.
+@export var lock_aim: bool = false
 
 @export_group("Feedback")
 @export var swing_sfx: StringName = &""

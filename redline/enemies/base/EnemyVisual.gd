@@ -95,8 +95,12 @@ func _draw_telegraph() -> void:
 	draw_rect(Rect2(head + Vector2(-1, 0), Vector2(2, 5)), c)
 	draw_rect(Rect2(head + Vector2(-1, 6), Vector2(2, 2)), c)
 	if attack.projectile:
+		# Ground waves ignore aim (their tell is the behavior's floor glow);
+		# lock_aim shots draw the line they will actually fire along.
+		if attack.projectile.ground_wave:
+			return
 		var from := Vector2(0, -enemy.data.body_size.y * 0.5)
-		var aim := enemy._aim_at_target()
+		var aim := enemy.attack_aim if attack.lock_aim else enemy._aim_at_target()
 		draw_line(from, from + aim * 220.0 * progress, c, 1.0)
 	else:
 		var r := attack.world_hitbox(enemy.global_position, enemy.facing)

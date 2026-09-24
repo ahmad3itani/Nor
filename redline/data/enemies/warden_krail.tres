@@ -144,6 +144,7 @@ attack_cooldown = 0.7
 impact_speed = 9999.0
 reactor_reward = 60.0
 scrap_drop = 150
+boss = true
 style_value = 250.0
 color = Color(0.36, 0.34, 0.48, 1)
 elite = true
