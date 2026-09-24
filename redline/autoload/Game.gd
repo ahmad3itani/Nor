@@ -112,6 +112,15 @@ func add_scrap(amount: int) -> void:
 	EventBus.scrap_changed.emit(state.total_scrap())
 
 
+## Circuit stat multiplier (1.0 when no equipped Circuit touches the stat).
+func circuit_mult(stat: StringName) -> float:
+	return 1.0
+
+
+func scrap_multiplier() -> float:
+	return circuit_mult(&"scrap_gain")
+
+
 func is_collected(id: String) -> bool:
 	return state.collected.has(id)
 

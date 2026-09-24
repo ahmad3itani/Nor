@@ -41,6 +41,7 @@ extends Resource
 @export_group("Rewards")
 @export var reactor_reward: float = 12.0
 @export var style_value: float = 40.0
+@export var scrap_drop: int = 5
 
 @export_group("Look")
 @export var color: Color = Color("c75b5b")

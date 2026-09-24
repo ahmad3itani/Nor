@@ -290,6 +290,8 @@ func _die(hit: HitInfo) -> void:
 	hurtbox.set_deferred(&"monitorable", false)
 	hurtbox.collision_layer = 0
 	AudioManager.play_sfx(&"enemy_die")
+	if data.scrap_drop > 0:
+		ScrapPickup.burst(get_parent(), global_position + Vector2(0, -data.body_size.y * 0.5), data.scrap_drop)
 	EventBus.camera_shake_requested.emit(0.12)
 	EventBus.enemy_killed.emit(self, hit)
 	died.emit(self)

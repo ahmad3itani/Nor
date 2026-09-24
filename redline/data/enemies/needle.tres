@@ -33,6 +33,7 @@ body_size = Vector2(12, 26)
 aggro_range = 200.0
 attack_cooldown = 1.1
 reactor_reward = 12.0
+scrap_drop = 5
 style_value = 40.0
 color = Color(0.82, 0.38, 0.38, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])

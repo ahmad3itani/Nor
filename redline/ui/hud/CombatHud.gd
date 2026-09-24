@@ -21,6 +21,10 @@ var _banner: String = ""
 var _banner_sub: String = ""
 var _banner_time: float = 0.0
 const BANNER_SECONDS := 2.6
+const LORE_SECONDS := 8.0
+var _lore_title: String = ""
+var _lore_text: String = ""
+var _lore_time: float = 0.0
 
 
 func _ready() -> void:
@@ -55,6 +59,12 @@ func _ready() -> void:
 	EventBus.hint_requested.connect(func(t: String, s: float) -> void:
 		_hint = t
 		_hint_time = s)
+	EventBus.memory_fragment_found.connect(func(f: Resource) -> void:
+		var frag := f as MemoryFragmentData
+		if frag:
+			_lore_title = "MEMORY FRAGMENT  —  " + frag.title
+			_lore_text = frag.text
+			_lore_time = LORE_SECONDS)
 	EventBus.room_entered.connect(func(district: String, room_name: String) -> void:
 		_banner = district.to_upper()
 		_banner_sub = room_name
@@ -66,6 +76,7 @@ func _process(delta: float) -> void:
 	_rank_flash = maxf(_rank_flash - delta, 0.0)
 	_hint_time = maxf(_hint_time - delta, 0.0)
 	_banner_time = maxf(_banner_time - delta, 0.0)
+	_lore_time = maxf(_lore_time - delta, 0.0)
 	var target_alpha := 0.0
 	if _critical:
 		target_alpha = 0.35 if Settings.flash_reduction else 0.25 + 0.3 * (0.5 + 0.5 * sin(_time * 7.0))
@@ -127,6 +138,15 @@ func _draw_hud() -> void:
 	if _hint_time > 0.0:
 		var c := Color(1, 1, 1, clampf(_hint_time * 2.0, 0.0, 1.0))
 		_draw_centered(font, _hint, view.y - 58, FONT_SIZE + 1, c)
+
+	# Memory Fragment card: short, readable, never pauses play (bible §2.7 story through play).
+	if _lore_time > 0.0:
+		var a := clampf(minf(_lore_time, LORE_SECONDS - _lore_time) * 3.0, 0.0, 1.0)
+		var card := Rect2(view.x * 0.5 - 150, 90, 300, 58)
+		_root.draw_rect(card, Color(0.04, 0.03, 0.07, 0.85 * a))
+		_root.draw_rect(Rect2(card.position, Vector2(2, card.size.y)), Color(0.62, 0.85, 1.0, a))
+		_root.draw_string(font, card.position + Vector2(8, 11), _lore_title, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 12, FONT_SIZE, Color(0.62, 0.85, 1.0, a))
+		_root.draw_multiline_string(font, card.position + Vector2(8, 22), _lore_text, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 14, FONT_SIZE, -1, Color(1, 1, 1, a))
 
 	# Room banner on entry.
 	if _banner_time > 0.0:

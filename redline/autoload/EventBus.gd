@@ -50,6 +50,9 @@ signal interact_prompt_changed(text: String)
 ## A short contextual hint (bible §42: tutorial text short and contextual).
 signal hint_requested(text: String, seconds: float)
 signal anchor_rested(anchor: Node)
+signal memory_fragment_found(fragment: Resource)
+## A breakable secret wall or hidden route was opened.
+signal secret_found(id: String)
 signal player_healed(health: int)
 ## Tuning panel asks to discard live edits and reload the active preset from disk.
 signal movement_config_reload_requested
