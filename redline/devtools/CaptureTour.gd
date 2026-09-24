@@ -1,6 +1,6 @@
 extends Node
 ## Renders a scripted tour of the Movement Lab to PNGs for reports/PR review.
-##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=combat]
+##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=movement|combat|slice|ui|undercity]
 ## Needs a real (or virtual, e.g. xvfb-run) display; headless has no renderer.
 
 const MAIN := preload("res://Main.tscn")
@@ -25,6 +25,8 @@ func _ready() -> void:
 		_combat_tour.call_deferred()
 	elif _tour_name == "slice":
 		_slice_tour.call_deferred()
+	elif _tour_name == "undercity":
+		_undercity_tour.call_deferred()
 	elif _tour_name == "ui":
 		_ui_tour.call_deferred()
 	else:
@@ -206,6 +208,59 @@ func _slice_tour() -> void:
 	await _frames(150)
 	await _shot("s_boss_fight")
 	get_tree().quit()
+
+
+## M7: one shot per spawn marker of every Undercity room (for the visual
+## thesis review), plus the Collector mid-fight once its arena exists.
+func _undercity_tour() -> void:
+	await _frames(5)
+	Game.new_game()
+	Game.set_flag("core_hud_hidden", false)
+	var dir := "res://world/rooms/undercity"
+	var files := DirAccess.get_files_at(dir)
+	files.sort()
+	for f in files:
+		if not f.ends_with(".tscn"):
+			continue
+		var probe := (load("%s/%s" % [dir, f]) as PackedScene).instantiate()
+		var ids: Array[StringName] = []
+		for m in probe.find_children("*", "SpawnMarker", true, false):
+			ids.append((m as SpawnMarker).spawn_id)
+		probe.free()
+		for id in ids:
+			SceneRouter.goto_room("%s/%s" % [dir, f], id)
+			(SceneRouter.current_room as Room).player.input_source = _input
+			await _frames(30)
+			await _shot("uc_%s_%s" % [f.get_basename(), id])
+	# Built from parts so the reference scanner does not flag the room before
+	# it exists (it lands with the Undercity world skeleton).
+	var bay := "%s/%s.tscn" % [dir, "CollectorBay"]
+	if not _has_collector_arena(bay):
+		print("PENDING: CollectorBay has no Collector arena yet")
+		get_tree().quit()
+		return
+	SceneRouter.goto_room(bay, &"from_lift")
+	var room := SceneRouter.current_room as Room
+	room.player.input_source = _input
+	_input.move_x = 1
+	await _frames(60)
+	_input.move_x = 0
+	await _frames(150)
+	await _shot("uc_collector_fight")
+	get_tree().quit()
+
+
+func _has_collector_arena(path: String) -> bool:
+	if not ResourceLoader.exists(path):
+		return false
+	var probe := (load(path) as PackedScene).instantiate()
+	var found := false
+	for n in probe.find_children("*", "BossArena", true, false):
+		var boss := (n as BossArena).get_node_or_null((n as BossArena).boss_path) as Enemy
+		if boss and boss.data and boss.data.id == &"collector_drone":
+			found = true
+	probe.free()
+	return found
 
 
 ## Menus and dialogue as a player sees them (title -> Relay -> menus).
