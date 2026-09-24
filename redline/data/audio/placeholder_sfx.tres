@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="SfxBank" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
+[ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
+
+[sub_resource type="Resource" id="Sfx_jump"]
+script = ExtResource("1_def")
+id = &"jump"
+wave = 0
+duration = 0.09
+freq_start = 280.0
+freq_end = 620.0
+noise_mix = 0.0
+tone = 0.35
+volume_db = -14.0
+pitch_jitter = 0.06
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_jump_slide"]
+script = ExtResource("1_def")
+id = &"jump_slide"
+wave = 0
+duration = 0.11
+freq_start = 220.0
+freq_end = 520.0
+noise_mix = 0.15
+tone = 0.3
+volume_db = -14.0
+pitch_jitter = 0.05
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_land_soft"]
+script = ExtResource("1_def")
+id = &"land_soft"
+wave = 3
+duration = 0.06
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.12
+volume_db = -12.0
+pitch_jitter = 0.1
+cooldown = 0.05
+
+[sub_resource type="Resource" id="Sfx_land_hard"]
+script = ExtResource("1_def")
+id = &"land_hard"
+wave = 0
+duration = 0.16
+freq_start = 140.0
+freq_end = 45.0
+noise_mix = 0.55
+tone = 0.15
+volume_db = -6.0
+pitch_jitter = 0.05
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_slide"]
+script = ExtResource("1_def")
+id = &"slide"
+wave = 3
+duration = 0.26
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.25
+volume_db = -16.0
+pitch_jitter = 0.08
+cooldown = 0.15
+
+[sub_resource type="Resource" id="Sfx_dodge"]
+script = ExtResource("1_def")
+id = &"dodge"
+wave = 1
+duration = 0.13
+freq_start = 900.0
+freq_end = 260.0
+noise_mix = 0.35
+tone = 0.45
+volume_db = -12.0
+pitch_jitter = 0.05
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_dash"]
+script = ExtResource("1_def")
+id = &"dash"
+wave = 0
+duration = 0.12
+freq_start = 180.0
+freq_end = 1100.0
+noise_mix = 0.4
+tone = 0.4
+volume_db = -11.0
+pitch_jitter = 0.04
+cooldown = 0.0
+
+[sub_resource type="Resource" id="Sfx_respawn"]
+script = ExtResource("1_def")
+id = &"respawn"
+wave = 2
+duration = 0.18
+freq_start = 330.0
+freq_end = 880.0
+noise_mix = 0.0
+tone = 0.6
+volume_db = -16.0
+pitch_jitter = 0.0
+cooldown = 0.0
+
+[resource]
+script = ExtResource("2_bank")
+sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn")])

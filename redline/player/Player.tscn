@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://player/controller/Player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/movement/default_movement.tres" id="2_config"]
 [ext_resource type="Script" path="res://player/animation/PlayerPlaceholderVisual.gd" id="3_visual"]
+[ext_resource type="Script" path="res://player/animation/PlayerFeedback.gd" id="4_feedback"]
 
 [sub_resource type="RectangleShape2D" id="Rect_stand"]
 size = Vector2(12, 34)
@@ -32,3 +33,6 @@ collision_mask = 1
 
 [node name="Visual" type="Node2D" parent="."]
 script = ExtResource("3_visual")
+
+[node name="Feedback" type="Node" parent="."]
+script = ExtResource("4_feedback")
