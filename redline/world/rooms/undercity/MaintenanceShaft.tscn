@@ -1,0 +1,72 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="MaintenanceShaft" type="Node2D"]
+script = ExtResource("room")
+room_name = "Maintenance Shaft"
+bounds = Rect2(-64, -980, 704, 1076)
+draw_grid = false
+world_room = true
+district_name = "Undercity"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Spawn_from_medical" type="Marker2D" parent="Spawns"]
+position = Vector2(-20, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_medical"
+is_default = true
+
+[node name="Block1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-52, 0)
+script = ExtResource("block")
+size = Vector2(64, 16)
+
+[node name="Spawn_from_pursuit" type="Marker2D" parent="Spawns"]
+position = Vector2(596, -720)
+script = ExtResource("spawn")
+spawn_id = &"from_pursuit"
+facing = -1
+
+[node name="Block2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(564, -720)
+script = ExtResource("block")
+size = Vector2(64, 16)
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(-64, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/undercity/MedicalRuin.tscn"
+target_entry = &"from_shaft"
+
+[node name="Exit2" type="Area2D" parent="Triggers"]
+position = Vector2(624, -816)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/undercity/FirstPursuit.tscn"
+target_entry = &"from_shaft"

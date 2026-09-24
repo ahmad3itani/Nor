@@ -81,10 +81,10 @@ position = Vector2(-48, -1250)
 script = ExtResource("block")
 size = Vector2(672, 40)
 
-[node name="Spawn_from_roofs" type="Marker2D" parent="Spawns"]
+[node name="Spawn_from_rainline" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 0)
 script = ExtResource("spawn")
-spawn_id = &"from_roofs"
+spawn_id = &"from_rainline"
 is_default = true
 
 [node name="Spawn_from_lift" type="Marker2D" parent="Spawns"]
@@ -102,7 +102,7 @@ facing = -1
 position = Vector2(-64, -96)
 script = ExtResource("exit")
 size = Vector2(16, 96)
-target_room = "res://world/rooms/lowlight/NeonRoofs.tscn"
+target_room = "res://world/rooms/lowlight/RainlineChase.tscn"
 target_entry = &"from_bell"
 
 [node name="Exit2" type="Area2D" parent="Triggers"]

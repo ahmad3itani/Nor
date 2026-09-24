@@ -42,10 +42,10 @@ func test_available_in_debug_and_lists_every_entry() -> void:
 func test_teleport_moves_to_room_entry() -> void:
 	SceneRouter.goto_room("res://world/rooms/lowlight/Relay.tscn", &"start")
 	await physics_frames(3)
-	DevActions.teleport("res://world/rooms/lowlight/NeonRoofs.tscn", "from_bell")
+	DevActions.teleport("res://world/rooms/lowlight/NeonRoofs.tscn", "from_power")
 	check(await _arrive("res://world/rooms/lowlight/NeonRoofs.tscn"), "teleport did not arrive")
 	var p := (SceneRouter.current_room as Room).player
-	check(p.position.x > 2000.0, "should arrive at the from_bell entry (x %.0f)" % p.position.x)
+	check(p.position.x > 2000.0, "should arrive at the from_power entry (x %.0f)" % p.position.x)
 
 
 func test_unlock_all_profile() -> void:

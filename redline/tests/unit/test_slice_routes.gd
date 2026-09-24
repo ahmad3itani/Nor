@@ -54,6 +54,17 @@ func test_relay_to_alley() -> void:
 	await _run_room("Relay.tscn", &"start", [["run", 980], ["exit", 1]], "FloodedAlley")
 
 
+## The gallery door (M7): two 48 px one-way steps up to the balcony, then
+## out through the upper left door, down into the Undercity's Escape Tunnel.
+func test_relay_to_undercity() -> void:
+	await _run_room("Relay.tscn", &"start", [
+		["run", 178], ["jump", 178], ["jump", 112], ["jump", 30], ["exit", -1],
+	], "EscapeTunnel")
+	var room := SceneRouter.current_room as Room
+	if room.name == "EscapeTunnel":
+		check(room.player.global_position.distance_to(Vector2(1956, -240)) < 40.0, "should arrive at from_relay (at %s)" % room.player.global_position)
+
+
 func test_flooded_alley_route_and_fragment() -> void:
 	await _run_room("FloodedAlley.tscn", &"from_relay", [
 		["run", 440], ["slide", 720], ["run", 1282], ["attack", 3], ["run", 1368], ["run", 1230],
@@ -90,7 +101,7 @@ func test_neon_roofs_slide_jump_gate_and_shard() -> void:
 		["run", 370], ["runjump", 396, 520], ["slidejump", 762, 900], ["run", 1150], ["runjump", 1176, 1300],
 		["run", 1430], ["jump", 1430], ["jump", 1520], ["dodgejump", 1600, 1774], ["run", 1830],
 		["run", 1990], ["runjump", 1996, 2130], ["run", 2400], ["exit", 1],
-	], "BellTower")
+	], "PowerBlock")
 	check(Game.is_collected("cs_roofs"), "roof core shard not collected")
 
 
@@ -110,7 +121,7 @@ func test_early_run_jump_falls_into_the_well_and_climbs_back() -> void:
 
 
 func test_bell_tower_climb_lever_and_office() -> void:
-	await _run_room("BellTower.tscn", &"from_roofs", [
+	await _run_room("BellTower.tscn", &"from_rainline", [
 		["run", 130], ["jump", 130], ["jump", 200], ["jump", 130], ["jump", 180], ["jump", 262],
 		["run", 530], ["jump", 530], ["jump", 460], ["jump", 530], ["jump", 450], ["jump", 370],
 		["run", 30], ["interact"],

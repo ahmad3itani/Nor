@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/rooms/FlagDeclaration.gd" id="flagdecl"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
+
+[node name="SmugglerRoute" type="Node2D"]
+script = ExtResource("room")
+room_name = "Smuggler Route"
+bounds = Rect2(-64, -540, 2500, 700)
+draw_grid = false
+world_room = true
+district_name = "Lowlight"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Spawn_from_power" type="Marker2D" parent="Spawns"]
+position = Vector2(2380, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_power"
+is_default = true
+facing = -1
+
+[node name="Block1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2348, 0)
+script = ExtResource("block")
+size = Vector2(64, 16)
+
+[node name="Spawn_from_stack" type="Marker2D" parent="Spawns"]
+position = Vector2(20, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_stack"
+
+[node name="Block2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-12, 0)
+script = ExtResource("block")
+size = Vector2(64, 16)
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(2420, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/PowerBlock.tscn"
+target_entry = &"from_smuggler"
+
+[node name="Exit2" type="Area2D" parent="Triggers"]
+position = Vector2(-64, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/ApartmentStack.tscn"
+target_entry = &"from_smuggler"
+
+[node name="FlagDeclaration" type="Node" parent="Triggers"]
+script = ExtResource("flagdecl")
+produces = PackedStringArray("shortcut_smuggler_route")

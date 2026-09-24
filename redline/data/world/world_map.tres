@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldMapData" load_steps=10 format=3]
+[gd_resource type="Resource" script_class="WorldMapData" load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://world/map/WorldMapData.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/map/MapRoomData.gd" id="2_room"]
@@ -37,15 +37,86 @@ offset = Vector2(6104, -668)
 script = ExtResource("2_room")
 room_path = "res://world/rooms/lowlight/BellTower.tscn"
 district = "lowlight"
-offset = Vector2(8604, -758)
+offset = Vector2(15228, -384)
 
 [sub_resource type="Resource" id="r6"]
 script = ExtResource("2_room")
 room_path = "res://world/rooms/lowlight/WardenTower.tscn"
 district = "lowlight"
-offset = Vector2(9308, -1814)
+offset = Vector2(15932, -1440)
+
+[sub_resource type="Resource" id="r7"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/lowlight/PowerBlock.tscn"
+district = "lowlight"
+offset = Vector2(8604, -768)
+
+[sub_resource type="Resource" id="r8"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/lowlight/SecurityStation.tscn"
+district = "lowlight"
+offset = Vector2(9692, 0)
+
+[sub_resource type="Resource" id="r9"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/lowlight/RainlineChase.tscn"
+district = "lowlight"
+offset = Vector2(11004, -384)
+
+[sub_resource type="Resource" id="r10"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/lowlight/SmugglerRoute.tscn"
+district = "lowlight"
+offset = Vector2(6104, 0)
+
+[sub_resource type="Resource" id="r11"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/Wake.tscn"
+district = "undercity"
+offset = Vector2(-11584, 1392)
+
+[sub_resource type="Resource" id="r12"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/MedicalRuin.tscn"
+district = "undercity"
+offset = Vector2(-10240, 1392)
+
+[sub_resource type="Resource" id="r13"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/MaintenanceShaft.tscn"
+district = "undercity"
+offset = Vector2(-8176, 1392)
+
+[sub_resource type="Resource" id="r14"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/FirstPursuit.tscn"
+district = "undercity"
+offset = Vector2(-7472, 672)
+
+[sub_resource type="Resource" id="r15"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/BrokenLift.tscn"
+district = "undercity"
+offset = Vector2(-3248, 672)
+
+[sub_resource type="Resource" id="r16"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/CollectorBay.tscn"
+district = "undercity"
+offset = Vector2(-2608, 96)
+
+[sub_resource type="Resource" id="r17"]
+script = ExtResource("2_room")
+room_path = "res://world/rooms/undercity/EscapeTunnel.tscn"
+district = "undercity"
+offset = Vector2(-2064, 96)
 
 [resource]
 script = ExtResource("1_map")
-rooms = Array[ExtResource("2_room")]([SubResource("r0"), SubResource("r1"), SubResource("r2"), SubResource("r3"), SubResource("r4"), SubResource("r5"), SubResource("r6")])
+rooms = Array[ExtResource("2_room")]([SubResource("r0"), SubResource("r1"), SubResource("r2"), SubResource("r3"), SubResource("r4"), SubResource("r5"), SubResource("r6"), SubResource("r7"), SubResource("r8"), SubResource("r9"), SubResource("r10"), SubResource("r11"), SubResource("r12"), SubResource("r13"), SubResource("r14"), SubResource("r15"), SubResource("r16"), SubResource("r17")])
 transit_links = PackedStringArray("Relay>BellTower", "BellTower>Relay", "WardenTower>Relay")
+district_names = {
+"lowlight": "Lowlight",
+"relay": "The Relay",
+"undercity": "Undercity"
+}

@@ -61,7 +61,7 @@ size = Vector2(16, 96)
 [node name="WallRight" type="StaticBody2D" parent="Geometry"]
 position = Vector2(624, -768)
 script = ExtResource("block")
-size = Vector2(16, 768)
+size = Vector2(16, 672)
 
 [node name="Floor0" type="StaticBody2D" parent="Geometry"]
 position = Vector2(-48, 0)
@@ -80,6 +80,12 @@ script = ExtResource("spawn")
 spawn_id = &"from_roofs"
 facing = -1
 
+[node name="Spawn_from_smuggler" type="Marker2D" parent="Spawns"]
+position = Vector2(580, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_smuggler"
+facing = -1
+
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
 script = ExtResource("exit")
@@ -92,6 +98,13 @@ position = Vector2(624, -864)
 script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/NeonRoofs.tscn"
+target_entry = &"from_stack"
+
+[node name="Exit3" type="Area2D" parent="Triggers"]
+position = Vector2(624, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/SmugglerRoute.tscn"
 target_entry = &"from_stack"
 
 [node name="Hint1" type="Area2D" parent="Triggers"]

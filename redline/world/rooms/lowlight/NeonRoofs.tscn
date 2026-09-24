@@ -108,10 +108,10 @@ script = ExtResource("spawn")
 spawn_id = &"from_stack"
 is_default = true
 
-[node name="Spawn_from_bell" type="Marker2D" parent="Spawns"]
+[node name="Spawn_from_power" type="Marker2D" parent="Spawns"]
 position = Vector2(2380, -90)
 script = ExtResource("spawn")
-spawn_id = &"from_bell"
+spawn_id = &"from_power"
 facing = -1
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
@@ -125,7 +125,7 @@ target_entry = &"from_roofs"
 position = Vector2(2420, -186)
 script = ExtResource("exit")
 size = Vector2(16, 96)
-target_room = "res://world/rooms/lowlight/BellTower.tscn"
+target_room = "res://world/rooms/lowlight/PowerBlock.tscn"
 target_entry = &"from_roofs"
 
 [node name="Hint1" type="Area2D" parent="Triggers"]
