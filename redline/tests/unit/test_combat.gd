@@ -279,3 +279,22 @@ func test_dodge_iframes_evade_hits() -> void:
 	var result := player.receive_hit(hit)
 	check(result == CombatResult.PERFECT_EVADE or result == CombatResult.EVADED, "dodge should evade, got %s" % CombatResult.name_of(result))
 	check(player.combat.health == player.combat.config.max_health, "damage leaked through i-frames")
+
+
+func test_point_blank_shot_hits_overlapping_enemy() -> void:
+	# Muzzle starts inside the enemy's hurtbox; the shot must still land.
+	var e := _enemy(NEEDLE, Vector2(8, -2))
+	await physics_frames(3)
+	input.press_ranged()
+	await physics_frames(4)
+	check(e.health < e.data.max_health, "point-blank pistol shot missed an overlapping enemy")
+
+
+func test_point_blank_when_shooter_center_inside_enemy() -> void:
+	# Player stands fully inside a (rear-facing) shield: the shot must still register.
+	var e := _enemy(SHIELD, Vector2(2, -2))
+	e.facing = 1  # guard faces away from the shot's origin side
+	await physics_frames(3)
+	input.press_ranged()
+	await physics_frames(4)
+	check(e.health < e.data.max_health or e.last_hit != null, "shot from inside the enemy registered nothing")
