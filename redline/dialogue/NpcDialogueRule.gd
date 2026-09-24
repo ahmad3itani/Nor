@@ -5,6 +5,9 @@ extends Resource
 
 @export var requires_flags: PackedStringArray = []
 @export var forbids_flags: PackedStringArray = []
+## Extra Game.check_condition expressions (M5), e.g. "atleast:talks_orr:3"
+## for relationship lines, "ability:dash", "collected:cs_market".
+@export var requires_conditions: PackedStringArray = []
 @export var dialogue: DialogueData
 
 
@@ -14,5 +17,8 @@ func matches() -> bool:
 			return false
 	for f in forbids_flags:
 		if Game.has_flag(f):
+			return false
+	for c in requires_conditions:
+		if not Game.check_condition(c):
 			return false
 	return true

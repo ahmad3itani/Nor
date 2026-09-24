@@ -73,5 +73,6 @@ dialogue = SubResource("mara_shop")
 script = ExtResource("profile")
 npc_id = "mara"
 display_name = "Mara"
+map_label = "Mechanic"
 color = Color(0.78, 0.5, 0.38, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_2")])

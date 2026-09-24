@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
 [ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
 [ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
@@ -105,6 +106,13 @@ position = Vector2(415, -96)
 script = ExtResource("collect")
 persist_id = "cs_alley_dash"
 kind = 2
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(300, -120)
+script = ExtResource("marker")
+kind = 0
+label = "Too wide to jump"
+resolved_when = "ability:dash"
 
 [node name="Hint1" type="Area2D" parent="Triggers"]
 position = Vector2(60, -200)

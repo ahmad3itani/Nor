@@ -106,8 +106,8 @@ func flag_int(id: String) -> int:
 
 
 ## Small condition language shared by map markers and world-state switches:
-## "flag:x", "ability:dash", "collected:id", "" (always true); prefix "!" to
-## negate. Keeps world consequences in data instead of one-off scripts.
+## "flag:x", "ability:dash", "collected:id", "atleast:flag:n" (int flags such
+## as talk counts), "" (always true); prefix "!" to negate. Keeps world consequences in data instead of one-off scripts.
 func check_condition(expr: String) -> bool:
 	if expr == "":
 		return true
@@ -122,6 +122,8 @@ func check_condition(expr: String) -> bool:
 			return arg in abilities and bool(abilities.get(arg))
 		"collected":
 			return is_collected(arg)
+		"atleast":
+			return flag_int(arg) >= int(expr.get_slice(":", 2))
 	push_warning("Game.check_condition: unknown condition '%s'" % expr)
 	return false
 

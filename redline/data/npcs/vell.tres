@@ -52,5 +52,6 @@ dialogue = SubResource("vell_shop")
 script = ExtResource("profile")
 npc_id = "vell"
 display_name = "Vell"
+map_label = "Circuit broker"
 color = Color(0.5, 0.72, 0.6, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])

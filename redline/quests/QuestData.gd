@@ -13,6 +13,8 @@ extends Resource
 @export_group("Reward")
 @export var reward_scrap: int = 0
 @export var reward_circuit: String = ""
+## Flags set on completion as a reward (e.g. a map upgrade).
+@export var reward_flags: PackedStringArray = []
 ## Set when the quest completes (world changes key off this, e.g. the Relay radio).
 @export var complete_flag: String = ""
 

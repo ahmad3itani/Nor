@@ -30,5 +30,8 @@ func rebuild() -> void:
 	add_label("Secrets %d/%d    Core Shards %d    Scrap %d    Time %s    Deaths %d" % [
 		SliceStats.secrets_found(), (t["secret_ids"] as Array).size(), Game.state.core_shards,
 		Game.state.total_scrap(), SliceStats.format_time(Game.state.play_time_sec), Game.state.deaths], UiTheme.MUTED)
+	var completion: String = load("res://ui/menus/MapMenu.gd").completion_text()
+	if completion != "":
+		add_label(completion, UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
 	add_button("Close", close_menu)
 	focus_index(0)

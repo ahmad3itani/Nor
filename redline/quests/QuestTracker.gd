@@ -65,9 +65,13 @@ func evaluate(changed_flag: String = "") -> void:
 
 
 func _complete(q: QuestData) -> void:
+	# Mark complete *first*: rewards can set flags, which re-enters evaluate()
+	# and would otherwise pay the quest out twice.
+	Game.set_flag(q.complete_flag)
 	Game.add_scrap(q.reward_scrap)
 	if q.reward_circuit != "":
 		Game.grant_circuit(q.reward_circuit)
-	Game.set_flag(q.complete_flag)
+	for f in q.reward_flags:
+		Game.set_flag(f)
 	AudioManager.play_sfx(&"quest_complete")
 	EventBus.hint_requested.emit("QUEST COMPLETE  —  %s" % q.title, 3.5)

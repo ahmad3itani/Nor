@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="ShopData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://progression/ShopData.gd" id="1"]
+[ext_resource type="Script" path="res://progression/ShopItem.gd" id="2"]
+
+[sub_resource type="Resource" id="i0"]
+script = ExtResource("2")
+kind = 2
+item_id = "map_lowlight"
+price = 40
+display_name = "Lowlight base map"
+description = "Every street outline in Lowlight. Filling in the details is on you."
+upgrade_flag = "map_lowlight"
+max_purchases = 1
+
+[sub_resource type="Resource" id="i1"]
+script = ExtResource("2")
+kind = 2
+item_id = "transit_pass"
+price = 60
+display_name = "Transit pass"
+description = "Ride the old lines between any Anchors you have rested at."
+upgrade_flag = "transit_pass"
+max_purchases = 1
+
+[sub_resource type="Resource" id="i2"]
+script = ExtResource("2")
+kind = 2
+item_id = "map_lens"
+price = 90
+display_name = "Surveyor's lens"
+description = "Marks map rooms that still hide something. Not where - that's the fun part."
+upgrade_flag = "map_lens"
+max_purchases = 1
+
+[resource]
+script = ExtResource("1")
+id = &"shop_nix"
+title = "Nix  —  Cartographer"
+items = Array[ExtResource("2")]([SubResource("i0"), SubResource("i1"), SubResource("i2")])

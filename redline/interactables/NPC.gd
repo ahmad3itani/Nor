@@ -22,6 +22,9 @@ func prompt_text() -> String:
 
 
 func interact(_player: Player) -> void:
+	# NPC state (bible §19): how often you've talked is a flag rules can use.
+	var talks := "talks_%s" % profile.npc_id
+	Game.set_flag(talks, Game.flag_int(talks) + 1)
 	var d := profile.pick_dialogue()
 	if d:
 		EventBus.dialogue_requested.emit(d, profile.display_name)

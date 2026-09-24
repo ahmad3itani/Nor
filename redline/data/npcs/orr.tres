@@ -101,5 +101,6 @@ dialogue = SubResource("orr_intro")
 script = ExtResource("profile")
 npc_id = "orr"
 display_name = "Orr"
+map_label = "Radio"
 color = Color(0.55, 0.62, 0.78, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_2"), SubResource("rule_3")])

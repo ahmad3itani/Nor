@@ -7,11 +7,17 @@
 script = ExtResource("2")
 description = "Realign the three signal repeaters in Lowlight."
 complete_flags = PackedStringArray("repeater_market", "repeater_stack", "repeater_bell")
+map_room = "MarketRun"
+map_pos = Vector2(1500, -150)
+map_note = "Orr: first repeater, over the stalls"
 
 [sub_resource type="Resource" id="s2"]
 script = ExtResource("2")
 description = "Report back to Orr at the Relay."
 complete_flags = PackedStringArray("dead_air_reported")
+map_room = "Relay"
+map_pos = Vector2(220, -20)
+map_note = "Orr"
 
 [resource]
 script = ExtResource("1")

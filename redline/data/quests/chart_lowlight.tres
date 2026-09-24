@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://quests/QuestData.gd" id="1"]
+[ext_resource type="Script" path="res://quests/QuestStage.gd" id="2"]
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+description = "Explore Lowlight until Nix's map is mostly filled in (see the map's explored %)."
+complete_flags = PackedStringArray("map_charted_lowlight")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("2")
+description = "Bring the survey back to Nix at the Relay."
+complete_flags = PackedStringArray("chart_lowlight_reported")
+map_room = "Relay"
+map_pos = Vector2(330, -20)
+map_note = "Nix"
+
+[resource]
+script = ExtResource("1")
+id = "chart_lowlight"
+title = "Chart Lowlight"
+giver = "Nix"
+start_flag = "quest_chart_started"
+stages = Array[ExtResource("2")]([SubResource("s1"), SubResource("s2")])
+reward_scrap = 100
+reward_flags = PackedStringArray("map_lens")
+complete_flag = "chart_lowlight_complete"
