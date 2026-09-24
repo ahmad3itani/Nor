@@ -1,13 +1,23 @@
 # REDLINE TODO
 
-## Now: humans (M4 playtest now also covers M5)
+## Now: humans
+- [ ] The M4 playtest (`PLAYTEST_KIT.md`) is still the gate before M7 district production (bible §44). Export playtest builds as **release** so the dev console is off (D-059).
+- [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
+- [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
+
+## M6 follow-ups
+- [ ] More modules as enemies need them (patrol, dive, group spacing, retreat: bible §32).
+- [ ] An enemy journal (bible §16) fed by EnemyData and kill counters.
+- [ ] Room metadata editor dock and camera zones (bible §34, not yet needed).
+
+## M4 playtest (humans, now covers M5 too)
 - [ ] Run the playtest (`PLAYTEST_KIT.md`). Also watch whether testers open the map, where, and whether pins and transit get used.
 - [ ] Confirm or overrule D-044 (M5 before §44), D-047 (transit gating), D-049 (economy targets) and D-051 (View button).
 
 ## M5 follow-ups
 - [ ] Cache the map drawing into a texture once there are many districts (K-35).
 - [ ] Travel from the map screen, if D-047 says so.
-- [ ] Commit real room-authoring tooling in M6. The slice rooms were made with an uncommitted generator (K-39).
+- [x] Room-authoring tooling committed in M6 (`tools/roomgen`, templates).
 - [ ] Saved Circuit loadout presets (bible §11), once there are more Circuits.
 
 ## M4 playtest (humans)

@@ -241,3 +241,40 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 ## D-052: New folders `world/map/` and `ui/map/` (low risk)
 - The bible's §31 layout has no map folder. Map data and logic live in `world/map/` (with the rooms), and drawing lives in `ui/map/`.
 
+---
+
+# M6: Content Pipeline
+
+## D-053: M6 built before the §44 playtest (FLAG: process)
+- As with D-044, this is tooling rather than content. The only new content is the Signal Drone, a pipeline test that isn't placed in the slice.
+
+## D-054: Level metrics are recorded, not calculated
+- Gap and step sizes come from arcs recorded from the real Player (`TraversalMetrics`). Formulas drift from what feel-tech really produces: apex hang, slide friction, cancel windows.
+- A test re-records the arcs and fails when tuning changes, so metrics and templates can't silently go stale.
+- Gap widths assume take-off *at* the lip, because players jump a few px early (that's what the route bot found).
+
+## D-055: Templates bake their nodes into scenes
+- In the editor, a template writes ordinary nodes into the room. Maps, validators, heatmaps and the game then read plain geometry, and designers can still hand-tweak the result.
+- An unbaked template (for example written by a script) builds itself at runtime and is expanded by the tools. Editing a baked template's numbers rebuilds its nodes.
+
+## D-056: The room generator is committed as a dev tool, and the scenes stay authoritative (FLAG, low)
+- `tools/roomgen/` (Python 3, standard library only) is in the repo. This adds a **dev-only dependency** (bible §37.9); the game doesn't need Python.
+- The `.tscn` files are what ships. `--check` shows which rooms have drifted from their script after editor edits.
+- This fixes K-39.
+
+## D-057: Enemies are data brains; bosses may stay bespoke
+- Six enemies moved from scripts to `EnemyBrain` data made of shared, stateless modules; per-enemy memory lives in `ModularBehavior`. Parity is proven by the unchanged test suite, and CPU cost is unchanged.
+- Warden Krail keeps his script: phases and summons are one-offs, and bosses are few (bible §17).
+- New behaviors get new *modules*, never per-enemy scripts.
+
+## D-058: Art swaps in through data; accessibility aids stay
+- `SpriteSheetSpec` on `EnemyData.sprite` or the player visual replaces the placeholder drawing. Animations fall back by name, so partial art sets work.
+- Telegraph outlines, the "!", health bars, afterimages and the hurt blink keep drawing on top of sprites (Art Bible §6: the aids should stay available).
+
+## D-059: Dev console only in debug and editor builds
+- Backquote opens it, keyboard only, like the other debug keys (D-006). `DevActions.available()` is false in release exports, so playtest builds exported as *release* don't expose it.
+- **Note for facilitators:** export playtest builds as release.
+
+## D-060: RouteBot holds jump through landing
+- It used to release at the apex and lost the apex-hang gravity (about 10 px), which under-measured what a real player does. All routes and the D-036 experiment still pass.
+

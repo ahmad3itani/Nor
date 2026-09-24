@@ -1,5 +1,46 @@
 # REDLINE Changelog
 
+## 0.6.0-m6: Content Pipeline
+
+Bible §36 M6 (D-053). Report: `M6_CONTENT_PIPELINE_REPORT.md`. Guide: `CONTENT_PIPELINE.md`.
+
+### Validation
+- `ContentValidator` + `ValidateContent.tscn`. It covers:
+  - broken references;
+  - data `validate()`;
+  - room lint;
+  - quest/dialogue flag lint;
+  - a collectible tracker;
+  - the Art Bible checks.
+- Exit code 1 on errors.
+
+### Rooms
+- `TraversalMetrics`: recorded jump arcs, re-recorded with `MovementProbe -- --write-metrics`, with a staleness test.
+- Templates:
+  - `GapChallenge` (with a catch well and a gate warning);
+  - `ClimbSteps` (warns on step rise);
+  - `Doorway`;
+  - `JumpArcPreview`, an editor gizmo.
+- `tools/roomgen` (Python 3) is committed, with `--check`.
+
+### Enemies
+- `EnemyBrain` and modules: MoveApproach/Hold/Hover/SlowTurn, AttackRule, GuardFrontal, and the Look extras.
+- Needle, Shield, Scout Drone, Hopper, Watcher and Enforcer now run on data brains; their six scripts are removed.
+- New data-only **Signal Drone** (not placed).
+
+### Art
+- `SpriteSheetSpec`, `SpriteAnim` and `SpriteActor`; enemy and Rook sprite swap-in.
+- `ArtValidator`; `assets/` conventions.
+
+### Dev tools (backquote, debug builds)
+- Teleport, unlock-all profile, quick boss restart, enemy spawner, save-state inspector, hitbox view and performance graph.
+
+### Changed
+- RouteBot holds jump until landing (D-060).
+
+### Tests
+- 189 (23 new).
+
 ## 0.5.0-m5: World Framework
 
 Bible §36 M5, built on the existing slice (D-044). Report: `M5_WORLD_FRAMEWORK_REPORT.md`. Economy: `ECONOMY.md`.

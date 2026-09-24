@@ -9,7 +9,7 @@
   - Keep keyboard and controller parity.
   - Commit in small logical units.
   - Flag conflicts with the bible in `Docs/DECISIONS.md` instead of silently changing the design.
-- Current state: M0–M3 and M5 (world framework) are done; M4 (validation) tooling is done and **waiting for a human playtest** (`Docs/PLAYTEST_KIT.md`). When session files or a report come back, the next step is data-driven changes per failing §44 line (flag each in DECISIONS). **Do not start M6 or later unless the user asks.**
+- Current state: M0–M3, M5 (world framework) and M6 (content pipeline) are done; M4 (validation) tooling is done and **waiting for a human playtest** (`Docs/PLAYTEST_KIT.md`). When session files or a report come back, the next step is data-driven changes per failing §44 line (flag each in DECISIONS). **Do not start M7 (district production) or later unless the user asks** — bible §44 says not to scale content before the slice passes.
 - Art and audio are procedural placeholders (D-026). Don't mass-produce final assets; anything final must follow `Docs/ART_BIBLE.md`.
 - Keep `Docs/DECISIONS.md`, `CHANGELOG.md`, `TODO.md` and `KNOWN_ISSUES.md` up to date.
 
@@ -22,6 +22,9 @@ godot --headless --fixed-fps 60 res://devtools/PerfProbe.tscn      # CPU cost un
 godot --headless --fixed-fps 60 res://tests/TestRunner.tscn -- --filter=slice_routes   # route bot: every slice room is traversable
 xvfb-run -a godot --fixed-fps 60 --rendering-driver opengl3 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=movement|combat|slice|ui]
 godot --headless res://devtools/PlaytestReport.tscn -- --in=/abs/sessions --out=/abs/report   # M4 playtest report + heatmaps
+godot --headless res://devtools/content/ValidateContent.tscn       # M6 content + art validation (exit 1 on errors)
+godot --headless --fixed-fps 60 res://devtools/MovementProbe.tscn -- --write-metrics   # re-record jump arcs after tuning changes
+python3 tools/roomgen/lowlight.py --check                          # Lowlight rooms still match their script?
 ```
 
 ## Conventions
@@ -40,3 +43,4 @@ godot --headless res://devtools/PlaytestReport.tscn -- --in=/abs/sessions --out=
 - **Pitfall:** a `preload()`ed const's typed-property assignment can fail to parse in 4.3; `load()` at runtime instead.
 - **Playtest (M4):** `autoload/Playtest.gd` only listens to EventBus; gameplay must never depend on it. New things worth measuring get an explicit EventBus signal and a recorder handler, then a line in `PlaytestAnalyzer`. Experiments are `PlaytestVariant` data applied to a copy. Headless runs never record unless a test sets `Playtest.allow_headless` and a temp `Playtest.dir`. Recording is local only; never add networking.
 - **Map (M5):** a new room needs an entry in `data/world/world_map.tres` (offset so its exits meet neighbours; `test_world_map` checks). Map icons come from the room scene itself (`WorldMapIndex`); use `MapMarker` only for things no node implies (ability gates). World consequences use `WorldStateSwitch` + `Game.check_condition`. Run `--filter=economy` after changing any price or drop.
+- **Content (M6):** read `Docs/CONTENT_PIPELINE.md`. New enemies = EnemyData + a brain of modules (`enemies/modules/`), never a per-enemy script; new behaviour = a new stateless module. Gaps/steps use `world/templates/` (metrics recorded from the real player). Art swaps in via `SpriteSheetSpec`. Run `ValidateContent` before committing content. Dev tools go through `devtools/DevActions.gd`.

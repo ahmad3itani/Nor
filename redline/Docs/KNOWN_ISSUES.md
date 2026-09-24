@@ -40,5 +40,9 @@
 | K-36 | Map | The cursor pans freely; it doesn't snap to rooms or icons. At the widest zoom, small icons overlap. | Low | Human check. |
 | K-37 | Map | The labs have no map (the map is world rooms only). | Info | By design. |
 | K-38 | Transit | Travel starts only from an Anchor menu, not from the map (D-047). | Low | Design call. |
-| K-39 | Tools | The slice's room `.tscn` files were produced by a Python generator that isn't committed. The scenes are the source of truth and editable in Godot, but bulk layout edits are manual until M6 tooling. | Medium | M6 content pipeline. |
+| K-39 | Tools | ~~The slice's room `.tscn` files were produced by a Python generator that isn't committed.~~ Fixed in M6 (`tools/roomgen`, D-056). The scenes are the source of truth and editable in Godot, but bulk layout edits are manual until M6 tooling. | Medium | M6 content pipeline. |
+| K-40 | Tools | Template baking, rebuilds on property changes and configuration warnings are editor behaviour. Tests only cover `build()` and the logic; nobody has tried them in the Godot editor yet. | Medium | Human check (TODO). |
+| K-41 | Tools | `tools/roomgen` needs Python 3 (dev only). Editor edits make a room drift from its script (`--check` reports it). | Info | D-056. |
+| K-42 | Tools | The dev console exists in every *debug* export. Playtest builds must be exported as release. | Low | D-059. |
+| K-43 | Art | Rook's sprite swap-in maps movement states plus attack ids. Heal, interact and death poses need animation names agreed when the real art arrives. | Info | Art Bible §6 list. |
 

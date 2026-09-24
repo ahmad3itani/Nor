@@ -4,7 +4,7 @@ A high-speed 2D pixel-art action platformer set in the megacity of Veyra, built 
 **Movement is life. Violence buys time. Curiosity reveals the truth.**
 
 - Design source of truth: [`Docs/DESIGN_BIBLE.md`](Docs/DESIGN_BIBLE.md)
-- Current milestone: **M5 World Framework** ([`Docs/M5_WORLD_FRAMEWORK_REPORT.md`](Docs/M5_WORLD_FRAMEWORK_REPORT.md), [`ECONOMY`](Docs/ECONOMY.md)): map, transit, Nix, NPC/world state, economy audit. **M4 Validation:** the playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
+- Current milestone: **M6 Content Pipeline** ([`Docs/M6_CONTENT_PIPELINE_REPORT.md`](Docs/M6_CONTENT_PIPELINE_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md)): validator, room templates, enemy modules, art pipeline, dev console. Before that: **M5 World Framework** ([`Docs/M5_WORLD_FRAMEWORK_REPORT.md`](Docs/M5_WORLD_FRAMEWORK_REPORT.md), [`ECONOMY`](Docs/ECONOMY.md)): map, transit, Nix, NPC/world state, economy audit. **M4 Validation:** the playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
 - **All art and audio are placeholders** (D-026). Final assets must follow [`Docs/ART_BIBLE.md`](Docs/ART_BIBLE.md).
 - Project logs: [`DECISIONS`](Docs/DECISIONS.md) · [`CHANGELOG`](Docs/CHANGELOG.md) · [`TODO`](Docs/TODO.md) · [`KNOWN_ISSUES`](Docs/KNOWN_ISSUES.md) · [`CIRCUITS`](Docs/CIRCUITS.md)
 
@@ -28,6 +28,9 @@ godot --headless --fixed-fps 60 res://tests/TestRunner.tscn  # exit code 0 = all
 | `devtools/CaptureTour.tscn` (needs a display, e.g. `xvfb-run`) | Scripted screenshot tour: `-- --out=/abs/dir [--tour=movement\|combat\|slice\|ui]` |
 | `devtools/PerfProbe.tscn` (headless) | CPU cost per frame under fight load: `-- [--room=res://… --at=x:y,x:y]` (Combat Lab by default) |
 | `devtools/RouteBot.gd` (used by `test_slice_routes`) | Plays a room with scripted input to prove its route is traversable |
+| `devtools/content/ValidateContent.tscn` (headless) | Content + art validation; exit code 1 on errors |
+| ` (backquote) in game | Dev console: teleport, spawn, boss restart, unlock-all, inspector, hitboxes, perf graph |
+| `tools/roomgen/lowlight.py` (Python 3) | Room generator for the Lowlight rooms (`--check` for drift) |
 | `devtools/PlaytestReport.tscn` (headless) | Builds the playtest report + heatmaps: `-- --in=<sessions dir> --out=<report dir>` |
 
 ## Layout
@@ -44,13 +47,15 @@ bosses/      BossArena, Warden Krail
 audio/       MusicSynth (procedural stems)
 playtest/    PlaytestSession, PlaytestConfig, PlaytestVariant, SurveyQuestion, PlaytestAnalyzer (M4)
 player/      controller/ (Player, config, input, FSM), states/, combat/, reactor/, style/, animation/, abilities/
-enemies/     base/ (Enemy, EnemyData, EnemyBehavior, EncounterDirector), behaviors/, variants/*.tscn
-world/       rooms/ (Room, labs, lowlight/*.tscn), map/ (world map data, fog, index), anchors/, transitions/, districts/, props/, hazards/, camera/, graybox/
+enemies/     base/ (Enemy, EnemyData, EnemyBehavior, EncounterDirector), modules/ (EnemyBrain + modules), variants/*.tscn
+world/       rooms/ (Room, labs, lowlight/*.tscn), templates/ (room templates, metrics), map/ (world map data, fog, index), anchors/, transitions/, districts/, props/, hazards/, camera/, graybox/
 data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, playtest/, world/, catalog.tres
 ui/          debug/ (overlay, tuning panel), hud/, menus/, dialogue/, map/
-vfx/         dust, hit sparks, slash arcs
+vfx/         dust, hit sparks, slash arcs, sprite sheets (SpriteSheetSpec, SpriteActor)
+assets/      exported art (Art Bible §9; empty until final art)
+tools/       roomgen (Python 3 room generator, dev only)
 tests/       TestRunner + unit/test_*.gd + fixtures/
-devtools/    lab controllers, movement probe, perf probe, capture tour, route bot
-Docs/        bible, Art Bible, M1–M5 reports, playtest kit, Circuits, Economy, decision/changelog/todo/issue logs
+devtools/    lab controllers, movement probe, perf probe, capture tour, route bot, content/ validators, dev actions
+Docs/        bible, Art Bible, M1–M6 reports, content pipeline, playtest kit, Circuits, Economy, decision/changelog/todo/issue logs
 ```
 Folders from the bible's architecture that later milestones will fill are kept with `.gitkeep`.
