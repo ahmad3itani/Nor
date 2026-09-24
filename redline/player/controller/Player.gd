@@ -24,6 +24,8 @@ const WORLD_LAYER_BIT := 1
 @onready var stand_check: ShapeCast2D = $StandCheck
 @onready var visual: Node2D = $Visual
 @onready var combat: PlayerCombat = $Combat
+@onready var reactor: ReactorCore = $Reactor
+@onready var style: PlayerStyle = $Style
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/Shape
 
 var input_source: PlayerInputSource = PlayerInputSource.new()

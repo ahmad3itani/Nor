@@ -21,6 +21,9 @@ var master_volume: float = 1.0:
 var sfx_volume: float = 0.8:
 	set(v): sfx_volume = clampf(v, 0.0, 1.0)
 var show_debug_overlay: bool = true
+## Redline Core difficulty (bible §6): 0 Normal, 1 Story/Assist, 2 Redline Challenge.
+var reactor_mode: int = 0:
+	set(v): reactor_mode = clampi(v, 0, 2)
 
 var _path: String = SETTINGS_PATH
 
@@ -41,6 +44,7 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	master_volume = cfg.get_value("audio", "master_volume", master_volume)
 	sfx_volume = cfg.get_value("audio", "sfx_volume", sfx_volume)
 	show_debug_overlay = cfg.get_value("debug", "show_debug_overlay", show_debug_overlay)
+	reactor_mode = cfg.get_value("gameplay", "reactor_mode", reactor_mode)
 
 
 func save_settings() -> Error:
@@ -52,4 +56,5 @@ func save_settings() -> Error:
 	cfg.set_value("audio", "master_volume", master_volume)
 	cfg.set_value("audio", "sfx_volume", sfx_volume)
 	cfg.set_value("debug", "show_debug_overlay", show_debug_overlay)
+	cfg.set_value("gameplay", "reactor_mode", reactor_mode)
 	return cfg.save(_path)

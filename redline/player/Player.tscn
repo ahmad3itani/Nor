@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://player/controller/Player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/movement/default_movement.tres" id="2_config"]
@@ -11,6 +11,13 @@
 [ext_resource type="Resource" path="res://data/weapons/scattergun.tres" id="9_scatter"]
 [ext_resource type="Script" path="res://combat/Hurtbox.gd" id="10_hurtbox"]
 [ext_resource type="Script" path="res://weapons/WeaponData.gd" id="11_weapon_script"]
+[ext_resource type="Script" path="res://player/reactor/ReactorCore.gd" id="12_reactor"]
+[ext_resource type="Script" path="res://player/reactor/ReactorConfig.gd" id="13_reactor_cfg_script"]
+[ext_resource type="Resource" path="res://data/reactor/reactor_normal.tres" id="14_r_normal"]
+[ext_resource type="Resource" path="res://data/reactor/reactor_assist.tres" id="15_r_assist"]
+[ext_resource type="Resource" path="res://data/reactor/reactor_challenge.tres" id="16_r_challenge"]
+[ext_resource type="Script" path="res://player/style/PlayerStyle.gd" id="17_style"]
+[ext_resource type="Resource" path="res://data/style/default_style.tres" id="18_style_cfg"]
 
 [sub_resource type="RectangleShape2D" id="Rect_stand"]
 size = Vector2(12, 34)
@@ -58,3 +65,11 @@ script = ExtResource("10_hurtbox")
 
 [node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, -17)
+
+[node name="Reactor" type="Node" parent="."]
+script = ExtResource("12_reactor")
+configs = Array[ExtResource("13_reactor_cfg_script")]([ExtResource("14_r_normal"), ExtResource("15_r_assist"), ExtResource("16_r_challenge")])
+
+[node name="Style" type="Node" parent="."]
+script = ExtResource("17_style")
+config = ExtResource("18_style_cfg")

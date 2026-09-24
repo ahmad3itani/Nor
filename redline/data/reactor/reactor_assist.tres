@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ReactorConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://player/reactor/ReactorConfig.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+mode_name = "Story / Assist"
+start_charge = 90.0
+drain_per_second = 2.5
+critical_threshold = 20.0
+burnout_interval = 3.0
+gain_multiplier = 1.5

@@ -1,0 +1,125 @@
+class_name ReactorCore
+extends Node
+## Rook's Redline Core (bible §6): "Movement is life. Violence buys time."
+## Drains only while inside Flow Zones; refills from hits, kills (more at
+## higher style ranks), environmental kills, perfect dodges and hits right
+## after movement tech. Empty = burnout: health drains until refilled.
+## Mode (Normal / Assist / Challenge) follows Settings.reactor_mode.
+
+@export var configs: Array[ReactorConfig] = []
+
+var config: ReactorConfig
+var charge: float = 0.0
+var _flow_zones: int = 0
+var _burnout_timer: float = 0.0
+var _heartbeat_timer: float = 0.0
+var _was_critical: bool = false
+
+@onready var player: Player = get_parent()
+
+
+func _ready() -> void:
+	apply_mode(Settings.reactor_mode)
+	charge = config.start_charge
+	EventBus.enemy_damaged.connect(_on_enemy_damaged)
+	EventBus.enemy_killed.connect(_on_enemy_killed)
+	EventBus.perfect_dodge.connect(_on_perfect_dodge)
+	EventBus.player_respawned.connect(_on_respawned)
+
+
+func apply_mode(index: int) -> void:
+	config = configs[clampi(index, 0, configs.size() - 1)]
+	charge = minf(charge, config.max_charge)
+	_emit()
+
+
+func in_flow() -> bool:
+	return _flow_zones > 0
+
+
+func enter_flow() -> void:
+	_flow_zones += 1
+	_emit()
+
+
+func exit_flow() -> void:
+	_flow_zones = maxi(_flow_zones - 1, 0)
+	_emit()
+
+
+func is_critical() -> bool:
+	return charge <= config.critical_threshold
+
+
+func gain(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	charge = minf(charge + amount * config.gain_multiplier, config.max_charge)
+	_emit()
+
+
+func _physics_process(delta: float) -> void:
+	if player.combat.dead or player.hitstop_timer > 0.0:
+		return
+	if not in_flow():
+		_burnout_timer = 0.0
+		return
+	charge = maxf(charge - config.drain_per_second * delta, 0.0)
+	if charge <= 0.0:
+		_burnout_timer += delta
+		if _burnout_timer >= config.burnout_interval:
+			_burnout_timer = 0.0
+			AudioManager.play_sfx(&"burnout")
+			player.combat.take_damage(1, Vector2.ZERO, 0.0, false)
+	else:
+		_burnout_timer = 0.0
+	if is_critical():
+		_heartbeat_timer -= delta
+		if _heartbeat_timer <= 0.0:
+			# Faster heartbeat as the core empties (readable audio, bible §28).
+			_heartbeat_timer = lerpf(0.45, 0.9, charge / maxf(config.critical_threshold, 1.0))
+			AudioManager.play_sfx(&"heartbeat")
+	_emit()
+
+
+func _emit() -> void:
+	if config == null:
+		return
+	var critical := is_critical() and in_flow()
+	EventBus.reactor_changed.emit(charge, config.max_charge, critical)
+	_was_critical = critical
+
+
+func _credited(hit: HitInfo) -> bool:
+	return hit != null and hit.attacker == player
+
+
+func _on_enemy_damaged(_enemy: Node2D, hit: HitInfo, result: int) -> void:
+	if result != CombatResult.HIT or not _credited(hit):
+		return
+	var amount := hit.attack.reactor_gain * config.hit_gain_scale
+	if hit.has_tag(&"after_movement"):
+		amount += config.movement_hit_bonus
+	gain(amount)
+
+
+func _on_enemy_killed(enemy: Node2D, hit: HitInfo) -> void:
+	if not _credited(hit) or not enemy is Enemy:
+		return
+	var rank := player.style.meter.rank_index() if player.style else 0
+	var amount := (enemy as Enemy).data.reactor_reward * (1.0 + config.style_rank_kill_bonus * rank)
+	if hit.has_tag(&"environmental"):
+		amount += config.environmental_kill_bonus
+	gain(amount)
+
+
+func _on_perfect_dodge(_attacker: Node2D) -> void:
+	gain(config.perfect_dodge_gain)
+
+
+func _on_respawned(p: Node2D, _spawn: StringName) -> void:
+	if p != player:
+		return
+	charge = config.start_charge
+	_burnout_timer = 0.0
+	_emit()
