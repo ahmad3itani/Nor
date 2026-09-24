@@ -66,9 +66,9 @@ script = ExtResource("block")
 size = Vector2(280, 196)
 
 [node name="Roof3" type="StaticBody2D" parent="Geometry"]
-position = Vector2(872, -120)
+position = Vector2(872, -100)
 script = ExtResource("block")
-size = Vector2(308, 216)
+size = Vector2(308, 196)
 
 [node name="Roof4" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1250, -80)
@@ -84,6 +84,23 @@ size = Vector2(470, 186)
 position = Vector2(2080, -90)
 script = ExtResource("block")
 size = Vector2(356, 186)
+
+[node name="GapWellFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(760, 40)
+script = ExtResource("block")
+size = Vector2(112, 56)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(806, -8)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(764, -56)
+script = ExtResource("block")
+size = Vector2(34, 8)
+one_way = true
 
 [node name="Spawn_from_stack" type="Marker2D" parent="Spawns"]
 position = Vector2(20, -100)
@@ -123,30 +140,31 @@ position = Vector2(380, -480)
 script = ExtResource("flow")
 size = Vector2(2040, 480)
 
-[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1400, -150)
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1400, -128)
 script = ExtResource("block")
 size = Vector2(60, 8)
 one_way = true
 
-[node name="HighRoof" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1500, -200)
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1480, -176)
 script = ExtResource("block")
-size = Vector2(100, 30)
+size = Vector2(120, 8)
+one_way = true
 
 [node name="ShardLedge" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1744, -200)
+position = Vector2(1744, -176)
 script = ExtResource("block")
 size = Vector2(60, 30)
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
-position = Vector2(1774, -200)
+position = Vector2(1774, -176)
 script = ExtResource("collect")
 persist_id = "cs_roofs"
 kind = 2
 
 [node name="Hint2" type="Area2D" parent="Triggers"]
-position = Vector2(1500, -300)
+position = Vector2(1500, -276)
 script = ExtResource("hint")
 size = Vector2(90, 100)
 hint_id = "roofs_dodgejump"
@@ -163,7 +181,7 @@ position = Vector2(700, -202)
 [node name="Block2" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1348, -230)
 script = ExtResource("block")
-size = Vector2(4, 150)
+size = Vector2(4, 60)
 
 [node name="Watcher2" parent="Enemies" instance=ExtResource("scene_Watcher")]
 position = Vector2(1350, -232)
@@ -171,7 +189,7 @@ position = Vector2(1350, -232)
 [node name="Block3" type="StaticBody2D" parent="Geometry"]
 position = Vector2(2148, -220)
 script = ExtResource("block")
-size = Vector2(4, 150)
+size = Vector2(4, 60)
 
 [node name="Watcher3" parent="Enemies" instance=ExtResource("scene_Watcher")]
 position = Vector2(2150, -222)
@@ -180,10 +198,10 @@ position = Vector2(2150, -222)
 position = Vector2(600, -102)
 
 [node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
-position = Vector2(1000, -122)
+position = Vector2(1000, -102)
 
 [node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
-position = Vector2(1100, -122)
+position = Vector2(1100, -102)
 
 [node name="Hopper2" parent="Enemies" instance=ExtResource("scene_Hopper")]
 position = Vector2(1650, -92)
@@ -219,7 +237,7 @@ color = Color(0.24, 0.24, 0.3, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
 [node name="Decor3" type="Node2D" parent="Props"]
-position = Vector2(1020, -120)
+position = Vector2(1020, -100)
 script = ExtResource("decor")
 kind = 8
 size = Vector2(22, 14)

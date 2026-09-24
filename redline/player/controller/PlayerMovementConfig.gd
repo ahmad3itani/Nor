@@ -59,6 +59,9 @@ extends Resource
 @export_range(0, 12) var ledge_forgiveness_px: int = 5
 ## Buffer for dodge/dash presses made slightly before they are allowed.
 @export var action_buffer_time: float = 0.10
+## A pit returns you to the last ground that still had floor this far (px)
+## past your centre on both sides, never to a ledge lip.
+@export_range(0, 48) var safe_ground_reach: float = 20.0
 
 @export_group("Landing")
 ## Fall speed above which a landing counts as "hard" (camera impulse, bigger squash).

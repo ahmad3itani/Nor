@@ -153,6 +153,27 @@ func test_pit_costs_a_pip_and_returns_to_safe_ground() -> void:
 	check(p.global_position.distance_to(safe) < 8.0, "not returned to safe ground")
 
 
+func test_pit_never_returns_you_to_a_ledge_lip() -> void:
+	var a := _room()
+	_player().teleport(Vector2(690, -2))
+	_scripted().move_x = 1
+	await _wait_room_change(a)
+	var p := _player()
+	_scripted().move_x = 0
+	await physics_frames(10)
+	# Run right off the ledge that ends at x 236 and keep holding right.
+	p.teleport(Vector2(150, p.global_position.y))
+	_scripted().move_x = 1
+	for i in 180:
+		await physics_frames(1)
+		if p.combat.health < p.combat.config.max_health:
+			break
+	_scripted().move_x = 0
+	await physics_frames(2)
+	check(p.combat.health == p.combat.config.max_health - 1, "should have fallen into the pit once")
+	check(p.global_position.x <= 236.0 - p.config.safe_ground_reach + 7.0, "respawned on the lip at x %.1f" % p.global_position.x)
+
+
 func test_injector_heals_and_is_consumed() -> void:
 	var p := _player()
 	p.combat.take_damage(3, Vector2.ZERO, 0.0, false)

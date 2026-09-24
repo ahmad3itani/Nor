@@ -152,7 +152,7 @@ func _post_move(was_on_floor: bool, pre_move_vy: float, delta: float) -> void:
 	if on_floor:
 		air_dodges_left = config.air_dodges
 		coyote_timer = 0.0
-		if state_machine.current.id != &"hurt":
+		if state_machine.current.id != &"hurt" and _is_safe_ground():
 			last_safe_position = global_position
 		if not was_on_floor:
 			landed.emit(pre_move_vy)
@@ -161,6 +161,16 @@ func _post_move(was_on_floor: bool, pre_move_vy: float, delta: float) -> void:
 		# Walked (or slid/dodged) off a ledge rather than jumping: grant coyote time.
 		coyote_timer = config.coyote_time
 	metrics.track(global_position, velocity, on_floor, delta)
+
+
+## Pit respawns return here, so only record ground with room on both sides:
+## respawning on a ledge lip while still holding forward would drop you
+## straight back in (bible §2.8: recovery is fast *and* fair).
+func _is_safe_ground() -> bool:
+	for side: float in [-config.safe_ground_reach, config.safe_ground_reach]:
+		if not test_move(global_transform.translated(Vector2(side, 0.0)), Vector2(0.0, 4.0)):
+			return false
+	return true
 
 
 # --- Motor helpers used by states -------------------------------------------

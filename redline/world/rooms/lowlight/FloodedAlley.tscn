@@ -85,23 +85,23 @@ target_room = "res://world/rooms/lowlight/MarketRun.tscn"
 target_entry = &"from_alley"
 
 [node name="OneWay1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(40, -50)
+position = Vector2(40, -48)
 script = ExtResource("block")
 size = Vector2(50, 8)
 one_way = true
 
 [node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(90, -100)
+position = Vector2(90, -96)
 script = ExtResource("block")
-size = Vector2(70, 100)
+size = Vector2(70, 16)
 
 [node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(380, -100)
+position = Vector2(380, -96)
 script = ExtResource("block")
-size = Vector2(70, 100)
+size = Vector2(70, 16)
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
-position = Vector2(415, -100)
+position = Vector2(415, -96)
 script = ExtResource("collect")
 persist_id = "cs_alley_dash"
 kind = 2
@@ -160,7 +160,7 @@ size = Vector2(70, 8)
 one_way = true
 
 [node name="OneWay3" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1220, -50)
+position = Vector2(1220, -48)
 script = ExtResource("block")
 size = Vector2(60, 8)
 one_way = true
@@ -172,9 +172,9 @@ size = Vector2(50, 8)
 one_way = true
 
 [node name="BuildingTop" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1300, -140)
+position = Vector2(1300, -144)
 script = ExtResource("block")
-size = Vector2(120, 100)
+size = Vector2(120, 104)
 
 [node name="TunnelEnd" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1404, -40)
