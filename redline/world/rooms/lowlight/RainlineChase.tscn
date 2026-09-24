@@ -1,10 +1,19 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="anchor"]
+[ext_resource type="Script" path="res://world/hazards/ChaseDirector.gd" id="chase"]
+[ext_resource type="Resource" path="res://data/world/chase/rainline.tres" id="chase_rainline"]
+[ext_resource type="Script" path="res://world/hazards/ChaseCheckpoint.gd" id="chase_cp"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
-[ext_resource type="Script" path="res://world/rooms/FlagDeclaration.gd" id="flagdecl"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -36,27 +45,204 @@ theme = ExtResource("theme")
 [node name="EncounterDirector" type="Node" parent="."]
 script = ExtResource("director")
 
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -300)
+script = ExtResource("block")
+size = Vector2(16, 204)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(4144, -300)
+script = ExtResource("block")
+size = Vector2(16, 204)
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(1756, -150)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(3616, 6)
+color = Color(0.3, 0.3, 0.36, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Platform" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(468, 96)
+
+[node name="D1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(420, 0)
+script = ExtResource("block")
+size = Vector2(380, 16)
+
+[node name="D2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(872, 0)
+script = ExtResource("block")
+size = Vector2(168, 16)
+
+[node name="D3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1128, 0)
+script = ExtResource("block")
+size = Vector2(292, 16)
+
+[node name="Gantry1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1230, -176)
+script = ExtResource("block")
+size = Vector2(48, 152)
+
+[node name="LowRoad" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1420, 72)
+script = ExtResource("block")
+size = Vector2(340, 16)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1706, 24)
+script = ExtResource("block")
+size = Vector2(48, 8)
+one_way = true
+
+[node name="D4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1532, 0)
+script = ExtResource("block")
+size = Vector2(168, 16)
+
+[node name="D5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1760, 0)
+script = ExtResource("block")
+size = Vector2(440, 16)
+
+[node name="Gantry2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1860, -176)
+script = ExtResource("block")
+size = Vector2(48, 152)
+
+[node name="D6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2200, 0)
+script = ExtResource("block")
+size = Vector2(1000, 16)
+
+[node name="CarA" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2240, -48)
+script = ExtResource("block")
+size = Vector2(200, 48)
+
+[node name="CarB" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2520, -48)
+script = ExtResource("block")
+size = Vector2(180, 48)
+
+[node name="CarC" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2760, -96)
+script = ExtResource("block")
+size = Vector2(160, 96)
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2920, -48)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2270, -96)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="HL1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2320, -144)
+script = ExtResource("block")
+size = Vector2(100, 12)
+
+[node name="HL2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2550, -144)
+script = ExtResource("block")
+size = Vector2(140, 12)
+
+[node name="BoxRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2610, -216)
+script = ExtResource("block")
+size = Vector2(80, 16)
+
+[node name="BoxBack" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2674, -200)
+script = ExtResource("block")
+size = Vector2(16, 56)
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2610, -200)
+script = ExtResource("wall")
+size = Vector2(16, 56)
+persist_id = "rc_signal_box"
+max_health = 25.0
+scrap_inside = 30
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(2660, -144)
+script = ExtResource("collect")
+persist_id = "sb_rc_signal"
+kind = 0
+scrap_amount = 60
+
+[node name="D8" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3296, 0)
+script = ExtResource("block")
+size = Vector2(200, 16)
+
+[node name="Terminal" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3576, 0)
+script = ExtResource("block")
+size = Vector2(568, 96)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(2480, -2)
+
+[node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(2730, -2)
+
+[node name="Spawn_rainline_platform" type="Marker2D" parent="Spawns"]
+position = Vector2(200, 0)
+script = ExtResource("spawn")
+spawn_id = &"rainline_platform"
+
+[node name="Anchor1" type="Area2D" parent="Interactables"]
+position = Vector2(200, 0)
+script = ExtResource("anchor")
+anchor_id = &"rainline_platform"
+
+[node name="Chase_rainline" type="Node2D" parent="Triggers"]
+script = ExtResource("chase")
+chase_id = "rainline"
+data = ExtResource("chase_rainline")
+path = PackedVector2Array(60, 0, 1200, 0, 2000, 0, 2980, 0, 3620, 0)
+speed_scale = PackedFloat32Array(0.96, 0.8, 0.76, 1)
+start_area = Rect2(420, -200, 16, 200)
+end_area = Rect2(3620, -200, 16, 200)
+
+[node name="CP1" type="Marker2D" parent="Triggers/Chase_rainline"]
+position = Vector2(440, 0)
+script = ExtResource("chase_cp")
+
+[node name="CP2" type="Marker2D" parent="Triggers/Chase_rainline"]
+position = Vector2(1200, 0)
+script = ExtResource("chase_cp")
+
+[node name="CP3" type="Marker2D" parent="Triggers/Chase_rainline"]
+position = Vector2(2000, 0)
+script = ExtResource("chase_cp")
+
+[node name="CP4" type="Marker2D" parent="Triggers/Chase_rainline"]
+position = Vector2(2980, 0)
+script = ExtResource("chase_cp")
+
 [node name="Spawn_from_security" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_security"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-12, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_bell" type="Marker2D" parent="Spawns"]
 position = Vector2(4100, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_bell"
 facing = -1
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(4068, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
@@ -72,6 +258,156 @@ size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/BellTower.tscn"
 target_entry = &"from_rainline"
 
-[node name="FlagDeclaration" type="Node" parent="Triggers"]
-script = ExtResource("flagdecl")
-produces = PackedStringArray("chase_rainline_done")
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(560, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(960, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(1300, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(1840, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(2320, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(2640, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor8" type="Node2D" parent="Props"]
+position = Vector2(3060, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor9" type="Node2D" parent="Props"]
+position = Vector2(3400, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(14, 184)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor10" type="Node2D" parent="Props"]
+position = Vector2(3560, 200)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 350)
+color = Color(0.26, 0.24, 0.28, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(3560, -170)
+script = ExtResource("neon")
+size = Vector2(14, 8)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 3
+flicker = false
+
+[node name="Decor11" type="Node2D" parent="Props"]
+position = Vector2(240, 0)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor12" type="Node2D" parent="Props"]
+position = Vector2(100, 0)
+script = ExtResource("decor")
+kind = 3
+size = Vector2(30, 12)
+color = Color(0.26, 0.22, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(200, -120)
+script = ExtResource("neon")
+size = Vector2(60, 10)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 6
+flicker = false
+
+[node name="Decor13" type="Node2D" parent="Props"]
+position = Vector2(3700, 0)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor14" type="Node2D" parent="Props"]
+position = Vector2(3980, 0)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(4060, -140)
+script = ExtResource("neon")
+size = Vector2(24, 10)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 3
+
+[node name="Decor15" type="Node2D" parent="Props"]
+position = Vector2(2650, -216)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(24, 16)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Neon4" type="Node2D" parent="Props"]
+position = Vector2(2650, -236)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 3
+
+[node name="SweeperWreck" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:chase_rainline_done"
+
+[node name="Decor16" type="Node2D" parent="Props/SweeperWreck"]
+position = Vector2(3540, 196)
+script = ExtResource("decor")
+kind = 4
+size = Vector2(140, 40)
+color = Color(0.25, 0.1, 0.1, 1)
+accent = Color(1, 0.81, 0.35, 1)
