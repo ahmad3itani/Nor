@@ -557,8 +557,363 @@ func test_security_station_backward() -> void:
 		ok = await _run([["exit", -1]])
 	check(ok and SceneRouter.current_room != null and SceneRouter.current_room.name == "PowerBlock", "the west door should lead to PowerBlock")
 
+
+# --- RainlineChase (the district climax; ChaseDirector 'rainline') ------------------
+# Private helpers are prefixed _rainline_. Positions are room coordinates
+# (the room sits at the origin). Chase numbers: data/world/chase/rainline.tres
+# (start_lead 380, respawn_lead 260, regroup 1 s); path x 60 -> 3620,
+# checkpoints 440 / 1200 / 2000 / 2980 (index 0..3).
+
+func _rainline_path() -> String:
+	return LL + "RainlineChase.tscn"
+
+
+## The eastbound main route from from_security to the terminal (the spec's
+## route, bot about 28 s).
+func _rainline_east_steps() -> Array:
+	return [["run", 790], ["runjump", 796, 900], ["runjump", 1036, 1160], ["run", 1200], ["slide", 1300],
+		["slidejump", 1420, 1560], ["run", 1690], ["runjump", 1696, 1790], ["run", 1830], ["slide", 1930],
+		["run", 2210], ["jump", 2270], ["run", 2330], ["runjump", 2436, 2560], ["runjump", 2696, 2800], ["run", 2940],
+		["runjump", 3196, 3320], ["runjump", 3492, 3600], ["run", 4120]]
+
+
+## Westbound, from from_bell (4100) down the car coupler step, over the cars,
+## under the gantries and back to the Security door (x 20). The chase stays
+## idle the whole way (it only arms moving east).
+func _rainline_west_steps() -> Array:
+	return _rainline_west_to_cars() + [["run", 2530], ["runjump", 2524, 2400], ["run", 2200], ["slide", 1840],
+		["run", 1780], ["runjump", 1764, 1650], ["run", 1560], ["slidejump", 1534, 1410], ["run", 1300],
+		["slide", 1210], ["run", 1136], ["runjump", 1132, 1010], ["run", 880], ["runjump", 876, 770], ["run", 20]]
+
+
+## From from_bell west to the top of CarB (x about 2640, y -48).
+func _rainline_west_to_cars() -> Array:
+	return [["run", 3590], ["runjump", 3580, 3460], ["run", 3310], ["runjump", 3298, 3190], ["run", 2990],
+		["jump", 2945], ["jump", 2880], ["run", 2770], ["runjump", 2764, 2640]]
+
+
+func _rainline_director() -> ChaseDirector:
+	var room := SceneRouter.current_room
+	if room == null or not is_instance_valid(room):
+		return null
+	return room.find_child("Chase_rainline", true, false) as ChaseDirector
+
+
+func _rainline_pursuers() -> Array:
+	var out: Array = []
+	var room := SceneRouter.current_room
+	if room == null or not is_instance_valid(room):
+		return out
+	for n in room.find_children("*", "", true, false):
+		if n is Pursuer:
+			out.append(n)
+	return out
+
+
+## Records the chase signals (lambdas append to shared arrays). Pass the
+## result to _rainline_unwatch() before the test ends.
+func _rainline_watch() -> Dictionary:
+	var w := {"started": [], "caught": [], "completed": []}
+	w["on_started"] = func(id: String) -> void:
+		(w["started"] as Array).append(id)
+	w["on_caught"] = func(id: String, cp: int) -> void:
+		var room := SceneRouter.current_room as Room
+		var d := _rainline_director()
+		var p := room.player
+		(w["caught"] as Array).append({"id": id, "cp": cp, "x": p.global_position.x, "y": p.global_position.y,
+			"hp": p.combat.health, "dead": p.combat.dead, "source": p.combat.last_damage_source,
+			"pursuer_x": d.point_at(d.pursuer_progress).x if d else -1.0})
+	w["on_completed"] = func(id: String, seconds: float, catches: int, min_lead: float) -> void:
+		(w["completed"] as Array).append({"id": id, "seconds": seconds, "catches": catches, "min_lead": min_lead,
+			"flag": Game.has_flag("chase_rainline_done")})
+	EventBus.chase_started.connect(w["on_started"])
+	EventBus.chase_caught.connect(w["on_caught"])
+	EventBus.chase_completed.connect(w["on_completed"])
+	return w
+
+
+func _rainline_unwatch(w: Dictionary) -> void:
+	EventBus.chase_started.disconnect(w["on_started"])
+	EventBus.chase_caught.disconnect(w["on_caught"])
+	EventBus.chase_completed.disconnect(w["on_completed"])
+
+
+## Kills Rook (a lethal hit, as a Needle would land) and waits for the room to
+## reload at the last Anchor; rebinds `bot` to the new player.
+func _rainline_die_and_respawn() -> Room:
+	var room := SceneRouter.current_room as Room
+	var old_id := room.get_instance_id()
+	room.player.combat.take_damage(99, Vector2(-60, -120), 0.0, true, "Needle/needle_lunge")
+	for f in 400:
+		var cur := SceneRouter.current_room
+		if is_instance_valid(cur) and cur.get_instance_id() != old_id and not SceneRouter.transitioning:
+			break
+		await physics_frames(1)
+	room = SceneRouter.current_room as Room
+	check(room != null and room.get_instance_id() != old_id, "death should reload the room")
+	await physics_frames(10)
+	_pacify()
+	bot = RouteBot.new(get_tree(), room.player)
+	return room
+
+
+func _rainline_set_anchor() -> void:
+	Game.state.last_anchor_room = _rainline_path()
+	Game.state.last_anchor_id = "rainline_platform"
+
+
 func test_rainline_route() -> void:
-	print("PENDING: RainlineChase")
+	# Pursuer active (the ChaseDirector is not an Enemy: _pacify leaves it);
+	# the well Needles are pacified.
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	var ok := await _run(_rainline_east_steps())
+	_rainline_unwatch(w)
+	check(ok, "Rainline route failed")
+	check(Game.has_flag("chase_rainline_done"), "crossing x 3620 during the chase sets chase_rainline_done")
+	check((w["started"] as Array).size() == 1, "the chase arms once, got %d" % (w["started"] as Array).size())
+	check((w["caught"] as Array).is_empty(), "a clean run is never caught: %s" % str(w["caught"]))
+	var completed: Array = w["completed"]
+	check(completed.size() == 1, "chase_completed once, got %d" % completed.size())
+	if completed.size() == 1:
+		check(bool(completed[0]["flag"]), "the flag is set when chase_completed fires")
+		check(float(completed[0]["min_lead"]) >= 200.0, "min_lead >= 200 on the bot route, got %.1f" % float(completed[0]["min_lead"]))
+		print("Rainline route: %.1f s, min_lead %.0f" % [float(completed[0]["seconds"]), float(completed[0]["min_lead"])])
+	_assert_exit(1, LL + "BellTower.tscn", &"from_rainline")
+	_assert_exit(-1, LL + "SecurityStation.tscn", &"from_rainline")
+	if ok and await _run([["exit", 1]]):
+		check(SceneRouter.current_room_path == LL + "BellTower.tscn", "the east door leads to the Bell Tower")
+
+
+func test_rainline_caught() -> void:
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	await _run([["run", 790], ["runjump", 796, 900], ["runjump", 1036, 1160], ["run", 1210], ["wait", 300]])
+	_rainline_unwatch(w)
+	var caught: Array = w["caught"]
+	check(not caught.is_empty(), "standing past CP 1200 gets Rook caught")
+	if caught.is_empty():
+		return
+	check(int(caught[0]["hp"]) == 4, "a catch costs one pip (5 -> 4), got %d" % int(caught[0]["hp"]))
+	check(int(caught[0]["cp"]) == 1, "checkpoint index 1 (x 1200), got %d" % int(caught[0]["cp"]))
+	check_near(float(caught[0]["x"]), 1200.0, 0.5, "Rook returns to CP 1200")
+	check_near(float(caught[0]["pursuer_x"]), 940.0, 0.5, "the Sweeper restarts 260 behind CP 1200")
+	check(String(caught[0]["source"]) == "chase/rainline", "catch source chase/rainline, got %s" % caught[0]["source"])
+
+
+func test_rainline_caught_before_first_cp() -> void:
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	await _run([["run", 600], ["wait", 300]])
+	_rainline_unwatch(w)
+	var caught: Array = w["caught"]
+	check(not caught.is_empty(), "waiting at x 600 gets Rook caught")
+	if caught.is_empty():
+		return
+	check(int(caught[0]["cp"]) == 0, "checkpoint index 0 (ChaseStart), got %d" % int(caught[0]["cp"]))
+	check_near(float(caught[0]["x"]), 440.0, 0.5, "Rook returns to CP 440")
+	check_near(float(caught[0]["pursuer_x"]), 180.0, 0.5, "the Sweeper restarts at 440 - 260")
+
+
+func test_rainline_pit_catch() -> void:
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	await _run([["run", 790], ["runjump", 796, 900], ["run", 1000]])
+	var safe := (SceneRouter.current_room as Room).player.last_safe_position
+	# A short hop into G2 (1040..1128): the step itself "fails" (Rook lands
+	# back at the checkpoint, not at 1080), which is the point.
+	await bot.run([["jump", 1080]])
+	_rainline_unwatch(w)
+	var caught: Array = w["caught"]
+	check(caught.size() == 1, "one pit catch in G2, got %d" % caught.size())
+	if caught.is_empty():
+		return
+	var c: Dictionary = caught[0]
+	check(String(c["source"]) == "pit", "the pit is handled by the chase (source 'pit'), got %s" % c["source"])
+	check(int(c["hp"]) == 4 and not bool(c["dead"]), "a chase pit costs one nonlethal pip, hp %d" % int(c["hp"]))
+	check(int(c["cp"]) == 0, "before CP 1200 the checkpoint index is 0, got %d" % int(c["cp"]))
+	check_near(float(c["x"]), 440.0, 0.5, "Rook returns to CP 440, not his last safe ground")
+	check(absf(float(c["x"]) - safe.x) > 100.0, "no last_safe_position teleport (safe was %s)" % safe)
+	check_near(float(c["pursuer_x"]), 180.0, 0.5, "the Sweeper restarts at 440 - respawn_lead 260")
+
+
+func test_rainline_nonlethal() -> void:
+	await _enter(_rainline_path(), &"from_security")
+	var p := (SceneRouter.current_room as Room).player
+	p.combat.health = 1
+	var w := _rainline_watch()
+	await _run([["run", 600], ["wait", 300]])
+	_rainline_unwatch(w)
+	check(not (w["caught"] as Array).is_empty(), "Rook is caught at 1 pip")
+	check(not p.combat.dead and p.combat.health == 1, "a catch at 1 pip never kills (hp %d, dead %s)" % [p.combat.health, p.combat.dead])
+
+
+func test_rainline_death_rearm() -> void:
+	_rainline_set_anchor()
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	await _run([["run", 600]])
+	check(_rainline_director().is_active(), "the chase is live at x 600")
+	var room := await _rainline_die_and_respawn()
+	check_near(room.player.global_position.x, 200.0, 1.0, "Rook respawns at the rainline_platform Anchor")
+	check(_rainline_director().state == ChaseDirector.State.IDLE, "no chase after the respawn (%s)" % _rainline_director().state_name())
+	check((w["started"] as Array).size() == 1, "the respawn does not arm the chase")
+	await _run([["run", 380]])
+	check((w["started"] as Array).size() == 1, "walking toward ChaseStart does not arm it yet")
+	await _run([["run", 440]])
+	_rainline_unwatch(w)
+	check((w["started"] as Array).size() == 2 and _rainline_director().is_active(), "walking 220 px east into ChaseStart re-arms the chase")
+	check(not Game.has_flag("chase_rainline_done"), "a death never sets the done flag")
+
+
+func test_rainline_transit_arrival() -> void:
+	# A transit arrival lands on the Anchor's own spawn (Game.travel_to).
+	_rainline_set_anchor()
+	var w := _rainline_watch()
+	await _enter(_rainline_path(), &"rainline_platform")
+	var p := (SceneRouter.current_room as Room).player
+	check_near(p.global_position.x, 200.0, 1.0, "arrives at the Anchor")
+	await physics_frames(30)
+	check((w["started"] as Array).is_empty() and _rainline_director().state == ChaseDirector.State.IDLE, "arriving before ChaseStart stays idle")
+	await _run([["run", 460]])
+	_rainline_unwatch(w)
+	check((w["started"] as Array).size() == 1 and _rainline_director().is_active(), "crossing ChaseStart arms the chase")
+
+
+func test_rainline_done_flag_survives_death() -> void:
+	_rainline_set_anchor()
+	await _enter(_rainline_path(), &"from_security")
+	var steps := _rainline_east_steps()
+	steps[steps.size() - 1] = ["run", 3700]
+	var ok := await _run(steps)
+	check(ok and Game.has_flag("chase_rainline_done"), "crossing x 3620 sets the flag")
+	var room := await _rainline_die_and_respawn()
+	check(Game.has_flag("chase_rainline_done"), "a death after the finish keeps chase_rainline_done")
+	check(_rainline_director().state == ChaseDirector.State.DONE, "the reloaded chase is DONE")
+	check(_rainline_pursuers().is_empty(), "no Sweeper after the finish")
+	check(not room.pit_override.is_valid(), "no chase pit override after the finish")
+
+
+func test_rainline_hurt_stun_fairness() -> void:
+	# One forced hit (knocked back toward the Sweeper) on flat deck at each
+	# x: the hurt stun must never cost a catch on the bot's line.
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	var p := (SceneRouter.current_room as Room).player
+	var legs := [
+		[["run", 700]],
+		[["run", 790], ["runjump", 796, 900], ["runjump", 1036, 1150]],
+		[["run", 1200], ["slide", 1300], ["slidejump", 1420, 1560], ["run", 1650]],
+		[["run", 1690], ["runjump", 1696, 1790], ["run", 1830], ["slide", 1930], ["run", 2150]],
+		[["run", 2210], ["jump", 2270], ["run", 2330], ["runjump", 2436, 2560], ["runjump", 2696, 2800], ["run", 2950]],
+		[["run", 2990], ["runjump", 3196, 3320], ["run", 3400]],
+		[["runjump", 3492, 3600], ["run", 3700]],
+	]
+	var hits := 0
+	for i in legs.size():
+		if not await _run(legs[i]):
+			break
+		if i == legs.size() - 1:
+			break
+		p.combat.health = 5
+		p.combat.hurt_invuln_timer = 0.0
+		p.combat.take_damage(1, Vector2(-p.facing * 60.0, -120.0), 0.06, true, "test/knock")
+		hits += 1
+		await physics_frames(24)
+	_rainline_unwatch(w)
+	check(hits == 6, "six forced hits, got %d" % hits)
+	check((w["caught"] as Array).is_empty(), "no catch from a hurt stun: %s" % str(w["caught"]))
+	check(Game.has_flag("chase_rainline_done"), "the knocked-about run still finishes")
+
+
+func test_rainline_lowroad() -> void:
+	await _enter(_rainline_path(), &"from_security")
+	var w := _rainline_watch()
+	var p := (SceneRouter.current_room as Room).player
+	await _run([["run", 790], ["runjump", 796, 900], ["runjump", 1036, 1160], ["run", 1200], ["slide", 1300],
+		["slidejump", 1370, 1470]])
+	check_near(p.global_position.y, 72.0, 0.5, "an early G3 slide-jump lands on the LowRoad")
+	check(p.global_position.x > 1420.0 and p.global_position.x < 1532.0, "landed under G3 (x %.0f)" % p.global_position.x)
+	var ok := await _run([["run", 1722], ["jump", 1730], ["jump", 1800], ["run", 1830]])
+	_rainline_unwatch(w)
+	check(ok and absf(p.global_position.y) < 1.0, "climbs out through the hatch onto D5 (at %s)" % p.global_position)
+	check((w["caught"] as Array).is_empty(), "the LowRoad is below the Sweeper: no reset, got %s" % str(w["caught"]))
+	check(p.combat.health == 5, "no pip lost on the LowRoad, hp %d" % p.combat.health)
+
+
+func test_rainline_signal_box_after_chase() -> void:
+	Game.set_flag("chase_rainline_done")
+	await _enter(_rainline_path(), &"from_bell")
+	var p := (SceneRouter.current_room as Room).player
+	var scrap0 := Game.state.total_scrap()
+	# Down the cars to CarA, up the one-way to the high line, dodge-jump the
+	# 130 px gap to the signal box's ledge, break the wall, collect.
+	var ok := await _run(_rainline_west_to_cars() + [["run", 2530], ["runjump", 2524, 2400], ["run", 2290],
+		["jump", 2290], ["jump", 2350], ["run", 2340], ["dodgejump", 2418, 2580]])
+	check(ok and absf(p.global_position.y + 144.0) < 1.0, "reached HL2 (at %s)" % p.global_position)
+	await _run([["run", 2590], ["attack", 3]])
+	check(Game.is_collected("rc_signal_box"), "three hits break the signal box wall")
+	await _run([["run", 2660], ["wait", 120]])
+	check(Game.is_collected("sb_rc_signal"), "the stash inside is collected")
+	# Both burst into pickups; most land in reach inside the box.
+	check(Game.state.total_scrap() - scrap0 >= 60, "wall 30 + stash 60 scrap, got %d" % (Game.state.total_scrap() - scrap0))
+
+
+func test_rainline_reentry_no_pursuer() -> void:
+	Game.set_flag("chase_rainline_done")
+	var w := _rainline_watch()
+	await _enter(_rainline_path(), &"from_security")
+	await _run([["run", 700]])
+	_rainline_unwatch(w)
+	check(_rainline_pursuers().is_empty(), "no Sweeper once the chase is done")
+	check(_rainline_director().state == ChaseDirector.State.DONE, "director DONE on re-entry")
+	check((w["started"] as Array).is_empty(), "crossing ChaseStart after the chase does nothing")
+	check(not (SceneRouter.current_room as Room).pit_override.is_valid(), "pits are ordinary again")
+
+
+func test_rainline_from_bell_idle() -> void:
+	await _enter(_rainline_path(), &"from_bell")
+	var w := _rainline_watch()
+	var d := _rainline_director()
+	var moved: Array = [false]
+	var watch := func() -> void:
+		if is_instance_valid(d) and d.pursuer_progress != 0.0:
+			moved[0] = true
+	get_tree().physics_frame.connect(watch)
+	var ok := await _run(_rainline_west_steps())
+	get_tree().physics_frame.disconnect(watch)
+	check(ok, "the westbound walk reaches the Security door")
+	check((w["started"] as Array).is_empty(), "walking west never arms the chase")
+	check((w["caught"] as Array).is_empty(), "no catch westbound")
+	check(not Game.has_flag("chase_rainline_done"), "crossing end_area while idle does not set the flag")
+	check(not moved[0], "the parked Sweeper never moves")
+	await _run([["run", 460]])
+	_rainline_unwatch(w)
+	check((w["started"] as Array).size() == 1, "walking east from 20 past 440 arms the chase once")
+
+
+func test_rainline_old_save_via_bell_lift() -> void:
+	# A v3-style save: full kit, Dash, Krail down, the Bell lift running, Orr
+	# met, and no chase flag. It walks the line backwards from the Bell Tower.
+	Game.set_ability(&"dash", true)
+	for f in ["warden_krail_defeated", "shortcut_bell_lift", "met_orr"]:
+		Game.set_flag(f)
+	await _enter(LL + "BellTower.tscn", &"from_rainline")
+	var w := _rainline_watch()
+	var ok := await _run([["exit", -1]])
+	check(ok and SceneRouter.current_room_path == _rainline_path(), "the Bell Tower's bottom-left door leads to the Rainline")
+	_pacify()
+	var p := (SceneRouter.current_room as Room).player
+	check_near(p.global_position.x, 4100.0, 4.0, "arrives at from_bell")
+	ok = ok and await _run(_rainline_west_steps() + [["exit", -1]])
+	_rainline_unwatch(w)
+	check((w["caught"] as Array).is_empty() and (w["started"] as Array).is_empty(), "the Sweeper never wakes westbound")
+	check(not Game.has_flag("chase_rainline_done"), "the flag stays unset")
+	check(SceneRouter.current_room_path == LL + "SecurityStation.tscn", "reaches the Security Station")
+	var room := SceneRouter.current_room as Room
+	if room != null:
+		check(room.player.combat.health == 5, "no pip lost on the way, hp %d" % room.player.combat.health)
+		check(room.player.global_position.distance_to(Vector2(1200, -384)) < 40.0, "arrives at from_rainline, at %s" % room.player.global_position)
 
 
 func test_smuggler_route() -> void:
