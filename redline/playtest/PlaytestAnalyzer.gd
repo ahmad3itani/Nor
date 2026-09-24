@@ -58,6 +58,8 @@ func analyze() -> Dictionary:
 		"moment_tags": {},
 		"hints": 0,
 		"pauses": 0,
+		"map_opens_by_room": {},
+		"fast_travels": 0,
 		"secrets_found": [],
 		"dead_air_done": 0,
 		"weapon_hits": {},
@@ -124,6 +126,10 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 				r["hints"] = int(r["hints"]) + 1
 			"pause":
 				r["pauses"] = int(r["pauses"]) + 1
+			"map_open":
+				_inc(r["map_opens_by_room"], room)
+			"fast_travel":
+				r["fast_travels"] = int(r["fast_travels"]) + 1
 			"purchase":
 				_inc(r["purchases"], String(e.get("item", "")))
 	r["deaths_total"] = int(r["deaths_total"]) + deaths
@@ -261,7 +267,9 @@ func render_markdown(r: Dictionary, title: String = "REDLINE playtest report") -
 		var secs: Array = r["room_seconds"][room]
 		md.append("| %s | %d | %d | %d | %d |" % [room, roundi(_median(secs)), secs.size(), int(r["room_reentries"].get(room, 0)), (r["idle_spans"].get(room, []) as Array).size()])
 	md.append("")
-	md.append("- Hints shown: %d · pauses: %d" % [r["hints"], r["pauses"]])
+	md.append("- Hints shown: %d · pauses: %d · fast travels: %d" % [r["hints"], r["pauses"], r["fast_travels"]])
+	md.append("")
+	md.append(_table("Map opened, by room (lots of opens in one room = players unsure where to go)", r["map_opens_by_room"]))
 	md.append(_survey_line(r, "got_lost", "Got lost (yes answers)"))
 	md.append("")
 	md.append(_table("Reported moments by tag", r["moment_tags"]))

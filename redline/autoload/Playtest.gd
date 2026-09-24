@@ -65,6 +65,11 @@ func _ready() -> void:
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	EventBus.style_changed.connect(_on_style_changed)
 	EventBus.settings_changed.connect(func() -> void: _event("settings", _settings_snapshot()))
+	# M5: map use is a confusion signal; transit shows how the world is travelled.
+	EventBus.map_opened.connect(func() -> void: _event("map_open"))
+	EventBus.map_pins_changed.connect(func() -> void: _count("pin_changes"))
+	EventBus.fast_traveled.connect(func(from: String, to: String) -> void:
+		_event("fast_travel", {"from": from.get_file(), "to": to.get_file()}))
 
 
 func recording_allowed() -> bool:

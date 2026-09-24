@@ -21,6 +21,9 @@ static func totals() -> Dictionary:
 		for n in inst.find_children("*", "", true, false):
 			if n is Collectible:
 				var c := n as Collectible
+				# Scrap stashes are the loot inside secrets, not secrets themselves.
+				if c.kind == Collectible.Kind.SCRAP_BUNDLE:
+					continue
 				secrets.append(c.persist_id)
 				if c.kind == Collectible.Kind.MEMORY_FRAGMENT:
 					fragments += 1

@@ -163,6 +163,13 @@ script = ExtResource("collect")
 persist_id = "cs_roofs"
 kind = 2
 
+[node name="Collectible2" type="Area2D" parent="Interactables"]
+position = Vector2(1792, -176)
+script = ExtResource("collect")
+persist_id = "sb_roofs_ledge"
+kind = 0
+scrap_amount = 50
+
 [node name="Hint2" type="Area2D" parent="Triggers"]
 position = Vector2(1500, -276)
 script = ExtResource("hint")

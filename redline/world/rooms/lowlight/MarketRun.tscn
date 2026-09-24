@@ -200,6 +200,7 @@ script = ExtResource("wall")
 size = Vector2(16, 40)
 persist_id = "market_stash_wall"
 max_health = 25.0
+scrap_inside = 60
 
 [node name="StashBack" type="StaticBody2D" parent="Geometry"]
 position = Vector2(2124, -40)

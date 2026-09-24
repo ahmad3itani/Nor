@@ -195,8 +195,16 @@ script = ExtResource("wall")
 size = Vector2(16, 40)
 persist_id = "alley_tunnel_wall"
 max_health = 20.0
+scrap_inside = 40
 
 [node name="Collectible2" type="Area2D" parent="Interactables"]
+position = Vector2(1340, 0)
+script = ExtResource("collect")
+persist_id = "sb_alley_tunnel"
+kind = 0
+scrap_amount = 40
+
+[node name="Collectible3" type="Area2D" parent="Interactables"]
 position = Vector2(1368, 0)
 script = ExtResource("collect")
 persist_id = "mf_lowlight_01"

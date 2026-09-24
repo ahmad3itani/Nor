@@ -121,3 +121,15 @@ func test_recorded_bot_run_goes_through_the_pipeline() -> void:
 	SceneRouter.world_root = null
 	root.queue_free()
 	Game.new_game()
+
+
+func test_map_opens_and_travel_are_reported() -> void:
+	var s := PlaytestSession.new({"variant": "baseline"})
+	s.add_event(5.0, "map_open", "MarketRun", Vector2.ZERO)
+	s.add_event(6.0, "map_open", "MarketRun", Vector2.ZERO)
+	s.add_event(9.0, "fast_travel", "Relay", Vector2.ZERO, {"from": "Relay.tscn|relay", "to": "BellTower.tscn|bell_top"})
+	var a := PlaytestAnalyzer.new(Playtest.config)
+	a.sessions = [s]
+	var r := a.analyze()
+	check(int(r["map_opens_by_room"]["MarketRun"]) == 2 and int(r["fast_travels"]) == 1, "map/travel not counted")
+	check(a.render_markdown(r).contains("Map opened, by room"), "map section missing from report")
