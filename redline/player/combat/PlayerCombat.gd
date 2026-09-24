@@ -24,6 +24,8 @@ var combo_timer: float = 0.0
 var light_buffer: float = 0.0
 var heavy_buffer: float = 0.0
 var ranged_buffer: float = 0.0
+var heal_buffer: float = 0.0
+var injectors: int = 0
 var fire_cooldown: float = 0.0
 var since_last_shot: float = 0.0
 var ammo: Dictionary = {}  # weapon id -> rounds
@@ -48,8 +50,31 @@ func reset() -> void:
 	light_buffer = 0.0
 	heavy_buffer = 0.0
 	ranged_buffer = 0.0
+	heal_buffer = 0.0
+	injectors = config.injector_max
 	fire_cooldown = 0.0
 	current_attack = null
+	_refill_ammo()
+
+
+## Full rest at an Anchor: health and injectors (core is refilled by the Anchor).
+func rest() -> void:
+	health = config.max_health
+	injectors = config.injector_max
+	dead = false
+	_refill_ammo()
+
+
+func set_loadout(melee: WeaponData, ranged: WeaponData) -> void:
+	if melee:
+		melee_weapon = melee
+	if ranged:
+		ranged_weapons = [ranged]
+		ranged_index = 0
+	_refill_ammo()
+
+
+func _refill_ammo() -> void:
 	for w in ranged_weapons:
 		ammo[w.id] = w.ammo_max
 
@@ -76,12 +101,15 @@ func buffer_input(input: PlayerInputFrame) -> void:
 		heavy_buffer = config.attack_buffer_time
 	if input.ranged_pressed:
 		ranged_buffer = config.attack_buffer_time
+	if input.heal_pressed:
+		heal_buffer = config.attack_buffer_time
 
 
 func tick(input: PlayerInputFrame, delta: float) -> void:
 	light_buffer = maxf(light_buffer - delta, 0.0)
 	heavy_buffer = maxf(heavy_buffer - delta, 0.0)
 	ranged_buffer = maxf(ranged_buffer - delta, 0.0)
+	heal_buffer = maxf(heal_buffer - delta, 0.0)
 	fire_cooldown = maxf(fire_cooldown - delta, 0.0)
 	hurt_invuln_timer = maxf(hurt_invuln_timer - delta, 0.0)
 	movement_tech_timer = maxf(movement_tech_timer - delta, 0.0)
@@ -95,6 +123,21 @@ func tick(input: PlayerInputFrame, delta: float) -> void:
 	_tick_reload(delta)
 	_try_fire(input)
 	_check_hazards()
+
+
+# --- Healing --------------------------------------------------------------------
+
+func wants_heal() -> bool:
+	return heal_buffer > 0.0 and not dead and injectors > 0 and health < config.max_health
+
+
+func finish_heal() -> void:
+	heal_buffer = 0.0
+	injectors -= 1
+	health = mini(health + config.heal_amount, config.max_health)
+	AudioManager.play_sfx(&"heal")
+	HitSpark.spawn(player.get_parent(), player.global_position + Vector2(0, -18), Vector2.UP, Color("7dff9a"), 12, 70.0)
+	EventBus.player_healed.emit(health)
 
 
 # --- Melee --------------------------------------------------------------------

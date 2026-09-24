@@ -14,6 +14,13 @@ var _vignette: TextureRect
 var _critical: bool = false
 var _time: float = 0.0
 var _rank_flash: float = 0.0
+var _prompt: String = ""
+var _hint: String = ""
+var _hint_time: float = 0.0
+var _banner: String = ""
+var _banner_sub: String = ""
+var _banner_time: float = 0.0
+const BANNER_SECONDS := 2.6
 
 
 func _ready() -> void:
@@ -44,11 +51,21 @@ func _ready() -> void:
 	EventBus.player_spawned.connect(func(p: Node2D) -> void: _player = p as Player)
 	EventBus.reactor_changed.connect(func(_c: float, _m: float, critical: bool) -> void: _critical = critical)
 	EventBus.style_changed.connect(func(_p: float, _r: int) -> void: _rank_flash = 0.3)
+	EventBus.interact_prompt_changed.connect(func(t: String) -> void: _prompt = t)
+	EventBus.hint_requested.connect(func(t: String, s: float) -> void:
+		_hint = t
+		_hint_time = s)
+	EventBus.room_entered.connect(func(district: String, room_name: String) -> void:
+		_banner = district.to_upper()
+		_banner_sub = room_name
+		_banner_time = BANNER_SECONDS if district != "" else 0.0)
 
 
 func _process(delta: float) -> void:
 	_time += delta
 	_rank_flash = maxf(_rank_flash - delta, 0.0)
+	_hint_time = maxf(_hint_time - delta, 0.0)
+	_banner_time = maxf(_banner_time - delta, 0.0)
 	var target_alpha := 0.0
 	if _critical:
 		target_alpha = 0.35 if Settings.flash_reduction else 0.25 + 0.3 * (0.5 + 0.5 * sin(_time * 7.0))
@@ -91,6 +108,32 @@ func _draw_hud() -> void:
 		for i in w.ammo_max:
 			_root.draw_rect(Rect2(ax + i * 4, y - 5, 2, 5), Color("ffe28a") if i < ammo else DIM)
 
+	# Injectors (green pips after health).
+	var inj_x := base.x + combat.config.max_health * (PIP.x + 2) + 6
+	for i in combat.config.injector_max:
+		_root.draw_rect(Rect2(Vector2(inj_x + i * 5, base.y + 1), Vector2(3, 5)), Color("7dff9a") if i < combat.injectors else DIM)
+
+	# Scrap (banked + unbanked, unbanked shown dimmer).
+	var st := Game.state
+	var scrap_text := "SCRAP %d" % st.scrap_banked
+	if st.scrap_unbanked > 0:
+		scrap_text += " +%d" % st.scrap_unbanked
+	_root.draw_string(font, Vector2(base.x + 92 + 50, base.y + 21), scrap_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("ffd36b"))
+
+	# Contextual prompt and hints (bottom centre).
+	if _prompt != "":
+		var t := "[%s] %s" % [InputGlyphs.label(&"interact"), _prompt]
+		_draw_centered(font, t, view.y - 46, FONT_SIZE + 1, Color.WHITE)
+	if _hint_time > 0.0:
+		var c := Color(1, 1, 1, clampf(_hint_time * 2.0, 0.0, 1.0))
+		_draw_centered(font, _hint, view.y - 58, FONT_SIZE + 1, c)
+
+	# Room banner on entry.
+	if _banner_time > 0.0:
+		var a := clampf(minf(_banner_time, BANNER_SECONDS - _banner_time) * 3.0, 0.0, 1.0)
+		_draw_centered(font, _banner, 58, 12, Color(RED, a))
+		_draw_centered(font, _banner_sub, 72, 7, Color(1, 1, 1, a))
+
 	# Style rank (top right).
 	var meter := _player.style.meter
 	var rank := meter.rank_name()
@@ -106,3 +149,9 @@ func _draw_hud() -> void:
 	_root.draw_rect(mbar, DIM)
 	_root.draw_rect(Rect2(mbar.position, Vector2(mbar.size.x * meter.rank_progress(), 2)), col)
 	_root.draw_string(font, pos + Vector2(0, 12), "STYLE %d" % int(meter.points), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color("c9c3d6"))
+
+
+func _draw_centered(font: Font, text: String, y: float, size: int, color: Color) -> void:
+	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	_root.draw_string(font, Vector2((_root.size.x - w) * 0.5, y), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
+

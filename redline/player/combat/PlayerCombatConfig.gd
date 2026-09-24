@@ -14,6 +14,13 @@ extends Resource
 ## Delay between death and respawn; short on purpose (bible §7 near-instant restart).
 @export var respawn_delay: float = 0.4
 
+@export_group("Healing")
+## Injectors held after resting at an Anchor (bible §7 "limited healing injectors").
+@export var injector_max: int = 2
+@export var heal_amount: int = 2
+## Channel time standing still; getting hit interrupts it without using the injector.
+@export var heal_time: float = 0.55
+
 @export_group("Input")
 @export var attack_buffer_time: float = 0.15
 ## After a chain attack ends, the next light continues the chain within this window.

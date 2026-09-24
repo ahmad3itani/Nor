@@ -10,3 +10,5 @@ const ENEMY_BODY := 8
 const PLAYER_HURTBOX := 16
 const ENEMY_HURTBOX := 32
 const HAZARD := 64
+## Interactables (anchors, NPCs, switches) found by the player's interactor query.
+const INTERACT := 128

@@ -20,6 +20,7 @@ Game="*res://autoload/Game.gd"
 SaveManager="*res://autoload/SaveManager.gd"
 AudioManager="*res://autoload/AudioManager.gd"
 SceneRouter="*res://autoload/SceneRouter.gd"
+InputGlyphs="*res://autoload/InputGlyphs.gd"
 
 [debug]
 
@@ -190,6 +191,7 @@ pointing/emulate_touch_from_mouse=false
 2d_physics/layer_5="hurtbox_player"
 2d_physics/layer_6="hurtbox_enemy"
 2d_physics/layer_7="hazard"
+2d_physics/layer_8="interact"
 
 [physics]
 

@@ -16,4 +16,6 @@ func sample(config: PlayerMovementConfig) -> PlayerInputFrame:
 	f.light_pressed = Input.is_action_just_pressed("attack_light")
 	f.heavy_pressed = Input.is_action_just_pressed("attack_heavy")
 	f.ranged_pressed = Input.is_action_just_pressed("ranged")
+	f.interact_pressed = Input.is_action_just_pressed("interact")
+	f.heal_pressed = Input.is_action_just_pressed("heal")
 	return f

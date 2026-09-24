@@ -7,9 +7,9 @@ extends Node
 ## - Writes are atomic: write to <file>.tmp, keep the previous file as <file>.bak,
 ##   then rename tmp into place. A crash mid-write never destroys the last good save.
 ## - If the primary file is corrupt, the backup is tried before giving up.
-## M1 stores almost nothing; the structure is what matters now.
+## Since M3 the payload is GameState.to_dict() plus "schema_version".
 
-const CURRENT_SCHEMA_VERSION := 1
+const CURRENT_SCHEMA_VERSION := 2
 const DEFAULT_SAVE_DIR := "user://saves"
 
 var save_dir: String = DEFAULT_SAVE_DIR
@@ -21,13 +21,9 @@ func profile_path(profile_id: int) -> String:
 
 ## Fresh data for a brand-new profile at the current schema.
 func new_profile_data() -> Dictionary:
-	return {
-		"schema_version": CURRENT_SCHEMA_VERSION,
-		"story_flags": {},
-		"abilities": {},
-		"currencies": {"scrap": 0},
-		"statistics": {"play_time_sec": 0.0, "deaths": 0},
-	}
+	var d := GameState.new().to_dict()
+	d["schema_version"] = CURRENT_SCHEMA_VERSION
+	return d
 
 
 func save_profile(profile_id: int, data: Dictionary) -> Error:
@@ -76,6 +72,8 @@ func migrate(data: Dictionary) -> Dictionary:
 		match version:
 			0:
 				result = _migrate_v0_to_v1(result)
+			1:
+				result = _migrate_v1_to_v2(result)
 			_:
 				push_error("SaveManager: no migration from schema %d" % version)
 				return {}
@@ -85,10 +83,25 @@ func migrate(data: Dictionary) -> Dictionary:
 
 ## v0 was the pre-production prototype layout: a flat dict with "scrap" at the root.
 func _migrate_v0_to_v1(data: Dictionary) -> Dictionary:
-	var out := new_profile_data()
-	out["currencies"]["scrap"] = int(data.get("scrap", 0))
-	out["story_flags"] = data.get("flags", {})
-	out["schema_version"] = 1
+	return {
+		"schema_version": 1,
+		"story_flags": data.get("flags", {}),
+		"abilities": {},
+		"currencies": {"scrap": int(data.get("scrap", 0))},
+		"statistics": {"play_time_sec": 0.0, "deaths": 0},
+	}
+
+
+## v1 (M0-M2 skeleton) -> v2 (M3 GameState): flags, banked scrap and stats carry over.
+func _migrate_v1_to_v2(data: Dictionary) -> Dictionary:
+	var out := GameState.new().to_dict()
+	out["flags"] = data.get("story_flags", {})
+	out["abilities"] = data.get("abilities", {})
+	out["scrap_banked"] = int(data.get("currencies", {}).get("scrap", 0))
+	var stats: Dictionary = data.get("statistics", {})
+	out["play_time_sec"] = float(stats.get("play_time_sec", 0.0))
+	out["deaths"] = int(stats.get("deaths", 0))
+	out["schema_version"] = 2
 	return out
 
 

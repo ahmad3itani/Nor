@@ -15,6 +15,7 @@ var _room_index: int = 0
 
 func _ready() -> void:
 	SceneRouter.register_world_root(game_viewport)
+	SceneRouter.register_fade($FadeLayer/Fade)
 	_room_index = maxi(lab_rooms.find(start_room), 0)
 	SceneRouter.goto_room(start_room)
 

@@ -10,6 +10,8 @@ var up_held: bool = false
 var _light_queued: bool = false
 var _heavy_queued: bool = false
 var _ranged_queued: bool = false
+var _interact_queued: bool = false
+var _heal_queued: bool = false
 var _jump_press_queued: bool = false
 var _dodge_press_queued: bool = false
 
@@ -39,6 +41,14 @@ func press_ranged() -> void:
 	_ranged_queued = true
 
 
+func press_interact() -> void:
+	_interact_queued = true
+
+
+func press_heal() -> void:
+	_heal_queued = true
+
+
 func sample(_config: PlayerMovementConfig) -> PlayerInputFrame:
 	var f := PlayerInputFrame.new()
 	f.move_x = move_x
@@ -50,6 +60,10 @@ func sample(_config: PlayerMovementConfig) -> PlayerInputFrame:
 	_light_queued = false
 	_heavy_queued = false
 	_ranged_queued = false
+	f.interact_pressed = _interact_queued
+	f.heal_pressed = _heal_queued
+	_interact_queued = false
+	_heal_queued = false
 	f.down_held = down_held
 	f.jump_pressed = _jump_press_queued
 	f.jump_held = jump_held

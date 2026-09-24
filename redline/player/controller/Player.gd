@@ -26,6 +26,7 @@ const WORLD_LAYER_BIT := 1
 @onready var combat: PlayerCombat = $Combat
 @onready var reactor: ReactorCore = $Reactor
 @onready var style: PlayerStyle = $Style
+@onready var interactor: PlayerInteractor = $Interactor
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/Shape
 
 var input_source: PlayerInputSource = PlayerInputSource.new()
@@ -49,6 +50,9 @@ var slide_cooldown: float = 0.0
 ## Freeze-frame time remaining (bible §8 hitstop). The body doesn't move, but
 ## presses are still buffered so nothing typed during a freeze is lost.
 var hitstop_timer: float = 0.0
+## Last grounded position after a real move (pit recovery point). Updated in
+## _post_move, so it always reflects this tick's floor check, never a stale one.
+var last_safe_position: Vector2
 var _drop_through_timer: float = 0.0
 
 
@@ -73,6 +77,7 @@ func _register_states() -> void:
 		&"dash": preload("res://player/states/DashState.gd"),
 		&"melee": preload("res://player/states/MeleeState.gd"),
 		&"hurt": preload("res://player/states/HurtState.gd"),
+		&"heal": preload("res://player/states/HealState.gd"),
 	}
 	for id: StringName in defs:
 		state_machine.add_state(defs[id].new(self, id))
@@ -110,6 +115,7 @@ func _physics_process(delta: float) -> void:
 	last_move_x = input.move_x
 	_tick_timers(delta, input)
 	combat.tick(input, delta)
+	interactor.tick(input)
 
 	var was_on_floor := is_on_floor()
 	state_machine.physics_update(input, delta)
@@ -146,6 +152,8 @@ func _post_move(was_on_floor: bool, pre_move_vy: float, delta: float) -> void:
 	if on_floor:
 		air_dodges_left = config.air_dodges
 		coyote_timer = 0.0
+		if state_machine.current.id != &"hurt":
+			last_safe_position = global_position
 		if not was_on_floor:
 			landed.emit(pre_move_vy)
 			EventBus.player_landed.emit(pre_move_vy)
@@ -316,6 +324,7 @@ func _apply_ledge_forgiveness(delta: float) -> void:
 
 func respawn(at: Vector2, face: int = 1) -> void:
 	global_position = at
+	last_safe_position = at
 	velocity = Vector2.ZERO
 	facing = face
 	jump_buffer_timer = 0.0
@@ -342,6 +351,14 @@ func hitstop(seconds: float) -> void:
 ## Hurtbox entry point (see Hurtbox.receive).
 func receive_hit(hit: HitInfo) -> int:
 	return combat.receive_hit(hit)
+
+
+## Move without resetting health/combat (pit recovery, in-room warps).
+func teleport(at: Vector2) -> void:
+	global_position = at
+	velocity = Vector2.ZERO
+	reset_physics_interpolation()
+	state_machine.force_state(&"idle")
 
 
 func current_state_id() -> StringName:

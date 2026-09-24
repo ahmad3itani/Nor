@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="1_room"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="2_block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="3_spawn"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="5_anchor"]
+
+[node name="WorldB" type="Node2D"]
+script = ExtResource("1_room")
+room_name = "WorldB"
+bounds = Rect2(-64, -270, 800, 336)
+world_room = true
+district_name = "Test"
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(-64, 0)
+script = ExtResource("2_block")
+size = Vector2(300, 64)
+
+[node name="Floor2" type="StaticBody2D" parent="."]
+position = Vector2(400, 0)
+script = ExtResource("2_block")
+size = Vector2(336, 64)
+
+[node name="Spawn_start" type="Marker2D" parent="."]
+position = Vector2(40, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Spawn_from_other" type="Marker2D" parent="."]
+position = Vector2(640, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"from_other"
+facing = -1
+
+[node name="Exit" type="Area2D" parent="."]
+position = Vector2(720, -80)
+script = ExtResource("4_exit")
+size = Vector2(16, 80)
+target_room = "res://tests/fixtures/WorldA.tscn"
+target_entry = &"from_other"

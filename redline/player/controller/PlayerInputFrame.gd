@@ -15,3 +15,5 @@ var up_held: bool = false
 var light_pressed: bool = false
 var heavy_pressed: bool = false
 var ranged_pressed: bool = false
+var interact_pressed: bool = false
+var heal_pressed: bool = false

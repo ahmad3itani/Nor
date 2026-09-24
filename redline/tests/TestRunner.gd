@@ -26,7 +26,13 @@ func _run() -> void:
 	for file in files:
 		if not (file.begins_with("test_") and file.ends_with(".gd")):
 			continue
-		var script: GDScript = load("%s/%s" % [TEST_DIR, file])
+		var script := load("%s/%s" % [TEST_DIR, file]) as GDScript
+		if script == null or not script.can_instantiate():
+			# A broken test file must fail loudly, not hang the run.
+			total += 1
+			failed += 1
+			print("FAIL %s (script failed to load/parse)" % file)
+			continue
 		var suite: RedlineTestCase = script.new()
 		add_child(suite)
 		for method in suite.get_method_list():

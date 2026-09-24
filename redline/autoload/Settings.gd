@@ -21,6 +21,8 @@ var master_volume: float = 1.0:
 var sfx_volume: float = 0.8:
 	set(v): sfx_volume = clampf(v, 0.0, 1.0)
 var show_debug_overlay: bool = true
+## Accessibility (bible §24): dropping unbanked Scrap on death can be disabled.
+var currency_loss: bool = true
 ## Redline Core difficulty (bible §6): 0 Normal, 1 Story/Assist, 2 Redline Challenge.
 var reactor_mode: int = 0:
 	set(v): reactor_mode = clampi(v, 0, 2)
@@ -45,6 +47,7 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	sfx_volume = cfg.get_value("audio", "sfx_volume", sfx_volume)
 	show_debug_overlay = cfg.get_value("debug", "show_debug_overlay", show_debug_overlay)
 	reactor_mode = cfg.get_value("gameplay", "reactor_mode", reactor_mode)
+	currency_loss = cfg.get_value("accessibility", "currency_loss", currency_loss)
 
 
 func save_settings() -> Error:
@@ -57,4 +60,5 @@ func save_settings() -> Error:
 	cfg.set_value("audio", "sfx_volume", sfx_volume)
 	cfg.set_value("debug", "show_debug_overlay", show_debug_overlay)
 	cfg.set_value("gameplay", "reactor_mode", reactor_mode)
+	cfg.set_value("accessibility", "currency_loss", currency_loss)
 	return cfg.save(_path)

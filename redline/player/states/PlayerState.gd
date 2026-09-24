@@ -50,6 +50,8 @@ func ground_transitions(input: PlayerInputFrame) -> StringName:
 			return &"air"
 	if player.combat.wants_melee():
 		return &"melee"
+	if player.combat.wants_heal():
+		return &"heal"
 	return &""
 
 

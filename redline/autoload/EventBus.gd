@@ -36,5 +36,20 @@ signal ranged_weapon_changed(weapon: Resource)
 signal reactor_changed(charge: float, max_charge: float, critical: bool)
 ## Style meter changed (bible §10). rank indexes StyleConfig.rank_names.
 signal style_changed(points: float, rank: int)
+## --- World & progression (M3) ---
+## GameState was replaced (new game / load). Systems re-read it.
+signal game_state_reset
+signal flag_changed(id: String, value: Variant)
+signal scrap_changed(total: int)
+## The current room is about to be freed (persist the player's state now).
+signal room_leaving(room: Node)
+## Shown on entering a world room: district + room name banner.
+signal room_entered(district: String, room_name: String)
+## Contextual prompt for the nearest interactable ("" = hide).
+signal interact_prompt_changed(text: String)
+## A short contextual hint (bible §42: tutorial text short and contextual).
+signal hint_requested(text: String, seconds: float)
+signal anchor_rested(anchor: Node)
+signal player_healed(health: int)
 ## Tuning panel asks to discard live edits and reload the active preset from disk.
 signal movement_config_reload_requested
