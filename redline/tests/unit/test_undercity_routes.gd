@@ -172,8 +172,57 @@ func test_wake_route() -> void:
 	print("PENDING: Wake")
 
 
+## Bible §42 0-5 min: the rack arms an unarmed Rook, the first chain kills
+## the dormant orderly, the shelf is reachable with plain jumps, and the
+## live Needles (pacified here: geometry only) sit on floor, pit and deck.
 func test_medical_ruin_route() -> void:
-	print("PENDING: MedicalRuin")
+	_campaign()
+	check(Game.state.melee_weapon == "", "the Medical Ruin kit is the bare, unarmed campaign")
+	await _enter(UC + "MedicalRuin.tscn", &"from_wake")
+	var dormant := _medical_ruin_dormant()
+	check(dormant != null, "no dormant Needle in the room")
+	if dormant == null:
+		return
+	if not await _run([["run", 140], ["run", 236], ["attack", 3], ["run", 700], ["run", 850], ["jump", 910],
+			["run", 1028], ["jump", 1028], ["jump", 1110], ["run", 1140], ["run", 1340], ["attack", 3],
+			["run", 1690], ["jump", 1720], ["attack", 3], ["run", 1956]]):
+		return
+	check(Game.has_flag("got_pulse_blade") and Game.state.owned_weapons.has("pulse_blade"), "the rack should grant the Pulse Blade")
+	check(Game.state.melee_weapon == "pulse_blade", "the Pulse Blade should be equipped from the rack")
+	check(not is_instance_valid(dormant) or dormant.is_dead(), "the first chain should kill the dormant Needle")
+	check(Game.is_collected("sb_uc_med_shelf"), "the shelf Scrap should be reachable with plain jumps")
+	_assert_exit(1, UC + "MaintenanceShaft.tscn", &"from_medical")
+	if await _run([["exit", 1]]):
+		check(SceneRouter.current_room.name == "MaintenanceShaft", "the east door leads to the Maintenance Shaft")
+
+
+## Unarmed swings do nothing: only the rack makes the practice target die.
+## Unreachable in room order (the rack's trigger cannot be jumped), so Rook
+## is teleported past it.
+func test_medical_ruin_attack_before_rack() -> void:
+	_campaign()
+	await _enter(UC + "MedicalRuin.tscn", &"from_wake")
+	var dormant := _medical_ruin_dormant()
+	check(dormant != null, "no dormant Needle in the room")
+	if dormant == null:
+		return
+	var player := (SceneRouter.current_room as Room).player
+	player.global_position = Vector2(236, -1)
+	player.velocity = Vector2.ZERO
+	await physics_frames(10)
+	if not await _run([["run", 236], ["attack", 3]]):
+		return
+	check(not Game.has_flag("got_pulse_blade") and Game.state.melee_weapon == "", "Rook should still be unarmed")
+	check(is_instance_valid(dormant) and not dormant.is_dead() and dormant.health == dormant.data.max_health,
+			"unarmed attacks must leave the dormant Needle at full HP")
+
+
+## The one Enemy authored with its AI off (the orderly at x 270).
+func _medical_ruin_dormant() -> Enemy:
+	for e in SceneRouter.current_room.find_children("*", "Enemy", true, false):
+		if not (e as Enemy).ai_enabled:
+			return e as Enemy
+	return null
 
 
 func test_maintenance_shaft_route() -> void:
