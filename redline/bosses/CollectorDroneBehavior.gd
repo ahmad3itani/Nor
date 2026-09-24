@@ -34,8 +34,15 @@ const AMBER := Color(1.0, 0.62, 0.2)
 @export var stalk_drift_rate: float = 0.7
 @export var bob: float = 4.0
 @export var bob_rate: float = 2.5
-## x limits for every goal the drone flies to.
-@export var arena_x: Vector2 = Vector2(76, 428)
+## x limits for every goal the drone flies to. The left limit is 84, not the
+## plan's 76: CollectorBay's VentRoof (x 16..64, y -224..-136) blocks the
+## 40 px body in the cruise lane anywhere left of x 84, so a goal there could
+## never be reached and its card would time out.
+@export var arena_x: Vector2 = Vector2(84, 428)
+## Lane names for the debug label: feet below floor_lane_y read as "floor";
+## the low/cruise split sits low_lane_margin above the low/sag midpoint.
+@export var floor_lane_y: float = -12.0
+@export var low_lane_margin: float = 20.0
 
 @export_group("Speeds")
 @export var stalk_speed: float = 95.0
@@ -58,6 +65,22 @@ const AMBER := Color(1.0, 0.62, 0.2)
 @export var in_position_tolerance: float = 6.0
 ## "On the main floor": the player's last grounded feet y is at least this.
 @export var main_floor_min_y: float = -2.0
+## Press "in position" also needs the drone this close to cruise height, so
+## every drop falls the same distance (a bob is fine, a climb is not).
+@export var press_y_tolerance: float = 8.0
+## Spotlight under the Press (bible: a 48 px pool Rook steps out of) and, in
+## phase 2, the ring where the ground wave will run (px from the centre).
+@export var spotlight_width: float = 48.0
+@export var wave_ring: Vector2 = Vector2(30, 60)
+## Volley vent sag (the punish): sink to sag_y, hold, climb back to cruise.
+## sink + hold + climb fits inside the volley's 1.2 s RECOVER.
+@export var sag_sink: float = 0.25
+@export var sag_hold: float = 0.7
+@export var sag_climb: float = 0.25
+## After a Dive or Press: fall speed while still above the floor, then a
+## small downward press that keeps is_on_floor() true while it skids.
+@export var settle_fall_speed: float = 420.0
+@export var settle_hold_speed: float = 60.0
 
 @export_group("Phases")
 @export_range(0.1, 0.9) var phase2_threshold: float = 0.5
@@ -225,17 +248,29 @@ func _tick_windup(_delta: float) -> void:
 			enemy.attack_aim = enemy._aim_at_target()
 
 
-## After a Dive or Press touches down: stay on the floor (belt and braces
-## against a touchdown a frame early or late) and skid to a stop.
+## Dive and Press end on the floor: stay there (belt and braces against a
+## touchdown a frame early or late) and skid to a stop. ACTIVE settles only
+## once it has touched down (before that the lunge is the motion); RECOVER
+## and the phase-2 wave's WINDUP always settle, so a drone knocked a few px
+## off its lock point still lands instead of hovering through the punish.
 func _settle(delta: float) -> void:
-	if not _grounded or (_active_family != &"dive" and _active_family != &"press"):
+	if _active_family != &"dive" and _active_family != &"press":
 		return
-	if enemy.ai != Enemy.AI.ACTIVE and enemy.ai != Enemy.AI.RECOVER and enemy.ai != Enemy.AI.WINDUP:
-		return
+	match enemy.ai:
+		Enemy.AI.ACTIVE:
+			if not _grounded:
+				return
+		Enemy.AI.RECOVER:
+			pass
+		Enemy.AI.WINDUP:
+			if not _is_follow_up(enemy.current_attack):
+				return
+		_:
+			return
 	if not enemy.is_on_floor():
-		enemy.velocity.y = 420.0
+		enemy.velocity.y = settle_fall_speed
 		return
-	enemy.velocity.y = 60.0
+	enemy.velocity.y = settle_hold_speed
 	if enemy.ai == Enemy.AI.ACTIVE:
 		# _run_active skips friction for lunge_vertical attacks.
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0.0, enemy.data.friction * delta)
@@ -247,15 +282,29 @@ func _vent_sag(delta: float) -> void:
 		return
 	var t := enemy.ai_time
 	var goal := sag_y
-	if t < 0.25:
-		goal = lerpf(_sag_from, sag_y, t / 0.25)
-	elif t > 0.95:
-		goal = lerpf(sag_y, cruise_y, clampf((t - 0.95) / 0.25, 0.0, 1.0))
+	var climb_at := sag_sink + sag_hold
+	if t < sag_sink:
+		goal = lerpf(_sag_from, sag_y, t / sag_sink)
+	elif t > climb_at:
+		goal = lerpf(sag_y, cruise_y, clampf((t - climb_at) / sag_climb, 0.0, 1.0))
 	var v := (goal - room_pos().y) / delta
 	# Pre-compensate the flyer brake Enemy applies after this tick.
 	if not is_zero_approx(v):
 		v += signf(v) * enemy.data.friction * delta
 	enemy.velocity.y = v
+
+
+## A follow-up (the phase-2 wave) is not one of the drone's openers.
+func _is_follow_up(a: AttackData) -> bool:
+	return a != null and attack(a.id) == null
+
+
+## Drop Press tell, part one: the rotors cut for the drop (WINDUP and the
+## fall), a silhouette change that reads even over a busy floor.
+func rotors_cut() -> bool:
+	var a := enemy.current_attack
+	return a != null and family_of(a.id) == &"press" and not _is_follow_up(a) \
+		and (enemy.ai == Enemy.AI.WINDUP or enemy.ai == Enemy.AI.ACTIVE)
 
 
 func scaled_startup(a: AttackData) -> float:
@@ -339,7 +388,7 @@ func in_position() -> bool:
 	var p := room_pos()
 	match family_of(card):
 		&"press":
-			return absf(p.x - _player_x()) <= press_lock_dx and absf(p.y - cruise_y) <= 8.0
+			return absf(p.x - _player_x()) <= press_lock_dx and absf(p.y - cruise_y) <= press_y_tolerance
 		&"volley":
 			return absf(p.y - cruise_y) <= in_position_tolerance and enemy.has_line_of_sight()
 		&"dive", &"sweep":
@@ -376,7 +425,12 @@ func _commit() -> void:
 		pick = &"collector_tag_volley" if last_family == &"press" else &"collector_drop_press"
 		if phase == 2:
 			pick = StringName(String(pick) + "_p2")
-		_deck.erase(pick)
+		# Remove the card from whichever deck still holds it, so the forced
+		# play doesn't add an extra copy to this cycle or the next.
+		if _deck.has(pick):
+			_deck.erase(pick)
+		else:
+			_next_deck.erase(pick)
 		returns_in_row = 0
 	else:
 		for id in _deck:
@@ -497,9 +551,9 @@ func active_family() -> StringName:
 
 func lane() -> String:
 	var y := room_pos().y
-	if y > -12.0:
+	if y > floor_lane_y:
 		return "floor"
-	if y > (low_y + sag_y) * 0.5 - 20.0:
+	if y > (low_y + sag_y) * 0.5 - low_lane_margin:
 		return "low"
 	return "cruise"
 
@@ -528,8 +582,12 @@ func draw_extras(canvas: Node2D) -> void:
 		lamp = Color.WHITE
 	canvas.draw_rect(Rect2(enemy.facing * (size.x * 0.5 - 4) - 2, -size.y + 3, 4, 3), lamp)
 	if _look_host:
+		var cut := rotors_cut()
 		for look in looks.looks:
-			look.draw(_look_host, canvas)
+			if cut and look is LookRotor:
+				_draw_cut_rotor(canvas, (look as LookRotor).color)
+			else:
+				look.draw(_look_host, canvas)
 	var attack := enemy.current_attack
 	var id := attack.id if attack else &""
 	if card != &"" and family_of(card) == &"press":
@@ -553,6 +611,15 @@ func draw_extras(canvas: Node2D) -> void:
 		canvas.draw_rect(Rect2(-24, drop, 48, 4 if enemy.ai != Enemy.AI.RECOVER else 2), Color(0.62, 0.58, 0.5))
 	if Settings.show_debug_overlay:
 		canvas.draw_string(ThemeDB.fallback_font, Vector2(-size.x, -size.y - 14), debug_text(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
+
+
+## Stopped rotor: two short dim stubs instead of the full bar.
+func _draw_cut_rotor(canvas: Node2D, color: Color) -> void:
+	var size := enemy.data.body_size
+	var c := color.darkened(0.5)
+	var y := -size.y - 3.0
+	canvas.draw_rect(Rect2(-size.x * 0.5 - 3.0, y, 8, 1), c)
+	canvas.draw_rect(Rect2(size.x * 0.5 - 5.0, y, 8, 1), c)
 
 
 ## Dotted 45 degree path to the landing X, which fills as the tell runs.
@@ -585,7 +652,7 @@ func _draw_sweep(canvas: Node2D, floor_y: float, progress: float) -> void:
 ## filling red from the centre as the lock nears, solid red once locked.
 ## Phase 2 adds the ring where the ground wave will run.
 func _draw_spotlight(canvas: Node2D, floor_y: float, locked: bool) -> void:
-	var w := 48.0
+	var w := spotlight_width
 	var base := Rect2(-w * 0.5, floor_y - 3, w, 3)
 	if locked:
 		var progress := clampf(enemy.ai_time / maxf(scaled_startup(enemy.current_attack), 0.01), 0.0, 1.0)
@@ -595,8 +662,9 @@ func _draw_spotlight(canvas: Node2D, floor_y: float, locked: bool) -> void:
 		if phase == 2:
 			var ring := RED
 			ring.a = 0.35
-			canvas.draw_rect(Rect2(-60, floor_y - 2, 30, 2), ring)
-			canvas.draw_rect(Rect2(30, floor_y - 2, 30, 2), ring)
+			var span := wave_ring.y - wave_ring.x
+			canvas.draw_rect(Rect2(-wave_ring.y, floor_y - 2, span, 2), ring)
+			canvas.draw_rect(Rect2(wave_ring.x, floor_y - 2, span, 2), ring)
 		return
 	var amber := AMBER
 	amber.a = 0.12
