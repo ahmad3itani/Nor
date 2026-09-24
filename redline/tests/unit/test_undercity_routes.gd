@@ -225,8 +225,125 @@ func _medical_ruin_dormant() -> Enemy:
 	return null
 
 
+## Maintenance Shaft critical route up to the closet: climbs A and B, breaks
+## the closet wall with the blade and walks over its two items. Shared by the
+## route and the secret test, so an upper-climb regression is reported apart.
+const SHAFT_TO_CLOSET := [
+	["run", 530], ["jump", 530], ["jump", 450], ["jump", 530], ["jump", 450], ["jump", 370],
+	["run", 100], ["jump", 100], ["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262],
+	["run", 528], ["attack", 3], ["run", 604],
+]
+## From the closet up climb C to the exit ledge. The last hop aims at 488
+## (the draft said 520): a 48 px rise lands as soon as Rook clears the ledge
+## lip at 440, and RouteBot only steers 4 frames after landing.
+const SHAFT_CLOSET_TO_EXIT := [
+	["run", 488], ["jump", 488], ["jump", 408], ["jump", 488], ["jump", 408], ["jump", 488], ["run", 600],
+]
+
+
 func test_maintenance_shaft_route() -> void:
-	print("PENDING: MaintenanceShaft")
+	_campaign(true)
+	await _enter(UC + "MaintenanceShaft.tscn", &"from_medical")
+	_assert_exit(-1, UC + "MedicalRuin.tscn", &"from_shaft")
+	if not await _run(SHAFT_TO_CLOSET + SHAFT_CLOSET_TO_EXIT):
+		return
+	check(Game.is_collected("uc_shaft_closet"), "the closet wall should be broken")
+	check(Game.is_collected("sb_uc_shaft_closet") and Game.is_collected("mf_undercity_01"), "the closet items should be collected")
+	check_near(bot.player.global_position.y, -720.0, 2.0, "Rook should stand on the exit ledge")
+	check(bot.player.is_on_floor(), "Rook should be on the exit ledge floor")
+	_assert_exit(1, UC + "FirstPursuit.tscn", &"from_shaft")
+	if await _run([["exit", 1]]):
+		check(SceneRouter.current_room.name == "FirstPursuit", "the top door leads to First Pursuit")
+		check(Game.state.last_entry_id == "from_shaft", "arrival should record FirstPursuit's from_shaft entry")
+
+
+## Secret 1 (the first secret): two light blade hits open the closet.
+func test_shaft_closet_secret() -> void:
+	_campaign(true)
+	await _enter(UC + "MaintenanceShaft.tscn", &"from_medical")
+	if not await _run(SHAFT_TO_CLOSET):
+		return
+	check(Game.is_collected("uc_shaft_closet"), "the closet wall should be broken by the blade")
+	check(Game.is_collected("sb_uc_shaft_closet"), "the closet scrap bundle should be collected")
+	check(Game.is_collected("mf_undercity_01") and Game.state.memory_fragments.has("mf_undercity_01"), "the closet fragment should be collected")
+
+
+## The optional crew ledge: one step up from the exit ledge, then a 92 px
+## run-jump. The note is read there; the stash is 20 Scrap.
+func test_shaft_crew_pocket() -> void:
+	_campaign(true)
+	await _enter(UC + "MaintenanceShaft.tscn", &"from_pursuit")
+	# A short settle replaces the draft's ["run", 390]: that step ends with a
+	# small rightward drift, which RouteBot's runjump reads as "already
+	# turning" and jumps on the spot.
+	if not await _run([["run", 460], ["jump", 390], ["wait", 8], ["runjump", 304, 160], ["run", 40], ["wait", 10]]):
+		return
+	check(Game.is_collected("sb_uc_shaft_crew"), "the crew stash should be collected")
+	check_near(bot.player.global_position.y, -768.0, 2.0, "Rook should stand on the crew ledge")
+
+
+## The first composition (Floor 2): every other enemy idles, the Needle and
+## Scout pair keep their AI. Both engage within 2 s of Rook reaching Floor 2,
+## the director caps them at two attackers, and the blade alone kills the
+## Needle.
+func test_shaft_first_composition() -> void:
+	_campaign(true)
+	await _enter(UC + "MaintenanceShaft.tscn", &"from_medical", false)
+	var room := SceneRouter.current_room as Room
+	var pair: Array[Enemy] = []
+	for e in room.find_children("*", "Enemy", true, false):
+		var enemy := e as Enemy
+		if enemy.global_position.y < -470.0:
+			pair.append(enemy)
+		else:
+			enemy.ai_enabled = false
+			enemy.set_ai(Enemy.AI.IDLE)
+	check(pair.size() == 2, "Floor 2 should hold exactly two enemies (got %d)" % pair.size())
+	room.player.reactor.config = room.player.reactor.config.duplicate()
+	room.player.reactor.config.drain_per_second = 0.0
+	if not await _run(SHAFT_TO_CLOSET.slice(0, 12)):
+		return
+	var director := room.get_node("EncounterDirector") as EncounterDirector
+	var engaged := false
+	var max_seen := 0
+	for f in 120:
+		await physics_frames(1)
+		max_seen = maxi(max_seen, director.active_attackers())
+		if pair.all(func(x: Enemy) -> bool: return x.ai != Enemy.AI.IDLE):
+			engaged = true
+			break
+	check(engaged, "both Floor 2 enemies should engage within 2 s")
+	check(director.max_attackers == 2 and max_seen <= 2, "the director should allow at most two attackers (saw %d)" % max_seen)
+	var needle: Enemy = null
+	for e in pair:
+		if e.data.id == "needle":
+			needle = e
+	check(needle != null, "the Floor 2 pair should include a Needle")
+	if needle == null:
+		return
+	# Two blade strings, each from close range (the Needle steps in and out
+	# of reach while it lunges, so Rook closes in before each string).
+	for n in 2:
+		if not is_instance_valid(needle) or needle.is_dead():
+			break
+		await _shaft_close_in(needle)
+		await _run([["attack", 3]])
+	check(not is_instance_valid(needle) or needle.is_dead(), "two blade strings should kill the Needle")
+
+
+## Walks Rook to within blade reach of `target`, facing it (at most 1 s).
+func _shaft_close_in(target: Enemy) -> void:
+	for f in 60:
+		if not is_instance_valid(target) or target.is_dead():
+			break
+		var dx := target.global_position.x - bot.player.global_position.x
+		if absf(dx) < 22.0:
+			bot.input.move_x = int(signf(dx))
+			await physics_frames(1)
+			break
+		bot.input.move_x = int(signf(dx))
+		await physics_frames(1)
+	bot.input.move_x = 0
 
 
 func test_first_pursuit_route() -> void:
