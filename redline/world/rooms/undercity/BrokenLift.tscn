@@ -1,9 +1,17 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="anchor"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
 
@@ -36,27 +44,151 @@ theme = ExtResource("theme")
 script = ExtResource("director")
 max_attackers = 1
 
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -800)
+script = ExtResource("block")
+size = Vector2(16, 704)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -800)
+script = ExtResource("block")
+size = Vector2(672, 40)
+
+[node name="WallRightTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(624, -800)
+script = ExtResource("block")
+size = Vector2(16, 128)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(624, -576)
+script = ExtResource("block")
+size = Vector2(16, 576)
+
+[node name="Floor0" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(672, 96)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(430, -48)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(510, -96)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(430, -144)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="Landing1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -192)
+script = ExtResource("block")
+size = Vector2(448, 16)
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(150, -240)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(70, -288)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(150, -336)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="LiftCarRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(250, -280)
+script = ExtResource("block")
+size = Vector2(80, 16)
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(290, -280)
+script = ExtResource("collect")
+persist_id = "sb_uc_lift_car"
+kind = 0
+scrap_amount = 15
+
+[node name="Landing2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(224, -384)
+script = ExtResource("block")
+size = Vector2(400, 16)
+
+[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
+position = Vector2(320, -432)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay8" type="StaticBody2D" parent="Geometry"]
+position = Vector2(240, -480)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay9" type="StaticBody2D" parent="Geometry"]
+position = Vector2(320, -528)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="TopLanding" type="StaticBody2D" parent="Geometry"]
+position = Vector2(380, -576)
+script = ExtResource("block")
+size = Vector2(244, 16)
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(-48, -330)
+script = ExtResource("flow")
+size = Vector2(448, 136)
+drain_scale = 0.50
+drain_floor = 1.0
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(200, -194)
+
+[node name="Spawn_uc_lift" type="Marker2D" parent="Spawns"]
+position = Vector2(500, -576)
+script = ExtResource("spawn")
+spawn_id = &"uc_lift"
+facing = -1
+
+[node name="Anchor1" type="Area2D" parent="Interactables"]
+position = Vector2(500, -576)
+script = ExtResource("anchor")
+anchor_id = &"uc_lift"
+
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(400, -672)
+script = ExtResource("hint")
+size = Vector2(224, 96)
+hint_id = "relay_anchor"
+text = "Anchors save, heal and refill. Rest to change your loadout."
+
 [node name="Spawn_from_pursuit" type="Marker2D" parent="Spawns"]
 position = Vector2(-20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_pursuit"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-52, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_bay" type="Marker2D" parent="Spawns"]
 position = Vector2(596, -576)
 script = ExtResource("spawn")
 spawn_id = &"from_bay"
 facing = -1
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(564, -576)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
@@ -71,3 +203,116 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/undercity/CollectorBay.tscn"
 target_entry = &"from_lift"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(290, -220)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(80, 60)
+color = Color(0.3, 0.22, 0.17, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(262, -280)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(2, 480)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(318, -280)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(2, 480)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(180, -40)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(300, 12)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(470, -700)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(260, 12)
+color = Color(0.16, 0.2, 0.19, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(40, -120)
+script = ExtResource("neon")
+size = Vector2(24, 6)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 1
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(560, -300)
+script = ExtResource("neon")
+size = Vector2(24, 6)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 1
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(60, -640)
+script = ExtResource("neon")
+size = Vector2(24, 6)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 1
+
+[node name="Neon4" type="Node2D" parent="Props"]
+position = Vector2(560, -60)
+script = ExtResource("neon")
+size = Vector2(8, 14)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 1
+flicker = false
+
+[node name="Neon5" type="Node2D" parent="Props"]
+position = Vector2(110, -250)
+script = ExtResource("neon")
+size = Vector2(8, 14)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 1
+flicker = false
+
+[node name="Neon6" type="Node2D" parent="Props"]
+position = Vector2(380, -460)
+script = ExtResource("neon")
+size = Vector2(8, 14)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 1
+flicker = false
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(600, -576)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 64)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(0.85, 0.58, 0.3, 1)
+
+[node name="Neon7" type="Node2D" parent="Props"]
+position = Vector2(600, -640)
+script = ExtResource("neon")
+size = Vector2(8, 14)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 1
+flicker = false
+
+[node name="CarLit" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:collector_drone_defeated"
+
+[node name="Neon8" type="Node2D" parent="Props/CarLit"]
+position = Vector2(290, -300)
+script = ExtResource("neon")
+size = Vector2(30, 6)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 3
+flicker = false
