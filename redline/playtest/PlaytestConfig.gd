@@ -15,8 +15,13 @@ extends Resource
 @export var max_spikes: int = 200
 ## Standing (almost) still this long outside menus counts as "idle / unsure".
 @export var idle_seconds: float = 20.0
-## Share of testers that must pass a §44 criterion ("most of the following").
+## Share of testers that must pass a §44 criterion to count it as met.
 @export_range(0.0, 1.0) var pass_ratio: float = 0.6
+## §44: "Do not scale production unless external playtesters independently
+## report *most* of the following" (10 criteria): most = at least this many.
+@export_range(1, 10) var criteria_needed: int = 6
+## Position samples closer than this (px) count as "not moving" for idle spans.
+@export var idle_radius: float = 8.0
 ## Tags offered by the "Report a moment" menu.
 @export var moment_tags: PackedStringArray = []
 @export var variants: Array[PlaytestVariant] = []
