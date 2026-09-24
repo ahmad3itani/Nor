@@ -66,8 +66,7 @@ const DOORS := [
 	["lowlight/NeonRoofs", Rect2(-64, -196, 16, 96), "lowlight/ApartmentStack", &"from_roofs", "", &"from_stack", Vector2(20, -100), 1],
 	["lowlight/PowerBlock", Rect2(-64, -96, 16, 96), "lowlight/NeonRoofs", &"from_power", "", &"from_roofs", Vector2(20, 0), 1],
 	["lowlight/PowerBlock", Rect2(-64, 672, 16, 96), "lowlight/SmugglerRoute", &"from_power", "", &"from_smuggler", Vector2(20, 768), 1],
-	# Final requires_flag: lowlight_power_rerouted (the PowerBlock room task).
-	["lowlight/PowerBlock", Rect2(1008, 672, 16, 96), "lowlight/SecurityStation", &"from_power", "", &"from_security", Vector2(972, 768), -1],
+	["lowlight/PowerBlock", Rect2(1008, 672, 16, 96), "lowlight/SecurityStation", &"from_power", "lowlight_power_rerouted", &"from_security", Vector2(972, 768), -1],
 	["lowlight/SecurityStation", Rect2(-64, -96, 16, 96), "lowlight/PowerBlock", &"from_security", "", &"from_power", Vector2(20, 0), 1],
 	["lowlight/SecurityStation", Rect2(1232, -480, 16, 96), "lowlight/RainlineChase", &"from_security", "", &"from_rainline", Vector2(1200, -384), -1],
 	["lowlight/RainlineChase", Rect2(-64, -96, 16, 96), "lowlight/SecurityStation", &"from_rainline", "", &"from_security", Vector2(20, 0), 1],

@@ -1,10 +1,29 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/hazards/SpikeHazard.gd" id="spikes"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://interactables/Breaker.gd" id="breaker"]
+[ext_resource type="Script" path="res://world/transitions/PowerShutter.gd" id="shutter"]
+[ext_resource type="Resource" path="res://data/level/shutter_intro.tres" id="level_shutter_intro"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Resource" path="res://data/level/shutter_run.tres" id="level_shutter_run"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="scene_Hopper"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Watcher.tscn" id="scene_Watcher"]
+[ext_resource type="Resource" path="res://data/level/shutter_l3.tres" id="level_shutter_l3"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="anchor"]
+[ext_resource type="Script" path="res://interactables/FlagSwitch.gd" id="lever"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
-[ext_resource type="Script" path="res://world/rooms/FlagDeclaration.gd" id="flagdecl"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -36,37 +55,431 @@ theme = ExtResource("theme")
 [node name="EncounterDirector" type="Node" parent="."]
 script = ExtResource("director")
 
+[node name="WallLeftTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -240)
+script = ExtResource("block")
+size = Vector2(16, 144)
+
+[node name="WallLeftMid" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, 0)
+script = ExtResource("block")
+size = Vector2(16, 672)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1008, -240)
+script = ExtResource("block")
+size = Vector2(16, 912)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -240)
+script = ExtResource("block")
+size = Vector2(1056, 40)
+
+[node name="L0" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(928, 16)
+
+[node name="L1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(80, 192)
+script = ExtResource("block")
+size = Vector2(928, 16)
+
+[node name="L2a" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 384)
+script = ExtResource("block")
+size = Vector2(448, 16)
+
+[node name="TrenchBottom" type="StaticBody2D" parent="Geometry"]
+position = Vector2(400, 432)
+script = ExtResource("block")
+size = Vector2(96, 16)
+
+[node name="Spikes1" type="Area2D" parent="Hazards"]
+position = Vector2(400, 424)
+script = ExtResource("spikes")
+size = Vector2(96, 8)
+
+[node name="L2b" type="StaticBody2D" parent="Geometry"]
+position = Vector2(496, 384)
+script = ExtResource("block")
+size = Vector2(384, 16)
+
+[node name="L3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(80, 576)
+script = ExtResource("block")
+size = Vector2(928, 16)
+
+[node name="L4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 768)
+script = ExtResource("block")
+size = Vector2(1056, 96)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(900, 144)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(948, 96)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(900, 48)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, 336)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-40, 288)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, 240)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
+position = Vector2(900, 528)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay8" type="StaticBody2D" parent="Geometry"]
+position = Vector2(948, 480)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay9" type="StaticBody2D" parent="Geometry"]
+position = Vector2(900, 432)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay10" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, 720)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay11" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-40, 672)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay12" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, 624)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(600, 768)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(24, 968)
+color = Color(0.22, 0.18, 0.14, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="GridDown" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "!flag:lowlight_power_rerouted"
+
+[node name="Neon1" type="Node2D" parent="Props/GridDown"]
+position = Vector2(606, -120)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Neon2" type="Node2D" parent="Props/GridDown"]
+position = Vector2(606, 100)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Neon3" type="Node2D" parent="Props/GridDown"]
+position = Vector2(606, 300)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Neon4" type="Node2D" parent="Props/GridDown"]
+position = Vector2(606, 490)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Neon5" type="Node2D" parent="Props/GridDown"]
+position = Vector2(606, 680)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="OneWay13" type="StaticBody2D" parent="Geometry"]
+position = Vector2(170, -48)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay14" type="StaticBody2D" parent="Geometry"]
+position = Vector2(230, -96)
+script = ExtResource("block")
+size = Vector2(70, 8)
+one_way = true
+
+[node name="MeterFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(300, -96)
+script = ExtResource("block")
+size = Vector2(160, 16)
+
+[node name="MeterGate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(300, -200)
+script = ExtResource("gate")
+size = Vector2(16, 104)
+closed = true
+open_flag = "lowlight_power_rerouted"
+
+[node name="MeterWallE" type="StaticBody2D" parent="Geometry"]
+position = Vector2(444, -200)
+script = ExtResource("block")
+size = Vector2(16, 104)
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(380, -192)
+script = ExtResource("wall")
+size = Vector2(16, 96)
+persist_id = "pb_meter_cabinet"
+max_health = 25.0
+scrap_inside = 30
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(420, -96)
+script = ExtResource("collect")
+persist_id = "sb_pb_meter"
+kind = 0
+scrap_amount = 40
+
+[node name="Neon6" type="Node2D" parent="Props"]
+position = Vector2(330, -150)
+script = ExtResource("neon")
+size = Vector2(18, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 3
+
+[node name="Breaker_pb_b1" type="Area2D" parent="Interactables"]
+position = Vector2(692, -40)
+script = ExtResource("breaker")
+breaker_id = "pb_b1"
+circuit = &"pb_l0"
+
+[node name="Shutter_S1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(780, -200)
+script = ExtResource("shutter")
+size = Vector2(16, 200)
+shutter_id = "S1"
+circuit = &"pb_l0"
+timing = ExtResource("level_shutter_intro")
+latch_flag = "pb_s1_latched"
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(80, 0)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(18, 14)
+color = Color(0.25, 0.22, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(500, -170)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(240, 12)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(700, 190)
+facing = 1
+
+[node name="Breaker_pb_b2" type="Area2D" parent="Interactables"]
+position = Vector2(412, 152)
+script = ExtResource("breaker")
+breaker_id = "pb_b2"
+circuit = &"pb_l1"
+
+[node name="Shutter_S2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(176, 16)
+script = ExtResource("shutter")
+size = Vector2(16, 176)
+shutter_id = "S2"
+circuit = &"pb_l1"
+timing = ExtResource("level_shutter_run")
+latch_flag = "pb_s2_latched"
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(300, 192)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(26, 24)
+color = Color(0.26, 0.22, 0.18, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(250, 382)
+
+[node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
+position = Vector2(620, 290)
+
+[node name="Breaker_pb_b3" type="Area2D" parent="Interactables"]
+position = Vector2(692, 288)
+script = ExtResource("breaker")
+breaker_id = "pb_b3"
+circuit = &"pb_l2"
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(700, 288)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 80)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Shutter_S3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(800, 208)
+script = ExtResource("shutter")
+size = Vector2(16, 176)
+shutter_id = "S3"
+circuit = &"pb_l2"
+timing = ExtResource("level_shutter_run")
+latch_flag = "pb_s3_latched"
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(800, 400)
+script = ExtResource("flow")
+size = Vector2(208, 176)
+
+[node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(840, 574)
+facing = 1
+
+[node name="WatcherBracket" type="StaticBody2D" parent="Geometry"]
+position = Vector2(848, 496)
+script = ExtResource("block")
+size = Vector2(4, 16)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(850, 496)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(4, 96)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Watcher1" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(850, 494)
+
+[node name="Breaker_pb_b4" type="Area2D" parent="Interactables"]
+position = Vector2(772, 536)
+script = ExtResource("breaker")
+breaker_id = "pb_b4"
+circuit = &"pb_l3"
+
+[node name="Shutter_S4a" type="StaticBody2D" parent="Geometry"]
+position = Vector2(700, 400)
+script = ExtResource("shutter")
+size = Vector2(16, 176)
+shutter_id = "S4a"
+circuit = &"pb_l3"
+timing = ExtResource("level_shutter_l3")
+latch_flag = "pb_s4a_latched"
+
+[node name="Duct" type="StaticBody2D" parent="Geometry"]
+position = Vector2(520, 400)
+script = ExtResource("block")
+size = Vector2(48, 152)
+
+[node name="Shutter_S4b" type="StaticBody2D" parent="Geometry"]
+position = Vector2(360, 400)
+script = ExtResource("shutter")
+size = Vector2(16, 176)
+shutter_id = "S4b"
+circuit = &"pb_l3"
+timing = ExtResource("level_shutter_l3")
+latch_flag = "pb_s4b_latched"
+
+[node name="Spawn_power_block" type="Marker2D" parent="Spawns"]
+position = Vector2(420, 768)
+script = ExtResource("spawn")
+spawn_id = &"power_block"
+
+[node name="Anchor1" type="Area2D" parent="Interactables"]
+position = Vector2(420, 768)
+script = ExtResource("anchor")
+anchor_id = &"power_block"
+
+[node name="Lever1" type="Area2D" parent="Interactables"]
+position = Vector2(880, 768)
+script = ExtResource("lever")
+flag_id = "lowlight_power_rerouted"
+used_text = "Grid rerouted. Station doors on priority power. Overhead, the Rainline hums awake."
+
+[node name="StationGate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(992, 672)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+closed = true
+open_flag = "lowlight_power_rerouted"
+
+[node name="Neon7" type="Node2D" parent="Props"]
+position = Vector2(-20, 640)
+script = ExtResource("neon")
+size = Vector2(20, 10)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 3
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(830, 768)
+script = ExtResource("decor")
+kind = 6
+size = Vector2(40, 18)
+color = Color(0.24, 0.2, 0.18, 1)
+accent = Color(0.91, 0.16, 0.24, 1)
+
 [node name="Spawn_from_roofs" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_roofs"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-12, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_smuggler" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 768)
 script = ExtResource("spawn")
 spawn_id = &"from_smuggler"
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-12, 768)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Spawn_from_security" type="Marker2D" parent="Spawns"]
 position = Vector2(972, 768)
 script = ExtResource("spawn")
 spawn_id = &"from_security"
 facing = -1
-
-[node name="Block3" type="StaticBody2D" parent="Geometry"]
-position = Vector2(940, 768)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
@@ -88,7 +501,110 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/SecurityStation.tscn"
 target_entry = &"from_power"
+requires_flag = "lowlight_power_rerouted"
 
-[node name="FlagDeclaration" type="Node" parent="Triggers"]
-script = ExtResource("flagdecl")
-produces = PackedStringArray("lowlight_power_rerouted")
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(40, -96)
+script = ExtResource("hint")
+size = Vector2(80, 96)
+hint_id = "pb_terminal"
+text = "Security Station: grid-priority access only. Reroute at the basement relay."
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(230, -200)
+script = ExtResource("hint")
+size = Vector2(70, 104)
+hint_id = "pb_grid"
+text = "Sealed by the security grid."
+
+[node name="Hint3" type="Area2D" parent="Triggers"]
+position = Vector2(600, -96)
+script = ExtResource("hint")
+size = Vector2(80, 96)
+hint_id = "pb_breaker"
+text = "Breakers power the shutters. Hit one [{action}]"
+action = &"attack_light"
+
+[node name="Hint4" type="Area2D" parent="Triggers"]
+position = Vector2(200, 96)
+script = ExtResource("hint")
+size = Vector2(80, 96)
+hint_id = "pb_slot"
+text = "Shutter dropping? Get low and slide under [{action}]"
+action = &"move_down"
+
+[node name="Hint5" type="Area2D" parent="Triggers"]
+position = Vector2(620, 288)
+script = ExtResource("hint")
+size = Vector2(80, 96)
+hint_id = "pb_reach"
+text = "Too high? Jump and strike it, or shoot straight up [{action}]"
+action = &"ranged"
+
+[node name="GridRerouted" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:lowlight_power_rerouted"
+
+[node name="Neon8" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(606, -120)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon9" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(606, 100)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon10" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(606, 300)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon11" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(606, 490)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon12" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(606, 680)
+script = ExtResource("neon")
+size = Vector2(12, 6)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 2
+flicker = false
+
+[node name="Decor8" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(240, 766)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor9" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(560, 766)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor10" type="Node2D" parent="Props/GridRerouted"]
+position = Vector2(760, 766)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
