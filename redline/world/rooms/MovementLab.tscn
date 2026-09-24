@@ -1,0 +1,333 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="1_room"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="2_block"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxSlope.gd" id="3_slope"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="4_spawn"]
+[ext_resource type="Script" path="res://devtools/MovementLabController.gd" id="5_lab"]
+
+[node name="MovementLab" type="Node2D"]
+script = ExtResource("1_room")
+room_name = "Movement Lab"
+bounds = Rect2(-64, -704, 3456, 800)
+
+[node name="LabController" type="Node" parent="."]
+script = ExtResource("5_lab")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -704)
+script = ExtResource("2_block")
+size = Vector2(16, 800)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3376, -704)
+script = ExtResource("2_block")
+size = Vector2(16, 800)
+
+[node name="Floor_Run" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("2_block")
+size = Vector2(1072, 96)
+
+[node name="Pillar_16" type="StaticBody2D" parent="Geometry"]
+position = Vector2(640, -16)
+script = ExtResource("2_block")
+size = Vector2(32, 16)
+
+[node name="Pillar_32" type="StaticBody2D" parent="Geometry"]
+position = Vector2(712, -32)
+script = ExtResource("2_block")
+size = Vector2(32, 32)
+
+[node name="Pillar_48" type="StaticBody2D" parent="Geometry"]
+position = Vector2(784, -48)
+script = ExtResource("2_block")
+size = Vector2(32, 48)
+
+[node name="Pillar_60" type="StaticBody2D" parent="Geometry"]
+position = Vector2(856, -60)
+script = ExtResource("2_block")
+size = Vector2(32, 60)
+
+[node name="Pillar_72" type="StaticBody2D" parent="Geometry"]
+position = Vector2(928, -72)
+script = ExtResource("2_block")
+size = Vector2(32, 72)
+
+[node name="Floor_Gap0" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1024, 0)
+script = ExtResource("2_block")
+size = Vector2(96, 96)
+
+[node name="Floor_Gap1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1168, 0)
+script = ExtResource("2_block")
+size = Vector2(96, 96)
+
+[node name="Floor_Gap2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1328, 0)
+script = ExtResource("2_block")
+size = Vector2(96, 96)
+
+[node name="Floor_Gap3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1536, 0)
+script = ExtResource("2_block")
+size = Vector2(96, 96)
+
+[node name="Floor_Gap4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1776, 0)
+script = ExtResource("2_block")
+size = Vector2(624, 96)
+
+[node name="Tunnel_Low" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1872, -200)
+script = ExtResource("2_block")
+size = Vector2(256, 176)
+
+[node name="Tunnel_Tall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2192, -200)
+script = ExtResource("2_block")
+size = Vector2(96, 160)
+
+[node name="Floor_Corner" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2400, 0)
+script = ExtResource("2_block")
+size = Vector2(176, 96)
+
+[node name="Ceiling_Corner" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2424, -88)
+script = ExtResource("2_block")
+size = Vector2(80, 16)
+
+[node name="Plateau" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2672, -48)
+script = ExtResource("2_block")
+size = Vector2(96, 144)
+
+[node name="Floor_Slopes" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2576, 0)
+script = ExtResource("2_block")
+size = Vector2(400, 96)
+
+[node name="Floor_Vertical" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2976, 0)
+script = ExtResource("2_block")
+size = Vector2(400, 96)
+
+[node name="OneWay_0" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3008, -48)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="OneWay_1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3104, -96)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="OneWay_2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3008, -144)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="OneWay_3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3104, -192)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="OneWay_4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3008, -240)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="OneWay_5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3104, -288)
+script = ExtResource("2_block")
+size = Vector2(80, 8)
+one_way = true
+
+[node name="DropLedge" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3248, -336)
+script = ExtResource("2_block")
+size = Vector2(128, 16)
+
+[node name="Slope_Up" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2576, 0)
+script = ExtResource("3_slope")
+run = 96.0
+rise = 48.0
+
+[node name="Slope_Down" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2768, 0)
+script = ExtResource("3_slope")
+run = 96.0
+rise = -48.0
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(32, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"start"
+label = "run strip"
+is_default = true
+
+[node name="Spawn_jumps" type="Marker2D" parent="Spawns"]
+position = Vector2(600, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"jumps"
+label = "jump heights"
+
+[node name="Spawn_gaps" type="Marker2D" parent="Spawns"]
+position = Vector2(1000, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"gaps"
+label = "gaps + coyote"
+
+[node name="Spawn_slide" type="Marker2D" parent="Spawns"]
+position = Vector2(1800, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"slide"
+label = "slide tunnel"
+
+[node name="Spawn_corner" type="Marker2D" parent="Spawns"]
+position = Vector2(2400, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"corner"
+label = "corner correction"
+
+[node name="Spawn_slopes" type="Marker2D" parent="Spawns"]
+position = Vector2(2560, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"slopes"
+label = "slopes"
+
+[node name="Spawn_vertical" type="Marker2D" parent="Spawns"]
+position = Vector2(2990, 0)
+script = ExtResource("4_spawn")
+spawn_id = &"vertical"
+label = "one-way stack"
+
+[node name="Spawn_drop" type="Marker2D" parent="Spawns"]
+position = Vector2(3330, -336)
+script = ExtResource("4_spawn")
+spawn_id = &"drop"
+label = "drop ledge"
+facing = -1
+
+[node name="Labels" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0.55)
+
+[node name="Label0" type="Label" parent="Labels"]
+offset_left = 40.0
+offset_top = -40.0
+theme_override_font_sizes/font_size = 8
+text = "RUN STRIP - accel/decel/turn"
+
+[node name="Label1" type="Label" parent="Labels"]
+offset_left = 644.0
+offset_top = -30.0
+theme_override_font_sizes/font_size = 8
+text = "16"
+
+[node name="Label2" type="Label" parent="Labels"]
+offset_left = 716.0
+offset_top = -46.0
+theme_override_font_sizes/font_size = 8
+text = "32"
+
+[node name="Label3" type="Label" parent="Labels"]
+offset_left = 788.0
+offset_top = -62.0
+theme_override_font_sizes/font_size = 8
+text = "48"
+
+[node name="Label4" type="Label" parent="Labels"]
+offset_left = 860.0
+offset_top = -74.0
+theme_override_font_sizes/font_size = 8
+text = "60*"
+
+[node name="Label5" type="Label" parent="Labels"]
+offset_left = 932.0
+offset_top = -86.0
+theme_override_font_sizes/font_size = 8
+text = "72x"
+
+[node name="Label6" type="Label" parent="Labels"]
+offset_left = 616.0
+offset_top = -120.0
+theme_override_font_sizes/font_size = 8
+text = "JUMP HEIGHTS  *=ledge assist  x=unreachable"
+
+[node name="Label7" type="Label" parent="Labels"]
+offset_left = 1134.0
+offset_top = -24.0
+theme_override_font_sizes/font_size = 8
+text = "48px"
+
+[node name="Label8" type="Label" parent="Labels"]
+offset_left = 1286.0
+offset_top = -24.0
+theme_override_font_sizes/font_size = 8
+text = "64px"
+
+[node name="Label9" type="Label" parent="Labels"]
+offset_left = 1470.0
+offset_top = -24.0
+theme_override_font_sizes/font_size = 8
+text = "112px"
+
+[node name="Label10" type="Label" parent="Labels"]
+offset_left = 1694.0
+offset_top = -24.0
+theme_override_font_sizes/font_size = 8
+text = "144px"
+
+[node name="Label11" type="Label" parent="Labels"]
+offset_left = 1024.0
+offset_top = -72.0
+theme_override_font_sizes/font_size = 8
+text = "GAPS - coyote / slide-jump / dodge-jump / dash-jump"
+
+[node name="Label12" type="Label" parent="Labels"]
+offset_left = 1880.0
+offset_top = -212.0
+theme_override_font_sizes/font_size = 8
+text = "SLIDE (24px)"
+
+[node name="Label13" type="Label" parent="Labels"]
+offset_left = 2194.0
+offset_top = -212.0
+theme_override_font_sizes/font_size = 8
+text = "STAND (40px)"
+
+[node name="Label14" type="Label" parent="Labels"]
+offset_left = 2400.0
+offset_top = -120.0
+theme_override_font_sizes/font_size = 8
+text = "CORNER CORRECTION - jump at the edges"
+
+[node name="Label15" type="Label" parent="Labels"]
+offset_left = 2600.0
+offset_top = -80.0
+theme_override_font_sizes/font_size = 8
+text = "SLOPES 26deg"
+
+[node name="Label16" type="Label" parent="Labels"]
+offset_left = 2992.0
+offset_top = -32.0
+theme_override_font_sizes/font_size = 8
+text = "ONE-WAY (down+jump drops)"
+
+[node name="Label17" type="Label" parent="Labels"]
+offset_left = 3240.0
+offset_top = -400.0
+theme_override_font_sizes/font_size = 8
+text = "DROP LEDGE - hard landing"

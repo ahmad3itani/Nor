@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PlayerMovementConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://player/controller/PlayerMovementConfig.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+preset_name = "tight (experiment)"
+max_run_speed = 170.0
+ground_accel = 2400.0
+ground_decel = 3000.0
+ground_turn_accel = 4200.0
+air_accel = 1500.0
+air_turn_accel = 2400.0
+jump_height = 52.0
+jump_time_to_apex = 0.3
+fall_gravity_multiplier = 2.0
+apex_gravity_multiplier = 0.7
+coyote_time = 0.08
+jump_buffer_time = 0.1
+slide_friction = 320.0
+dodge_speed = 300.0
+dodge_duration = 0.18
+dodge_iframe_end = 0.15
