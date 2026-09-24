@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="PursuerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/hazards/PursuerData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = "test"
+look = 0
+rail_y = -150.0
+base_speed = 105.0
+catchup_speed = 150.0
+far_lead = 300.0
+near_lead = 96.0
+start_lead = 220.0
+warn_time = 0.5
+respawn_lead = 220.0
+regroup_time = 1.0
+catch_size = Vector2(36, 64)
+catch_bottom = 8.0
+catch_behind = 24.0
+catch_damage = 1

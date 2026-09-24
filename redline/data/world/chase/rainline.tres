@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="PursuerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/hazards/PursuerData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = "rainline"
+look = 0
+rail_y = -150.0
+base_speed = 125.0
+catchup_speed = 165.0
+far_lead = 380.0
+near_lead = 96.0
+start_lead = 380.0
+warn_time = 1.2
+respawn_lead = 260.0
+regroup_time = 1.0
+catch_size = Vector2(56, 116)
+catch_bottom = -4.0
+catch_behind = 24.0
+catch_damage = 1
+catch_hitstop = 0.12
+catch_shake = 0.4
+project_back = 160.0
+project_fwd = 400.0
+warn_hint = "Something on the line just woke up. Run east."
+repeat_hint = "Keep moving — it catches you when you slow down."
+runout_speed = 160.0
+derail_x = 3560.0
+derail_time = 1.6
