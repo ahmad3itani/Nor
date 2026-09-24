@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+
+[sub_resource type="Resource" id="iko_intro_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Easy. You're the one who lit up the grid? Good. Krail's people have been sitting on my canal for a month."
+
+[sub_resource type="Resource" id="iko_intro_l1"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Iko. I move what the Wardens don't want moved. I'll set up somewhere safer. That Relay of yours."
+
+[sub_resource type="Resource" id="iko_intro"]
+script = ExtResource("dialogue")
+id = "iko_intro"
+lines = Array[ExtResource("line")]([SubResource("iko_intro_l0"), SubResource("iko_intro_l1")])
+set_flags = PackedStringArray("met_iko")
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="rule_0"]
+script = ExtResource("rule")
+forbids_flags = PackedStringArray("met_iko")
+dialogue = SubResource("iko_intro")
+
+[sub_resource type="Resource" id="iko_shop_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Everything here fell off a Warden truck. Don't ask which one."
+
+[sub_resource type="Resource" id="iko_shop"]
+script = ExtResource("dialogue")
+id = "iko_shop"
+lines = Array[ExtResource("line")]([SubResource("iko_shop_l0")])
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="rule_1"]
+script = ExtResource("rule")
+dialogue = SubResource("iko_shop")
+
+[resource]
+script = ExtResource("profile")
+npc_id = "iko"
+display_name = "Iko"
+map_label = "Black Market"
+color = Color(0.66, 0.5, 0.82, 1)
+rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])

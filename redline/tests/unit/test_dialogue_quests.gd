@@ -78,3 +78,42 @@ func test_repeater_sets_flag_and_locks() -> void:
 	r.interact(null)
 	check(Game.has_flag("repeater_market") and not r.can_interact(null), "repeater did not set/lock")
 	r.queue_free()
+
+
+## M7/D1: both Undercity radios share orr_radio.tres, and either may be
+## skipped, so every rule has to read right as the first thing heard. Forward
+## campaign players (Pulse Blade in hand) get the lift-shaft call; a legacy
+## save that walked down from the Relay gets the legacy or location-neutral
+## call instead, never lines about a lift shaft it is not standing at.
+func test_orr_radio_rules() -> void:
+	var radio: NpcProfile = load("res://data/npcs/orr_radio.tres")
+	# Forward campaign at FirstPursuit: lift-shaft call, then the reminder.
+	Game.start_campaign()
+	Game.set_flag("got_pulse_blade")
+	check(radio.pick_dialogue().id == "orr_radio_shaft", "blade holder should get the lift-shaft call")
+	Game.apply_dialogue(radio.pick_dialogue())
+	check(Game.has_flag("met_orr_radio"), "the first call should set met_orr_radio")
+	check(radio.pick_dialogue().id == "orr_radio_waiting", "after the call the radio should repeat the route")
+	# Boss killed without ever using a radio: the after-call stands alone.
+	Game.start_campaign()
+	Game.set_flag("got_pulse_blade")
+	Game.set_flag("collector_drone_defeated")
+	check(radio.pick_dialogue().id == "orr_radio_after", "after the boss the EscapeTunnel radio should congratulate")
+	Game.apply_dialogue(radio.pick_dialogue())
+	check(Game.has_flag("orr_radio_after") and Game.has_flag("met_orr_radio"), "after-call should set both flags")
+	check(radio.pick_dialogue().id == "orr_radio_climb", "after-call should be one-shot")
+	# Legacy save that met Orr at the Relay: no second introduction.
+	Game.new_game()
+	Game.set_flag("met_orr")
+	check(radio.pick_dialogue().id == "orr_radio_legacy", "legacy met_orr should get the crew-band line")
+	Game.apply_dialogue(radio.pick_dialogue())
+	check(radio.pick_dialogue().id == "orr_radio_waiting", "legacy call should lead to the reminder")
+	# Legacy save without met_orr or the blade (EscapeTunnel from above).
+	Game.new_game()
+	var d := radio.pick_dialogue()
+	check(d.id == "orr_radio_first", "fallback should be the location-neutral call, got %s" % d.id)
+	for l in d.lines:
+		check(not l.text.contains("lift shaft") and not l.text.contains("That eye was"), "fallback mentions FirstPursuit: %s" % l.text)
+	Game.apply_dialogue(d)
+	check(Game.has_flag("met_orr_radio"), "fallback should set met_orr_radio")
+	check(radio.pick_dialogue().id == "orr_radio_waiting", "fallback should lead to the reminder")

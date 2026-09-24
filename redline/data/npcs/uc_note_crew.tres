@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+
+[sub_resource type="Resource" id="uc_note_crew_l0"]
+script = ExtResource("line")
+speaker = "Note"
+text = "RELAY CREW STASH. If you're reading this, you can climb. Keep climbing. There's an Anchor at the top of the lift."
+
+[sub_resource type="Resource" id="uc_note_crew"]
+script = ExtResource("dialogue")
+id = "uc_note_crew"
+lines = Array[ExtResource("line")]([SubResource("uc_note_crew_l0")])
+
+[sub_resource type="Resource" id="rule_0"]
+script = ExtResource("rule")
+dialogue = SubResource("uc_note_crew")
+
+[resource]
+script = ExtResource("profile")
+npc_id = "uc_note_crew"
+display_name = "Note"
+color = Color(0.78, 0.72, 0.55, 1)
+figure = false
+verb = "Read"
+rules = Array[ExtResource("rule")]([SubResource("rule_0")])

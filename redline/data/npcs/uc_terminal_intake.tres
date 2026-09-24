@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+
+[sub_resource type="Resource" id="uc_intake_reread_l0"]
+script = ExtResource("line")
+speaker = "Terminal"
+text = "The screen keeps scrolling. Thirteen names, then a blank line where yours should be."
+
+[sub_resource type="Resource" id="uc_intake_reread"]
+script = ExtResource("dialogue")
+id = "uc_intake_reread"
+lines = Array[ExtResource("line")]([SubResource("uc_intake_reread_l0")])
+
+[sub_resource type="Resource" id="rule_0"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("read_uc_intake_log")
+dialogue = SubResource("uc_intake_reread")
+
+[sub_resource type="Resource" id="uc_intake_log_l0"]
+script = ExtResource("line")
+speaker = "Terminal"
+text = "INTAKE LOG - CYCLE 4471. Units received: 14. Cores recovered: 13."
+
+[sub_resource type="Resource" id="uc_intake_log_l1"]
+script = ExtResource("line")
+speaker = "Terminal"
+text = "Unit 14: core refused removal. Crew sent to infirmary. Unit sealed for Collector pickup."
+
+[sub_resource type="Resource" id="uc_intake_log"]
+script = ExtResource("dialogue")
+id = "uc_intake_log"
+lines = Array[ExtResource("line")]([SubResource("uc_intake_log_l0"), SubResource("uc_intake_log_l1")])
+set_flags = PackedStringArray("read_uc_intake_log")
+
+[sub_resource type="Resource" id="rule_1"]
+script = ExtResource("rule")
+dialogue = SubResource("uc_intake_log")
+
+[resource]
+script = ExtResource("profile")
+npc_id = "uc_terminal_intake"
+display_name = "Terminal"
+color = Color(0.45, 0.78, 0.82, 1)
+figure = false
+verb = "Read"
+rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])
