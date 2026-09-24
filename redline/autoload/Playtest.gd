@@ -28,6 +28,11 @@ var _room: String = ""
 var _room_since: float = 0.0
 var _was_paused: bool = false
 var _player: Player
+var _dodge_seen: bool = false
+
+## Flags worth a timeline entry (M7 Undercity onboarding beats). Every other
+## flag is left out to keep session files small; hint_* flags are always kept.
+const RECORDED_FLAGS: PackedStringArray = ["core_hud_hidden", "got_pulse_blade", "got_service_pistol", "met_orr_radio", "uc_ward_shutter"]
 
 
 func _ready() -> void:
@@ -54,7 +59,7 @@ func _ready() -> void:
 	EventBus.weapon_granted.connect(func(id: String) -> void: _event("weapon_granted", {"id": id}))
 	EventBus.loadout_changed.connect(func() -> void: _event("loadout", _loadout()))
 	EventBus.hint_requested.connect(func(text: String, _s: float) -> void: _event("hint", {"text": text}))
-	EventBus.boss_started.connect(func(_b: Node2D, title: String) -> void: _event("boss_start", {"boss": title}))
+	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void: _event("boss_start", {"boss": title, "id": _boss_id_of(b)}))
 	EventBus.boss_phase_changed.connect(func(_b: Node2D, phase: int) -> void: _event("boss_phase", {"phase": phase}))
 	EventBus.boss_defeated.connect(func(id: String) -> void: _event("boss_defeated", {"boss": id}))
 	EventBus.slice_completed.connect(_on_slice_completed)
@@ -70,6 +75,20 @@ func _ready() -> void:
 	EventBus.map_pins_changed.connect(func() -> void: _count("pin_changes"))
 	EventBus.fast_traveled.connect(func(from: String, to: String) -> void:
 		_event("fast_travel", {"from": from.get_file(), "to": to.get_file()}))
+	# M7: onboarding beats (first dodge, hint and HUD flags) for the Undercity
+	# timeline, and the district set pieces.
+	EventBus.player_state_changed.connect(_on_player_state_changed)
+	EventBus.flag_changed.connect(_on_flag_changed)
+	EventBus.breaker_hit.connect(func(circuit: StringName) -> void: _event("breaker", {"circuit": String(circuit)}))
+	EventBus.shutter_passed.connect(func(id: String, margin: float) -> void:
+		_event("shutter", {"id": id, "margin": snappedf(margin, 0.01)}))
+	EventBus.scanner_tripped.connect(func(id: String, mode: int) -> void: _event("scanner", {"id": id, "mode": mode}))
+	EventBus.clamp_dropped.connect(func(id: String, staggered: bool) -> void: _event("clamp", {"id": id, "staggered": staggered}))
+	EventBus.chase_started.connect(func(id: String) -> void: _event("chase_start", {"id": id}))
+	EventBus.chase_caught.connect(func(id: String, cp: int) -> void: _event("chase_caught", {"id": id, "cp": cp}))
+	EventBus.chase_completed.connect(func(id: String, seconds: float, catches: int, min_lead: float) -> void:
+		_event("chase_done", {"id": id, "seconds": snappedf(seconds, 0.01), "catches": catches, "min_lead": snappedf(min_lead, 0.01)}))
+	EventBus.tracker_locked.connect(func(id: String) -> void: _event("tracker_lock", {"id": id}))
 
 
 func recording_allowed() -> bool:
@@ -83,7 +102,8 @@ func is_recording() -> bool:
 
 
 ## Called when the player starts or continues the slice from the title.
-## `kind` is "new" or "continue".
+## `kind` is "new" (New Game, starts in the Undercity), "new_relay" (the debug
+## 'Slice (Relay start)' entry) or "continue".
 func begin_session(kind: String) -> void:
 	if session:
 		end_session("replaced")
@@ -94,6 +114,7 @@ func begin_session(kind: String) -> void:
 	_sample_acc = 0.0
 	_save_acc = 0.0
 	_room = ""
+	_dodge_seen = false
 	_last_usec = Time.get_ticks_usec()
 	var stamp := Time.get_datetime_string_from_system(true).replace(":", "").replace("-", "")
 	session_path = "%s/session_%s_%04d.json" % [dir, stamp, randi() % 10000]
@@ -212,6 +233,32 @@ func _on_player_spawned(p: Node2D) -> void:
 		variant.apply_to_player(_player)
 
 
+func _on_player_state_changed(_from: StringName, to: StringName) -> void:
+	if to != &"dodge" and to != &"dash":
+		return
+	_count("dodges")
+	if not _dodge_seen and session:
+		_dodge_seen = true
+		_event("dodge_first", {"state": String(to)})
+
+
+func _on_flag_changed(id: String, value: Variant) -> void:
+	if id.begins_with("hint_") or RECORDED_FLAGS.has(id):
+		_event("flag", {"id": id, "value": value})
+
+
+## The boss_id of the arena in the current room that runs this boss ("" when
+## none does), so bosses are told apart by id rather than banner title.
+func _boss_id_of(b: Node2D) -> String:
+	var room := SceneRouter.current_room
+	if room == null or b == null:
+		return ""
+	for n in room.find_children("*", "BossArena", true, false):
+		if (n as BossArena).boss == b:
+			return (n as BossArena).boss_id
+	return ""
+
+
 func _cause() -> String:
 	return _player.combat.last_damage_source if is_instance_valid(_player) else "unknown"
 
@@ -262,7 +309,11 @@ func _event(type: String, extra: Dictionary = {}) -> void:
 	if session == null:
 		return
 	var pos := _player.global_position if is_instance_valid(_player) else Vector2.ZERO
-	session.add_event(_t, type, _room, pos, extra)
+	# pt = cumulative play time, which survives Save & Quit / Continue (the
+	# session clock `t` restarts with every session).
+	var e := extra.duplicate()
+	e["pt"] = snappedf(Game.state.play_time_sec, 0.01)
+	session.add_event(_t, type, _room, pos, e)
 
 
 func _count(key: String, amount: float = 1.0) -> void:

@@ -6,7 +6,36 @@ extends RefCounted
 ## per-variant comparison. Pure data in, Dictionary out; `render_markdown`
 ## and `render_heatmap` are the only presentation.
 
+## Undercity timeline (M7, §42 onboarding pacing): minutes from session
+## start to each beat. Keys match what autoload/Playtest.gd actually writes.
+const TIMELINE_ITEMS: Array[Dictionary] = [
+	{"key": "blade", "label": "Pulse Blade granted"},
+	{"key": "dodge", "label": "First dodge"},
+	{"key": "composition", "label": "MaintenanceShaft entered (proxy, early by about 2–3 min)"},
+	{"key": "secret", "label": "First secret"},
+	{"key": "npc", "label": "First NPC (Radio dialogue)"},
+	{"key": "pursuit", "label": "FirstPursuit entered"},
+	{"key": "first_flow", "label": "First Flow hint (hint_first_flow)"},
+	{"key": "core_hud", "label": "Core HUD shown (core_hud_hidden → false)"},
+	{"key": "anchor", "label": "First Anchor rest"},
+	{"key": "anchor_lift", "label": "Rest at uc_lift"},
+	{"key": "boss_start", "label": "Collector Drone fight started"},
+	{"key": "boss_defeated", "label": "Collector Drone defeated"},
+	{"key": "relay", "label": "Relay reached"},
+]
+## Rooms the Undercity district will hold. Used when a room is not on the
+## world map yet, so continued runs are still classified before it lands.
+const UNDERCITY_ROOM_IDS: PackedStringArray = ["Wake", "MedicalRuin", "MaintenanceShaft", "FirstPursuit", "BrokenLift", "EscapeTunnel", "CollectorBay"]
+## Legacy sessions (before boss_start carried an id) name bosses by title.
+const BOSS_TITLE_IDS: Dictionary = {"WARDEN KRAIL": "warden_krail", "COLLECTOR DRONE": "collector_drone"}
+const BOSS_LABELS: Dictionary = {"warden_krail": ["Warden Krail", "him"], "collector_drone": ["Collector Drone", "it"]}
+## Exact death-cause labels, checked before the generic "a/b" -> "a: b".
+const CAUSE_LABELS: Dictionary = {"unknown/collector_eye_bolt": "Collector eye", "clamp": "Grid clamp", "scanner": "Scanner beam"}
+
 var config: PlaytestConfig
+## A campaign run is a "new" session whose first room is this one (tests
+## point it elsewhere while the Undercity rooms do not exist).
+var timeline_start_room: String = "Wake"
 var sessions: Array[PlaytestSession] = []
 ## attack id -> weapon id, from the item catalog (for "favourite weapon").
 var _attack_weapon: Dictionary = {}
@@ -51,6 +80,17 @@ func analyze() -> Dictionary:
 		"pits_by_room": {},
 		"boss_attempts": [],
 		"boss_clears": 0,
+		"boss_attempts_by_id": {},
+		"boss_clears_by_id": {},
+		"lowlight_times": [],
+		"timeline": {"campaign": [], "continued": [], "excluded": {}},
+		"shutter_margins": {},
+		"chase_catches": {},
+		"chase_runs": {},
+		"tracker_locks": {},
+		"scanner_trips": {},
+		"clamp_drops": {},
+		"breakers": {},
 		"room_seconds": {},
 		"room_reentries": {},
 		"idle_spans": {},
@@ -88,7 +128,7 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 	v["sessions"] = int(v["sessions"]) + 1
 	r["session_minutes"].append(float(s.data.get("duration", 0.0)) / 60.0)
 	var visited := {}
-	var boss_starts := 0
+	var boss_starts := {}
 	var deaths := 0
 	for e: Dictionary in s.data["events"]:
 		var room := String(e.get("room", ""))
@@ -108,9 +148,26 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 			"room_exit":
 				_push(r["room_seconds"], room, float(e.get("seconds", 0.0)))
 			"boss_start":
-				boss_starts += 1
+				_inc(boss_starts, boss_key(e))
 			"boss_defeated":
-				r["boss_clears"] = int(r["boss_clears"]) + 1
+				var bid := String(e.get("boss", ""))
+				_inc(r["boss_clears_by_id"], bid)
+				if bid == "warden_krail":
+					r["boss_clears"] = int(r["boss_clears"]) + 1
+			"shutter":
+				_push(r["shutter_margins"], String(e.get("id", "")), float(e.get("margin", 0.0)))
+			"chase_caught":
+				_inc(r["chase_catches"], "%s CP%d" % [e.get("id", ""), int(e.get("cp", 0))])
+			"chase_done":
+				_push(r["chase_runs"], String(e.get("id", "")), int(e.get("catches", 0)))
+			"tracker_lock":
+				_inc(r["tracker_locks"], "%s / %s" % [room, e.get("id", "")])
+			"scanner":
+				_inc(r["scanner_trips"], "%s / %s (mode %d)" % [room, e.get("id", ""), int(e.get("mode", 0))])
+			"clamp":
+				_inc(r["clamp_drops"], "%s%s" % [e.get("id", ""), " (staggered boss)" if bool(e.get("staggered", false)) else ""])
+			"breaker":
+				_inc(r["breakers"], "%s / %s" % [room, e.get("circuit", "")])
 			"slice_complete":
 				r["completed"] = int(r["completed"]) + 1
 				v["completed"] = int(v["completed"]) + 1
@@ -134,8 +191,12 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 				_inc(r["purchases"], String(e.get("item", "")))
 	r["deaths_total"] = int(r["deaths_total"]) + deaths
 	v["deaths"] = int(v["deaths"]) + deaths
-	if boss_starts > 0:
-		r["boss_attempts"].append(boss_starts)
+	for bid: String in boss_starts:
+		_push(r["boss_attempts_by_id"], bid, int(boss_starts[bid]))
+		if bid == "warden_krail":
+			r["boss_attempts"].append(int(boss_starts[bid]))
+	_lowlight_time(s, r)
+	_timeline(s, r)
 	var loadouts := s.events_of("loadout")
 	if not loadouts.is_empty():
 		for c in (loadouts[-1] as Dictionary).get("circuits", []):
@@ -174,6 +235,116 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 			if q.id == "movement_satisfying":
 				(v["movement"] as Array).append(int(survey[q.id]))
 	r["variants"][variant] = v
+
+
+## Boss id of a boss_start event; pre-M7 sessions only carry the title.
+static func boss_key(e: Dictionary) -> String:
+	var id := String(e.get("id", ""))
+	if id != "":
+		return id
+	var title := String(e.get("boss", ""))
+	return String(BOSS_TITLE_IDS.get(title, title.to_lower()))
+
+
+## Lowlight on its own: Relay arrival (cumulative play time) to slice end,
+## for every kind of session, so the slice target reads the same after the
+## Undercity was put in front of it.
+func _lowlight_time(s: PlaytestSession, r: Dictionary) -> void:
+	var relay: Dictionary = {}
+	for e: Dictionary in s.data["events"]:
+		if relay.is_empty() and e["type"] == "room_enter" and String(e.get("room", "")) == "Relay" and e.has("pt"):
+			relay = e
+		elif e["type"] == "slice_complete" and not relay.is_empty():
+			r["lowlight_times"].append((float(e.get("play_time", 0.0)) - float(relay["pt"])) / 60.0)
+			return
+
+
+## Which timeline table a session belongs to ("campaign", "continued") or why
+## it is left out.
+func timeline_kind(s: PlaytestSession) -> String:
+	var kind := String((s.data["meta"] as Dictionary).get("kind", ""))
+	var first := ""
+	for e: Dictionary in s.data["events"]:
+		if e["type"] == "room_enter":
+			first = String(e.get("room", ""))
+			break
+	if kind == "new":
+		return "campaign" if first == timeline_start_room else "new, first room %s" % (first if first != "" else "none")
+	if kind == "continue":
+		return "continued" if _is_undercity(first) else "continue, first room %s" % (first if first != "" else "none")
+	return kind if kind != "" else "unknown kind"
+
+
+static func _is_undercity(room_id: String) -> bool:
+	var m := Game.world_map.room(room_id)
+	if m != null:
+		return m.district == "undercity"
+	return UNDERCITY_ROOM_IDS.has(room_id)
+
+
+func _timeline(s: PlaytestSession, r: Dictionary) -> void:
+	var tl: Dictionary = r["timeline"]
+	var which := timeline_kind(s)
+	if which != "campaign" and which != "continued":
+		_inc(tl["excluded"], which)
+		return
+	# Campaign minutes use the session clock; continued runs use cumulative
+	# play time so a beat after Save & Quit reports its true campaign minute.
+	var use_pt := which == "continued"
+	var row := {}
+	for e: Dictionary in s.data["events"]:
+		var key := _timeline_key(e)
+		if key == "" or row.has(key):
+			continue
+		row[key] = float(e.get("pt", 0.0) if use_pt else e.get("t", 0.0)) / 60.0
+		# The first rest is also the uc_lift rest when it is that anchor.
+		if key == "anchor_lift" and not row.has("anchor"):
+			row["anchor"] = row[key]
+	(tl[which] as Array).append(row)
+
+
+static func _timeline_key(e: Dictionary) -> String:
+	match String(e["type"]):
+		"weapon_granted":
+			return "blade" if String(e.get("id", "")) == "pulse_blade" else ""
+		"dodge_first":
+			return "dodge"
+		"room_enter":
+			match String(e.get("room", "")):
+				"MaintenanceShaft":
+					return "composition"
+				"FirstPursuit":
+					return "pursuit"
+				"Relay":
+					return "relay"
+		"secret":
+			return "secret"
+		"dialogue":
+			return "npc" if String(e.get("npc", "")) == "Radio" else ""
+		"flag":
+			if String(e.get("id", "")) == "hint_first_flow":
+				return "first_flow"
+			if String(e.get("id", "")) == "core_hud_hidden" and not bool(e.get("value", true)):
+				return "core_hud"
+		"anchor_rest":
+			return "anchor_lift" if String(e.get("anchor", "")) == "uc_lift" else "anchor"
+		"boss_start":
+			return "boss_start" if String(e.get("boss", "")) == "COLLECTOR DRONE" else ""
+		"boss_defeated":
+			return "boss_defeated" if String(e.get("boss", "")) == "collector_drone" else ""
+	return ""
+
+
+## Median minutes per timeline item over rows ("—" when nobody reached it).
+static func timeline_medians(rows: Array) -> Dictionary:
+	var out := {}
+	for item: Dictionary in TIMELINE_ITEMS:
+		var vals: Array = []
+		for row: Dictionary in rows:
+			if row.has(item["key"]):
+				vals.append(row[item["key"]])
+		out[item["key"]] = _median(vals) if not vals.is_empty() else null
+	return out
 
 
 ## Spans (seconds) where the player stayed within idle_radius for at least
@@ -247,16 +418,26 @@ func render_markdown(r: Dictionary, title: String = "REDLINE playtest report") -
 		md.append("| %s | %d | %d | %d%% | %s |" % [row["criterion"], row["answered"], row["passed"], roundi(float(row["ratio"]) * 100.0), mark])
 	md.append("")
 	md.append("## Completion time and deaths")
-	md.append("- Completion time (min): %s" % _stats(r["completion_times"]))
+	md.append("- Completion time, whole run (min): %s" % _stats(r["completion_times"]))
+	md.append("- Lowlight time, Relay arrival → slice_complete (min): %s" % _stats(r["lowlight_times"]))
 	md.append("- Session length (min): %s" % _stats(r["session_minutes"]))
 	md.append("- Deaths: %d total, %.1f per session" % [r["deaths_total"], float(r["deaths_total"]) / maxi(1, int(r["sessions"]))])
-	md.append("- Boss attempts per tester who reached Krail: %s · clears: %d" % [_stats(r["boss_attempts"]), r["boss_clears"]])
+	var boss_ids: Array = ["warden_krail", "collector_drone"]
+	for bid: String in r["boss_attempts_by_id"]:
+		if not boss_ids.has(bid):
+			boss_ids.append(bid)
+	for bid: String in boss_ids:
+		var label: Array = BOSS_LABELS.get(bid, [bid, "it"])
+		md.append("- %s: attempts per tester who reached %s: %s · clears: %d" % [label[0], label[1],
+			_stats((r["boss_attempts_by_id"] as Dictionary).get(bid, [])), int((r["boss_clears_by_id"] as Dictionary).get(bid, 0))])
 	md.append("- Secrets found at the end: %s · Dead Air completed: %d" % [_stats(r["secrets_found"]), r["dead_air_done"]])
 	md.append("")
 	md.append(_table("Deaths by room", r["deaths_by_room"]))
 	md.append(_table("Deaths by cause (enemy/attack, hazard, pit, burnout)", r["deaths_by_cause"]))
 	md.append(_table("Damage taken by cause", r["damage_by_cause"]))
 	md.append(_table("Pit falls by room", r["pits_by_room"]))
+	md.append(_timeline_markdown(r["timeline"]))
+	md.append(_set_piece_markdown(r))
 	md.append("## Confusion signals")
 	md.append("")
 	md.append("| Room | Median time (s) | Visits | Re-entries | Idle spans ≥ %ds |" % roundi(config.idle_seconds))
@@ -334,6 +515,79 @@ func render_markdown(r: Dictionary, title: String = "REDLINE playtest report") -
 	return "\n".join(md) + "\n"
 
 
+func _timeline_markdown(tl: Dictionary) -> String:
+	var md: PackedStringArray = ["## Undercity timeline", ""]
+	var campaign: Array = tl["campaign"]
+	md.append("Campaign runs (New Game from %s, minutes of session time): **%d**. Medians:" % [timeline_start_room, campaign.size()])
+	md.append("")
+	md.append("| Beat | Median min | Reached |")
+	md.append("|---|---|---|")
+	var med := timeline_medians(campaign)
+	for item: Dictionary in TIMELINE_ITEMS:
+		var reached := campaign.filter(func(row: Dictionary) -> bool: return row.has(item["key"])).size()
+		md.append("| %s | %s | %d |" % [item["label"], _minutes(med[item["key"]]), reached])
+	md.append("")
+	for title: String in ["Campaign", "Continued"]:
+		var rows: Array = tl[title.to_lower()]
+		if rows.is_empty():
+			continue
+		md.append("%s runs, per session%s:" % [title, " (minutes of cumulative play time)" if title == "Continued" else ""])
+		md.append("")
+		var head: PackedStringArray = ["Session"]
+		var sep: PackedStringArray = ["---"]
+		for item: Dictionary in TIMELINE_ITEMS:
+			head.append(item["key"])
+			sep.append("---")
+		md.append("| %s |" % " | ".join(head))
+		md.append("| %s |" % " | ".join(sep))
+		for i in rows.size():
+			var cells: PackedStringArray = [str(i + 1)]
+			for item: Dictionary in TIMELINE_ITEMS:
+				cells.append(_minutes((rows[i] as Dictionary).get(item["key"])))
+			md.append("| %s |" % " | ".join(cells))
+		md.append("")
+	var excluded: Dictionary = tl["excluded"]
+	var n := 0
+	var why: PackedStringArray = []
+	for k: String in excluded:
+		n += int(excluded[k])
+		why.append("%s ×%d" % [k, int(excluded[k])])
+	md.append("Excluded from the timeline: %d%s" % [n, (" (" + ", ".join(why) + ")") if n > 0 else ""])
+	md.append("")
+	return "\n".join(md)
+
+
+func _set_piece_markdown(r: Dictionary) -> String:
+	var md: PackedStringArray = ["## District set pieces", ""]
+	md.append("| Shutter | Passes | Median margin (s) | Closest (s) |")
+	md.append("|---|---|---|---|")
+	var ids: Array = (r["shutter_margins"] as Dictionary).keys()
+	ids.sort()
+	for id: String in ids:
+		var m: Array = r["shutter_margins"][id]
+		var lo := m.duplicate()
+		lo.sort()
+		md.append("| %s | %d | %.2f | %.2f |" % [id, m.size(), _median(m), float(lo[0])])
+	if ids.is_empty():
+		md.append("| _none recorded_ | | | |")
+	md.append("")
+	var runs: PackedStringArray = []
+	for id: String in r["chase_runs"]:
+		runs.append("%s: %s" % [id, _stats(r["chase_runs"][id])])
+	md.append("- Chase catches per completed run: %s" % (", ".join(runs) if not runs.is_empty() else "n/a"))
+	md.append("")
+	md.append(_table("Chase catches by checkpoint", r["chase_catches"]))
+	md.append(_table("Collector eye locks by room / eye", r["tracker_locks"]))
+	md.append(_table("Scanner trips by room / beam", r["scanner_trips"]))
+	md.append(_table("Grid clamp drops", r["clamp_drops"]))
+	md.append(_table("Breakers struck by room / circuit", r["breakers"]))
+	return "\n".join(md)
+
+
+static func _minutes(v: Variant) -> String:
+	return "—" if v == null else "%.1f" % float(v)
+
+
 ## Top-down map of one room: geometry in grey, position samples as a warm
 ## density, deaths as red crosses, pit falls orange, reported moments yellow.
 func render_heatmap(room_file: String, scale: float = 0.5) -> Image:
@@ -407,8 +661,13 @@ static func _cross(img: Image, c: Vector2i, col: Color) -> void:
 				img.set_pixelv(p, col)
 
 
-## "needle/needle_stab" -> "needle: needle_stab" for tables.
+## "needle/needle_stab" -> "needle: needle_stab" for tables. Set-piece causes
+## get readable names (the Collector eye has no Enemy, so it reads unknown/).
 static func _short_cause(cause: String) -> String:
+	if CAUSE_LABELS.has(cause):
+		return CAUSE_LABELS[cause]
+	if cause.begins_with("chase/"):
+		return "Chase: " + cause.trim_prefix("chase/")
 	return cause.replace("/", ": ")
 
 
