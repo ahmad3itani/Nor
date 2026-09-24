@@ -3,6 +3,13 @@ files from compact layout calls (block, oneway, spawn, exit, anchor, npc,
 enemy, collectible, wall, hint, neon, decor, gate, mapmarker, switch...).
 Python 3 standard library only. See tools/roomgen/lowlight.py for usage and
 Docs/CONTENT_PIPELINE.md for the conventions (48 px steps, doorways...).
+
+M7 helper contract (binding for every room generator; property names are
+what the node scripts export): weapon_pickup, tracker, breaker, shutter,
+clamp, scanner, chase, respawn_point, declare_flags. Exit targets containing
+"/" are folder-qualified ("undercity/Wake"); bare names stay in Lowlight.
+Scripts named here are only loaded when a room uses the helper, so they can
+land with the task that owns them.
 """
 import sys
 
@@ -20,7 +27,8 @@ def finish():
     else:
         print("rooms written")
 
-LL = "res://world/rooms/lowlight/"
+ROOMS = "res://world/rooms/"
+LL = ROOMS + "lowlight/"
 SCRIPTS = {
  "room": "res://world/rooms/Room.gd", "block": "res://world/graybox/GrayboxBlock.gd",
  "spawn": "res://world/rooms/SpawnMarker.gd", "exit": "res://world/transitions/RoomExit.gd",
@@ -32,15 +40,28 @@ SCRIPTS = {
  "gate": "res://world/transitions/Gate.gd", "arena": "res://bosses/BossArena.gd",
  "director": "res://enemies/base/EncounterDirector.gd",
  "marker": "res://world/map/MapMarker.gd", "switch": "res://world/props/WorldStateSwitch.gd",
+ # M7 set pieces.
+ "breaker": "res://interactables/Breaker.gd", "shutter": "res://world/transitions/PowerShutter.gd",
+ "clamp": "res://world/transitions/GridClamp.gd", "scanner": "res://world/hazards/ScannerBeam.gd",
+ "chase": "res://world/hazards/ChaseDirector.gd", "chase_cp": "res://world/hazards/ChaseCheckpoint.gd",
+ "respawn": "res://interactables/EntryCheckpoint.gd", "flagdecl": "res://world/rooms/FlagDeclaration.gd",
 }
 SCENES = {n: "res://enemies/variants/%s.tscn" % n for n in ["Needle", "Shield", "ScoutDrone", "Hopper", "Watcher", "Enforcer"]}
 SCENES["WardenKrail"] = "res://bosses/WardenKrail.tscn"
 SCENES["DashModule"] = "res://interactables/DashModule.tscn"
+SCENES["CollectorDrone"] = "res://bosses/CollectorDrone.tscn"
+SCENES["PulseBladeRack"] = "res://interactables/PulseBladeRack.tscn"
+SCENES["ServicePistolDrop"] = "res://interactables/ServicePistolDrop.tscn"
+SCENES["CollectorEye"] = "res://world/props/CollectorEye.tscn"
 
 def q(s): return '"' + str(s).replace('\\', '\\\\').replace('"', '\\"') + '"'
+def num(v):
+    """Integral values print as ints (like the rest of the file), others as %g."""
+    return "%d" % v if float(v).is_integer() else "%g" % v
+def strings(items): return "PackedStringArray(%s)" % ", ".join(q(i) for i in items)
 
 class RoomGen:
-    def __init__(self, name, bounds, theme, district, room_name):
+    def __init__(self, name, bounds, theme, district, room_name, max_attackers=2):
         self.name, self.bounds, self.theme, self.district, self.room_name = name, bounds, theme, district, room_name
         self.ext = {}
         self.nodes = []  # (parent, name, type, props list)
@@ -48,7 +69,10 @@ class RoomGen:
         for group in ["Geometry", "Hazards", "Zones", "Props", "Interactables", "Enemies", "Spawns", "Triggers"]:
             self.nodes.append((".", group, "Node2D", []))
         self._res("director", "Script", SCRIPTS["director"])
-        self.nodes.append((".", "EncounterDirector", "Node", ['script = ExtResource("director")']))
+        director = ['script = ExtResource("director")']
+        # Undercity rooms cap simultaneous attackers lower (one concept at a time).
+        if max_attackers != 2: director.append('max_attackers = %d' % max_attackers)
+        self.nodes.append((".", "EncounterDirector", "Node", director))
 
     def _res(self, key, typ, path):
         if key not in self.ext:
@@ -86,15 +110,17 @@ class RoomGen:
         return self.add("Spawns", "Spawn_", "Marker2D", p, "Spawn_" + sid)
     def exit(self, x, y, w, h, target, entry, flag=""):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("exit"), 'size = Vector2(%d, %d)' % (w, h),
-             'target_room = %s' % q(LL + target + ".tscn"), 'target_entry = &%s' % q(entry)]
+             'target_room = %s' % q((ROOMS if "/" in target else LL) + target + ".tscn"), 'target_entry = &%s' % q(entry)]
         if flag: p.append('requires_flag = %s' % q(flag))
         return self.add("Triggers", "Exit", "Area2D", p)
     def anchor(self, aid, x, y, facing=1):
         self.spawn(aid, x, y, facing)
         return self.add("Interactables", "Anchor", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("anchor"), 'anchor_id = &%s' % q(aid)])
-    def npc(self, profile, x, y, facing=-1):
+    def npc(self, profile, x, y, facing=-1, present_when=()):
         prof = self._res("npc_" + profile, "Resource", "res://data/npcs/%s.tres" % profile)
-        return self.add("Interactables", "NPC_" + profile, "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("npc"), 'profile = %s' % prof, 'facing = %d' % facing], "NPC_" + profile)
+        p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("npc"), 'profile = %s' % prof, 'facing = %d' % facing]
+        if present_when: p.append('present_when = %s' % strings(present_when))
+        return self.add("Interactables", "NPC_" + profile, "Area2D", p, "NPC_" + profile)
     def repeater(self, flag, x, y):
         return self.add("Interactables", "Repeater", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("repeater"), 'flag_id = %s' % q(flag)])
     def lever(self, flag, x, y, text=""):
@@ -106,13 +132,20 @@ class RoomGen:
         if kind == 0: p.append('scrap_amount = %d' % scrap)
         if fragment: p.append('fragment = %s' % self._res("frag_" + fragment, "Resource", "res://data/lore/%s.tres" % fragment))
         return self.add("Interactables", "Collectible", "Area2D", p)
-    def enemy(self, kind, x, y, facing=-1):
+    def enemy(self, kind, x, y, facing=-1, ai=True, data=""):
         sc = self._res("scene_" + kind, "PackedScene", SCENES[kind])
         p = ['position = Vector2(%d, %d)' % (x, y)]
         if facing != -1: p.append('facing = %d' % facing)
+        if not ai: p.append('ai_enabled = false')
+        # A data variant (e.g. needle_dormant: no scrap) on the same scene.
+        if data: p.append('data = %s' % self._res("enemy_" + data, "Resource", "res://data/enemies/%s.tres" % data))
         return self.add("Enemies", kind, "", p + ['__instance__ = %s' % sc])
-    def flow(self, x, y, w, h):
-        return self.add("Zones", "Flow", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("flow"), 'size = Vector2(%d, %d)' % (w, h)])
+    def flow(self, x, y, w, h, drain_scale=1.0, drain_floor=0.0):
+        p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("flow"), 'size = Vector2(%d, %d)' % (w, h)]
+        # Gentle teaching zones drain slower and never below a floor (M2).
+        if drain_scale != 1.0: p.append('drain_scale = %.2f' % drain_scale)
+        if drain_floor != 0.0: p.append('drain_floor = %.1f' % drain_floor)
+        return self.add("Zones", "Flow", "Area2D", p)
     def hint(self, hid, x, y, w, h, text, action=""):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("hint"), 'size = Vector2(%d, %d)' % (w, h), 'hint_id = %s' % q(hid), 'text = %s' % q(text)]
         if action: p.append('action = &%s' % q(action))
@@ -137,10 +170,80 @@ class RoomGen:
         return self.add(parent, "Decor", "Node2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._res("decor", "Script", "res://world/props/Decor.gd"),
             'kind = %d' % self.KIND[kind], 'size = Vector2(%d, %d)' % (w, h), 'color = Color(%s)' % color, 'accent = Color(%s)' % accent])
 
+    # --- M7 set-piece helpers (text only; the property names are a contract) ---
+    def weapon_pickup(self, scene, weapon_id, flag, x, y):
+        sc = self._res("scene_" + scene, "PackedScene", SCENES[scene])
+        return self.add("Interactables", "Pickup_", "", ['position = Vector2(%d, %d)' % (x, y), 'weapon_id = %s' % q(weapon_id),
+            'flag_id = %s' % q(flag), '__instance__ = %s' % sc], "Pickup_" + weapon_id)
+    def tracker(self, name, rail, y, wake_x, lost_x, config, visible_when=""):
+        sc = self._res("scene_CollectorEye", "PackedScene", SCENES["CollectorEye"])
+        p = ['position = Vector2(%s, %s)' % (num(rail[0]), num(y)), 'rail_min = %s' % num(rail[0]), 'rail_max = %s' % num(rail[1]),
+             'wake_x = %s' % num(wake_x), 'lost_x = %s' % num(lost_x),
+             'config = %s' % self._res("props_" + config, "Resource", "res://data/props/%s.tres" % config)]
+        if visible_when: p.append('visible_when = %s' % q(visible_when))
+        return self.add("Hazards", name, "", p + ['__instance__ = %s' % sc], name)
+    def breaker(self, bid, circuit, x, y):
+        """(x, y) is the top-left of the 16x24 breaker box."""
+        return self.add("Interactables", "Breaker_", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("breaker"),
+            'breaker_id = %s' % q(bid), 'circuit = &%s' % q(circuit)], "Breaker_" + bid)
+    def shutter(self, sid, x, y, w, h, circuit, timing, latch_flag):
+        return self.add("Geometry", "Shutter_", "StaticBody2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("shutter"),
+            'size = Vector2(%d, %d)' % (w, h), 'shutter_id = %s' % q(sid), 'circuit = &%s' % q(circuit),
+            'timing = %s' % self._level(timing), 'latch_flag = %s' % q(latch_flag)], "Shutter_" + sid)
+    def clamp(self, cid, x, top_y, width, raised_bottom, timing, circuits, hint_id="", hint=""):
+        p = ['position = Vector2(%d, %d)' % (x, top_y), 'script = %s' % self._script("clamp"), 'clamp_id = %s' % q(cid),
+             'width = %s' % num(width), 'raised_bottom = %s' % num(raised_bottom), 'timing = %s' % self._level(timing),
+             'circuits = Array[StringName]([%s])' % ", ".join("&" + q(c) for c in circuits),
+             'attack = %s' % self._res("clamp_attack", "Resource", "res://data/combat/grid_clamp_attack.tres")]
+        if hint_id:
+            p.append('arm_hint_id = %s' % q(hint_id))
+            p.append('arm_hint = %s' % q(hint))
+        return self.add("Geometry", "Clamp_", "StaticBody2D", p, "Clamp_" + cid)
+    def scanner(self, sid, x, data, top_y, bottom_y, circuit="", offline_open=5.5, offline_warn=1.5, phase=0.0):
+        p = ['position = Vector2(%d, 0)' % x, 'script = %s' % self._script("scanner"), 'beam_id = %s' % q(sid),
+             'data = %s' % self._level("scanner_" + data), 'top_y = %s' % num(top_y), 'bottom_y = %s' % num(bottom_y)]
+        if circuit: p.append('circuit = &%s' % q(circuit))
+        if offline_open != 5.5: p.append('offline_open = %.2f' % offline_open)
+        if offline_warn != 1.5: p.append('offline_warn = %.2f' % offline_warn)
+        if phase: p.append('phase = %.2f' % phase)
+        return self.add("Hazards", "Scanner_", "Area2D", p, "Scanner_" + sid)
+    def chase(self, cid, data, path, speed_scale, start_area, end_area, checkpoints):
+        name = self.add("Triggers", "Chase_", "Node2D", ['script = %s' % self._script("chase"), 'chase_id = %s' % q(cid),
+            'data = %s' % self._res("chase_" + data, "Resource", "res://data/world/chase/%s.tres" % data),
+            'path = PackedVector2Array(%s)' % ", ".join("%s, %s" % (num(px), num(py)) for px, py in path),
+            'speed_scale = PackedFloat32Array(%s)' % ", ".join(num(v) for v in speed_scale),
+            'start_area = Rect2(%s)' % ", ".join(num(v) for v in start_area),
+            'end_area = Rect2(%s)' % ", ".join(num(v) for v in end_area)], "Chase_" + cid)
+        for i, (cx, cy) in enumerate(checkpoints):
+            self.add("Triggers/" + name, "CP", "Marker2D", ['position = Vector2(%d, %d)' % (cx, cy), 'script = %s' % self._script("chase_cp")], "CP%d" % (i + 1))
+        return name
+    def respawn_point(self, spawn_id, x, y, w, h):
+        """Mid-room checkpoint; the room must also spawn(spawn_id, ...)."""
+        return self.add("Triggers", "Respawn_", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("respawn"),
+            'size = Vector2(%d, %d)' % (w, h), 'spawn_id = &%s' % q(spawn_id)], "Respawn_" + spawn_id)
+    def declare_flags(self, *flags):
+        """Stub rooms only: stands in for flags a later room will set."""
+        return self.add("Triggers", "FlagDeclaration", "Node", ['script = %s' % self._script("flagdecl"), 'produces = %s' % strings(flags)], "FlagDeclaration")
+    def _level(self, name):
+        return self._res("level_" + name, "Resource", "res://data/level/%s.tres" % name)
+
     def raw(self, parent, name, typ, props):
         self.nodes.append((parent, name, typ, props))
 
     def write(self, path):
+        text = self.render()
+        if CHECK:
+            try:
+                current = open(path).read()
+            except OSError:
+                current = None
+            if current != text:
+                _drift.append(path)
+            return
+        open(path, "w").write(text)
+
+    def render(self):
+        """The scene text write() would produce (fixture self-tests read it)."""
         keys = list(self.ext.keys())
         room_script = self._script("room")
         theme = self._res("theme", "Resource", "res://data/districts/%s.tres" % self.theme)
@@ -161,13 +264,4 @@ class RoomGen:
                 out.append('[node name="%s" type="%s" parent="%s"]' % (name, typ, parent))
             out += props
             out.append('')
-        text = "\n".join(out)
-        if CHECK:
-            try:
-                current = open(path).read()
-            except OSError:
-                current = None
-            if current != text:
-                _drift.append(path)
-            return
-        open(path, "w").write(text)
+        return "\n".join(out)
