@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShutterTiming" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/transitions/ShutterTiming.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+open = 3.2
+warn = 1.0
+drop = 0.25
+slot = 0.6
+seal = 0.15

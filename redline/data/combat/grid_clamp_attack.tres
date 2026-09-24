@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"grid_clamp"
+startup = 0.0
+active = 0.15
+recovery = 0.0
+cancel_time = 0.0
+damage = 30.0
+poise_damage = 120.0
+knockback = Vector2(0, -160)
+hitstop = 0.08
+hitbox = Rect2(0, -96, 64, 96)
+camera_trauma = 0.3
+style_tag = &"environmental"
+style_points = 60.0
+reactor_gain = 4.0
+hit_sfx = &"hit_heavy"
