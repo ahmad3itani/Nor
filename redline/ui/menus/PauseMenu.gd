@@ -13,6 +13,10 @@ func rebuild() -> void:
 	add_button("Resume", close_menu)
 	if room and room.world_room:
 		add_button("Journal", _open.bind(&"journal"))
+	if Playtest.is_recording():
+		add_button("Report a moment (playtest)", _open.bind(&"moment"))
+		if (Playtest.session.data["survey"] as Dictionary).is_empty():
+			add_button("Playtest survey", _open.bind(&"survey"))
 	add_button("Settings", _open.bind(&"settings"))
 	add_button("Save & Quit to Title", _quit)
 

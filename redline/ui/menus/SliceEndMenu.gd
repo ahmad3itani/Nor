@@ -14,6 +14,12 @@ func rebuild() -> void:
 		t["fragments"], Game.state.core_shards, t["core_shards"]])
 	add_label("Dead Air: %s" % ("complete" if Game.has_flag("dead_air_complete") else "unfinished"), UiTheme.MUTED)
 	add_label("Something across the Flooded Alley was always just out of reach. Try it with the Dash.", UiTheme.MUTED)
-	add_label("Thanks for playtesting. Please send your answers to the checklist in Docs/M3_VERTICAL_SLICE_REPORT.md.", UiTheme.MUTED)
+	if Playtest.is_recording():
+		add_label("Thanks for playtesting! Two minutes of questions help more than anything else.", UiTheme.MUTED)
+		add_button("Answer the playtest survey", func() -> void:
+			close_menu()
+			EventBus.menu_requested.emit(&"survey"))
+	else:
+		add_label("Thanks for playtesting. Please answer the checklist in Docs/PLAYTEST_KIT.md.", UiTheme.MUTED)
 	add_button("Keep exploring", close_menu)
 	focus_index(0)

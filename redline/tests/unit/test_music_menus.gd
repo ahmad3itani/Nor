@@ -44,7 +44,8 @@ func test_every_data_sfx_exists() -> void:
 func test_menus_open_and_close() -> void:
 	Game.new_game()
 	for path in ["res://ui/menus/PauseMenu.gd", "res://ui/menus/JournalMenu.gd",
-			"res://ui/menus/SettingsMenu.gd", "res://ui/menus/SliceEndMenu.gd"]:
+			"res://ui/menus/SettingsMenu.gd", "res://ui/menus/SliceEndMenu.gd",
+			"res://ui/menus/MomentMenu.gd", "res://ui/menus/SurveyMenu.gd"]:
 		var m: MenuScreen = load(path).new()
 		add_child(m)
 		m.open_menu()

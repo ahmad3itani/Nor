@@ -145,3 +145,38 @@ func test_survey_pass_rules() -> void:
 	choice.kind = SurveyQuestion.Kind.CHOICE
 	choice.choices = PackedStringArray(["Needle", "Krail", "None"])
 	check(choice.passes(1) and not choice.passes(2) and not choice.passes(-1), "last choice means 'none'")
+
+
+func test_survey_menu_walks_every_question_and_saves() -> void:
+	await _start()
+	var menu: MenuScreen = load("res://ui/menus/SurveyMenu.gd").new()
+	add_child(menu)
+	menu.open_menu()
+	var qs: Array[SurveyQuestion] = menu.questions()
+	for i in qs.size():
+		match qs[i].kind:
+			SurveyQuestion.Kind.SCALE:
+				menu.answer(4)
+			SurveyQuestion.Kind.YES_NO:
+				menu.answer(true)
+			_:
+				menu.answer(null if i % 2 == 0 else 0)  # skip some
+	var saved: Dictionary = Playtest.session.data["survey"]
+	check(saved.size() >= qs.size() - 2, "survey answers not all saved (%d)" % saved.size())
+	check(int(saved.get("boss_fair", 0)) == 4, "scale answer lost")
+	menu.close_menu()
+	menu.queue_free()
+
+
+func test_moment_menu_saves_tag_with_note() -> void:
+	await _start()
+	var menu: MenuScreen = load("res://ui/menus/MomentMenu.gd").new()
+	add_child(menu)
+	menu.open_menu()
+	menu._pick("Bug")
+	menu._note.text = "  fell through floor  "
+	menu._save()
+	check(not menu.is_open() and not get_tree().paused, "moment menu should close and unpause")
+	var m: Array = Playtest.session.events_of("moment")
+	check(m.size() == 1 and m[0]["tag"] == "Bug" and m[0]["note"] == "fell through floor", "moment not saved: %s" % [m])
+	menu.queue_free()

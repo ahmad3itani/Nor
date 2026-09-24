@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://ui/debug/DebugOverlay.gd" id="2_debug"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://ui/menus/SettingsMenu.gd" id="11_settings"]
 [ext_resource type="Script" path="res://ui/menus/SliceEndMenu.gd" id="12_slice_end"]
 [ext_resource type="Script" path="res://ui/menus/TitleMenu.gd" id="13_title"]
+[ext_resource type="Script" path="res://ui/menus/MomentMenu.gd" id="14_moment"]
+[ext_resource type="Script" path="res://ui/menus/SurveyMenu.gd" id="15_survey"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -61,6 +63,12 @@ script = ExtResource("12_slice_end")
 
 [node name="TitleMenu" type="CanvasLayer" parent="Menus"]
 script = ExtResource("13_title")
+
+[node name="MomentMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("14_moment")
+
+[node name="SurveyMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("15_survey")
 
 [node name="FadeLayer" type="CanvasLayer" parent="."]
 layer = 90

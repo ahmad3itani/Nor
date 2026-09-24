@@ -9,6 +9,8 @@ extends Node
 @onready var settings: MenuScreen = $SettingsMenu
 @onready var slice_end: MenuScreen = $SliceEndMenu
 @onready var title: MenuScreen = $TitleMenu
+@onready var moment: MenuScreen = $MomentMenu
+@onready var survey: MenuScreen = $SurveyMenu
 
 
 func _ready() -> void:
@@ -49,6 +51,10 @@ func open(menu_id: StringName) -> void:
 		settings.focus_index(0)
 	elif menu_id == &"slice_end":
 		slice_end.open_menu()
+	elif menu_id == &"moment":
+		moment.open_menu()
+	elif menu_id == &"survey":
+		survey.open_menu()
 	elif String(menu_id).begins_with("shop_"):
 		var data := load("res://data/shops/%s.tres" % menu_id) as ShopData
 		if data:
