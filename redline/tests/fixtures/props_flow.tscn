@@ -1,0 +1,89 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="Resource" path="res://tests/fixtures/props_radio.tres" id="npc_props_radio"]
+[ext_resource type="Script" path="res://interactables/NPC.gd" id="npc"]
+[ext_resource type="Resource" path="res://tests/fixtures/props_npc_x.tres" id="npc_props_npc_x"]
+[ext_resource type="Resource" path="res://tests/fixtures/props_npc_not_x.tres" id="npc_props_npc_not_x"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="props_flow" type="Node2D"]
+script = ExtResource("room")
+room_name = "Props flow"
+bounds = Rect2(-64, -270, 1232, 400)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(1200, 96)
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(100, -200)
+script = ExtResource("flow")
+size = Vector2(300, 200)
+
+[node name="Flow2" type="Area2D" parent="Zones"]
+position = Vector2(250, -200)
+script = ExtResource("flow")
+size = Vector2(300, 200)
+drain_scale = 0.50
+
+[node name="Flow3" type="Area2D" parent="Zones"]
+position = Vector2(900, -200)
+script = ExtResource("flow")
+size = Vector2(200, 200)
+drain_scale = 0.50
+drain_floor = 1.0
+
+[node name="NPC_props_radio" type="Area2D" parent="Interactables"]
+position = Vector2(620, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_props_radio")
+facing = -1
+
+[node name="NPC_props_npc_x" type="Area2D" parent="Interactables"]
+position = Vector2(700, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_props_npc_x")
+facing = -1
+present_when = PackedStringArray("flag:x")
+
+[node name="NPC_props_npc_not_x" type="Area2D" parent="Interactables"]
+position = Vector2(780, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_props_npc_not_x")
+facing = -1
+present_when = PackedStringArray("!flag:x")
