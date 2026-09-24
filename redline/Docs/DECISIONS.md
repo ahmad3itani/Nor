@@ -109,6 +109,65 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 - This keeps high-speed movement (pillar §2.1) from getting snagged on crowds, at the cost of Rook being able to stand inside an enemy. Point-blank shots handle that case (see the report, §6).
 - Revisit if playtests say enemies feel "ghostly".
 
-## D-025: Main now boots into the Combat Lab
+## D-025: Main now boots into the Combat Lab (superseded by D-029)
 - M2 is the current milestone, so the game starts in the Combat Lab. **F12** switches to the Movement Lab. Both labs share the same Room, player, camera and dev keys.
 
+---
+
+# M3: Vertical Slice
+
+## D-026: The slice ships placeholder art and audio, not production quality (FLAG)
+- **Context:** Bible §36 says M3 "establishes production-quality art/audio". This build environment has no artists, no licensed assets, and no way to author or judge final pixel art or music. §37.10 also says not to mass-generate final assets before the slice is approved.
+- **Decision:** Everything visual and audible is procedural placeholder work that follows a written spec:
+  - `DistrictTheme` palettes;
+  - a parallax skyline with rain;
+  - `Decor` props and `NeonSign`s;
+  - synthesized SFX;
+  - five procedural music stems.
+
+  `Docs/ART_BIBLE.md` (bible §40) fixes the canvas, scale, origins, palettes, animation and export rules. Final sprites, tiles and audio can then replace placeholders one at a time, with no code changes (`override_stream`, same stem layout, same origins).
+- **Needs a human call:** who produces the production art and audio, and whether the §44 test runs on placeholders (recommended: yes, since feel and structure are what §44 measures) or waits for art.
+
+## D-027: New top-level `progression/` folder (FLAG, low risk)
+- Bible §31 has no folder for profile state and the economy. `GameState`, `ItemCatalog`, `ShopData`/`ShopItem`, `MemoryFragmentData` and `SliceStats` live in `progression/`. Circuits, quests and dialogue use the bible's own folders (`circuits/`, `quests/`, `dialogue/`).
+
+## D-028: The slice route uses 6 of Lowlight's 10 rooms (FLAG)
+- Bible §15 lists Lowlight as Flooded Alley, Market Run, Apartment Stack, Neon Roofs, Power Block, Security Station, Rainline Chase, Smuggler Route, Bell Tower and Warden Tower. The slice builds **Flooded Alley, Market Run, Apartment Stack, Neon Roofs, Bell Tower and Warden Tower**, plus a Relay mini-hub placed next door.
+- **Why:** M3 asks for "one polished route" at 15–25 min. Six rooms with a hub, a quest, secrets and a boss is the smallest set that exercises every system.
+- **Risk:** pure bot traversal takes ≈ 2 min, so a human run may fall below 15 min. If the playtest says it's short, add Power Block (a power-routing puzzle) and Rainline Chase (a chase room) next. Both are movement-heavy and fit bible §41's "chase rooms, collapsing spaces".
+- In the bible's full game, the Relay comes after the Undercity (§42 onboarding). The slice starts at the Relay, with contextual hints standing in for the Undercity's teaching.
+
+## D-029: The game boots to a title screen
+- The title offers **Continue** (when a save exists), **New Game**, the two labs, Settings and Quit. `Main.start_room` skips the title for dev tools and capture tours. F12 still cycles the labs. This supersedes D-025.
+
+## D-030: Save schema v2: one JSON profile, migrations, atomic writes
+- `GameState.to_dict()` / `from_dict()` holds all profile progress (see the M3 report, §3). `SaveManager` migrates v0 → v1 → v2 in order, writes to a temp file, then renames it, so a crash mid-save can't corrupt the profile. Tests cover round trips and every migration step.
+- Room *layout* state (opened walls, collected items, used levers) is stored as persistent ids and flags, not as room snapshots, so rooms can be re-edited without breaking saves.
+
+## D-031: Death, pits and Scrap
+- **Death** (bible §7): respawn at the last Anchor after a short beat. Permanent progress is kept. Health, injectors and the Core refill. **Unbanked Scrap drops** as one recoverable cache where you died: dying again before recovering it loses the old cache (the genre rule). Resting at an Anchor banks Scrap, so it's safe. `Settings.currency_loss = false` keeps Scrap on death (the accessibility option §7 asks for).
+- **Pits** cost one pip and put you back on the last **safe** ground, never at an Anchor (bible §2.8). Safe means floor at least `safe_ground_reach` (20 px) past your centre on both sides. The route bot found that respawning on a lip while holding forward could chain pit falls into a death.
+- **Boss runbacks** (bible §7 "stay short"): the Bell Tower's top Anchor sits one room from Krail.
+
+## D-032: Quest state is derived from flags; dialogue is flag rules
+- A quest stage is "done" when its flags are set, so quests have no saved state of their own and can't disagree with the world after a migration or a sequence break. For example, if you trigger a repeater before talking to Orr, the quest shows it done as soon as it starts.
+- NPC dialogue is an ordered list of rules (`NpcProfile`): the first rule whose required and forbidden flags match plays its lines, sets flags and gives items. That's enough for bible §19 "conditional dialogue and state" at slice scale. A dialogue editor belongs to M6 tooling.
+
+## D-033: No map, fast travel or Nix in the slice (FLAG)
+- Bible §20 (map) and §13 (Nix, fast travel) are M5 scope in §36, and M3 doesn't list them. The slice is linear enough to navigate without a map. The Bell Tower lift is the one shortcut back to the Relay. Please confirm this is acceptable for the §44 test ("did you get lost?" is on the playtest checklist).
+
+## D-034: Circuits are declarative stat modifiers
+- See `Docs/CIRCUITS.md`. Capacity is 4 plus the Core Shards found, and loadouts change only at Anchors (bible §7, "Anchors … permit loadout changes"). Saved loadout *presets* (§11) wait until there are enough Circuits to need them.
+
+## D-035: Warden Krail and the Dash unlock
+- **Arena:** exactly one screen wide (480 px), so every attack starts on screen ("no cheap offscreen hits"). The gates lock during the fight; losing sends you back to your last Anchor (the Bell Tower's top Anchor is one room away).
+- **Krail:** he never repeats an attack back to back, and a backstep breaks up close-range pressure. **Phase 2** at 50%: telegraphs 18% faster, and he summons two Needles once. The ground-slam shockwave is jumpable, and a test proves it.
+- **Dash** (bible §15 Lowlight unlock) drops from Krail, so the slice's one Dash-gated secret (the Flooded Alley shard) is a post-boss revisit. That's the bible's "ability-gated revisiting" in miniature. D-005 still applies: Dash replaces the ground dodge.
+
+## D-036: The Neon Roofs slide-jump gap teaches but can't gate (FLAG: tuning question)
+- **Measured in the room:** under the M1 tuning, a well-timed slide-jump (jump 2–4 frames after the slide starts, at the lip) clears about 8–15 px more than a run-jump. A late slide bleeds speed to friction and does *worse* than a run-jump. A perfect coyote run-jump or a dodge-jump can also clear the 112 px gap.
+- **Decision:** keep the gap at 112 px, where a proper slide-jump lands with about 5 px of margin. Put a **service well** underneath, so a miss costs a short climb instead of a pip. The hint teaches the technique.
+- **Open question for the playtest:** should the slide-jump be a stronger long-jump? Options are raising `slide_jump_bonus` (30 → 60 px/s) or `slide_jump_height_ratio` (0.8 → 0.9). Either changes M1 feel, so it's the playtesters' call, not an M3 change.
+
+## D-037: Music is procedural stems mixed by game state
+- `MusicDirector` renders five synced stems (pad, bass, drums, arp, lead; 96 BPM, A minor) once at startup on a worker thread, then fades layers by state: title, hub, explore, flow (combat), boss and aftermath. Real music later supplies five equal-length stems per district with the same names (Art Bible §10). Headless runs skip rendering.

@@ -1,16 +1,33 @@
 # REDLINE TODO
 
-## Now: M2 gate (humans), covering M1 too
+## Now: M3 gate, the §44 vertical-slice test (humans)
+- [ ] External playtesters play New Game → end card. Use the checklist in `M3_VERTICAL_SLICE_REPORT.md` §6 and record the end-card time and deaths.
+- [ ] Confirm or overrule the flagged decisions D-026 (placeholder art/audio), D-027, D-028 (6 of 10 rooms), D-033 (no map) and D-036 (slide-jump strength) in `DECISIONS.md`.
+- [ ] Decide who produces the production art and audio, and whether §44 runs on placeholders (D-026).
+- [ ] If the slice runs short of ~15 min, pick the next rooms: Power Block and Rainline Chase are the recommended ones (D-028).
+- [ ] The M1 and M2 gates below are still open. The slice exercises both labs' systems, so one playtest can cover all three.
+- [ ] Do **not** start M4+ until the slice passes §44.
+
+## M3 follow-ups (only if the playtest asks for them)
+- [ ] Slide-jump strength (`slide_jump_bonus` / `slide_jump_height_ratio`, D-036).
+- [ ] More Lowlight rooms (D-028), and more Circuits toward the 60–80 target.
+- [ ] Saved loadout presets (bible §11) once there are enough Circuits to need them.
+- [ ] Map and fast travel (M5 scope, D-033), and Nix, if playtesters get lost.
+- [ ] Parry and executions (bible §8): not started.
+- [ ] Rebinding UI (bible §24). Settings now save, but there's no remapping yet.
+- [ ] A pixel font for world labels and hints.
+
+## M2 gate (humans), covering M1 too
 - [ ] Playtest the Combat Lab with keyboard **and** a controller. Use the checklist in `M2_COMBAT_REPORT.md`.
 - [ ] Confirm or overrule the flagged decisions D-016, D-018 and D-022 in `DECISIONS.md`.
 - [ ] Judge core pressure (F11 modes) and the style rank's legibility.
-- [ ] Do **not** start M3 (vertical slice) until both labs pass the playtest.
+- [x] ~~Do not start M3 until both labs pass the playtest.~~ M3 was started on request, before the M1/M2 playtest.
 
 ## M2 follow-ups (only if the playtest asks for them)
 - [ ] A combat tuning panel: extend the F3 panel to the active weapon's `AttackData`.
 - [ ] Enemy body blocking or a "shove" (D-024).
 - [ ] Pool projectiles and particles if profiling on real hardware shows spikes. The 11 ms max happens on respawn.
-- [ ] Parry (bible §8, midgame), healing injectors (§7), executions, elites. These are M3+ scope.
+- [ ] Parry (bible §8, midgame) and executions. Healing injectors and an elite (Enforcer) arrived in M3.
 - [ ] Use `score_multiplier` once challenge scoring exists (M9).
 
 ## M1 gate (humans)
@@ -33,9 +50,9 @@
 
 ## Framework (pulled forward only when needed)
 - [ ] Rebinding UI. Persist remaps through `Settings` (bible §24).
-- [ ] Controller glyph switching and hot-plug handling.
-- [ ] A settings menu that calls `Settings.save_settings()`. Nothing saves settings yet.
+- [x] Controller glyph switching (`InputGlyphs`, M3). Hot-plug handling is untested.
+- [x] A settings menu that calls `Settings.save_settings()` (M3).
 - [ ] `AccessibilityConfig` resource once a menu exists.
 
-## Do NOT start until M1 is signed off
-- M2 Combat Lab: Pulse Blade, pistol, Scattergun, three enemies, hitstop, reactor prototype, style prototype.
+## Do NOT start until the slice passes §44
+- M4 Validation changes, M5 World Framework (map, fast travel, more NPCs), M6 content pipeline, and district production. Bible §44: "If these fail, fix the core instead of producing more content."

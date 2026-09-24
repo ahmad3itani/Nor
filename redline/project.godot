@@ -6,8 +6,8 @@ config_version=5
 [application]
 
 config/name="REDLINE"
-config/description="High-speed 2D pixel-art action platformer. M1 Movement Lab."
-config/version="0.2.0-m2"
+config/description="High-speed 2D pixel-art action platformer. M3 vertical slice (Lowlight)."
+config/version="0.3.0-m3"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"

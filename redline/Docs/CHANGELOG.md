@@ -1,5 +1,60 @@
 # REDLINE Changelog
 
+## 0.3.0-m3: Vertical Slice (awaiting the human playtest)
+
+All M3 scope from bible §36 except production art/audio (D-026). Development stops here for the §44 playtest. Report: `M3_VERTICAL_SLICE_REPORT.md`.
+
+### World framework
+- `GameState` profile, and save schema v2 with v0→v1→v2 migrations and atomic writes.
+- `SceneRouter` room transitions: fade, entry markers, carried momentum.
+- Anchors: save, heal, refill, bank Scrap, set respawn, open the loadout.
+- Death returns you to the last Anchor, and unbanked Scrap drops as a recoverable cache (toggle in Settings).
+- Pits cost one pip and return you to safe ground, never to a ledge lip (`safe_ground_reach`).
+- Healing injectors: channelled, and interruptible without using the injector. Mara sells an upgrade.
+- Interaction system: prompts with device glyphs, levers and flag switches, gates, and ability pickups.
+
+### Content
+- **The Relay** hub: Orr, Mara and Vell, two shops, an Anchor, and the lift shortcut.
+- **Lowlight route:** Flooded Alley, Market Run, Apartment Stack, Neon Roofs, Bell Tower and Warden Tower.
+- **Enemies:** Hopper, Watcher (a mounted sentry that needs line of sight) and the Enforcer elite, joining the Needle, Shield and Scout Drone.
+- **Boss: Warden Krail.**
+  - 6 attacks, with no repeats;
+  - phase 2 at 50%: faster telegraphs and two summoned Needles;
+  - a jumpable shockwave;
+  - a locked, one-screen arena that remembers the win.
+  
+  He drops the **Dash** module.
+- **Weapons:** Split Katars and the Heavy Revolver, for 5 in total.
+- **Circuits:** 12 declarative Circuits, Core Capacity with Core Shards, and loadouts at Anchors. See `CIRCUITS.md`.
+- **Quest: Dead Air.** Three signal repeaters; the reward is Scrap, Longline, and Emergency Loop unlocking in the shop.
+- **Secrets:** 10 (breakable walls, 3 Memory Fragments with lore cards, 3 Core Shards) and a Dash-gated revisit.
+
+### Presentation (placeholder)
+- District themes: a procedural parallax skyline, rain, props and neon signs.
+- `MusicDirector`: five procedural stems mixed by state.
+- Menus: title, pause, journal, settings (now saved), loadout, shops and dialogue. All are controller-first.
+- HUD: injectors, Scrap, interaction prompts, hints, the area banner, the boss bar and lore cards.
+- `Docs/ART_BIBLE.md`: the rules final assets must follow.
+
+### Tooling and tests
+- 130 tests (59 new).
+- `devtools/RouteBot` plays every slice room entrance-to-exit with real physics (`test_slice_routes`).
+- Structural checks cover links, spawns, persistent ids and boss wiring.
+- `PerfProbe` takes `--room=` and `--at=`.
+- The capture tour has `--tour=slice` and `--tour=ui`.
+- The debug overlay shows the world state: Scrap, Anchor, Circuits, quests and secrets.
+- The test runner counts scripts that fail to parse as failures instead of hanging.
+
+### Fixed (found by the route bot and captures)
+- Main-path climbs were 55 px against a 56.4 px jump.
+- A sign pole walled off Neon Roofs.
+- A scaffold you bonked on.
+- Dash platforms blocked the alley floor.
+- An unreachable stash.
+- A pit respawn on a ledge lip could chain into a death.
+- A stale "Rest" prompt carried across rooms.
+- The boss arena was wider than the screen.
+
 ## 0.2.0-m2: Combat Lab (awaiting the human playtest)
 
 All M2 scope from bible §36. Development stops here for a playtest.

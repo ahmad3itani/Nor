@@ -4,14 +4,15 @@ A high-speed 2D pixel-art action platformer set in the megacity of Veyra, built 
 **Movement is life. Violence buys time. Curiosity reveals the truth.**
 
 - Design source of truth: [`Docs/DESIGN_BIBLE.md`](Docs/DESIGN_BIBLE.md)
-- Current milestone: **M2 Combat Lab**, waiting on a human playtest along with M1. See [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
-- Project logs: [`DECISIONS`](Docs/DECISIONS.md) · [`CHANGELOG`](Docs/CHANGELOG.md) · [`TODO`](Docs/TODO.md) · [`KNOWN_ISSUES`](Docs/KNOWN_ISSUES.md)
+- Current milestone: **M3 Vertical Slice** (Relay hub → Lowlight → Warden Krail), waiting on the §44 human playtest along with M1 and M2. See [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
+- **All art and audio are placeholders** (D-026). Final assets must follow [`Docs/ART_BIBLE.md`](Docs/ART_BIBLE.md).
+- Project logs: [`DECISIONS`](Docs/DECISIONS.md) · [`CHANGELOG`](Docs/CHANGELOG.md) · [`TODO`](Docs/TODO.md) · [`KNOWN_ISSUES`](Docs/KNOWN_ISSUES.md) · [`CIRCUITS`](Docs/CIRCUITS.md)
 
 ## Requirements
 - Godot **4.3** or newer, the standard build (no .NET needed). No third-party addons.
 
 ## Run
-Open `project.godot` in the Godot editor and press **F5**. The game boots into the **Combat Lab**, and **F12** switches to the Movement Lab. The controls are listed in both reports, and **F1** shows the debug overlay.
+Open `project.godot` in the Godot editor and press **F5**. The game boots to the title screen: **New Game** starts the vertical slice, and the Movement and Combat Labs are listed there too (**F12** cycles the labs). Controls are in the three reports, and **F1** shows the debug overlay.
 
 ## Test
 ```bash
@@ -24,22 +25,30 @@ godot --headless --fixed-fps 60 res://tests/TestRunner.tscn  # exit code 0 = all
 | Scene | Purpose |
 |---|---|
 | `devtools/MovementProbe.tscn` (headless) | Measures jump, slide, dodge and dash distances for every tuning preset |
-| `devtools/CaptureTour.tscn` (needs a display, e.g. `xvfb-run`) | Scripted screenshot tour: `-- --out=/abs/dir [--tour=combat]` |
-| `devtools/PerfProbe.tscn` (headless) | CPU cost per frame in the Combat Lab under fight load |
+| `devtools/CaptureTour.tscn` (needs a display, e.g. `xvfb-run`) | Scripted screenshot tour: `-- --out=/abs/dir [--tour=movement\|combat\|slice\|ui]` |
+| `devtools/PerfProbe.tscn` (headless) | CPU cost per frame under fight load: `-- [--room=res://… --at=x:y,x:y]` (Combat Lab by default) |
+| `devtools/RouteBot.gd` (used by `test_slice_routes`) | Plays a room with scripted input to prove its route is traversable |
 
 ## Layout
 ```
-autoload/    EventBus, Settings, Game, SaveManager, AudioManager, SceneRouter
+autoload/    EventBus, Settings, Game, SaveManager, AudioManager, SceneRouter, InputGlyphs, MusicDirector
 combat/      AttackData, ProjectileData, HitInfo, Hurtbox, Projectile, queries, layers
 weapons/     WeaponData
+circuits/    CircuitData (declarative stat modifiers)
+progression/ GameState, ItemCatalog, shops, lore data, SliceStats
+quests/      QuestData, QuestTracker (flag-derived)
+dialogue/    NpcProfile, dialogue rules
+interactables/ Interactable, pickups, caches, breakable walls, NPCs, repeaters, switches
+bosses/      BossArena, Warden Krail
+audio/       MusicSynth (procedural stems)
 player/      controller/ (Player, config, input, FSM), states/, combat/, reactor/, style/, animation/, abilities/
 enemies/     base/ (Enemy, EnemyData, EnemyBehavior, EncounterDirector), behaviors/, variants/*.tscn
-world/       rooms/ (Room, labs, FlowZone, EnemySpawner, SpawnMarker), hazards/, camera/, graybox/
-data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/ (.tres)
-ui/          debug/ (overlay, tuning panel), hud/
+world/       rooms/ (Room, labs, lowlight/*.tscn), anchors/, transitions/, districts/, props/, hazards/, camera/, graybox/
+data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, catalog.tres
+ui/          debug/ (overlay, tuning panel), hud/, menus/, dialogue/
 vfx/         dust, hit sparks, slash arcs
-tests/       TestRunner + unit/test_*.gd
-devtools/    lab hotkeys, movement probe, perf probe, capture tour
-Docs/        bible, M1/M2 reports, decision/changelog/todo/issue logs
+tests/       TestRunner + unit/test_*.gd + fixtures/
+devtools/    lab controllers, movement probe, perf probe, capture tour, route bot
+Docs/        bible, Art Bible, M1/M2/M3 reports, Circuits, decision/changelog/todo/issue logs
 ```
-Empty folders from the bible's architecture (circuits/, quests/, dialogue/, bosses/, …) are kept with `.gitkeep` for later milestones.
+Folders from the bible's architecture that later milestones will fill are kept with `.gitkeep`.
