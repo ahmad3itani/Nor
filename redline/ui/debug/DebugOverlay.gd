@@ -1,6 +1,6 @@
 extends CanvasLayer
-## Live movement telemetry (bible §38.8): velocity, grounded, state, FPS, plus
-## the M1 metrics (last jump height/distance/airtime) used to validate tuning.
+## Live telemetry (bible §38.8, §37.5): movement, combat, core and style, plus
+## the world state in slice rooms (Scrap, Anchor, Circuits, quests, secrets).
 ## Renders at native resolution above the pixel viewport. Toggle: F1 / L3.
 
 const FONT_SIZE := 5
@@ -78,10 +78,31 @@ func _build_text() -> String:
 		w.id if w else "-", int(c.ammo.get(w.id, 0)) if w else 0, c.air_hang_left])
 	lines.append("core %.1f %s [%s]  style %s %.0f" % [p.reactor.charge, "FLOW" if p.reactor.in_flow() else "safe",
 		p.reactor.config.mode_name, p.style.meter.rank_name(), p.style.meter.points])
+	if room and room.world_room:
+		lines.append_array(_world_lines())
 	lines.append("[F1] overlay [R] reset [Tab] station [F2] dash [F3] tune [F4] slowmo")
 	lines.append("[F5] reload [F6] preset [F7] interp [F8] tick rate")
 	lines.append("[F9] ranged [F10] enemies [F11] core mode [F12] switch lab")
 	return "\n".join(lines)
+
+
+## M3 world state: economy, respawn point, build, quest and secret progress.
+func _world_lines() -> PackedStringArray:
+	var st := Game.state
+	var quests: PackedStringArray = []
+	for q in Game.quests.active_quests():
+		quests.append("%s:%d" % [q.id, q.current_stage()])
+	var anchor := "-" if st.last_anchor_id == "" else "%s/%s" % [st.last_anchor_room.get_file().get_basename(), st.last_anchor_id]
+	return PackedStringArray([
+		"scrap %d banked + %d carried  drops %d   injectors %d   anchor %s" % [
+			st.scrap_banked, st.scrap_unbanked, st.dropped_scrap.size(), _player.combat.injectors, anchor],
+		"circuits %d/%d %s   shards %d   quests %s" % [
+			Game.capacity_used(), Game.core_capacity(), ",".join(st.equipped_circuits), st.core_shards,
+			",".join(quests) if not quests.is_empty() else "-"],
+		"secrets %d/%d   fragments %d   flags %d   deaths %d   time %s" % [
+			SliceStats.secrets_found(), SliceStats.totals()["secret_ids"].size(), st.memory_fragments.size(),
+			st.flags.size(), st.deaths, SliceStats.format_time(st.play_time_sec)],
+	])
 
 
 func _yn(b: bool) -> String:

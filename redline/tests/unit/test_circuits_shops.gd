@@ -78,7 +78,7 @@ func test_capacity_limits_equipping() -> void:
 	check(Game.capacity_used() <= Game.core_capacity(), "over capacity")
 	check(equipped > 0 and equipped < Game.catalog.circuits.size(), "capacity should stop some circuits")
 	Game.state.core_shards += 2
-	check(Game.core_capacity() == Game.BASE_CORE_CAPACITY + 2, "core shards should raise capacity")
+	check(Game.core_capacity() == Game.catalog.base_core_capacity + 2, "core shards should raise capacity")
 
 
 func test_glass_pulse_trades_damage() -> void:

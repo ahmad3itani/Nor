@@ -121,11 +121,8 @@ func add_scrap(amount: int) -> void:
 
 # --- Circuits (bible §11) ------------------------------------------------------------
 
-const BASE_CORE_CAPACITY := 4
-
-
 func core_capacity() -> int:
-	return BASE_CORE_CAPACITY + state.core_shards
+	return catalog.base_core_capacity + state.core_shards
 
 
 func capacity_used() -> int:

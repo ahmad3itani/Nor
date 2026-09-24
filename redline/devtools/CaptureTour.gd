@@ -200,9 +200,6 @@ func _slice_tour() -> void:
 	SceneRouter.goto_room("%s/WardenTower.tscn" % dir, &"from_bell")
 	var room := SceneRouter.current_room as Room
 	room.player.input_source = _input
-	room.player.combat.config = room.player.combat.config.duplicate()
-	room.player.combat.config.max_health = 99
-	room.player.combat.health = 99
 	_input.move_x = 1
 	await _frames(60)
 	_input.move_x = 0

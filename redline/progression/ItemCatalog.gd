@@ -5,6 +5,8 @@ extends Resource
 
 @export var weapons: Array[WeaponData] = []
 @export var circuits: Array[Resource] = []
+## Circuit capacity before any Core Shards (each shard adds 1).
+@export_range(1, 12) var base_core_capacity: int = 4
 
 
 func weapon(id: String) -> WeaponData:
