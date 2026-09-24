@@ -673,8 +673,105 @@ func test_broken_lift_anchor_respawn() -> void:
 	check(p.combat.health == p.combat.config.max_health, "the Anchor respawn restores health")
 
 
+# CollectorBay (the fight itself is test_boss_collector's, M4). Kit: blade,
+# Core shown, no pistol: the ServicePistolDrop is under test.
+const COLLECTOR_BAY := "res://world/rooms/undercity/CollectorBay.tscn"
+
+
+func _collector_bay_arena() -> BossArena:
+	var found := SceneRouter.current_room.find_children("*", "BossArena", true, false)
+	check(found.size() == 1, "CollectorBay should hold exactly one BossArena (has %d)" % found.size())
+	return found[0] as BossArena if found.size() > 0 else null
+
+
+func _collector_bay_gate(gate_name: String) -> Gate:
+	var g := SceneRouter.current_room.get_node_or_null("Geometry/" + gate_name) as Gate
+	check(g != null, "CollectorBay has no Geometry/%s" % gate_name)
+	return g
+
+
+## Post-win walk from BrokenLift's side to the tunnel door: the boss stays
+## gone, the exit gate is open, the pistol waits on the floor under the hatch
+## and walking over it takes it; then the right door leads to EscapeTunnel.
 func test_collector_bay_post_win_route() -> void:
-	print("PENDING: CollectorBay")
+	_campaign(true, false, true)
+	Game.set_flag("collector_drone_defeated")
+	await _enter(COLLECTOR_BAY, &"from_lift")
+	var room := SceneRouter.current_room as Room
+	var drones := room.find_children("*", "Enemy", true, false).filter(
+			func(e: Node) -> bool: return is_instance_valid(e) and not e.is_queued_for_deletion() and (e as Enemy).data and (e as Enemy).data.id == &"collector_drone")
+	check(drones.is_empty(), "a defeated Collector must not come back")
+	var exit_gate := _collector_bay_gate("ExitGate")
+	check(exit_gate != null and not exit_gate.closed, "ExitGate should be open after the win")
+	var drops := room.find_children("*", "WeaponPickup", true, false)
+	check(drops.size() == 1 and (drops[0] as WeaponPickup).weapon_id == "service_pistol", "the ServicePistolDrop should wait in the bay")
+	if drops.size() == 1:
+		check((drops[0] as Node2D).global_position - room.global_position == Vector2(252, 0), "the pistol lands at (252, 0) under the hatch")
+	_assert_exit(1, UC + "EscapeTunnel.tscn", &"from_bay", "collector_drone_defeated")
+	if not await _run([["run", 440]]):
+		return
+	check(Game.has_flag("got_service_pistol") and Game.state.owned_weapons.has("service_pistol"), "walking the floor should take the pistol")
+	if await _run([["exit", 1]]):
+		check(SceneRouter.current_room.name == "EscapeTunnel" and Game.state.last_entry_id == "from_bay", "the right door leads to EscapeTunnel from_bay")
+
+
+## The pistol's tall trigger also catches a route that stays on the catwalks
+## over the hatch (left -> centre -> right) and never walks the floor under it.
+func test_collector_bay_pistol_from_catwalks() -> void:
+	_campaign(true, false, true)
+	Game.set_flag("collector_drone_defeated")
+	await _enter(COLLECTOR_BAY, &"from_lift")
+	# Jump targets sit on the next catwalk (x 200..304, 344..408): a target in
+	# the 40 px gap stops the steer short and drops Rook to the floor.
+	if not await _run([["run", 90], ["jump", 110], ["run", 150], ["jump", 210], ["run", 300]]):
+		return
+	check(bot.player.global_position.y < -70.0, "Rook should cross the hatch on the centre catwalk, not the floor (y %.0f)" % bot.player.global_position.y)
+	if not await _run([["jump", 360], ["run", 400], ["run", 436]]):
+		return
+	check(Game.has_flag("got_service_pistol"), "the catwalk route should take the pistol")
+	check(Game.state.ranged_weapon == "service_pistol", "the pistol should fill the empty ranged slot")
+
+
+## The secret: a leftward jump from the left catwalk's edge onto the vent lip,
+## break the panel, take the Scrap behind it.
+func test_collector_bay_vent() -> void:
+	_campaign(true, false, true)
+	Game.set_flag("collector_drone_defeated")
+	await _enter(COLLECTOR_BAY, &"from_lift")
+	await _run([["run", 110], ["jump", 110], ["run", 100], ["jump", 68], ["attack", 4], ["run", 32], ["wait", 10]])
+	check(Game.is_collected("uc_collector_vent"), "the vent panel should break")
+	check(Game.is_collected("sb_uc_bay_vent"), "the Scrap behind the vent should be taken")
+
+
+## The arena is wired to the real Collector, the gate shuts behind Rook on
+## entry, and an old save arriving from the tunnel side starts the fight too.
+func test_collector_bay_wiring() -> void:
+	_campaign(true, false, true)
+	await _enter(COLLECTOR_BAY, &"from_lift", false)
+	var room := SceneRouter.current_room as Room
+	check(room.bounds == Rect2(0, -240, 480, 270), "bounds %s" % room.bounds)
+	var arena := _collector_bay_arena()
+	if arena == null:
+		return
+	var boss := arena.get_node_or_null(arena.boss_path) as Enemy
+	check(boss != null and boss.data and boss.data.id == &"collector_drone", "boss_path should resolve to the Collector Drone")
+	check(arena.reward_position == Vector2(252, 0), "reward_position %s" % arena.reward_position)
+	var gate := _collector_bay_gate("ArenaGateLeft")
+	check(gate != null and not gate.closed and not arena.started, "the vestibule stays open before Rook enters")
+	if not await _run([["run", 72]]):
+		return
+	var frames := 0
+	while frames < 60 and gate and not gate.closed:
+		await physics_frames(1)
+		frames += 1
+	check(gate != null and gate.closed and arena.started, "ArenaGateLeft should close within 1 s of crossing x 72")
+	# Entering from the tunnel side lands inside the trigger.
+	Game.new_game()
+	_campaign(true, false, true)
+	await _enter(COLLECTOR_BAY, &"from_tunnel", false)
+	arena = _collector_bay_arena()
+	check(arena != null and arena.started, "from_tunnel is inside the trigger: the fight starts")
+	check(_collector_bay_gate("ArenaGateLeft").closed, "the left gate shuts on a tunnel-side entry too")
 
 
 func test_escape_tunnel_route() -> void:

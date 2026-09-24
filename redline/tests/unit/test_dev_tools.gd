@@ -71,23 +71,8 @@ func test_quick_boss_restart_rearms_krail() -> void:
 	check(p.combat.health == p.combat.config.max_health, "full health for the retry")
 
 
-## The skip is keyed on content, not on the file (M7 plan, M4 §8): the
-## CollectorBay stub has no arena, so nothing past the check may run until a
-## BossArena whose boss is a collector_drone exists. The CollectorBay room
-## task deletes this skip branch.
 func test_quick_boss_restart_rearms_collector() -> void:
 	var path: String = DevActions.boss_restart_target("collector_drone")[0]
-	var armed := false
-	if ResourceLoader.exists(path):
-		var probe := (load(path) as PackedScene).instantiate()
-		for a in probe.find_children("*", "BossArena", true, false):
-			var boss := a.get_node_or_null((a as BossArena).boss_path) as Enemy
-			if boss and boss.data and boss.data.id == &"collector_drone":
-				armed = true
-		probe.free()
-	if not armed:
-		print("PENDING: CollectorBay has no Collector arena yet")
-		return
 	Game.set_flag("collector_drone_defeated")
 	Game.state.health = 1
 	SceneRouter.goto_room("res://world/rooms/lowlight/Relay.tscn", &"start")
