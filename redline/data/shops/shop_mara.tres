@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ShopData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://progression/ShopData.gd" id="1"]
+[ext_resource type="Script" path="res://progression/ShopItem.gd" id="2"]
+
+[sub_resource type="Resource" id="i0"]
+script = ExtResource("2")
+kind = 1
+item_id = "split_katars"
+price = 150
+
+[sub_resource type="Resource" id="i1"]
+script = ExtResource("2")
+kind = 1
+item_id = "heavy_revolver"
+price = 180
+
+[sub_resource type="Resource" id="i2"]
+script = ExtResource("2")
+kind = 2
+item_id = "spare_injector"
+price = 200
+display_name = "Spare Injector"
+description = "Carry one more healing injector."
+upgrade_flag = "injector_upgrades"
+max_purchases = 1
+
+[resource]
+script = ExtResource("1")
+id = &"shop_mara"
+title = "Mara  —  Mechanic"
+items = Array[ExtResource("2")]([SubResource("i0"), SubResource("i1"), SubResource("i2")])

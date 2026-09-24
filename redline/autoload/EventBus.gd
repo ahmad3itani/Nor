@@ -58,6 +58,8 @@ signal dialogue_finished(dialogue: Resource)
 ## Open a UI menu by id: "loadout", "shop_vell", "shop_mara", "pause".
 signal menu_requested(menu_id: StringName)
 signal circuit_granted(id: String)
+## Equipped Circuits or weapons changed (live player re-applies its loadout).
+signal loadout_changed
 signal weapon_granted(id: String)
 ## A breakable secret wall or hidden route was opened.
 signal secret_found(id: String)

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "blood_capacitor"
+display_name = "Blood Capacitor"
+description = "Every 4 kills restores 1 health pip."
+cost = 2
+price = 100
+multipliers = {}
+values = {
+&"kills_per_heal": 4.0
+}

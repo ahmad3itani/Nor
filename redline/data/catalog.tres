@@ -1,11 +1,26 @@
-[gd_resource type="Resource" script_class="ItemCatalog" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemCatalog" load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://progression/ItemCatalog.gd" id="1"]
 [ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2"]
-[ext_resource type="Resource" path="res://data/weapons/pulse_blade.tres" id="3"]
-[ext_resource type="Resource" path="res://data/weapons/service_pistol.tres" id="4"]
-[ext_resource type="Resource" path="res://data/weapons/scattergun.tres" id="5"]
+[ext_resource type="Resource" path="res://data/weapons/pulse_blade.tres" id="w0"]
+[ext_resource type="Resource" path="res://data/weapons/service_pistol.tres" id="w1"]
+[ext_resource type="Resource" path="res://data/weapons/scattergun.tres" id="w2"]
+[ext_resource type="Resource" path="res://data/weapons/split_katars.tres" id="w3"]
+[ext_resource type="Resource" path="res://data/weapons/heavy_revolver.tres" id="w4"]
+[ext_resource type="Resource" path="res://data/circuits/blood_capacitor.tres" id="c0"]
+[ext_resource type="Resource" path="res://data/circuits/clean_circuit.tres" id="c1"]
+[ext_resource type="Resource" path="res://data/circuits/demolitionist.tres" id="c2"]
+[ext_resource type="Resource" path="res://data/circuits/emergency_loop.tres" id="c3"]
+[ext_resource type="Resource" path="res://data/circuits/ghost_step.tres" id="c4"]
+[ext_resource type="Resource" path="res://data/circuits/glass_pulse.tres" id="c5"]
+[ext_resource type="Resource" path="res://data/circuits/longline.tres" id="c6"]
+[ext_resource type="Resource" path="res://data/circuits/momentum_coil.tres" id="c7"]
+[ext_resource type="Resource" path="res://data/circuits/predator.tres" id="c8"]
+[ext_resource type="Resource" path="res://data/circuits/rebound.tres" id="c9"]
+[ext_resource type="Resource" path="res://data/circuits/runners_debt.tres" id="c10"]
+[ext_resource type="Resource" path="res://data/circuits/scavenger.tres" id="c11"]
 
 [resource]
 script = ExtResource("1")
-weapons = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
+weapons = Array[ExtResource("2")]([ExtResource("w0"), ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4")])
+circuits = [ExtResource("c0"), ExtResource("c1"), ExtResource("c2"), ExtResource("c3"), ExtResource("c4"), ExtResource("c5"), ExtResource("c6"), ExtResource("c7"), ExtResource("c8"), ExtResource("c9"), ExtResource("c10"), ExtResource("c11")]

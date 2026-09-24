@@ -24,7 +24,7 @@ func exit(_next: StringName) -> void:
 
 
 func physics_update(input: PlayerInputFrame, _delta: float) -> StringName:
-	player.invulnerable = time_in_state < config.dash_iframe_end
+	player.invulnerable = time_in_state < minf(config.dash_iframe_end * Game.circuit_mult(&"iframe_time"), config.dash_duration)
 
 	# Dash-jump: jumping out keeps full dash speed; air overspeed decel bleeds it.
 	if time_in_state >= config.dash_jump_cancel_time and player.jump_buffered() \

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "predator"
+display_name = "Predator"
+description = "+50% damage against staggered or launched enemies."
+cost = 2
+price = 90
+multipliers = {}
+values = {
+&"predator_damage": 0.5
+}

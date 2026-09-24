@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "demolitionist"
+display_name = "Demolitionist"
+description = "Launched-body impacts, wall slams and breakable walls take double damage."
+cost = 1
+price = 60
+multipliers = {
+&"environmental_damage": 2.0
+}
+values = {}

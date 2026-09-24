@@ -32,6 +32,9 @@ var ammo: Dictionary = {}  # weapon id -> rounds
 var air_hang_left: int = 0
 var movement_tech_timer: float = 0.0
 var current_attack: AttackData
+## Horizontal speed when the current swing started (Momentum Coil).
+var attack_start_speed: float = 0.0
+var _kills_since_heal: int = 0
 
 @onready var player: Player = get_parent()
 
@@ -39,6 +42,7 @@ var current_attack: AttackData
 func _ready() -> void:
 	reset()
 	player.state_machine.state_changed.connect(_on_state_changed)
+	EventBus.enemy_killed.connect(_on_enemy_killed)
 
 
 func reset() -> void:
@@ -51,7 +55,7 @@ func reset() -> void:
 	heavy_buffer = 0.0
 	ranged_buffer = 0.0
 	heal_buffer = 0.0
-	injectors = config.injector_max
+	injectors = injector_capacity()
 	fire_cooldown = 0.0
 	current_attack = null
 	_refill_ammo()
@@ -60,9 +64,13 @@ func reset() -> void:
 ## Full rest at an Anchor: health and injectors (core is refilled by the Anchor).
 func rest() -> void:
 	health = config.max_health
-	injectors = config.injector_max
+	injectors = injector_capacity()
 	dead = false
 	_refill_ammo()
+
+
+func injector_capacity() -> int:
+	return config.injector_max + Game.injector_bonus()
 
 
 func set_loadout(melee: WeaponData, ranged: WeaponData) -> void:
@@ -153,6 +161,7 @@ func consume_melee(on_floor: bool, up_held: bool) -> AttackData:
 	light_buffer = 0.0
 	heavy_buffer = 0.0
 	combo_timer = 0.0
+	attack_start_speed = absf(player.velocity.x)
 	var attack: AttackData
 	if heavy:
 		combo_index = 0
@@ -201,6 +210,8 @@ func melee_query(attack: AttackData, hit_ids: Dictionary) -> int:
 		hit_ids[key] = true
 		var hit := HitInfo.create(player, attack, attack.world_knockback(player.facing),
 			Vector2(player.facing, 0), context_tags(attack, false))
+		hit.damage_mult = melee_damage_mult()
+		hit.bonus_vs_staggered = Game.circuit_value(&"predator_damage")
 		var result := box.receive(hit)
 		if _on_hit_result(hit, result, box.owner_entity(), rect):
 			landed += 1
@@ -209,6 +220,17 @@ func melee_query(attack: AttackData, hit_ids: Dictionary) -> int:
 		if attack.camera_trauma > 0.0:
 			EventBus.camera_shake_requested.emit(attack.camera_trauma)
 	return landed
+
+
+## Circuit damage scaling for melee, including Momentum Coil's speed bonus.
+func melee_damage_mult() -> float:
+	var mult := Game.circuit_mult(&"melee_damage")
+	var momentum := Game.circuit_value(&"momentum_damage")
+	if momentum > 0.0:
+		var run := player.config.max_run_speed
+		var t := clampf((attack_start_speed - run) / maxf(player.config.dash_speed - run, 1.0), 0.0, 1.0)
+		mult *= 1.0 + momentum * t
+	return mult
 
 
 func context_tags(attack: AttackData, ranged: bool) -> Array[StringName]:
@@ -285,6 +307,9 @@ func _try_fire(input: PlayerInputFrame) -> void:
 		var offset := 0.0 if pellets == 1 else lerpf(-spread * 0.5, spread * 0.5, float(i) / (pellets - 1))
 		var p := Projectile.spawn(player.get_parent(), player, w.shot, muzzle, aim.rotated(deg_to_rad(offset)),
 			CombatLayers.ENEMY_HURTBOX, tags, player.global_position + Vector2(0, w.muzzle_offset.y))
+		p.damage_mult = Game.circuit_mult(&"ranged_damage")
+		p.bonus_vs_staggered = Game.circuit_value(&"predator_damage")
+		p._life *= Game.circuit_mult(&"ranged_range")
 		p.impacted.connect(_on_projectile_impact.bind(p))
 	_apply_recoil(w, aim)
 	AudioManager.play_sfx(w.fire_sfx)
@@ -332,9 +357,12 @@ func receive_hit(hit: HitInfo) -> int:
 		return CombatResult.IGNORED
 	if player.invulnerable:
 		var state := player.state_machine.current
-		if (state.id == &"dodge" or state.id == &"dash") and state.time_in_state <= config.perfect_dodge_window:
+		var window := config.perfect_dodge_window + Game.circuit_value(&"perfect_window_bonus")
+		if (state.id == &"dodge" or state.id == &"dash") and state.time_in_state <= window:
 			player.hitstop(config.perfect_dodge_hitstop)
 			AudioManager.play_sfx(&"perfect_dodge")
+			if Game.circuit_value(&"perfect_dodge_reload") > 0.0:
+				_refill_ammo()
 			EventBus.perfect_dodge.emit(hit.attacker)
 			return CombatResult.PERFECT_EVADE
 		return CombatResult.EVADED
@@ -350,6 +378,13 @@ func receive_hit(hit: HitInfo) -> int:
 func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool) -> int:
 	if dead:
 		return CombatResult.IGNORED
+	amount = ceili(amount * Game.circuit_mult(&"damage_taken"))
+	if amount >= health and Game.circuit_value(&"emergency_loop") > 0.0 and not Game.has_flag("emergency_loop_spent"):
+		# Emergency Loop: survive once per rest at 1 pip.
+		amount = health - 1
+		Game.set_flag("emergency_loop_spent")
+		AudioManager.play_sfx(&"perfect_dodge")
+		EventBus.hint_requested.emit("EMERGENCY LOOP", 1.5)
 	health = maxi(health - amount, 0)
 	EventBus.player_damaged.emit(amount, health)
 	AudioManager.play_sfx(&"player_hurt")
@@ -376,6 +411,19 @@ func _check_hazards() -> void:
 		# Hazards ignore dodge i-frames on purpose: spikes are about positioning.
 		take_damage(config.hazard_damage, Vector2(-player.facing * 60.0, config.hazard_bounce.y),
 			HAZARD_ATTACK.hitstop, true)
+
+
+func _on_enemy_killed(_enemy: Node2D, hit: HitInfo) -> void:
+	var per_heal := int(Game.circuit_value(&"kills_per_heal"))
+	if per_heal <= 0 or hit == null or hit.attacker != player or dead:
+		return
+	_kills_since_heal += 1
+	if _kills_since_heal >= per_heal:
+		_kills_since_heal = 0
+		if health < config.max_health:
+			health += 1
+			AudioManager.play_sfx(&"heal")
+			EventBus.player_healed.emit(health)
 
 
 func _on_state_changed(_from: StringName, to: StringName) -> void:

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "runners_debt"
+display_name = "Runner's Debt"
+description = "The Core drains 40% slower above run speed, 40% faster standing still."
+cost = 1
+price = 80
+multipliers = {}
+values = {
+&"runners_debt": 0.4
+}

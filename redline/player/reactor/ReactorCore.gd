@@ -54,7 +54,10 @@ func is_critical() -> bool:
 func gain(amount: float) -> void:
 	if amount <= 0.0:
 		return
-	charge = minf(charge + amount * config.gain_multiplier, config.max_charge)
+	var mult := config.gain_multiplier
+	if player.combat.health >= player.combat.config.max_health:
+		mult *= 1.0 + Game.circuit_value(&"full_health_reactor_bonus")
+	charge = minf(charge + amount * mult, config.max_charge)
 	_emit()
 
 
@@ -64,7 +67,7 @@ func _physics_process(delta: float) -> void:
 	if not in_flow():
 		_burnout_timer = 0.0
 		return
-	charge = maxf(charge - config.drain_per_second * delta, 0.0)
+	charge = maxf(charge - config.drain_per_second * _drain_factor() * delta, 0.0)
 	if charge <= 0.0:
 		_burnout_timer += delta
 		if _burnout_timer >= config.burnout_interval:
@@ -80,6 +83,19 @@ func _physics_process(delta: float) -> void:
 			_heartbeat_timer = lerpf(0.45, 0.9, charge / maxf(config.critical_threshold, 1.0))
 			AudioManager.play_sfx(&"heartbeat")
 	_emit()
+
+
+## Runner's Debt: speed slows the drain, standing still speeds it up.
+func _drain_factor() -> float:
+	var debt := Game.circuit_value(&"runners_debt")
+	if debt <= 0.0:
+		return 1.0
+	var speed := absf(player.velocity.x)
+	if speed > player.config.max_run_speed + 1.0:
+		return 1.0 - debt
+	if speed < 10.0:
+		return 1.0 + debt
+	return 1.0
 
 
 func _emit() -> void:

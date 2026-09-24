@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "scavenger"
+display_name = "Scavenger"
+description = "Scrap from every source +50%."
+cost = 1
+price = 40
+multipliers = {
+&"scrap_gain": 1.5
+}
+values = {}

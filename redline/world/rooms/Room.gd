@@ -69,7 +69,13 @@ func _enter_world(carry: Dictionary) -> void:
 		cache.position = Vector2(float(drop["x"]), float(drop["y"]))
 		add_child(cache)
 	EventBus.room_leaving.connect(_on_room_leaving)
+	EventBus.loadout_changed.connect(_on_loadout_changed)
 	EventBus.room_entered.emit(district_name, room_name)
+
+
+func _on_loadout_changed() -> void:
+	if is_instance_valid(player):
+		player.combat.set_loadout(Game.catalog.weapon(Game.state.melee_weapon), Game.catalog.weapon(Game.state.ranged_weapon))
 
 
 func _on_room_leaving(room: Node) -> void:

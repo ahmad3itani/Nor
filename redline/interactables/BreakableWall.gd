@@ -62,7 +62,7 @@ func receive_hit(hit: HitInfo) -> int:
 		queue_redraw()
 		AudioManager.play_sfx(&"block")
 		return CombatResult.BLOCKED
-	health -= hit.attack.damage * Game.circuit_mult(&"environmental_damage")
+	health -= hit.damage() * Game.circuit_mult(&"environmental_damage")
 	_flash = 0.08
 	queue_redraw()
 	if health <= 0.0:

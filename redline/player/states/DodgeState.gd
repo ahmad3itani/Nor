@@ -25,7 +25,8 @@ func exit(_next: StringName) -> void:
 
 
 func physics_update(input: PlayerInputFrame, delta: float) -> StringName:
-	player.invulnerable = time_in_state >= config.dodge_iframe_start and time_in_state < config.dodge_iframe_end
+	var iframe_end := minf(config.dodge_iframe_end * Game.circuit_mult(&"iframe_time"), config.dodge_duration)
+	player.invulnerable = time_in_state >= config.dodge_iframe_start and time_in_state < iframe_end
 
 	if time_in_state >= config.dodge_jump_cancel_time and player.jump_buffered() \
 			and (player.is_on_floor() or player.coyote_timer > 0.0):

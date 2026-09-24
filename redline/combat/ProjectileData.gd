@@ -12,3 +12,5 @@ extends Resource
 @export var color: Color = Color("ffe28a")
 ## Tracer length in px (visual only).
 @export var tracer_length: float = 8.0
+## Extra targets the projectile passes through before stopping.
+@export_range(0, 8) var pierce: int = 0

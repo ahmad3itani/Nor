@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "glass_pulse"
+display_name = "Glass Pulse"
+description = "All your damage +35%. Damage you take is doubled."
+cost = 2
+price = 110
+multipliers = {
+&"melee_damage": 1.35,
+&"ranged_damage": 1.35,
+&"damage_taken": 2.0
+}
+values = {}

@@ -10,7 +10,12 @@ var attacker: Node2D
 var velocity: Vector2
 var target_mask: int = CombatLayers.ENEMY_HURTBOX
 var tags: Array[StringName] = []
+var damage_mult: float = 1.0
+var bonus_vs_staggered: float = 0.0
+## Hurtboxes the shot may still pass through (Heavy Revolver).
+var pierce_left: int = 0
 var _life: float = 0.0
+var _excluded: Array[RID] = []
 var _trail_from: Vector2
 ## First ray starts here (the shooter's body) instead of the muzzle, so
 ## point-blank shots hit an enemy the muzzle is already inside of.
@@ -28,6 +33,7 @@ static func spawn(parent: Node, p_attacker: Node2D, p_attack: AttackData, at: Ve
 	p.target_mask = p_target_mask
 	p.tags = p_tags.duplicate()
 	p._life = p_attack.projectile.lifetime
+	p.pierce_left = p_attack.projectile.pierce
 	p.position = at
 	p._trail_from = at
 	p._first_ray_from = ray_origin if ray_origin != Vector2.INF else at
@@ -45,6 +51,7 @@ func _physics_process(delta: float) -> void:
 	var params := PhysicsRayQueryParameters2D.create(from, to, CombatLayers.WORLD | target_mask)
 	params.collide_with_areas = true
 	params.collide_with_bodies = true
+	params.exclude = _excluded
 	if _first_tick:
 		_first_tick = false
 		params.from = _first_ray_from
@@ -67,7 +74,15 @@ func _physics_process(delta: float) -> void:
 		var source: Node2D = attacker if is_instance_valid(attacker) else null
 		var hit := HitInfo.create(source, attack, kb, dir, tags)
 		hit.source_position = from
+		hit.damage_mult = damage_mult
+		hit.bonus_vs_staggered = bonus_vs_staggered
 		outcome = box.receive(hit)
+		if pierce_left > 0 and outcome != CombatResult.BLOCKED:
+			pierce_left -= 1
+			_excluded.append(box.get_rid())
+			HitSpark.spawn(get_parent(), global_position, velocity.normalized(), attack.projectile.color, 4)
+			impacted.emit(outcome)
+			return
 	HitSpark.spawn(get_parent(), global_position, -velocity.normalized(), attack.projectile.color, 4)
 	impacted.emit(outcome)
 	queue_free()

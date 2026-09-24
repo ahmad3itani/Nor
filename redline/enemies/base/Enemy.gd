@@ -254,7 +254,10 @@ func receive_hit(hit: HitInfo) -> int:
 			return CombatResult.BLOCKED
 		# Guard broken: fall through as a staggering hit with no damage bonus.
 
-	health -= hit.attack.damage
+	var dmg := hit.damage()
+	if ai == AI.STAGGER or ai == AI.LAUNCHED:
+		dmg *= 1.0 + hit.bonus_vs_staggered
+	health -= dmg
 	poise -= hit.attack.poise_damage
 	var staggered := poise <= 0.0
 	if staggered:
@@ -346,6 +349,8 @@ func _environmental_hit(attack: AttackData, kb: Vector2) -> HitInfo:
 	var hit := HitInfo.create(credited, attack, kb, kb.normalized() if kb != Vector2.ZERO else Vector2.UP,
 		[&"environmental"] as Array[StringName])
 	hit.source_position = global_position
+	if credited is Player:
+		hit.damage_mult = Game.circuit_mult(&"environmental_damage")
 	return hit
 
 

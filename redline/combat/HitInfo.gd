@@ -13,6 +13,10 @@ var source_position: Vector2
 ## Context tags for style/reactor: &"aerial", &"ranged", &"environmental",
 ## &"after_movement", &"launcher".
 var tags: Array[StringName] = []
+## Attacker-side modifiers (Circuits): final damage = attack.damage * damage_mult,
+## and receivers add bonus_vs_staggered when they are staggered or launched.
+var damage_mult: float = 1.0
+var bonus_vs_staggered: float = 0.0
 
 
 static func create(p_attacker: Node2D, p_attack: AttackData, p_knockback: Vector2,
@@ -25,6 +29,10 @@ static func create(p_attacker: Node2D, p_attack: AttackData, p_knockback: Vector
 	h.source_position = p_attacker.global_position if p_attacker else Vector2.ZERO
 	h.tags = p_tags.duplicate()
 	return h
+
+
+func damage() -> float:
+	return attack.damage * damage_mult
 
 
 func has_tag(tag: StringName) -> bool:

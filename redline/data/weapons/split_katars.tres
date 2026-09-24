@@ -1,0 +1,180 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2_weapon"]
+
+[sub_resource type="Resource" id="L1"]
+script = ExtResource("1_attack")
+id = &"katar_light_1"
+startup = 0.03
+active = 0.05
+recovery = 0.1
+cancel_time = 0.08
+evade_cancel_time = 0.03
+damage = 7.0
+poise_damage = 5.0
+knockback = Vector2(50, 0)
+hitstop = 0.035
+hitbox = Rect2(2, -28, 22, 20)
+style_tag = &"katar_light"
+style_points = 14.0
+lunge_speed = 80.0
+momentum_keep = 0.7
+swing_sfx = &"slash"
+hit_sfx = &"hit"
+
+[sub_resource type="Resource" id="L2"]
+script = ExtResource("1_attack")
+id = &"katar_light_2"
+startup = 0.03
+active = 0.05
+recovery = 0.1
+cancel_time = 0.08
+evade_cancel_time = 0.03
+damage = 7.0
+poise_damage = 5.0
+knockback = Vector2(50, 0)
+hitstop = 0.035
+hitbox = Rect2(0, -30, 24, 22)
+style_tag = &"katar_light"
+style_points = 14.0
+lunge_speed = 80.0
+momentum_keep = 0.7
+swing_sfx = &"slash"
+hit_sfx = &"hit"
+
+[sub_resource type="Resource" id="L3"]
+script = ExtResource("1_attack")
+id = &"katar_light_3"
+startup = 0.03
+active = 0.05
+recovery = 0.1
+cancel_time = 0.08
+evade_cancel_time = 0.03
+damage = 7.0
+poise_damage = 5.0
+knockback = Vector2(50, 0)
+hitstop = 0.035
+hitbox = Rect2(2, -28, 22, 20)
+style_tag = &"katar_light"
+style_points = 14.0
+lunge_speed = 80.0
+momentum_keep = 0.7
+swing_sfx = &"slash"
+hit_sfx = &"hit"
+
+[sub_resource type="Resource" id="L4"]
+script = ExtResource("1_attack")
+id = &"katar_light_4"
+startup = 0.06
+active = 0.07
+recovery = 0.2
+cancel_time = 0.17
+evade_cancel_time = 0.03
+damage = 11.0
+poise_damage = 14.0
+knockback = Vector2(170, -110)
+hitstop = 0.07
+hitbox = Rect2(0, -32, 28, 28)
+style_tag = &"katar_finisher"
+style_points = 26.0
+lunge_speed = 120.0
+momentum_keep = 0.7
+swing_sfx = &"slash"
+hit_sfx = &"hit_heavy"
+camera_trauma = 0.12
+
+[sub_resource type="Resource" id="Heavy"]
+script = ExtResource("1_attack")
+id = &"katar_cross"
+startup = 0.12
+active = 0.08
+recovery = 0.26
+cancel_time = 0.22
+evade_cancel_time = 0.14
+damage = 16.0
+poise_damage = 22.0
+knockback = Vector2(240, -80)
+hitstop = 0.08
+hitbox = Rect2(-4, -34, 34, 32)
+camera_trauma = 0.18
+style_tag = &"katar_heavy"
+style_points = 32.0
+reactor_gain = 1.5
+lunge_speed = 170.0
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[sub_resource type="Resource" id="Launcher"]
+script = ExtResource("1_attack")
+id = &"katar_rising"
+startup = 0.08
+active = 0.1
+recovery = 0.2
+cancel_time = 0.14
+evade_cancel_time = 0.1
+damage = 10.0
+poise_damage = 26.0
+knockback = Vector2(10, -400)
+hitstop = 0.06
+hitbox = Rect2(-4, -46, 24, 46)
+style_tag = &"katar_launcher"
+style_points = 32.0
+lunge_speed = 30.0
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[sub_resource type="Resource" id="AirLight"]
+script = ExtResource("1_attack")
+id = &"katar_spin"
+startup = 0.03
+active = 0.08
+recovery = 0.1
+cancel_time = 0.09
+evade_cancel_time = 0.03
+damage = 6.0
+poise_damage = 6.0
+knockback = Vector2(30, -160)
+hitstop = 0.04
+hitbox = Rect2(-14, -40, 36, 40)
+style_tag = &"katar_air"
+style_points = 20.0
+lunge_speed = 0.0
+sets_air_velocity = true
+air_velocity_y = -70.0
+air_gravity_scale = 0.3
+swing_sfx = &"slash"
+
+[sub_resource type="Resource" id="AirHeavy"]
+script = ExtResource("1_attack")
+id = &"katar_dive"
+startup = 0.06
+active = 0.12
+recovery = 0.16
+cancel_time = 0.16
+evade_cancel_time = 0.08
+damage = 12.0
+poise_damage = 18.0
+knockback = Vector2(160, 300)
+hitstop = 0.07
+hitbox = Rect2(-2, -20, 30, 30)
+camera_trauma = 0.15
+style_tag = &"katar_dive"
+style_points = 30.0
+lunge_speed = 0.0
+sets_air_velocity = true
+air_velocity_y = 220.0
+air_gravity_scale = 1.0
+swing_sfx = &"slash_heavy"
+hit_sfx = &"hit_heavy"
+
+[resource]
+script = ExtResource("2_weapon")
+id = &"split_katars"
+display_name = "Split Katars"
+kind = 0
+light_chain = Array[ExtResource("1_attack")]([SubResource("L1"), SubResource("L2"), SubResource("L3"), SubResource("L4")])
+heavy = SubResource("Heavy")
+launcher = SubResource("Launcher")
+air_light = SubResource("AirLight")
+air_heavy = SubResource("AirHeavy")

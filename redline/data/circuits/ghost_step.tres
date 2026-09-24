@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ghost_step"
+display_name = "Ghost Step"
+description = "Dodge and dash invulnerability lasts 40% longer; the perfect-dodge window widens."
+cost = 1
+price = 70
+multipliers = {
+&"iframe_time": 1.4
+}
+values = {
+&"perfect_window_bonus": 0.05
+}

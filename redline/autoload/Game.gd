@@ -72,7 +72,7 @@ func apply_to_player(player: Player) -> void:
 	var combat := player.combat
 	combat.set_loadout(catalog.weapon(state.melee_weapon), catalog.weapon(state.ranged_weapon))
 	combat.health = combat.config.max_health if state.health < 0 else clampi(state.health, 1, combat.config.max_health)
-	combat.injectors = combat.config.injector_max if state.injectors < 0 else state.injectors
+	combat.injectors = combat.injector_capacity() if state.injectors < 0 else state.injectors
 	var reactor := player.reactor
 	reactor.charge = reactor.config.start_charge if state.reactor_charge < 0.0 else state.reactor_charge
 
@@ -119,9 +119,74 @@ func add_scrap(amount: int) -> void:
 	EventBus.scrap_changed.emit(state.total_scrap())
 
 
-## Circuit stat multiplier (1.0 when no equipped Circuit touches the stat).
+# --- Circuits (bible §11) ------------------------------------------------------------
+
+const BASE_CORE_CAPACITY := 4
+
+
+func core_capacity() -> int:
+	return BASE_CORE_CAPACITY + state.core_shards
+
+
+func capacity_used() -> int:
+	var used := 0
+	for id in state.equipped_circuits:
+		var c := catalog.circuit(id) as CircuitData
+		if c:
+			used += c.cost
+	return used
+
+
+func can_equip(id: String) -> bool:
+	var c := catalog.circuit(id) as CircuitData
+	return c != null and state.owned_circuits.has(id) and not state.equipped_circuits.has(id) \
+		and capacity_used() + c.cost <= core_capacity()
+
+
+func toggle_circuit(id: String) -> bool:
+	if state.equipped_circuits.has(id):
+		state.equipped_circuits.erase(id)
+	elif can_equip(id):
+		state.equipped_circuits.append(id)
+	else:
+		return false
+	EventBus.loadout_changed.emit()
+	return true
+
+
+## Product of equipped Circuits' multipliers for a stat (1.0 if none).
 func circuit_mult(stat: StringName) -> float:
-	return 1.0
+	var m := 1.0
+	for id in state.equipped_circuits:
+		var c := catalog.circuit(id) as CircuitData
+		if c:
+			m *= float(c.multipliers.get(stat, 1.0))
+	return m
+
+
+## Sum of equipped Circuits' values for a stat (0.0 if none).
+func circuit_value(stat: StringName) -> float:
+	var v := 0.0
+	for id in state.equipped_circuits:
+		var c := catalog.circuit(id) as CircuitData
+		if c:
+			v += float(c.values.get(stat, 0.0))
+	return v
+
+
+func injector_bonus() -> int:
+	return flag_int("injector_upgrades")
+
+
+func equip_weapon(id: String) -> void:
+	var w := catalog.weapon(id)
+	if w == null or not state.owned_weapons.has(id):
+		return
+	if w.kind == WeaponData.Kind.MELEE:
+		state.melee_weapon = id
+	else:
+		state.ranged_weapon = id
+	EventBus.loadout_changed.emit()
 
 
 func scrap_multiplier() -> float:

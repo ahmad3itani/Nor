@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "momentum_coil"
+display_name = "Momentum Coil"
+description = "Melee hits deal up to +40% damage based on how fast you were moving when you swung."
+cost = 2
+price = 90
+multipliers = {}
+values = {
+&"momentum_damage": 0.4
+}

@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2_weapon"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+
+[sub_resource type="Resource" id="Proj"]
+script = ExtResource("3_proj")
+speed = 900.0
+lifetime = 0.45
+pellets = 1
+spread_deg = 0.0
+color = Color(1, 0.4, 0.3, 1)
+tracer_length = 16.0
+pierce = 2
+
+[sub_resource type="Resource" id="Shot"]
+script = ExtResource("1_attack")
+id = &"revolver_shot"
+startup = 0.0
+active = 0.0
+recovery = 0.0
+cancel_time = 0.0
+damage = 18.0
+poise_damage = 18.0
+knockback = Vector2(220, -60)
+hitstop = 0.06
+camera_trauma = 0.1
+style_tag = &"revolver"
+style_points = 16.0
+reactor_gain = 1.0
+projectile = SubResource("Proj")
+hit_sfx = &"hit_heavy"
+
+[resource]
+script = ExtResource("2_weapon")
+id = &"heavy_revolver"
+display_name = "Heavy Revolver"
+kind = 1
+shot = SubResource("Shot")
+fire_interval = 0.5
+ammo_max = 6
+reload_time = 1.2
+ground_recoil = 60.0
+air_recoil = 80.0
+muzzle_offset = Vector2(10, -21)
+fire_sfx = &"shoot_revolver"

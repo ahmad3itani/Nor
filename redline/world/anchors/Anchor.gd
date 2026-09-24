@@ -35,6 +35,7 @@ func interact(player: Player) -> void:
 	AudioManager.play_sfx(&"anchor")
 	HitSpark.spawn(get_parent(), global_position + Vector2(0, -20), Vector2.UP, CORE_COLOR, 18, 120.0)
 	EventBus.anchor_rested.emit(self)
+	EventBus.menu_requested.emit(&"loadout")
 
 
 func _draw() -> void:

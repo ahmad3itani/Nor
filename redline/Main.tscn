@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://ui/debug/DebugOverlay.gd" id="2_debug"]
 [ext_resource type="Script" path="res://ui/debug/TuningPanel.gd" id="3_tuning"]
 [ext_resource type="Script" path="res://ui/hud/CombatHud.gd" id="4_hud"]
 [ext_resource type="Script" path="res://ui/dialogue/DialogueBox.gd" id="5_dialogue"]
+[ext_resource type="Script" path="res://ui/menus/MenuHost.gd" id="6_menus"]
+[ext_resource type="Script" path="res://ui/menus/LoadoutMenu.gd" id="7_loadout"]
+[ext_resource type="Script" path="res://ui/menus/ShopMenu.gd" id="8_shop"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -29,6 +32,15 @@ script = ExtResource("4_hud")
 
 [node name="DialogueBox" type="CanvasLayer" parent="."]
 script = ExtResource("5_dialogue")
+
+[node name="Menus" type="Node" parent="."]
+script = ExtResource("6_menus")
+
+[node name="LoadoutMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("7_loadout")
+
+[node name="ShopMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("8_shop")
 
 [node name="FadeLayer" type="CanvasLayer" parent="."]
 layer = 90

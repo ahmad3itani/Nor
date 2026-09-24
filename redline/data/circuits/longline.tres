@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "longline"
+display_name = "Longline"
+description = "Ranged shots travel 50% farther."
+cost = 1
+price = 50
+multipliers = {
+&"ranged_range": 1.5
+}
+values = {}

@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="ShopData" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://progression/ShopData.gd" id="1"]
+[ext_resource type="Script" path="res://progression/ShopItem.gd" id="2"]
+
+[sub_resource type="Resource" id="i0"]
+script = ExtResource("2")
+kind = 0
+item_id = "rebound"
+
+[sub_resource type="Resource" id="i1"]
+script = ExtResource("2")
+kind = 0
+item_id = "demolitionist"
+
+[sub_resource type="Resource" id="i2"]
+script = ExtResource("2")
+kind = 0
+item_id = "ghost_step"
+
+[sub_resource type="Resource" id="i3"]
+script = ExtResource("2")
+kind = 0
+item_id = "clean_circuit"
+
+[sub_resource type="Resource" id="i4"]
+script = ExtResource("2")
+kind = 0
+item_id = "runners_debt"
+
+[sub_resource type="Resource" id="i5"]
+script = ExtResource("2")
+kind = 0
+item_id = "momentum_coil"
+
+[sub_resource type="Resource" id="i6"]
+script = ExtResource("2")
+kind = 0
+item_id = "predator"
+
+[sub_resource type="Resource" id="i7"]
+script = ExtResource("2")
+kind = 0
+item_id = "blood_capacitor"
+
+[sub_resource type="Resource" id="i8"]
+script = ExtResource("2")
+kind = 0
+item_id = "glass_pulse"
+
+[sub_resource type="Resource" id="i9"]
+script = ExtResource("2")
+kind = 0
+item_id = "emergency_loop"
+requires_flag = "dead_air_complete"
+
+[resource]
+script = ExtResource("1")
+id = &"shop_vell"
+title = "Vell  —  Circuit Broker"
+items = Array[ExtResource("2")]([SubResource("i0"), SubResource("i1"), SubResource("i2"), SubResource("i3"), SubResource("i4"), SubResource("i5"), SubResource("i6"), SubResource("i7"), SubResource("i8"), SubResource("i9")])

@@ -121,7 +121,7 @@ func _draw_hud() -> void:
 
 	# Injectors (green pips after health).
 	var inj_x := base.x + combat.config.max_health * (PIP.x + 2) + 6
-	for i in combat.config.injector_max:
+	for i in combat.injector_capacity():
 		_root.draw_rect(Rect2(Vector2(inj_x + i * 5, base.y + 1), Vector2(3, 5)), Color("7dff9a") if i < combat.injectors else DIM)
 
 	# Scrap (banked + unbanked, unbanked shown dimmer).
