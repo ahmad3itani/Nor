@@ -1,5 +1,17 @@
 # REDLINE Changelog
 
+## 0.1.1-m1 — M1 polish (still awaiting the human playtest)
+
+Everything here is M1 polish that didn't need playtest feedback. M2 has not started.
+
+- **Live tuning panel (F3):** one slider per numeric `PlayerMovementConfig` value, generated from the resource's properties. Edits apply on the next physics tick. **Save** writes the preset `.tres`, or a copy in `user://tuning/` in exported builds. **Revert** reloads the file from disk.
+- **Placeholder SFX** for jump, slide-jump, soft and hard landings, slide, dodge, dash and respawn. Each sound is described as data (`data/audio/placeholder_sfx.tres`) and synthesized to WAV at startup, so no temporary audio files are committed. It plays on a new `SFX` bus that follows `Settings.sfx_volume`.
+- **Pixel dust:** on jump takeoff, landings (two sideways puffs that scale with impact), slide start plus a trail while sliding, and ground dashes.
+- **High-refresh experiments:** F7 toggles physics interpolation and F8 switches between 60 and 120 Hz physics. Respawns and teleports reset interpolation so they never smear across frames. The overlay shows the tick rate and interpolation state.
+- `PlayerFeedback` node: movement events become sound and dust here, so `Player` and the states stay pure physics.
+- 37 tests (was 29): SFX bank validity and render levels, feedback sound ids, tuning-panel coverage, write-through and save, and jump height at 120 Hz.
+- Added `Docs/.gdignore` so Godot doesn't import report screenshots as game assets.
+
 ## 0.1.0-m1 — Movement Lab (awaiting human playtest)
 
 ### M0 Foundation

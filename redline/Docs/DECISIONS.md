@@ -61,3 +61,14 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 - Look-ahead scales with speed and holds its position when the player stops. The camera looks down during fast falls.
 - Landing kicks use a spring. Shake is trauma² noise, multiplied by `Settings.screen_shake_scale`, which is the accessibility slider hook (0 turns shake off).
 - All values live in `CameraConfig` (`data/camera/default_camera.tres`).
+
+## D-013: Placeholder SFX are synthesized from data, not committed as files
+- Bible §28 asks for readable audio on jump, land and dash, and §37.10 says not to mass-produce final assets early. Each placeholder sound is a small `SfxDefinition` (waveform, pitch sweep, noise, tone, cooldown) rendered to WAV at startup. That puts zero binary files in git and makes every sound tweakable in the inspector.
+- To swap in real audio later, set `override_stream` on the definition. No calling code changes.
+
+## D-014: Presentation lives in `PlayerFeedback`, not in the states
+- Sound and dust react to `Player` signals (`jumped`, `landed`, `state_changed`). This keeps the movement motor testable without audio or VFX, and lets M3 art and audio replace feedback wholesale.
+
+## D-015: The tuning panel writes to the live resource
+- Sliders change the active `PlayerMovementConfig` in place, so there's no copy-and-apply step and states see the change on the next tick. Save writes the preset `.tres` when run from the editor. Exported builds can't write `res://`, so they save to `user://tuning/`. The panel is mouse-driven and its controls never take keyboard focus, so movement keys keep working while it's open. Like the other debug tools, it has no controller binding (D-006).
+

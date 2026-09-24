@@ -8,12 +8,14 @@
 - [ ] Decide whether to move `redline/` to its own repository (D-001).
 
 ## M1 polish candidates (only if the playtest asks for them)
-- [ ] Physics interpolation experiment (Godot 4.3's 2D interpolation), or 120 Hz physics ticks.
+- [x] Physics interpolation experiment (Godot 4.3's 2D interpolation), or 120 Hz physics ticks. Toggles are on F7 and F8. **A human still needs to judge them on a 120/144 Hz display.**
 - [ ] Let slides gain or lose speed on slopes.
+- [ ] Footstep sounds for running (left out so far to avoid noise before the playtest).
 - [ ] An optional brake or steer during a slide. It's fully committed right now.
-- [ ] An in-game tuning panel (sliders bound to `PlayerMovementConfig`) as an alternative to editing `.tres` files plus F5.
-- [ ] Placeholder SFX for jump, land, slide, dodge and dash. Audio feedback affects feel (bible §28).
-- [ ] Hard-landing variants: a roll when holding a direction, dust VFX.
+- [x] An in-game tuning panel (F3).
+- [x] Placeholder SFX for jump, land, slide, dodge and dash (synthesized from data).
+- [x] Dust VFX for jump, land, slide and dash.
+- [ ] Hard-landing roll when holding a direction (needs a design call).
 - [ ] World-label font: a pixel font instead of the default font at 8 px.
 
 ## Framework (pulled forward only when needed)
