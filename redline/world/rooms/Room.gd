@@ -104,7 +104,7 @@ func _physics_process(_delta: float) -> void:
 
 ## Pits hurt but never send you back to an Anchor (bible §2.8 fast recovery).
 func _pit_fall() -> void:
-	player.combat.take_damage(1, Vector2.ZERO, 0.0, false)
+	player.combat.take_damage(1, Vector2.ZERO, 0.0, false, "pit")
 	if player.combat.dead:
 		return
 	player.teleport(player.last_safe_position)

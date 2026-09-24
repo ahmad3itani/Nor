@@ -22,6 +22,7 @@ AudioManager="*res://autoload/AudioManager.gd"
 SceneRouter="*res://autoload/SceneRouter.gd"
 InputGlyphs="*res://autoload/InputGlyphs.gd"
 MusicDirector="*res://autoload/MusicDirector.gd"
+Playtest="*res://autoload/Playtest.gd"
 
 [debug]
 

@@ -26,6 +26,10 @@ var music_volume: float = 0.6:
 var show_debug_overlay: bool = false
 ## Accessibility (bible §24): dropping unbanked Scrap on death can be disabled.
 var currency_loss: bool = true
+## M4: record this run for the playtest (local file only, never uploaded).
+var playtest_recording: bool = true
+## M4: force a playtest variant id ("" = rotate automatically per session).
+var playtest_variant: String = ""
 ## Redline Core difficulty (bible §6): 0 Normal, 1 Story/Assist, 2 Redline Challenge.
 var reactor_mode: int = 0:
 	set(v): reactor_mode = clampi(v, 0, 2)
@@ -52,6 +56,8 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	show_debug_overlay = cfg.get_value("debug", "show_debug_overlay", show_debug_overlay)
 	reactor_mode = cfg.get_value("gameplay", "reactor_mode", reactor_mode)
 	currency_loss = cfg.get_value("accessibility", "currency_loss", currency_loss)
+	playtest_recording = cfg.get_value("playtest", "recording", playtest_recording)
+	playtest_variant = cfg.get_value("playtest", "variant", playtest_variant)
 
 
 func save_settings() -> Error:
@@ -66,4 +72,6 @@ func save_settings() -> Error:
 	cfg.set_value("debug", "show_debug_overlay", show_debug_overlay)
 	cfg.set_value("gameplay", "reactor_mode", reactor_mode)
 	cfg.set_value("accessibility", "currency_loss", currency_loss)
+	cfg.set_value("playtest", "recording", playtest_recording)
+	cfg.set_value("playtest", "variant", playtest_variant)
 	return cfg.save(_path)

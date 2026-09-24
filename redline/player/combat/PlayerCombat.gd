@@ -18,6 +18,8 @@ const HAZARD_ATTACK := preload("res://data/combat/hazard_attack.tres")
 var ranged_index: int = 0
 var health: int = 0
 var dead: bool = false
+## What last hurt Rook ("needle/needle_stab", "hazard", "pit", "burnout").
+var last_damage_source: String = ""
 var hurt_invuln_timer: float = 0.0
 var combo_index: int = 0
 var combo_timer: float = 0.0
@@ -371,13 +373,25 @@ func receive_hit(hit: HitInfo) -> int:
 	var away := player.global_position.x - hit.source_position.x
 	var side := signf(away) if not is_zero_approx(away) else signf(hit.direction.x)
 	var kb := Vector2(side * config.hurt_knockback.x, config.hurt_knockback.y)
-	return take_damage(int(ceil(hit.attack.damage)), kb, hit.attack.hitstop, true)
+	return take_damage(int(ceil(hit.attack.damage)), kb, hit.attack.hitstop, true, _source_of(hit))
+
+
+## "enemy_id/attack_id" for playtest death causes (M4). The attacker may be
+## freed already (a projectile outliving its shooter), so never touch it blind.
+static func _source_of(hit: HitInfo) -> String:
+	var who := "unknown"
+	if is_instance_valid(hit.attacker) and hit.attacker is Enemy and (hit.attacker as Enemy).data:
+		who = String((hit.attacker as Enemy).data.id)
+	return "%s/%s" % [who, String(hit.attack.id) if hit.attack else "?"]
 
 
 ## knock=false for damage over time (reactor burnout): no stun, no knockback.
-func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool) -> int:
+## `source` names what hurt Rook (enemy/attack, hazard, pit, burnout) so
+## playtest telemetry can report death causes.
+func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown") -> int:
 	if dead:
 		return CombatResult.IGNORED
+	last_damage_source = source
 	amount = ceili(amount * Game.circuit_mult(&"damage_taken"))
 	if amount >= health and Game.circuit_value(&"emergency_loop") > 0.0 and not Game.has_flag("emergency_loop_spent"):
 		# Emergency Loop: survive once per rest at 1 pip.
@@ -410,7 +424,7 @@ func _check_hazards() -> void:
 	if CombatQuery.rect_touches_areas(player.get_world_2d(), rect, CombatLayers.HAZARD):
 		# Hazards ignore dodge i-frames on purpose: spikes are about positioning.
 		take_damage(config.hazard_damage, Vector2(-player.facing * 60.0, config.hazard_bounce.y),
-			HAZARD_ATTACK.hitstop, true)
+			HAZARD_ATTACK.hitstop, true, "hazard")
 
 
 func _on_enemy_killed(_enemy: Node2D, hit: HitInfo) -> void:

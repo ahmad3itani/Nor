@@ -73,7 +73,7 @@ func _physics_process(delta: float) -> void:
 		if _burnout_timer >= config.burnout_interval:
 			_burnout_timer = 0.0
 			AudioManager.play_sfx(&"burnout")
-			player.combat.take_damage(1, Vector2.ZERO, 0.0, false)
+			player.combat.take_damage(1, Vector2.ZERO, 0.0, false, "burnout")
 	else:
 		_burnout_timer = 0.0
 	if is_critical():

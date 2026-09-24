@@ -38,9 +38,11 @@ func _ready() -> void:
 		return
 	if boss:
 		boss.ai_enabled = false
-		boss.died.connect(_on_boss_died)
+		if not boss.died.is_connected(_on_boss_died):
+			boss.died.connect(_on_boss_died)
 	_set_gates(false)
-	body_entered.connect(_on_body_entered)
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
 
 
 func defeated_flag() -> String:

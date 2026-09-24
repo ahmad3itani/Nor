@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlaytestVariant" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://playtest/PlaytestVariant.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "strong_slide_jump"
+label = "Stronger slide-jump"
+question = "D-036: should the slide-jump be a real long-jump?"
+movement_overrides = {
+"slide_jump_bonus": 60.0,
+"slide_jump_height_ratio": 0.9
+}

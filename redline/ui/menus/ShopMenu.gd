@@ -76,7 +76,8 @@ func _describe(item: ShopItem) -> void:
 
 ## Returns true if bought. Public so tests and scripted runs can buy directly.
 func buy(item: ShopItem) -> bool:
-	if is_owned(item) or not Game.state.spend_scrap(item_price(item)):
+	var price := item_price(item)
+	if is_owned(item) or not Game.state.spend_scrap(price):
 		AudioManager.play_sfx(&"empty")
 		return false
 	match item.kind:
@@ -88,6 +89,7 @@ func buy(item: ShopItem) -> bool:
 			Game.set_flag(item.upgrade_flag, Game.flag_int(item.upgrade_flag) + 1)
 	AudioManager.play_sfx(&"purchase")
 	EventBus.scrap_changed.emit(Game.state.total_scrap())
+	EventBus.item_purchased.emit(shop.id if shop else &"", item.item_id, price)
 	return true
 
 

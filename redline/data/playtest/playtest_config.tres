@@ -1,0 +1,106 @@
+[gd_resource type="Resource" script_class="PlaytestConfig" load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://playtest/PlaytestConfig.gd" id="1_cfg"]
+[ext_resource type="Script" path="res://playtest/SurveyQuestion.gd" id="2_q"]
+[ext_resource type="Script" path="res://playtest/PlaytestVariant.gd" id="5_v"]
+[ext_resource type="Resource" path="res://data/playtest/variants/baseline.tres" id="3_base"]
+[ext_resource type="Resource" path="res://data/playtest/variants/strong_slide_jump.tres" id="4_slide"]
+
+[sub_resource type="Resource" id="q0"]
+script = ExtResource("2_q")
+id = "movement_satisfying"
+text = "Moving around felt immediately satisfying."
+kind = 0
+criterion = "movement feels immediately satisfying"
+
+[sub_resource type="Resource" id="q1"]
+script = ExtResource("2_q")
+id = "reactor_understood"
+text = "Did you understand what the red Core bar wanted you to do?"
+kind = 1
+criterion = "they understand what the reactor wants them to do"
+
+[sub_resource type="Resource" id="q2"]
+script = ExtResource("2_q")
+id = "replay_stylish"
+text = "I wanted to replay rooms to do them faster or more stylishly."
+kind = 0
+criterion = "they want to replay rooms more stylishly"
+
+[sub_resource type="Resource" id="q3"]
+script = ExtResource("2_q")
+id = "combat_readable"
+text = "Combat was readable: I could see what was about to hit me."
+kind = 0
+criterion = "combat is readable"
+
+[sub_resource type="Resource" id="q4"]
+script = ExtResource("2_q")
+id = "memorable_enemy"
+text = "Which enemy do you remember most?"
+kind = 2
+choices = PackedStringArray("Needle (blade grunt)", "Shield", "Scout Drone", "Hopper", "Watcher (sentry)", "Enforcer (gold elite)", "Warden Krail", "None / don't remember")
+criterion = "they remember at least one enemy"
+
+[sub_resource type="Resource" id="q5"]
+script = ExtResource("2_q")
+id = "curious_world"
+text = "I'm curious about Veyra and Rook."
+kind = 0
+criterion = "they are curious about Veyra/Rook"
+
+[sub_resource type="Resource" id="q6"]
+script = ExtResource("2_q")
+id = "noticed_secrets"
+text = "Did you find or notice any secrets?"
+kind = 1
+criterion = "they found or noticed secrets"
+
+[sub_resource type="Resource" id="q7"]
+script = ExtResource("2_q")
+id = "explain_builds"
+text = "Could you explain the Circuit (build) system to a friend?"
+kind = 1
+criterion = "they can explain the basic build system"
+
+[sub_resource type="Resource" id="q8"]
+script = ExtResource("2_q")
+id = "boss_fair"
+text = "Warden Krail felt fair."
+kind = 0
+criterion = "first boss feels fair"
+
+[sub_resource type="Resource" id="q9"]
+script = ExtResource("2_q")
+id = "want_continue"
+text = "I want to keep playing after this slice."
+kind = 0
+criterion = "they want to continue after the slice"
+
+[sub_resource type="Resource" id="q10"]
+script = ExtResource("2_q")
+id = "controls_ok"
+text = "The controls did what I meant."
+kind = 0
+criterion = ""
+
+[sub_resource type="Resource" id="q11"]
+script = ExtResource("2_q")
+id = "got_lost"
+text = "Did you get lost or unsure where to go at any point?"
+kind = 1
+criterion = ""
+
+[sub_resource type="Resource" id="q12"]
+script = ExtResource("2_q")
+id = "favorite"
+text = "What was your favourite thing to do?"
+kind = 2
+choices = PackedStringArray("Running and jumping", "Slide / dodge tricks", "Melee combos", "Shooting", "Launching enemies into things", "Exploring for secrets", "Building with Circuits", "Nothing stood out")
+criterion = ""
+
+[resource]
+script = ExtResource("1_cfg")
+moment_tags = PackedStringArray("Confusing / lost", "Unfair hit", "Controls felt off", "Felt great", "Bug", "Performance hitch")
+variants = Array[ExtResource("5_v")]([ExtResource("3_base"), ExtResource("4_slide")])
+survey = Array[ExtResource("2_q")]([SubResource("q0"), SubResource("q1"), SubResource("q2"), SubResource("q3"), SubResource("q4"), SubResource("q5"), SubResource("q6"), SubResource("q7"), SubResource("q8"), SubResource("q9"), SubResource("q10"), SubResource("q11"), SubResource("q12")])

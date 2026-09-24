@@ -27,8 +27,30 @@ func rebuild() -> void:
 		Settings.show_debug_overlay = not Settings.show_debug_overlay
 		EventBus.settings_changed.emit()
 		rebuild())
+	add_button("Playtest recording (local file): %s" % ("On" if Settings.playtest_recording else "Off"), func() -> void:
+		Settings.playtest_recording = not Settings.playtest_recording
+		if not Settings.playtest_recording:
+			Playtest.end_session("recording_disabled")
+		rebuild())
+	add_button("Playtest variant: %s" % _variant_label(), _cycle_variant)
 	add_button("Back", close_menu)
 	focus_index(keep)
+
+
+## Facilitators can pin an experiment arm; "Auto" rotates per session.
+## Takes effect from the next New Game / Continue.
+func _variant_label() -> String:
+	var v := Playtest.config.variant(Settings.playtest_variant)
+	return v.label if v else "Auto (rotates)"
+
+
+func _cycle_variant() -> void:
+	var ids: Array[String] = [""]
+	for v in Playtest.config.variants:
+		ids.append(v.id)
+	var i := ids.find(Settings.playtest_variant)
+	Settings.playtest_variant = ids[(i + 1) % ids.size()]
+	rebuild()
 
 
 func close_menu() -> void:

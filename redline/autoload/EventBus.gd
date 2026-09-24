@@ -70,6 +70,9 @@ signal boss_phase_changed(boss: Node2D, phase: int)
 signal boss_defeated(boss_id: String)
 ## The vertical slice's ending beat (Relay after the boss): stats card.
 signal slice_completed
+
+# M4 playtest instrumentation.
+signal item_purchased(shop_id: StringName, item_id: String, price: int)
 ## Settings changed in the menu (overlay visibility, volumes).
 signal settings_changed
 ## Tuning panel asks to discard live edits and reload the active preset from disk.

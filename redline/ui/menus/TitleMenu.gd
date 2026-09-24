@@ -28,6 +28,9 @@ func rebuild() -> void:
 	add_label("R E D L I N E", UiTheme.ACCENT, 16)
 	add_label("Movement is life. Violence buys time. Curiosity reveals the truth.", UiTheme.MUTED)
 	add_label("vertical slice  —  Lowlight", UiTheme.MUTED)
+	# Be upfront about recording (M4): what, where, and how to turn it off.
+	if Playtest.recording_allowed():
+		add_label("Playtest recording ON: your run is saved to a local file only (%s). Turn off in Settings." % ProjectSettings.globalize_path(Playtest.dir), UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
 	if Game.has_save():
 		add_button("Continue", _continue)
 	add_button("New Game", _new_game)
@@ -39,11 +42,13 @@ func rebuild() -> void:
 
 func _continue() -> void:
 	if Game.load_game():
+		Playtest.begin_session("continue")
 		close_menu()
 		SceneRouter.transition_to(Game.respawn_room(), Game.respawn_entry())
 
 
 func _new_game() -> void:
 	Game.new_game()
+	Playtest.begin_session("new")
 	close_menu()
 	SceneRouter.transition_to(Game.START_ROOM, Game.START_ENTRY)
