@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ScannerData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/hazards/ScannerData.gd" id="1_scan"]
+
+[resource]
+script = ExtResource("1_scan")
+mode = 2
+sweep_from = 620.0
+sweep_to = 1020.0
+sweep_speed = 110.0
+end_pause = 1.0
