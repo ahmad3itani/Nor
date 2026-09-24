@@ -1,10 +1,18 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
-[ext_resource type="Script" path="res://world/rooms/FlagDeclaration.gd" id="flagdecl"]
+[ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="PackedScene" path="res://bosses/CollectorDrone.tscn" id="scene_CollectorDrone"]
+[ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
+[ext_resource type="PackedScene" path="res://interactables/ServicePistolDrop.tscn" id="scene_ServicePistolDrop"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
 
@@ -37,27 +45,42 @@ theme = ExtResource("theme")
 script = ExtResource("director")
 max_attackers = 1
 
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, -240)
+script = ExtResource("block")
+size = Vector2(480, 16)
+
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, -224)
+script = ExtResource("block")
+size = Vector2(16, 128)
+
+[node name="VentRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, -224)
+script = ExtResource("block")
+size = Vector2(48, 88)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(448, -224)
+script = ExtResource("block")
+size = Vector2(32, 128)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(0, 0)
+script = ExtResource("block")
+size = Vector2(480, 96)
+
 [node name="Spawn_from_lift" type="Marker2D" parent="Spawns"]
 position = Vector2(28, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_lift"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(0, 0)
-script = ExtResource("block")
-size = Vector2(60, 16)
-
 [node name="Spawn_from_tunnel" type="Marker2D" parent="Spawns"]
 position = Vector2(436, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_tunnel"
 facing = -1
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(404, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(0, -96)
@@ -72,7 +95,146 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/undercity/EscapeTunnel.tscn"
 target_entry = &"from_bay"
+requires_flag = "collector_drone_defeated"
 
-[node name="FlagDeclaration" type="Node" parent="Triggers"]
-script = ExtResource("flagdecl")
-produces = PackedStringArray("collector_drone_defeated")
+[node name="ArenaGateLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(40, -92)
+script = ExtResource("gate")
+size = Vector2(16, 92)
+
+[node name="ExitGate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(448, -96)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+closed = true
+open_flag = "collector_drone_defeated"
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(96, -40)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(200, -80)
+script = ExtResource("block")
+size = Vector2(104, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(344, -40)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(16, -92)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(56, -136)
+script = ExtResource("wall")
+size = Vector2(8, 44)
+persist_id = "uc_collector_vent"
+max_health = 30.0
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(32, -92)
+script = ExtResource("collect")
+persist_id = "sb_uc_bay_vent"
+kind = 0
+scrap_amount = 40
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(252, -224)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 40)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.62, 0.2, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(120, -224)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 90)
+color = Color(0.16, 0.15, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(376, -224)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 90)
+color = Color(0.16, 0.15, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(64, -200)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(384, 10)
+color = Color(0.22, 0.22, 0.28, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(180, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(30, 26)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(290, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(30, 26)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(252, -170)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(60, 20)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="CollectorDrone1" parent="Enemies" instance=ExtResource("scene_CollectorDrone")]
+position = Vector2(252, -144)
+
+[node name="BossArena" type="Area2D" parent="Triggers"]
+position = Vector2(72, -224)
+script = ExtResource("arena")
+size = Vector2(376, 224)
+boss_id = "collector_drone"
+boss_title = "COLLECTOR DRONE"
+boss_subtitle = "Civic Recovery Unit C-00"
+intro_time = 2.6
+reward_position = Vector2(252, 0)
+boss_path = NodePath("../../Enemies/CollectorDrone1")
+gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
+reward_scene = ExtResource("scene_ServicePistolDrop")
+
+[node name="BayLit" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:collector_drone_defeated"
+
+[node name="Neon1" type="Node2D" parent="Props/BayLit"]
+position = Vector2(120, -210)
+script = ExtResource("neon")
+size = Vector2(20, 6)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 3
+flicker = false
+
+[node name="Neon2" type="Node2D" parent="Props/BayLit"]
+position = Vector2(376, -210)
+script = ExtResource("neon")
+size = Vector2(20, 6)
+color = Color(0.85, 0.58, 0.3, 1)
+strokes = 3
+flicker = false

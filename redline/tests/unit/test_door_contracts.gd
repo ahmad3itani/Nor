@@ -56,8 +56,7 @@ const DOORS := [
 	["undercity/BrokenLift", Rect2(-64, -96, 16, 96), "undercity/FirstPursuit", &"from_lift", "", &"from_pursuit", Vector2(-20, 0), 1],
 	["undercity/BrokenLift", Rect2(624, -672, 16, 96), "undercity/CollectorBay", &"from_lift", "", &"from_bay", Vector2(596, -576), -1],
 	["undercity/CollectorBay", Rect2(0, -96, 16, 96), "undercity/BrokenLift", &"from_bay", "", &"from_lift", Vector2(28, 0), 1],
-	# Final requires_flag: collector_drone_defeated (the CollectorBay room task).
-	["undercity/CollectorBay", Rect2(464, -96, 16, 96), "undercity/EscapeTunnel", &"from_bay", "", &"from_tunnel", Vector2(436, 0), -1],
+	["undercity/CollectorBay", Rect2(464, -96, 16, 96), "undercity/EscapeTunnel", &"from_bay", "collector_drone_defeated", &"from_tunnel", Vector2(436, 0), -1],
 	["undercity/EscapeTunnel", Rect2(-64, -96, 16, 96), "undercity/CollectorBay", &"from_tunnel", "", &"from_bay", Vector2(-20, 0), 1],
 	["undercity/EscapeTunnel", Rect2(1984, -336, 16, 96), "lowlight/Relay", &"from_undercity", "", &"from_relay", Vector2(1956, -240), -1],
 	["lowlight/Relay", Rect2(-48, -240, 16, 96), "undercity/EscapeTunnel", &"from_relay", "", &"from_undercity", Vector2(0, -144), 1],
