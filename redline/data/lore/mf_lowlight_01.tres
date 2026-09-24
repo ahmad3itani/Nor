@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MemoryFragmentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/MemoryFragmentData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "mf_lowlight_01"
+title = "Execution Order 7-R"
+text = "A voice reading numbers. Yours, you think. \"Subject non-viable. Recover the core. Discard the rest.\" Someone laughed when the lights went out."

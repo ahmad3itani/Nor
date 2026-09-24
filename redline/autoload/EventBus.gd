@@ -51,6 +51,14 @@ signal interact_prompt_changed(text: String)
 signal hint_requested(text: String, seconds: float)
 signal anchor_rested(anchor: Node)
 signal memory_fragment_found(fragment: Resource)
+signal quest_updated(quest: Resource)
+## Show a conversation (DialogueBox listens). Game pauses while it is open.
+signal dialogue_requested(dialogue: Resource, npc_name: String)
+signal dialogue_finished(dialogue: Resource)
+## Open a UI menu by id: "loadout", "shop_vell", "shop_mara", "pause".
+signal menu_requested(menu_id: StringName)
+signal circuit_granted(id: String)
+signal weapon_granted(id: String)
 ## A breakable secret wall or hidden route was opened.
 signal secret_found(id: String)
 signal player_healed(health: int)

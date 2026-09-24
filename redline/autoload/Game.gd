@@ -12,6 +12,13 @@ var abilities: PlayerAbilities = PlayerAbilities.new()
 var state: GameState = GameState.new()
 var profile_id: int = 1
 var catalog: ItemCatalog = CATALOG
+var quests: QuestTracker
+
+
+func _ready() -> void:
+	quests = QuestTracker.new()
+	quests.name = "Quests"
+	add_child(quests)
 
 
 func _process(delta: float) -> void:
@@ -119,6 +126,35 @@ func circuit_mult(stat: StringName) -> float:
 
 func scrap_multiplier() -> float:
 	return circuit_mult(&"scrap_gain")
+
+
+func grant_circuit(id: String) -> void:
+	if id == "" or state.owned_circuits.has(id):
+		return
+	state.owned_circuits.append(id)
+	var c := catalog.circuit(id)
+	EventBus.hint_requested.emit("CIRCUIT ACQUIRED  —  %s" % (c.display_name if c else id), 3.0)
+	EventBus.circuit_granted.emit(id)
+
+
+func grant_weapon(id: String) -> void:
+	if id == "" or state.owned_weapons.has(id):
+		return
+	state.owned_weapons.append(id)
+	var w := catalog.weapon(id)
+	EventBus.hint_requested.emit("WEAPON ACQUIRED  —  %s" % (w.display_name if w else id), 3.0)
+	EventBus.weapon_granted.emit(id)
+
+
+## Applies a finished conversation's effects (flags, gifts, follow-up menu).
+func apply_dialogue(d: DialogueData) -> void:
+	for f in d.set_flags:
+		set_flag(f)
+	add_scrap(d.give_scrap)
+	grant_circuit(d.give_circuit)
+	grant_weapon(d.give_weapon)
+	if d.open_menu != &"":
+		EventBus.menu_requested.emit(d.open_menu)
 
 
 func is_collected(id: String) -> bool:

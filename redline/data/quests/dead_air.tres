@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://quests/QuestData.gd" id="1"]
+[ext_resource type="Script" path="res://quests/QuestStage.gd" id="2"]
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+description = "Realign the three signal repeaters in Lowlight."
+complete_flags = PackedStringArray("repeater_market", "repeater_stack", "repeater_bell")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("2")
+description = "Report back to Orr at the Relay."
+complete_flags = PackedStringArray("dead_air_reported")
+
+[resource]
+script = ExtResource("1")
+id = "dead_air"
+title = "Dead Air"
+giver = "Orr"
+start_flag = "quest_dead_air_started"
+stages = Array[ExtResource("2")]([SubResource("s1"), SubResource("s2")])
+reward_scrap = 120
+reward_circuit = "longline"
+complete_flag = "dead_air_complete"

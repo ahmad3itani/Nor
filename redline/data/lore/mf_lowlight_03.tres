@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MemoryFragmentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/MemoryFragmentData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "mf_lowlight_03"
+title = "The Warden's Ledger"
+text = "Krail's handwriting, neat as a verdict: \"Everything pulled from the Spire passes through my tower. Everything. That includes the ones they call REDLINE.\""

@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+
+[sub_resource type="Resource" id="vell_intro_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Circuits. Little lies you tell the Core so it does what you want."
+
+[sub_resource type="Resource" id="vell_intro_l1"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Your Core has room for a few. Slot them at an Anchor. Swap them whenever you like."
+
+[sub_resource type="Resource" id="vell_intro_l2"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "First one's free. Scavenger - you'll find more Scrap, which you will then give to me."
+
+[sub_resource type="Resource" id="vell_intro"]
+script = ExtResource("dialogue")
+id = "vell_intro"
+lines = Array[ExtResource("line")]([SubResource("vell_intro_l0"), SubResource("vell_intro_l1"), SubResource("vell_intro_l2")])
+set_flags = PackedStringArray("met_vell")
+give_circuit = "scavenger"
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="rule_0"]
+script = ExtResource("rule")
+forbids_flags = PackedStringArray("met_vell")
+dialogue = SubResource("vell_intro")
+
+[sub_resource type="Resource" id="vell_shop_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Capacity's the only real currency. Scrap just gets you in the door."
+
+[sub_resource type="Resource" id="vell_shop"]
+script = ExtResource("dialogue")
+id = "vell_shop"
+lines = Array[ExtResource("line")]([SubResource("vell_shop_l0")])
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="rule_1"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_shop")
+
+[resource]
+script = ExtResource("profile")
+npc_id = "vell"
+display_name = "Vell"
+color = Color(0.5, 0.72, 0.6, 1)
+rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])
