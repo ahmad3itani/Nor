@@ -1,8 +1,11 @@
 extends RedlineTestCase
 ## M7 (M4): the Collector Drone, the Undercity's first boss (bible §23, D-064).
-## A world with exactly the CollectorBay arena geometry (floor y 0, walls at
-## x 16 and 464, catwalks at y -40 / -80, the vent lip at -92); the arena
-## test loads the roomgen fixture instead. Positions are room space (the
+## Behaviour tests run in a hand-built copy of the boss_collector_arena
+## fixture's solid geometry mid-fight (tools/roomgen/fixtures_boss.py): floor
+## y 0, ceiling, VentRoof (x 16..64, y -224..-136), plugged doors,
+## ArenaGateLeft closed (x 40..56) and ExitGate closed (x 448..464), so the
+## right wall is at x 448; catwalks at y -40 / -80 and the vent lip at -92.
+## The arena test loads the fixture itself. Positions are room space (the
 ## world sits at the origin).
 
 const PLAYER_SCENE := preload("res://player/Player.tscn")
@@ -28,10 +31,14 @@ func before_each() -> void:
 	Game.new_game()
 	world = Node2D.new()
 	add_child(world)
-	_block(Vector2(0, -240), Vector2(480, 16))
-	_block(Vector2(0, -224), Vector2(16, 224))
-	_block(Vector2(464, -224), Vector2(16, 224))
-	_block(Vector2(0, 0), Vector2(480, 96))
+	_block(Vector2(0, -240), Vector2(480, 16))  # Ceiling
+	_block(Vector2(0, -224), Vector2(16, 224))  # WallLeftUpper + DoorLeftPlug
+	_block(Vector2(16, -224), Vector2(48, 88))  # VentRoof
+	_block(Vector2(448, -224), Vector2(32, 128))  # WallRightUpper
+	_block(Vector2(464, -96), Vector2(16, 96))  # DoorRightPlug
+	_block(Vector2(40, -92), Vector2(16, 92))  # ArenaGateLeft (closed in the fight)
+	_block(Vector2(448, -96), Vector2(16, 96))  # ExitGate (closed until the kill)
+	_block(Vector2(0, 0), Vector2(480, 96))  # Floor
 	for c: Vector3 in [Vector3(96, -40, 64), Vector3(200, -80, 104), Vector3(344, -40, 64), Vector3(16, -92, 56)]:
 		var b := _block(Vector2(c.x, c.y), Vector2(c.z, 8))
 		b.one_way = true
@@ -228,7 +235,7 @@ func test_collector_never_repeats_and_stays_reachable() -> void:
 			if (f == &"dive" or f == &"sweep") and player.global_position.y < -2.0:
 				illegal.append("%s with Rook at %s" % [cur, player.global_position.round()])
 		if cur != &"":
-			low_run = low_run + 1 if b.room_pos().y >= -76.5 else 0
+			low_run = low_run + 1 if b.room_pos().y >= -76.0 - 0.001 else 0
 			best = maxi(best, low_run)
 	check(attacks.size() >= 8, "too few cards in 70 s: %d" % attacks.size())
 	var floor_cards := attacks.filter(func(a: Array) -> bool: return a[0] == &"dive" or a[0] == &"sweep")
@@ -238,36 +245,54 @@ func test_collector_never_repeats_and_stays_reachable() -> void:
 	for i in range(1, attacks.size()):
 		check(attacks[i][0] != attacks[i - 1][0], "family %s played twice in a row (card %d)" % [attacks[i][0], i])
 	for i in attacks.size():
-		check(attacks[i][1] >= 35, "card %d (%s): drone low (feet >= -76) only %.2f s" % [i, attacks[i][0], attacks[i][1] * FRAME])
+		check(attacks[i][1] >= 36, "card %d (%s): drone low (feet >= -76) only %.2f s" % [i, attacks[i][0], attacks[i][1] * FRAME])
 
 
 # --- 4. Dive landing -----------------------------------------------------------------
 
 func test_collector_dive_lands_deterministically() -> void:
 	player.invulnerable = true
-	for start: Vector2 in [Vector2(300, -136), Vector2(288, -152), Vector2(288, -136), Vector2(300, -152)]:
+	# The last start is the late-touchdown case: the drone is knocked 6 px
+	# above the lock point on the final WINDUP frame, so the lunge ends just
+	# above the floor, and a hit cancels its fall as RECOVER starts. Without
+	# the settle rule in RECOVER the flyer brake would leave it hovering.
+	for start: Vector2 in [Vector2(300, -136), Vector2(288, -152), Vector2(288, -136), Vector2(300, -152), Vector2(294, -144)]:
+		var late := start == Vector2(294, -144)
 		await _reset_player(150)
 		player.invulnerable = true
 		var e := await _drone(start)
 		var b = e.behavior
 		b.force_card(DIVE)
 		check(b.lock_point() == Vector2(294, -144), "dive lock point %s should be (294, -144)" % b.lock_point())
+		if late:
+			var startup: float = b.scaled_startup(e.current_attack)
+			while e.ai == Enemy.AI.WINDUP and e.ai_time + FRAME * 1.5 < startup:
+				await physics_frames(1)
+			# The lock steps 1 px back toward the lock point this frame.
+			e.global_position.y -= 7.0
 		var landing := INF
 		var recover_frame := -1
 		var settled_frame := -1
 		for i in 200:
 			await physics_frames(1)
-			if e.ai == Enemy.AI.ACTIVE and landing == INF and e.is_on_floor():
+			if (e.ai == Enemy.AI.ACTIVE or e.ai == Enemy.AI.RECOVER) and landing == INF and e.is_on_floor():
 				landing = e.global_position.x
 			if e.ai == Enemy.AI.RECOVER and recover_frame < 0:
 				recover_frame = i
+				if late:
+					check(not e.is_on_floor(), "late case: still above the floor as RECOVER starts")
+					e.velocity = Vector2.ZERO
 			if recover_frame >= 0 and settled_frame < 0 and e.global_position.y >= -1.0:
 				settled_frame = i
 			if recover_frame >= 0 and i > recover_frame + 4:
 				break
+		if late:
+			check(e.ai != Enemy.AI.RECOVER or e.global_position.y >= -1.0, "a late touchdown should settle in RECOVER (y %.2f)" % e.global_position.y)
 		check(recover_frame >= 0, "dive never recovered from %s" % start)
 		check(settled_frame >= 0 and settled_frame - recover_frame <= 2, "dive from %s not on the floor within 2 frames of RECOVER (%d)" % [start, settled_frame - recover_frame])
-		check_near(landing, b.dive_landing_x(), 1.0, "dive from %s lands on the locked X" % start)
+		# A late touchdown carries the 45 degree run a few px on; it still lands
+		# inside the 12 px floor X.
+		check_near(landing, b.dive_landing_x(), 6.0 if late else 1.0, "dive from %s lands on the locked X" % start)
 		e.queue_free()
 		await physics_frames(1)
 
@@ -391,16 +416,22 @@ func test_collector_press_sidestep_and_p2_wave() -> void:
 	# Sidestep 36 px during the tell: clear.
 	await _reset_player(200)
 	var e := await _drone(Vector2(200, -144))
+	check(not e.behavior.rotors_cut(), "rotors run while stalking")
 	e.behavior.force_card(PRESS)
 	input.move_x = 1
 	var hp := player.combat.health
+	var cut_in_windup := true
 	for i in 120:
 		await physics_frames(1)
+		if e.ai == Enemy.AI.WINDUP:
+			cut_in_windup = cut_in_windup and e.behavior.rotors_cut()
 		if player.global_position.x >= 236.0:
 			input.move_x = 0
 		if e.ai == Enemy.AI.RECOVER:
 			break
 	check(player.combat.health == hp, "a 36 px sidestep should clear the press")
+	check(cut_in_windup, "the rotors cut for the whole Press WINDUP (the tell)")
+	check(not e.behavior.rotors_cut(), "the rotors restart in RECOVER")
 	e.queue_free()
 	# Standing still: hit.
 	await _reset_player(200)
@@ -555,7 +586,7 @@ func test_collector_punishable_by_blade() -> void:
 	e.behavior.force_card(VOLLEY)
 	await _wait_ai(e, Enemy.AI.RECOVER, 150)
 	await physics_frames(16)
-	check(e.behavior.room_pos().y >= -76.5, "volley recovery should sag to -76 (at %.1f)" % e.behavior.room_pos().y)
+	check(e.behavior.room_pos().y >= -76.0 - 0.001, "volley recovery should sag to -76 (at %.1f)" % e.behavior.room_pos().y)
 	check(await _blade_lands(e, Vector2(e.global_position.x - 8.0, -2), 1, true), "floor jump air-light should land on the vent sag")
 	e.queue_free()
 	_clear_projectiles()
