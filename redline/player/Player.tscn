@@ -1,9 +1,16 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://player/controller/Player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/movement/default_movement.tres" id="2_config"]
 [ext_resource type="Script" path="res://player/animation/PlayerPlaceholderVisual.gd" id="3_visual"]
 [ext_resource type="Script" path="res://player/animation/PlayerFeedback.gd" id="4_feedback"]
+[ext_resource type="Script" path="res://player/combat/PlayerCombat.gd" id="5_combat"]
+[ext_resource type="Resource" path="res://data/combat/player_combat.tres" id="6_combat_cfg"]
+[ext_resource type="Resource" path="res://data/weapons/pulse_blade.tres" id="7_blade"]
+[ext_resource type="Resource" path="res://data/weapons/service_pistol.tres" id="8_pistol"]
+[ext_resource type="Resource" path="res://data/weapons/scattergun.tres" id="9_scatter"]
+[ext_resource type="Script" path="res://combat/Hurtbox.gd" id="10_hurtbox"]
+[ext_resource type="Script" path="res://weapons/WeaponData.gd" id="11_weapon_script"]
 
 [sub_resource type="RectangleShape2D" id="Rect_stand"]
 size = Vector2(12, 34)
@@ -36,3 +43,18 @@ script = ExtResource("3_visual")
 
 [node name="Feedback" type="Node" parent="."]
 script = ExtResource("4_feedback")
+
+[node name="Combat" type="Node" parent="."]
+script = ExtResource("5_combat")
+config = ExtResource("6_combat_cfg")
+melee_weapon = ExtResource("7_blade")
+ranged_weapons = Array[ExtResource("11_weapon_script")]([ExtResource("8_pistol"), ExtResource("9_scatter")])
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("10_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -17)

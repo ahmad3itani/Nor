@@ -19,6 +19,8 @@ func physics_update(input: PlayerInputFrame, delta: float) -> StringName:
 		player.start_jump(&"coyote")
 	elif player.wants_evade():
 		return player.evade_state()
+	elif player.combat.wants_melee():
+		return &"melee"
 
 	# Variable jump: releasing early cuts the rise once.
 	if player.jump_cut_available and player.velocity.y < 0.0 and not input.jump_held:

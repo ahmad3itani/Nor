@@ -11,3 +11,7 @@ var down_held: bool = false
 var jump_pressed: bool = false
 var jump_held: bool = false
 var dodge_pressed: bool = false
+var up_held: bool = false
+var light_pressed: bool = false
+var heavy_pressed: bool = false
+var ranged_pressed: bool = false

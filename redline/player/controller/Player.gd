@@ -3,9 +3,11 @@ extends CharacterBody2D
 ## Rook's movement body: owns timers, collision stance and physics helpers.
 ## Per-mode behaviour lives in player/states/*; tuning lives in PlayerMovementConfig.
 ##
-## Tick order: sample input -> tick timers -> state machine -> forgiveness
-## nudges (corner correction, ledge step-up) -> move_and_slide -> post-move
-## bookkeeping (coyote, landing, metrics).
+## Tick order: sample input -> (hitstop: buffer presses only) -> tick timers
+## and combat -> state machine -> forgiveness nudges (corner correction, ledge
+## step-up) -> move_and_slide -> post-move bookkeeping (coyote, landing, metrics).
+## Combat lives in the PlayerCombat child; this body only exposes hitstop and
+## forwards hits it receives.
 
 signal jumped(kind: StringName)
 signal landed(impact_speed: float)
@@ -21,6 +23,8 @@ const WORLD_LAYER_BIT := 1
 @onready var low_shape: CollisionShape2D = $LowShape
 @onready var stand_check: ShapeCast2D = $StandCheck
 @onready var visual: Node2D = $Visual
+@onready var combat: PlayerCombat = $Combat
+@onready var hurtbox_shape: CollisionShape2D = $Hurtbox/Shape
 
 var input_source: PlayerInputSource = PlayerInputSource.new()
 var state_machine := PlayerStateMachine.new()
@@ -40,6 +44,9 @@ var coyote_timer: float = 0.0
 var evade_buffer_timer: float = 0.0
 var evade_cooldown: float = 0.0
 var slide_cooldown: float = 0.0
+## Freeze-frame time remaining (bible §8 hitstop). The body doesn't move, but
+## presses are still buffered so nothing typed during a freeze is lost.
+var hitstop_timer: float = 0.0
 var _drop_through_timer: float = 0.0
 
 
@@ -62,6 +69,8 @@ func _register_states() -> void:
 		&"air": preload("res://player/states/AirState.gd"),
 		&"dodge": preload("res://player/states/DodgeState.gd"),
 		&"dash": preload("res://player/states/DashState.gd"),
+		&"melee": preload("res://player/states/MeleeState.gd"),
+		&"hurt": preload("res://player/states/HurtState.gd"),
 	}
 	for id: StringName in defs:
 		state_machine.add_state(defs[id].new(self, id))
@@ -90,9 +99,15 @@ func apply_config(new_config: PlayerMovementConfig) -> void:
 
 func _physics_process(delta: float) -> void:
 	var input := input_source.sample(config)
+	if hitstop_timer > 0.0:
+		hitstop_timer -= delta
+		_buffer_presses(input)
+		combat.buffer_input(input)
+		return
 	last_input = input
 	last_move_x = input.move_x
 	_tick_timers(delta, input)
+	combat.tick(input, delta)
 
 	var was_on_floor := is_on_floor()
 	state_machine.physics_update(input, delta)
@@ -114,6 +129,10 @@ func _tick_timers(delta: float, input: PlayerInputFrame) -> void:
 		_drop_through_timer -= delta
 		if _drop_through_timer <= 0.0:
 			set_collision_mask_value(ONE_WAY_LAYER_BIT, true)
+	_buffer_presses(input)
+
+
+func _buffer_presses(input: PlayerInputFrame) -> void:
 	if input.jump_pressed:
 		jump_buffer_timer = config.jump_buffer_time
 	if input.dodge_pressed:
@@ -227,6 +246,11 @@ func set_low(low: bool) -> bool:
 func _apply_stance() -> void:
 	standing_shape.disabled = is_low
 	low_shape.disabled = not is_low
+	var size := config.low_size if is_low else config.standing_size
+	var box := RectangleShape2D.new()
+	box.size = size
+	hurtbox_shape.shape = box
+	hurtbox_shape.position = Vector2(0, -size.y * 0.5)
 
 
 func is_on_one_way() -> bool:
@@ -298,12 +322,24 @@ func respawn(at: Vector2, face: int = 1) -> void:
 	evade_cooldown = 0.0
 	slide_cooldown = 0.0
 	invulnerable = false
+	hitstop_timer = 0.0
 	is_low = false
 	_apply_stance()
 	metrics.on_respawn(at)
+	combat.reset()
 	# Teleports must not be smeared across frames when physics interpolation is on.
 	reset_physics_interpolation()
 	state_machine.force_state(&"idle")
+
+
+## Freeze for `seconds` (scaled by the accessibility hitstop setting).
+func hitstop(seconds: float) -> void:
+	hitstop_timer = maxf(hitstop_timer, seconds * Settings.hitstop_scale)
+
+
+## Hurtbox entry point (see Hurtbox.receive).
+func receive_hit(hit: HitInfo) -> int:
+	return combat.receive_hit(hit)
 
 
 func current_state_id() -> StringName:

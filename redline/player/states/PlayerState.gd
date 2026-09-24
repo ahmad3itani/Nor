@@ -48,6 +48,8 @@ func ground_transitions(input: PlayerInputFrame) -> StringName:
 		if player.set_low(false):
 			player.start_jump(&"ground")
 			return &"air"
+	if player.combat.wants_melee():
+		return &"melee"
 	return &""
 
 

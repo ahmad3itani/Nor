@@ -21,5 +21,20 @@ signal camera_impulse_requested(offset: Vector2)
 signal room_loaded(room: Node)
 ## Movement tuning was swapped or hot-reloaded (debug overlay shows the preset name).
 signal movement_config_changed(config: Resource)
+## --- Combat (M2) ---
+## An enemy resolved a hit (any source). result is a CombatResult value.
+signal enemy_damaged(enemy: Node2D, hit: HitInfo, result: int)
+## An enemy died. hit.attacker is credited (environmental kills credit whoever launched it).
+signal enemy_killed(enemy: Node2D, hit: HitInfo)
+signal player_damaged(amount: int, health: int)
+signal player_died
+## A hit landed inside the perfect-dodge window of a dodge/dash.
+signal perfect_dodge(attacker: Node2D)
+signal ranged_fired(weapon: Resource, ammo_left: int)
+signal ranged_weapon_changed(weapon: Resource)
+## Reactor charge changed (bible §6). critical = at/below the critical threshold.
+signal reactor_changed(charge: float, max_charge: float, critical: bool)
+## Style meter changed (bible §10). rank indexes StyleConfig.rank_names.
+signal style_changed(points: float, rank: int)
 ## Tuning panel asks to discard live edits and reload the active preset from disk.
 signal movement_config_reload_requested

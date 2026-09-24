@@ -27,6 +27,9 @@ func physics_update(input: PlayerInputFrame, delta: float) -> StringName:
 		return &"air"
 	if player.wants_evade():
 		return player.evade_state()
+	# Slide attack: the swing keeps part of the slide's momentum (momentum_keep).
+	if player.combat.wants_melee() and player.set_low(false):
+		return &"melee"
 
 	player.velocity.x = move_toward(player.velocity.x, 0.0, config.slide_friction * delta)
 	player.apply_gravity(delta, input)

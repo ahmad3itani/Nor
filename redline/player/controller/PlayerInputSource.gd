@@ -12,4 +12,8 @@ func sample(config: PlayerMovementConfig) -> PlayerInputFrame:
 	f.jump_pressed = Input.is_action_just_pressed("jump")
 	f.jump_held = Input.is_action_pressed("jump")
 	f.dodge_pressed = Input.is_action_just_pressed("dodge")
+	f.up_held = f.move.y <= -config.down_threshold
+	f.light_pressed = Input.is_action_just_pressed("attack_light")
+	f.heavy_pressed = Input.is_action_just_pressed("attack_heavy")
+	f.ranged_pressed = Input.is_action_just_pressed("ranged")
 	return f
