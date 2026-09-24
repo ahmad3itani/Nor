@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://interactables/EntryCheckpoint.gd" id="respawn"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="onboarding_badcheckpoint" type="Node2D"]
+script = ExtResource("room")
+room_name = "Onboarding bad checkpoint"
+bounds = Rect2(-64, -270, 1100, 400)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(1084, 96)
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Respawn_nowhere" type="Area2D" parent="Triggers"]
+position = Vector2(300, -200)
+script = ExtResource("respawn")
+size = Vector2(16, 200)
+spawn_id = &"nowhere"
