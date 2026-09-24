@@ -34,3 +34,17 @@ func test_validate_catches_bad_values() -> void:
 	cfg.low_size = Vector2(12, 40)
 	var problems := cfg.validate()
 	check(problems.size() >= 3, "expected >= 3 problems, got %d" % problems.size())
+
+
+func test_step_compensated_jump_velocity_hits_height() -> void:
+	# Simulate the exact integration order Player uses: gravity then move.
+	var cfg := PlayerMovementConfig.new()
+	var dt := 1.0 / 60.0
+	var v := cfg.jump_velocity_for_step(dt)
+	var y := 0.0
+	var min_y := 0.0
+	for i in 60:
+		v += cfg.rise_gravity() * dt
+		y += v * dt
+		min_y = minf(min_y, y)
+	check_near(-min_y, cfg.jump_height, 0.5, "discrete apex height")

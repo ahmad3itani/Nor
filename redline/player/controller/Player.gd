@@ -176,11 +176,11 @@ func jump_buffered() -> bool:
 	return jump_buffer_timer > 0.0
 
 
-## height_ratio scales jump height (launch speed scales with its square root).
+## height_ratio scales jump height (e.g. the lower slide-jump).
 func start_jump(kind: StringName, height_ratio: float = 1.0) -> void:
 	jump_buffer_timer = 0.0
 	coyote_timer = 0.0
-	velocity.y = config.jump_velocity() * sqrt(height_ratio)
+	velocity.y = config.jump_velocity_for_step(get_physics_process_delta_time(), height_ratio)
 	jump_cut_available = true
 	metrics.jumps += 1
 	jumped.emit(kind)

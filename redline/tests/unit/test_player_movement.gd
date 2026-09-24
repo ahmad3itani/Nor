@@ -70,7 +70,7 @@ func test_full_jump_reaches_authored_height() -> void:
 	for i in 60:
 		await physics_frames(1)
 		min_y = minf(min_y, player.global_position.y)
-	check_near(-min_y, cfg.jump_height, 3.0, "held jump height")
+	check_near(-min_y, cfg.jump_height, 1.5, "held jump height")
 	check(player.is_on_floor(), "did not land again")
 	check_near(player.metrics.last_jump_height, -min_y, 0.5, "metrics overlay height matches measured")
 

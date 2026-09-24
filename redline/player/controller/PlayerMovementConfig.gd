@@ -115,6 +115,16 @@ func jump_velocity() -> float:
 
 
 ## Rising gravity derived from jump height and time-to-apex.
+## Launch speed that reaches `height` under fixed-step integration at `dt`.
+## Semi-implicit Euler peaks ~v*dt/2 below the analytic apex, so solve
+## v^2/2g - v*dt/2 = h for v. Keeps the authored jump_height honest in play.
+func jump_velocity_for_step(dt: float, height_ratio: float = 1.0) -> float:
+	var g := rise_gravity()
+	var h := jump_height * height_ratio
+	var half := g * dt * 0.5
+	return -(half + sqrt(half * half + 2.0 * g * h))
+
+
 func rise_gravity() -> float:
 	return 2.0 * jump_height / (jump_time_to_apex * jump_time_to_apex)
 
