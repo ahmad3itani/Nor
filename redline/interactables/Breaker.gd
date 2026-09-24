@@ -23,7 +23,10 @@ const FLASH := Color(1, 1, 1, 0.9)
 ## breaker's box spans -40..-16 (ground light attacks), a high breaker's
 ## -96..-72 (jump + air light, or any gun straight up). Nothing higher.
 const HIGHEST_TOP := -96.0
-## A grounded light attack reaches this band above the surface it stands on.
+## Source of truth for how high a grounded attack reaches: the first light
+## attack of Rook's starting blade (its hitbox y-range, feet = 0).
+const REACH_WEAPON := "res://data/weapons/pulse_blade.tres"
+## Fallback if that weapon cannot be read (blade_light_1's hitbox today).
 const GROUNDED_REACH := Vector2(-30.0, -8.0)
 
 @export var breaker_id: String = ""
@@ -206,16 +209,27 @@ func content_errors(room: Node) -> PackedStringArray:
 	if top < HIGHEST_TOP - 0.5:
 		out.append("breaker %s box top is at floor %d, higher than the floor %d limit (not every weapon reaches it)" % [breaker_id, int(top), int(HIGHEST_TOP)])
 	var hb := Rect2(pos, size).grow(hurtbox_margin)
+	var reach := grounded_reach()
 	for n in room.find_children("*", "GrayboxBlock", true, false):
 		var b := n as GrayboxBlock
 		if not b.one_way:
 			continue
 		var p := room_position(b, room)
-		var band_top := p.y + GROUNDED_REACH.x
-		var band_bottom := p.y + GROUNDED_REACH.y
+		var band_top := p.y + reach.x
+		var band_bottom := p.y + reach.y
 		if hb.position.x < p.x + b.size.x and hb.end.x > p.x and hb.position.y < band_bottom and hb.end.y > band_top:
 			out.append("WARN: breaker %s is in grounded-attack reach of one-way %s" % [breaker_id, b.name])
 	return out
+
+
+## Band (top, bottom) above a standing surface that a grounded light attack
+## hits, read from the blade's AttackData so it follows weapon tuning.
+static func grounded_reach() -> Vector2:
+	var w := load(REACH_WEAPON) as WeaponData
+	if w == null or w.light_chain.is_empty() or w.light_chain[0] == null:
+		return GROUNDED_REACH
+	var box: Rect2 = w.light_chain[0].hitbox
+	return Vector2(box.position.y, box.end.y)
 
 
 ## Position of `n` in `room` space, summing Node2D offsets. The validator
