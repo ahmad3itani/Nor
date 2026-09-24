@@ -12,6 +12,7 @@ static func compute() -> Dictionary:
 	var r := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0, "quests": 0, "dialogue": 0, "sinks": 0, "sink_items": {}}
 	for room in Game.world_map.rooms:
 		var inst := (load(room.room_path) as PackedScene).instantiate()
+		RoomTemplate.expand_all(inst)
 		for n in inst.find_children("*", "", true, false):
 			if n is Collectible and (n as Collectible).kind == Collectible.Kind.SCRAP_BUNDLE:
 				r["bundles"] += (n as Collectible).scrap_amount

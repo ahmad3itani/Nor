@@ -342,6 +342,7 @@ func render_heatmap(room_file: String, scale: float = 0.5) -> Image:
 	if scene == null:
 		return null
 	var inst := scene.instantiate() as Room
+	RoomTemplate.expand_all(inst)
 	var b := inst.bounds
 	var size := Vector2i(ceili(b.size.x * scale), ceili(b.size.y * scale))
 	var img := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)

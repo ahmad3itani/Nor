@@ -15,6 +15,7 @@ static func room_info(room_path: String) -> Dictionary:
 	if scene == null:
 		return {}
 	var inst := scene.instantiate() as Room
+	RoomTemplate.expand_all(inst)
 	var info := {
 		"bounds": inst.bounds, "name": inst.room_name, "district_name": inst.district_name,
 		"blocks": [], "anchors": [], "npcs": [], "gates": [], "exits": [], "secrets": [],

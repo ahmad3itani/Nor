@@ -151,8 +151,8 @@ func _jump_to(x: float) -> bool:
 		await _frame()
 		if lost_player:
 			return false
-		if player.velocity.y >= 0.0:
-			input.release_jump()
+		# Hold jump until landing, like a player going for distance: holding
+		# through the apex keeps the apex-hang gravity (bible §5 feel tech).
 		if not player.is_on_floor():
 			airborne = true
 		elif airborne:

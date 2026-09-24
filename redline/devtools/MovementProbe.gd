@@ -4,6 +4,7 @@ extends Node
 ## Use it to compare presets or check level-metric assumptions (gap widths,
 ## ledge heights) after editing PlayerMovementConfig values.
 ##   godot --headless --fixed-fps 60 res://devtools/MovementProbe.tscn
+##   ... MovementProbe.tscn -- --write-metrics   (re-record data/level/traversal_default.tres)
 
 const PRESET_DIR := "res://data/movement"
 const PLAYER_SCENE := preload("res://player/Player.tscn")
@@ -105,7 +106,17 @@ func _measure_ground(cfg: PlayerMovementConfig) -> Dictionary:
 	return {"frames_to_max": frames_to_max, "stop": stop_dist, "slide": slide_dist, "dodge": dodge_dist}
 
 
+const METRICS_PATH := "res://data/level/traversal_default.tres"
+
+
 func _run() -> void:
+	if OS.get_cmdline_user_args().has("--write-metrics"):
+		var m := await TrajectoryRecorder.record(self, load("res://data/movement/default_movement.tres"))
+		print("wrote %s: %s" % [METRICS_PATH, ResourceSaver.save(m, METRICS_PATH)])
+		for t in TraversalMetrics.TECHNIQUES:
+			print("%s  peak %.1f  reach %.1f  max gap %.1f" % [t, m.peak(t), m.reach(t), m.max_gap(t)])
+		get_tree().quit()
+		return
 	var files := DirAccess.get_files_at(PRESET_DIR)
 	files.sort()
 	print("| preset | frames to max run | stop dist | slide dist | dodge dist | jump h / d | slide-jump h / d | dodge-jump h / d | dash-jump h / d |")

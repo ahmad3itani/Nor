@@ -151,6 +151,7 @@ func validate_rooms() -> void:
 			var room := (load(path) as PackedScene).instantiate() as Room
 			if room == null:
 				continue
+			RoomTemplate.expand_all(room)
 			if room.world_room:
 				stats["rooms"] += 1
 				_check_world_room(room, path, persistent)
