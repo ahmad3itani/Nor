@@ -20,6 +20,12 @@ const GHOST_LIFETIME := 0.18
 const GHOST_INTERVAL := 0.03
 
 @export var squash_recovery_rate: float = 14.0
+## Final art: when set and its texture exists, Rook is drawn from the sheet
+## (animation per movement state) and the placeholder body is skipped.
+## Squash/stretch, afterimages and the hurt blink still apply.
+@export var sprite: SpriteSheetSpec
+
+var actor: SpriteActor
 
 var _scale := Vector2.ONE
 var _ghosts: Array = []
@@ -29,6 +35,10 @@ var _ghost_timer: float = 0.0
 
 
 func _ready() -> void:
+	if sprite:
+		actor = SpriteActor.create(sprite)
+		if actor:
+			add_child(actor)
 	player.jumped.connect(func(_kind: StringName) -> void: _scale = Vector2(0.72, 1.3))
 	player.landed.connect(_on_landed)
 
@@ -49,7 +59,24 @@ func _process(delta: float) -> void:
 	for g in _ghosts:
 		g["age"] += delta
 	_ghosts = _ghosts.filter(func(g: Dictionary) -> bool: return g["age"] < GHOST_LIFETIME)
+	if actor:
+		_update_actor()
 	queue_redraw()
+
+
+## Movement state -> animation (Art Bible §6 minimum set), with fallbacks.
+func _update_actor() -> void:
+	actor.face(player.facing)
+	actor.scale = _scale
+	var state := player.current_state_id()
+	var names: Array[StringName] = [state, &"idle"]
+	if state == &"air":
+		names = [&"jump_rise" if player.velocity.y < 0.0 else &"jump_fall", &"air", &"idle"]
+	elif state == &"melee" and player.combat.current_attack:
+		names = [player.combat.current_attack.id, &"attack", &"idle"]
+	actor.play_first(names)
+	var blink := player.combat.hurt_invuln_timer > 0.0 and int(player.combat.hurt_invuln_timer * 20.0) % 2 == 0
+	actor.self_modulate = Color(1, 1, 1, 0.35 if blink else 1.0)
 
 
 func _body_size() -> Vector2:
@@ -79,6 +106,8 @@ func _draw() -> void:
 		body_color.a = 0.35
 	if player.combat.dead:
 		body_color = body_color.darkened(0.5)
+	if actor:
+		return
 	draw_rect(body, body_color)
 	draw_rect(body, Color(0, 0, 0, 0.6), false, 1.0)
 	# Visor: a 4x2 slit near the head on the facing side reads direction at a glance.

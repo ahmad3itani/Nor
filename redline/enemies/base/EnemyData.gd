@@ -52,6 +52,9 @@ extends Resource
 @export var color: Color = Color("c75b5b")
 ## Elites get a gold outline and bigger rewards (bible §16 elites).
 @export var elite: bool = false
+## Final art (Art Bible): when set and the texture exists, the sprite
+## replaces the placeholder body. Telegraphs and health bars stay.
+@export var sprite: SpriteSheetSpec
 ## Seconds between death and removal; bosses linger for a readable finish.
 @export var death_time: float = 0.45
 

@@ -32,6 +32,9 @@ func run() -> ContentValidator:
 	validate_resources()
 	validate_rooms()
 	validate_flags()
+	var art := ArtValidator.new().run()
+	errors.append_array(art.errors)
+	warnings.append_array(art.warnings)
 	return self
 
 

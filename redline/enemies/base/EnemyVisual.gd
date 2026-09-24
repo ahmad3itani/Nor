@@ -7,10 +7,47 @@ const TELEGRAPH_COLOR := Color("ff3b4f")
 const FLASH_COLOR := Color.WHITE
 
 @onready var enemy: Enemy = get_parent()
+var actor: SpriteActor
+
+
+func _ready() -> void:
+	if enemy.data and enemy.data.sprite:
+		actor = SpriteActor.create(enemy.data.sprite)
+		if actor:
+			add_child(actor)
+
+
+func uses_sprite() -> bool:
+	return actor != null
 
 
 func _process(_delta: float) -> void:
+	if actor:
+		_update_actor()
 	queue_redraw()
+
+
+## AI state -> animation, with fallbacks so partial art sets still play.
+func _update_actor() -> void:
+	actor.face(enemy.facing)
+	var moving := absf(enemy.velocity.x) > 5.0 or (enemy.data.flying and enemy.velocity.length() > 5.0)
+	match enemy.ai:
+		Enemy.AI.WINDUP:
+			actor.play_first([&"windup", &"attack", &"idle"])
+		Enemy.AI.ACTIVE:
+			actor.play_first([&"attack", &"idle"])
+		Enemy.AI.STAGGER, Enemy.AI.LAUNCHED:
+			actor.play_first([&"hurt", &"idle"])
+		Enemy.AI.DEAD:
+			actor.play_first([&"death", &"hurt", &"idle"])
+		_:
+			actor.play_first([&"move", &"idle"] if moving else [&"idle"])
+	var tint := Color.WHITE
+	if enemy.flash_timer > 0.0:
+		tint = Color(3, 3, 3)
+	elif enemy.ai == Enemy.AI.STAGGER or enemy.ai == Enemy.AI.LAUNCHED:
+		tint = Color(0.65, 0.65, 0.65)
+	actor.self_modulate = tint
 
 
 func _draw() -> void:
@@ -32,11 +69,12 @@ func _draw() -> void:
 			color = color.lerp(TELEGRAPH_COLOR, 0.35 + 0.35 * pulse)
 	if enemy.flash_timer > 0.0:
 		color = FLASH_COLOR
-	draw_rect(body, color)
-	draw_rect(body, Color("ffcf5a") if data.elite else Color(0, 0, 0, 0.6), false, 1.0)
-	var eye_x := 1.0 if enemy.facing > 0 else -4.0
-	draw_rect(Rect2(Vector2(eye_x, -size.y + 4.0) + shake, Vector2(3, 2)), Color("1a1320"))
-	enemy.behavior.draw_extras(self)
+	if actor == null:
+		draw_rect(body, color)
+		draw_rect(body, Color("ffcf5a") if data.elite else Color(0, 0, 0, 0.6), false, 1.0)
+		var eye_x := 1.0 if enemy.facing > 0 else -4.0
+		draw_rect(Rect2(Vector2(eye_x, -size.y + 4.0) + shake, Vector2(3, 2)), Color("1a1320"))
+		enemy.behavior.draw_extras(self)
 
 	if enemy.ai == Enemy.AI.WINDUP and enemy.current_attack:
 		_draw_telegraph()
