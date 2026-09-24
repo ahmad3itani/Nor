@@ -3,3 +3,7 @@
 /android/
 *.tmp
 export_presets.cfg
+
+# Python bytecode (roomgen tools)
+__pycache__/
+*.pyc

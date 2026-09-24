@@ -50,8 +50,8 @@ In the editor, templates bake their nodes into the scene. If a script writes a t
 **Scripted rooms:** `tools/roomgen/` (Python 3, standard library only) is the generator that wrote the Lowlight rooms.
 
 ```bash
-python3 tools/roomgen/lowlight.py --check   # does every scene still match its script?
-python3 tools/roomgen/lowlight.py           # regenerate (byte-identical when nothing changed)
+python3 -B tools/roomgen/lowlight.py --check   # does every scene still match its script?
+python3 -B tools/roomgen/lowlight.py           # regenerate (byte-identical when nothing changed)
 ```
 
 The `.tscn` files are what the game loads. If you edit a room in Godot, `--check` will report it as drifted; after that, mirror the change in the script or stop regenerating that room.

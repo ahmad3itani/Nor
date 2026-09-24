@@ -24,7 +24,7 @@ xvfb-run -a godot --fixed-fps 60 --rendering-driver opengl3 res://devtools/Captu
 godot --headless res://devtools/PlaytestReport.tscn -- --in=/abs/sessions --out=/abs/report   # M4 playtest report + heatmaps
 godot --headless res://devtools/content/ValidateContent.tscn       # M6 content + art validation (exit 1 on errors)
 godot --headless --fixed-fps 60 res://devtools/MovementProbe.tscn -- --write-metrics   # re-record jump arcs after tuning changes
-python3 tools/roomgen/lowlight.py --check                          # Lowlight rooms still match their script?
+python3 -B tools/roomgen/lowlight.py --check                          # Lowlight rooms still match their script?
 ```
 
 ## Conventions
