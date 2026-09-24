@@ -1,9 +1,32 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/hazards/ScannerBeam.gd" id="scanner"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_low.tres" id="level_scanner_cal_low"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_high.tres" id="level_scanner_cal_high"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_full.tres" id="level_scanner_cal_full"]
+[ext_resource type="Resource" path="res://data/level/scanner_low.tres" id="level_scanner_low"]
+[ext_resource type="Resource" path="res://data/level/scanner_high.tres" id="level_scanner_high"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_pulse_14.tres" id="level_scanner_full_pulse_14"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Shield.tscn" id="scene_Shield"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="scene_Hopper"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_pulse_12.tres" id="level_scanner_full_pulse_12"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://interactables/Breaker.gd" id="breaker"]
+[ext_resource type="Resource" path="res://data/level/scanner_searchlight.tres" id="level_scanner_searchlight"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_pulse_10.tres" id="level_scanner_full_pulse_10"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_04.tres" id="frag_mf_lowlight_04"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -35,27 +58,353 @@ theme = ExtResource("theme")
 [node name="EncounterDirector" type="Node" parent="."]
 script = ExtResource("director")
 
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -560)
+script = ExtResource("block")
+size = Vector2(16, 464)
+
+[node name="WallRightTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1232, -560)
+script = ExtResource("block")
+size = Vector2(16, 80)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1232, -384)
+script = ExtResource("block")
+size = Vector2(16, 624)
+
+[node name="GroundThick" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(648, 96)
+
+[node name="GroundThinA" type="StaticBody2D" parent="Geometry"]
+position = Vector2(600, 0)
+script = ExtResource("block")
+size = Vector2(360, 16)
+
+[node name="GroundThinB" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1040, 0)
+script = ExtResource("block")
+size = Vector2(192, 16)
+
+[node name="IsoWallW" type="StaticBody2D" parent="Geometry"]
+position = Vector2(584, 16)
+script = ExtResource("block")
+size = Vector2(16, 128)
+
+[node name="IsoWallE" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1040, 16)
+script = ExtResource("block")
+size = Vector2(16, 128)
+
+[node name="IsoFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(584, 144)
+script = ExtResource("block")
+size = Vector2(648, 96)
+
+[node name="UpperFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(360, -192)
+script = ExtResource("block")
+size = Vector2(740, 16)
+
+[node name="RoofFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(360, -384)
+script = ExtResource("block")
+size = Vector2(872, 16)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1116, -48)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1172, -96)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1116, -144)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(290, -240)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(220, -288)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(290, -336)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
+position = Vector2(990, 48)
+script = ExtResource("block")
+size = Vector2(50, 8)
+one_way = true
+
+[node name="OneWay8" type="StaticBody2D" parent="Geometry"]
+position = Vector2(960, 96)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="Scanner_ss_cal_low" type="Area2D" parent="Hazards"]
+position = Vector2(100, 0)
+script = ExtResource("scanner")
+beam_id = "ss_cal_low"
+data = ExtResource("level_scanner_cal_low")
+top_y = -20
+bottom_y = 0
+
+[node name="CalHighHousing" type="StaticBody2D" parent="Geometry"]
+position = Vector2(198, -136)
+script = ExtResource("block")
+size = Vector2(28, 16)
+
+[node name="Scanner_ss_cal_high" type="Area2D" parent="Hazards"]
+position = Vector2(210, 0)
+script = ExtResource("scanner")
+beam_id = "ss_cal_high"
+data = ExtResource("level_scanner_cal_high")
+top_y = -120
+bottom_y = 0
+
+[node name="CalFullHousing" type="StaticBody2D" parent="Geometry"]
+position = Vector2(310, -216)
+script = ExtResource("block")
+size = Vector2(24, 16)
+
+[node name="Scanner_ss_cal_full" type="Area2D" parent="Hazards"]
+position = Vector2(320, 0)
+script = ExtResource("scanner")
+beam_id = "ss_cal_full"
+data = ExtResource("level_scanner_cal_full")
+top_y = -200
+bottom_y = 0
+
+[node name="Scanner_ss_low_1" type="Area2D" parent="Hazards"]
+position = Vector2(420, 0)
+script = ExtResource("scanner")
+beam_id = "ss_low_1"
+data = ExtResource("level_scanner_low")
+top_y = -20
+bottom_y = 0
+
+[node name="Scanner_ss_high_1" type="Area2D" parent="Hazards"]
+position = Vector2(640, 0)
+script = ExtResource("scanner")
+beam_id = "ss_high_1"
+data = ExtResource("level_scanner_high")
+top_y = -176
+bottom_y = 0
+
+[node name="Scanner_ss_full_1" type="Area2D" parent="Hazards"]
+position = Vector2(880, 0)
+script = ExtResource("scanner")
+beam_id = "ss_full_1"
+data = ExtResource("level_scanner_full_pulse_14")
+top_y = -176
+bottom_y = 0
+
+[node name="Shield1" parent="Enemies" instance=ExtResource("scene_Shield")]
+position = Vector2(1150, -2)
+
+[node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
+position = Vector2(1120, -110)
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(1040, -176)
+script = ExtResource("flow")
+size = Vector2(192, 176)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(1000, -194)
+
+[node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(900, -194)
+
+[node name="Flow2" type="Area2D" parent="Zones"]
+position = Vector2(860, -368)
+script = ExtResource("flow")
+size = Vector2(240, 176)
+
+[node name="Scanner_ss_full_2" type="Area2D" parent="Hazards"]
+position = Vector2(760, 0)
+script = ExtResource("scanner")
+beam_id = "ss_full_2"
+data = ExtResource("level_scanner_full_pulse_12")
+top_y = -368
+bottom_y = -192
+
+[node name="Scanner_ss_high_2" type="Area2D" parent="Hazards"]
+position = Vector2(540, 0)
+script = ExtResource("scanner")
+beam_id = "ss_high_2"
+data = ExtResource("level_scanner_high")
+top_y = -368
+bottom_y = -192
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(710, -230)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(300, 130)
+color = Color(0.12, 0.14, 0.18, 1)
+accent = Color(0.9, 0.95, 1, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(710, -262)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 26)
+color = Color(0.85, 0.9, 0.95, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(710, -290)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(8, 8)
+color = Color(0.85, 0.9, 0.95, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(420, -350)
+script = ExtResource("neon")
+size = Vector2(10, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(1040, -350)
+script = ExtResource("neon")
+size = Vector2(10, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 2
+
+[node name="Breaker_ss_roof" type="Area2D" parent="Interactables"]
+position = Vector2(452, -424)
+script = ExtResource("breaker")
+breaker_id = "ss_roof"
+circuit = &"ss_roof"
+
+[node name="Scanner_ss_searchlight" type="Area2D" parent="Hazards"]
+position = Vector2(620, 0)
+script = ExtResource("scanner")
+beam_id = "ss_searchlight"
+data = ExtResource("level_scanner_searchlight")
+top_y = -560
+bottom_y = -384
+circuit = &"ss_roof"
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(620, -384)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(6, 176)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(1170, -520)
+script = ExtResource("neon")
+size = Vector2(60, 12)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 5
+flicker = false
+
+[node name="Scanner_ss_b1_full_a" type="Area2D" parent="Hazards"]
+position = Vector2(920, 0)
+script = ExtResource("scanner")
+beam_id = "ss_b1_full_a"
+data = ExtResource("level_scanner_full_pulse_10")
+top_y = 16
+bottom_y = 144
+
+[node name="Scanner_ss_b1_full_b" type="Area2D" parent="Hazards"]
+position = Vector2(820, 0)
+script = ExtResource("scanner")
+beam_id = "ss_b1_full_b"
+data = ExtResource("level_scanner_full_pulse_10")
+top_y = 16
+bottom_y = 144
+phase = 0.90
+
+[node name="Scanner_ss_b1_high" type="Area2D" parent="Hazards"]
+position = Vector2(720, 0)
+script = ExtResource("scanner")
+beam_id = "ss_b1_high"
+data = ExtResource("level_scanner_high")
+top_y = 16
+bottom_y = 144
+
+[node name="CellCeiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(600, 16)
+script = ExtResource("block")
+size = Vector2(92, 48)
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(676, 64)
+script = ExtResource("wall")
+size = Vector2(16, 80)
+persist_id = "ss_cell4_bars"
+max_health = 25.0
+scrap_inside = 30
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(630, 144)
+script = ExtResource("collect")
+persist_id = "mf_lowlight_04"
+kind = 1
+fragment = ExtResource("frag_mf_lowlight_04")
+
+[node name="Collectible2" type="Area2D" parent="Interactables"]
+position = Vector2(655, 144)
+script = ExtResource("collect")
+persist_id = "sb_ss_cell4"
+kind = 0
+scrap_amount = 40
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(760, 24)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(300, 10)
+color = Color(0.3, 0.28, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(640, 72)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 14)
+color = Color(0.5, 0.5, 0.55, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
 [node name="Spawn_from_power" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_power"
 is_default = true
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-12, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_rainline" type="Marker2D" parent="Spawns"]
 position = Vector2(1200, -384)
 script = ExtResource("spawn")
 spawn_id = &"from_rainline"
 facing = -1
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1168, -384)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(-64, -96)
@@ -70,3 +419,60 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/RainlineChase.tscn"
 target_entry = &"from_security"
+
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(0, -96)
+script = ExtResource("hint")
+size = Vector2(40, 96)
+hint_id = "ss_calib"
+text = "Scanners. Live ones bite. These are on calibration."
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(50, -96)
+script = ExtResource("hint")
+size = Vector2(40, 96)
+hint_id = "ss_low"
+text = "Low beam: jump it [{action}]"
+action = &"jump"
+
+[node name="Hint3" type="Area2D" parent="Triggers"]
+position = Vector2(150, -96)
+script = ExtResource("hint")
+size = Vector2(50, 96)
+hint_id = "ss_high"
+text = "High beam: slide under [{action}]"
+action = &"move_down"
+
+[node name="Hint4" type="Area2D" parent="Triggers"]
+position = Vector2(255, -96)
+script = ExtResource("hint")
+size = Vector2(50, 96)
+hint_id = "ss_full"
+text = "Full beam: dodge through it. Scanners read a dodge as a blur [{action}]"
+action = &"dodge"
+
+[node name="Hint5" type="Area2D" parent="Triggers"]
+position = Vector2(760, -96)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "ss_pulse"
+text = "It blinks. Wait for dark, or dodge."
+
+[node name="Hint6" type="Area2D" parent="Triggers"]
+position = Vector2(380, -480)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "ss_searchlight"
+text = "The searchlight runs off that breaker."
+
+[node name="SignalLost" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:chase_rainline_done"
+
+[node name="Decor7" type="Node2D" parent="Props/SignalLost"]
+position = Vector2(710, -230)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(300, 130)
+color = Color(0.3, 0.3, 0.32, 1)
+accent = Color(0.6, 0.6, 0.6, 1)
