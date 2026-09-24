@@ -1,0 +1,122 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/hazards/ScannerBeam.gd" id="scanner"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_low.tres" id="level_scanner_cal_low"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_high.tres" id="level_scanner_cal_high"]
+[ext_resource type="Resource" path="res://data/level/scanner_cal_full.tres" id="level_scanner_cal_full"]
+[ext_resource type="Resource" path="res://data/level/scanner_low.tres" id="level_scanner_low"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_pulse_14.tres" id="level_scanner_full_pulse_14"]
+[ext_resource type="Resource" path="res://data/level/scanner_searchlight.tres" id="level_scanner_searchlight"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
+
+[node name="security_lane" type="Node2D"]
+script = ExtResource("room")
+room_name = "Security lane"
+bounds = Rect2(-64, -420, 1480, 516)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -420)
+script = ExtResource("block")
+size = Vector2(16, 420)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1400, -420)
+script = ExtResource("block")
+size = Vector2(16, 420)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(1448, 96)
+
+[node name="Scanner_cal_low" type="Area2D" parent="Hazards"]
+position = Vector2(100, 0)
+script = ExtResource("scanner")
+beam_id = "cal_low"
+data = ExtResource("level_scanner_cal_low")
+top_y = -96
+bottom_y = 0
+
+[node name="HighHousing" type="StaticBody2D" parent="Geometry"]
+position = Vector2(198, -136)
+script = ExtResource("block")
+size = Vector2(28, 16)
+
+[node name="Scanner_cal_high" type="Area2D" parent="Hazards"]
+position = Vector2(210, 0)
+script = ExtResource("scanner")
+beam_id = "cal_high"
+data = ExtResource("level_scanner_cal_high")
+top_y = -120
+bottom_y = 0
+
+[node name="FullHousing" type="StaticBody2D" parent="Geometry"]
+position = Vector2(310, -216)
+script = ExtResource("block")
+size = Vector2(24, 16)
+
+[node name="Scanner_cal_full" type="Area2D" parent="Hazards"]
+position = Vector2(320, 0)
+script = ExtResource("scanner")
+beam_id = "cal_full"
+data = ExtResource("level_scanner_cal_full")
+top_y = -200
+bottom_y = 0
+
+[node name="Scanner_low" type="Area2D" parent="Hazards"]
+position = Vector2(520, 0)
+script = ExtResource("scanner")
+beam_id = "low"
+data = ExtResource("level_scanner_low")
+top_y = -96
+bottom_y = 0
+
+[node name="Scanner_pulse" type="Area2D" parent="Hazards"]
+position = Vector2(760, 0)
+script = ExtResource("scanner")
+beam_id = "pulse"
+data = ExtResource("level_scanner_full_pulse_14")
+top_y = -200
+bottom_y = 0
+
+[node name="Scanner_searchlight" type="Area2D" parent="Hazards"]
+position = Vector2(1000, 0)
+script = ExtResource("scanner")
+beam_id = "searchlight"
+data = ExtResource("level_scanner_searchlight")
+top_y = -200
+bottom_y = 0
+circuit = &"t_s"
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(20, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
