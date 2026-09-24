@@ -62,6 +62,26 @@ func test_menus_open_and_close() -> void:
 
 func test_slice_totals_count_content() -> void:
 	var t := SliceStats.totals()
-	check(int(t["fragments"]) == 3, "expected 3 memory fragments in the slice, found %d" % t["fragments"])
+	# M7 rooms add fragments in any order (MaintenanceShaft, SecurityStation),
+	# so this is a range plus integrity until the district lands (then == 5).
+	var fragments := int(t["fragments"])
+	check(fragments >= 3, "expected >= 3 memory fragments in the slice, found %d" % fragments)
+	var lore_files := 0
+	for f in DirAccess.get_files_at("res://data/lore"):
+		if f.begins_with("mf_") and f.ends_with(".tres"):
+			lore_files += 1
+	check(fragments <= lore_files, "%d fragments placed but only %d mf_*.tres lore files" % [fragments, lore_files])
+	var seen := {}
+	for path in SliceStats.room_paths():
+		var inst := (load(path) as PackedScene).instantiate()
+		for n in inst.find_children("*", "Collectible", true, false):
+			var c := n as Collectible
+			if c.kind != Collectible.Kind.MEMORY_FRAGMENT:
+				continue
+			var lore := c.fragment.resource_path if c.fragment else ""
+			check(lore.begins_with("res://data/lore/"), "%s: fragment %s has no data/lore resource" % [path.get_file(), c.persist_id])
+			check(not seen.has(lore), "lore %s placed twice (%s and %s)" % [lore, seen.get(lore, ""), path.get_file()])
+			seen[lore] = path.get_file()
+		inst.free()
 	check(int(t["core_shards"]) >= 2, "expected >= 2 core shards")
 	check((t["secret_ids"] as Array).size() >= 8, "expected >= 8 secrets/discoveries")

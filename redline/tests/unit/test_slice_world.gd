@@ -28,9 +28,11 @@ func after_each() -> void:
 
 func _room_paths() -> Array[String]:
 	var out: Array[String] = []
-	for f in DirAccess.get_files_at(ROOM_DIR):
-		if f.ends_with(".tscn"):
-			out.append("%s/%s" % [ROOM_DIR, f])
+	# District folders only: res://world/rooms also holds labs and backdrops.
+	for dir in ContentValidator.WORLD_ROOM_DIRS:
+		for f in DirAccess.get_files_at(dir):
+			if f.ends_with(".tscn"):
+				out.append("%s/%s" % [dir, f])
 	return out
 
 

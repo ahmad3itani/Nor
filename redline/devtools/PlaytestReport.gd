@@ -4,9 +4,6 @@ extends Node
 ## Defaults: --in=user://playtests  --out=user://playtest_report
 ## Writes REPORT.md plus one heatmap PNG per slice room.
 
-const ROOM_DIR := "res://world/rooms/lowlight"
-
-
 func _ready() -> void:
 	var in_dir := Playtest.DIR
 	var out_dir := "user://playtest_report"
@@ -32,10 +29,9 @@ static func build(in_dir: String, out_dir: String, title: String) -> String:
 	var result := analyzer.analyze()
 	var md := analyzer.render_markdown(result, title)
 	md += "\n## Heatmaps\n\nGrey = geometry, orange = where players spent time, red × = deaths, orange dots = pit falls, yellow = reported moments.\n\n"
-	for f in DirAccess.get_files_at(ROOM_DIR):
-		if not f.ends_with(".tscn"):
-			continue
-		var img := analyzer.render_heatmap("%s/%s" % [ROOM_DIR, f])
+	for path in SliceStats.room_paths():
+		var f := path.get_file()
+		var img := analyzer.render_heatmap(path)
 		if img:
 			var png := "heatmaps/%s.png" % f.get_basename()
 			img.save_png("%s/%s" % [out_dir, png])

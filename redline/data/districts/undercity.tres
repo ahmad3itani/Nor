@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DistrictTheme" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/districts/DistrictTheme.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+district_name = "Undercity"
+sky_top = Color(0.02, 0.03, 0.03, 1)
+sky_bottom = Color(0.06, 0.1, 0.09, 1)
+far_color = Color(0.05, 0.075, 0.07, 1)
+mid_color = Color(0.075, 0.105, 0.1, 1)
+window_colors = PackedColorArray(0.62, 0.78, 0.7, 1, 0.8, 0.55, 0.3, 1)
+window_density = 0.04
+solid_color = Color(0.14, 0.17, 0.16, 1)
+edge_color = Color(0.36, 0.48, 0.44, 1)
+one_way_color = Color(0.46, 0.36, 0.27, 1)
+rain = true
+rain_color = Color(0.6, 0.75, 0.7, 0.18)
+rain_drops = 26
+rain_angle_deg = 0.0

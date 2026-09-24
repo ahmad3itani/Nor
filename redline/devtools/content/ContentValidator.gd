@@ -10,11 +10,14 @@ const SCAN_DIRS: PackedStringArray = ["res://autoload", "res://bosses", "res://c
 	"res://data", "res://devtools", "res://dialogue", "res://enemies", "res://interactables", "res://player",
 	"res://playtest", "res://progression", "res://quests", "res://ui", "res://vfx", "res://weapons", "res://world",
 	"res://audio"]
-const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight"]
+const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight", "res://world/rooms/undercity"]
+## District room folders only (no labs/backdrops in res://world/rooms): what
+## SliceStats, the playtest report and the world tests iterate.
+const WORLD_ROOM_DIRS: PackedStringArray = ["res://world/rooms/lowlight", "res://world/rooms/undercity"]
 ## Menu ids MenuHost knows besides shop_<id>.
 const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map", "dev"]
 ## Flags set by code rather than data (kept here so the flag lint knows them).
-const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen"]
+const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen", "core_hud_hidden"]
 ## Flags only there for bookkeeping; never "unused".
 const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_"]
 
@@ -25,6 +28,7 @@ var collectibles: Dictionary = {}
 var produced: Dictionary = {}  # flag -> where
 var consumed: Dictionary = {}  # flag -> where
 var stats: Dictionary = {"files": 0, "rooms": 0, "resources": 0}
+var _require_on_map: bool = true
 
 
 func run() -> ContentValidator:
@@ -35,6 +39,24 @@ func run() -> ContentValidator:
 	var art := ArtValidator.new().run()
 	errors.append_array(art.errors)
 	warnings.append_array(art.warnings)
+	return self
+
+
+## Test API: validate one room scene plus the flag graph it builds, without
+## the full content pass. Tests read `errors` and `warnings` afterwards.
+## require_on_map = false skips the world-map check (test fixtures are never
+## on the map).
+func check_room(path: String, require_on_map: bool = true) -> ContentValidator:
+	var room := (load(path) as PackedScene).instantiate() as Room
+	if room == null:
+		errors.append("room %s: not a Room scene" % path.get_file().get_basename())
+		return self
+	RoomTemplate.expand_all(room)
+	_require_on_map = require_on_map
+	_check_world_room(room, path, {})
+	_require_on_map = true
+	room.free()
+	validate_flags()
 	return self
 
 
@@ -168,7 +190,7 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 		errors.append("%s: no DistrictTheme" % tag)
 	if room.district_name == "" or room.room_name == "":
 		errors.append("%s: missing district/room name" % tag)
-	if Game.world_map.room(id) == null:
+	if _require_on_map and Game.world_map.room(id) == null:
 		errors.append("%s: not on the world map (data/world/world_map.tres)" % tag)
 	var spawns := {}
 	var defaults := 0
@@ -222,11 +244,39 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 			var en := n as Enemy
 			if en.data == null:
 				errors.append("%s: enemy %s has no data" % [tag, en.name])
+		# Content protocol (M7): any node may lint itself and declare the flags
+		# it sets/reads. A separate `if`, not part of the chain above, so a
+		# subclass of a handled type (PowerShutter is a Gate) still reports.
+		_check_protocol(n, room, tag, path)
 	if defaults != 1:
 		errors.append("%s: needs exactly one default spawn (has %d)" % [tag, defaults])
 	for n in room.find_children("*", "Anchor", true, false):
 		if not spawns.has((n as Anchor).anchor_id):
 			errors.append("%s: Anchor %s has no spawn marker with the same id" % [tag, (n as Anchor).anchor_id])
+
+
+## The node content protocol. Binding signatures:
+##   func content_errors(room: Node) -> PackedStringArray
+##     "WARN: ..." entries become warnings, the rest errors.
+##   func content_flags() -> Dictionary
+##     {produces: [...], consumes: [...], conditions: [...]}; must not depend
+##     on _ready (rooms are validated without entering the tree).
+## Messages are tagged "room <id>: <node>: <message>".
+func _check_protocol(n: Node, room: Room, tag: String, path: String) -> void:
+	if n.has_method("content_errors"):
+		for e: String in n.content_errors(room):
+			if e.begins_with("WARN: "):
+				warnings.append("%s: %s: %s" % [tag, n.name, e.trim_prefix("WARN: ")])
+			else:
+				errors.append("%s: %s: %s" % [tag, n.name, e])
+	if n.has_method("content_flags"):
+		var d: Dictionary = n.content_flags()
+		for f in d.get("produces", []):
+			_produce(String(f), path)
+		for f in d.get("consumes", []):
+			_consume(String(f), path)
+		for c in d.get("conditions", []):
+			_consume_condition(String(c), path)
 
 
 # --- Flags (quest/dialogue validator) ------------------------------------------

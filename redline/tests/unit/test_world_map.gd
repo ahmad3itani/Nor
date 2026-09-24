@@ -20,9 +20,10 @@ func test_every_slice_room_is_on_the_map_once() -> void:
 		check(ResourceLoader.exists(r.room_path), "map room missing: %s" % r.room_path)
 		check(not ids.has(r.room_id()), "room listed twice: %s" % r.room_id())
 		ids[r.room_id()] = true
-	for f in DirAccess.get_files_at("res://world/rooms/lowlight"):
-		if f.ends_with(".tscn"):
-			check(ids.has(f.get_basename()), "room not on the world map: %s" % f)
+	for dir in ContentValidator.WORLD_ROOM_DIRS:
+		for f in DirAccess.get_files_at(dir):
+			if f.ends_with(".tscn"):
+				check(ids.has(f.get_basename()), "room not on the world map: %s/%s" % [dir, f])
 
 
 ## Every exit must meet its target entry on the map (doorways line up),

@@ -3,7 +3,8 @@ extends RefCounted
 ## Counts discoverables across the slice's rooms (for the journal and the end
 ## card) by scanning the room scenes, so totals never drift from content.
 
-const ROOM_DIR := "res://world/rooms/lowlight"
+## District room folders come from ContentValidator.WORLD_ROOM_DIRS (labs
+## and backdrops in res://world/rooms are not content).
 
 static var _totals: Dictionary = {}
 
@@ -14,10 +15,8 @@ static func totals() -> Dictionary:
 	var secrets: Array[String] = []
 	var fragments := 0
 	var shards := 0
-	for f in DirAccess.get_files_at(ROOM_DIR):
-		if not f.ends_with(".tscn"):
-			continue
-		var inst := (load("%s/%s" % [ROOM_DIR, f]) as PackedScene).instantiate()
+	for path in room_paths():
+		var inst := (load(path) as PackedScene).instantiate()
 		for n in inst.find_children("*", "", true, false):
 			if n is Collectible:
 				var c := n as Collectible
@@ -34,6 +33,18 @@ static func totals() -> Dictionary:
 		inst.free()
 	_totals = {"secret_ids": secrets, "fragments": fragments, "core_shards": shards}
 	return _totals
+
+
+## Every district room scene (.tscn only), sorted per folder.
+static func room_paths() -> PackedStringArray:
+	var out := PackedStringArray()
+	for dir in ContentValidator.WORLD_ROOM_DIRS:
+		var files := DirAccess.get_files_at(dir)
+		files.sort()
+		for f in files:
+			if f.ends_with(".tscn"):
+				out.append("%s/%s" % [dir, f])
+	return out
 
 
 static func secrets_found() -> int:
