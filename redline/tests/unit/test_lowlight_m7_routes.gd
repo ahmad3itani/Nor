@@ -370,9 +370,192 @@ func test_power_block_backward_from_security() -> void:
 		check(SceneRouter.current_room.name == "SmugglerRoute", "the left basement door leads to SmugglerRoute, not %s" % SceneRouter.current_room.name)
 
 
-func test_security_station_route() -> void:
-	print("PENDING: SecurityStation")
+# --- Security Station (tools/roomgen/ll_security_station.py) ---
+## Ground floor east (calibration lane, lobby beams, stairwell run-jump),
+## cell-block climb, upper floor west, atrium climb, roof east under the
+## breaker-darkened searchlight.
+const SECURITY_ROUTE := [
+	["runjump", 60, 150], ["run", 180], ["slide", 240], ["run", 295], ["dodge", 295],        # calibration: LOW, HIGH, FULL
+	["runjump", 380, 480], ["run", 614], ["slide", 700], ["run", 855], ["dodge", 855],       # lobby: LOW, HIGH, pulsing FULL
+	["runjump", 956, 1070], ["run", 1140], ["jump", 1140], ["jump", 1200], ["jump", 1140], ["jump", 1080],
+	["run", 789], ["dodge", 789], ["run", 570], ["slide", 480],                              # Monitor Corridor, westbound
+	["run", 370], ["jump", 320], ["jump", 250], ["jump", 320], ["jump", 390],               # atrium
+]
+const SECURITY_ROOF := [["run", 440], ["attack", 1], ["run", 1210]]
 
+## [beam_id, mode] per scanner_tripped while a Security Station test listens
+## (append-only: lambdas copy locals).
+var _security_trips: Array = []
+
+
+func _security_station_listen() -> void:
+	_security_trips.clear()
+	EventBus.scanner_tripped.connect(_security_station_on_trip)
+
+
+func _security_station_unlisten() -> void:
+	if EventBus.scanner_tripped.is_connected(_security_station_on_trip):
+		EventBus.scanner_tripped.disconnect(_security_station_on_trip)
+
+
+func _security_station_on_trip(id: String, mode: int) -> void:
+	_security_trips.append([id, mode])
+
+
+## Trips from live (damage > 0) beams so far.
+func _security_station_live_trips(room: Room) -> Array:
+	var out: Array = []
+	for t: Array in _security_trips:
+		var beam := _security_station_beam(room, t[0])
+		if beam == null or beam.data.damage > 0:
+			out.append(t[0])
+	return out
+
+
+func _security_station_beam(room: Room, id: String) -> ScannerBeam:
+	return room.get_node_or_null(NodePath("Hazards/Scanner_" + id)) as ScannerBeam
+
+
+## Samples every physics frame until `done` holds a value: appends Rook's x
+## to `live_at` whenever he is under the searchlight's sweep (x 600..1040)
+## while the beam is not offline.
+func _security_station_watch_roof(room: Room, beam: ScannerBeam, live_at: Array, done: Array) -> void:
+	while done.is_empty():
+		await physics_frames(1)
+		if not is_instance_valid(room) or not is_instance_valid(room.player) or not is_instance_valid(beam):
+			return
+		var x := room.player.global_position.x - room.global_position.x
+		var on_roof := room.player.global_position.y - room.global_position.y < -300.0
+		if on_roof and x > 600.0 and x < 1040.0 and beam.offline_left <= 0.0:
+			live_at.append(x)
+
+
+func test_security_station_route() -> void:
+	await _enter(LL + "SecurityStation.tscn", &"from_power")
+	var room := SceneRouter.current_room as Room
+	var max_hp := room.player.combat.health
+	_security_station_listen()
+	var ok := await _run(SECURITY_ROUTE)
+	if ok:
+		check(room.player.global_position.y < -380.0, "the atrium climb should end on the roof (y %.0f)" % room.player.global_position.y)
+		var light := _security_station_beam(room, "ss_searchlight")
+		var live_at: Array = []
+		var done: Array = []
+		_security_station_watch_roof(room, light, live_at, done)
+		ok = await _run(SECURITY_ROOF)
+		done.append(true)
+		check(light.trips == 0, "the searchlight tripped during the roof pass")
+		check(live_at.is_empty(), "ss_searchlight should be offline for the whole roof pass (live at x %s)" % str(live_at.slice(0, 4)))
+	var live := _security_station_live_trips(room)
+	check(live.is_empty(), "live beams tripped on the main route: %s" % str(live))
+	check(room.player.combat.health == max_hp, "the route should cost no pip (%d/%d)" % [room.player.combat.health, max_hp])
+	_security_station_unlisten()
+	_assert_exit(-1, LL + "PowerBlock.tscn", &"from_security")
+	_assert_exit(1, LL + "RainlineChase.tscn", &"from_security")
+	if ok:
+		ok = await _run([["exit", 1]])
+		check(ok and SceneRouter.current_room != null and SceneRouter.current_room.name == "RainlineChase", "the roof door should lead to RainlineChase")
+
+
+## The optional B1 isolation block: fall into the stairwell (the first
+## climb-back step catches Rook), step down to the B1 floor, pass the two
+## pulsing FULLs and the HIGH westbound, break the cell bars and collect
+## Cell Four (mf_lowlight_04) and the scrap cache, then return east and
+## climb the steps back to the ground floor: the fall is never a trap.
+func test_ss_b1() -> void:
+	await _enter(LL + "SecurityStation.tscn", &"from_power")
+	var room := SceneRouter.current_room as Room
+	room.player.global_position = room.global_position + Vector2(930, 0)
+	await physics_frames(2)
+	var ok := await _run([["run", 1000], ["run", 950], ["wait", 30]])
+	check(ok and room.player.global_position.y > 140.0, "Rook should reach the B1 floor (y %.0f)" % room.player.global_position.y)
+	if ok:
+		ok = await _run([["dodge", 945], ["dodge", 845], ["run", 746], ["slide", 700], ["attack", 3], ["run", 640], ["run", 628]])
+	check(Game.state.memory_fragments.has("mf_lowlight_04"), "Cell Four fragment not collected")
+	check(Game.is_collected("sb_ss_cell4"), "cell scrap cache not collected")
+	if ok:
+		ok = await _run([["slide", 760], ["dodge", 793], ["dodge", 893], ["run", 975], ["jump", 980], ["jump", 1020], ["jump", 1070]])
+		check(ok and absf(room.player.global_position.y) < 2.0, "the climb-back steps should reach the ground floor (y %.0f)" % room.player.global_position.y)
+
+
+## Walking into each calibration beam costs no pip and shoves Rook at least
+## 24 px back toward where he came from.
+func test_ss_calibration() -> void:
+	await _enter(LL + "SecurityStation.tscn", &"from_power")
+	var room := SceneRouter.current_room as Room
+	var p := room.player
+	var max_hp := p.combat.health
+	_security_station_listen()
+	for id: String in ["ss_cal_low", "ss_cal_high", "ss_cal_full"]:
+		var beam := _security_station_beam(room, id)
+		check(beam != null and beam.data.damage == 0, "%s should be a calibration beam" % id)
+		if beam == null:
+			continue
+		p.global_position = room.global_position + Vector2(beam.position.x - 50.0, 0)
+		p.velocity = Vector2.ZERO
+		beam.grace_left = 0.0
+		await physics_frames(6)
+		var before := _security_trips.size()
+		var trip_x := INF
+		bot.input.move_x = 1
+		for f in 90:
+			await physics_frames(1)
+			if _security_trips.size() > before:
+				trip_x = p.global_position.x - room.global_position.x
+				bot.input.move_x = 0
+				break
+		bot.input.move_x = 0
+		check(_security_trips.size() == before + 1, "%s: walking in should trip once" % id)
+		await physics_frames(45)
+		var x := p.global_position.x - room.global_position.x
+		check(p.combat.health == max_hp, "%s: calibration must not cost a pip" % id)
+		check(x <= trip_x - 24.0, "%s: shove should move Rook >= 24 px back (trip %.1f, now %.1f)" % [id, trip_x, x])
+	_security_station_unlisten()
+
+
+## ss_searchlight uses the ScannerBeam defaults (offline_open 5.5 s,
+## offline_warn 1.5 s): after the roof breaker trips, the beam is dark for
+## 5.5 s +- one frame, and lit again after.
+func test_ss_roof_offline_window() -> void:
+	await _enter(LL + "SecurityStation.tscn", &"from_rainline")
+	var room := SceneRouter.current_room as Room
+	var light := _security_station_beam(room, "ss_searchlight")
+	check(light != null and light.circuit == &"ss_roof", "ss_searchlight should be on circuit ss_roof")
+	check_near(light.offline_open, 5.5, 0.001, "offline_open default")
+	check_near(light.offline_warn, 1.5, 0.001, "offline_warn default")
+	var breaker := room.get_node("Interactables/Breaker_ss_roof") as Breaker
+	check(breaker.trip(), "the roof breaker should trip")
+	var frames := 0
+	while light.state() == ScannerBeam.State.OFFLINE and frames < 600:
+		await physics_frames(1)
+		frames += 1
+	check(absi(frames - 330) <= 1, "offline for %d frames, expected 330 +- 1" % frames)
+	check(light.state() != ScannerBeam.State.OFFLINE, "the searchlight should come back")
+
+
+## D-075 backward route for old saves: enter from the Rainline roof door,
+## walk west over the roof (the searchlight may cost pips), drop down the
+## atrium and leave by the calibration lane to PowerBlock from_security.
+func test_security_station_backward() -> void:
+	await _enter(LL + "SecurityStation.tscn", &"from_rainline")
+	var room := SceneRouter.current_room as Room
+	_security_station_listen()
+	# Roof west (the live searchlight may bite), off the roof onto the top
+	# atrium step, onto the middle step, then off its west end to the ground,
+	# west of the HIGH calibration housing. Then back up to take the LOW
+	# calibration beam at run speed, and out of the west door.
+	var ok := await _run([["run", 380], ["run", 330], ["run", 250], ["run", 150], ["wait", 30]])
+	check(ok and absf(room.player.global_position.y) < 2.0, "the atrium drop should reach the ground floor (y %.0f)" % room.player.global_position.y)
+	if ok:
+		ok = await _run([["run", 190], ["wait", 20], ["runjump", 145, 40], ["run", 0]])
+	var live: Array = _security_station_live_trips(room).filter(func(id: String) -> bool: return id != "ss_searchlight")
+	check(live.is_empty(), "westbound, only the searchlight may bite: %s" % str(live))
+	check(room.player.combat.health > 0, "Rook should reach the west door alive")
+	_security_station_unlisten()
+	_assert_exit(-1, LL + "PowerBlock.tscn", &"from_security")
+	if ok:
+		ok = await _run([["exit", -1]])
+	check(ok and SceneRouter.current_room != null and SceneRouter.current_room.name == "PowerBlock", "the west door should lead to PowerBlock")
 
 func test_rainline_route() -> void:
 	print("PENDING: RainlineChase")
