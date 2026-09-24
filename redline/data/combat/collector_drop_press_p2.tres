@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Resource" path="res://data/combat/collector_press_wave.tres" id="3_follow"]
+
+[resource]
+script = ExtResource("1_attack")
+id = &"collector_drop_press_p2"
+startup = 1.0
+active = 0.32
+recovery = 0.0
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(0, 0)
+hitstop = 0.09
+hitbox = Rect2(-24, -26, 48, 28)
+camera_trauma = 0.3
+lunge_speed = 0.0
+lunge_vertical = 450.0
+ground_friction = 2000.0
+follow_up = ExtResource("3_follow")
+swing_sfx = &"boss_slam"

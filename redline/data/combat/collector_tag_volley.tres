@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="2_proj"]
+
+[sub_resource type="Resource" id="Shot"]
+script = ExtResource("2_proj")
+speed = 130.0
+lifetime = 3.2
+pellets = 3
+spread_deg = 36.0
+color = Color(1, 0.62, 0.2, 1)
+tracer_length = 8.0
+
+[resource]
+script = ExtResource("1_attack")
+id = &"collector_tag_volley"
+startup = 0.8
+active = 0.05
+recovery = 1.2
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(0, 0)
+hitstop = 0.05
+hitbox = Rect2(0, 0, 1, 1)
+camera_trauma = 0.0
+lunge_speed = 0.0
+projectile = SubResource("Shot")
+lock_aim = true
+swing_sfx = &"enemy_shoot"
