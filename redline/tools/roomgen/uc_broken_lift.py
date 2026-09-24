@@ -46,11 +46,14 @@ l.block(-48, -192, 448, 16, "Landing1")           # x -48..400, top -192
 # ---------------------------------------------------------------- climb 2 (lower half in FZ1)
 for x, y in [(150, -240), (70, -288), (150, -336)]:
     l.oneway(x, y, 60)
-# The car roof (x 250..330) hangs under Landing 2: a 56 px drop east from the
-# -336 step, 54 px headroom under Landing 2's underside (-368). Walking off
-# its east edge drops back to Landing 1, so a missed read costs only a climb.
-l.block(250, -280, 80, 16, "LiftCarRoof")
-l.collectible(0, "sb_uc_lift_car", 290, -280, scrap=15)
+# The car roof (x 224..304) hangs under Landing 2's west lip: a 56 px drop
+# east off the -336 step, 54 px headroom under Landing 2's underside (-368).
+# Its west edge sits 14 px from the step (a run falls ~30 px across a 56 px
+# drop, so the plan's 40 px gap was missed by a walk-off; a jump east lands
+# on Landing 2 instead). Walking off its east edge drops back to Landing 1,
+# so a missed read costs only a climb.
+l.block(224, -280, 80, 16, "LiftCarRoof")
+l.collectible(0, "sb_uc_lift_car", 264, -280, scrap=15)
 l.block(224, -384, 400, 16, "Landing2")           # x 224..624, safe (no zone)
 
 # ---------------------------------------------------------------- climb 3 (safe)
@@ -66,7 +69,12 @@ l.block(380, -576, 244, 16, "TopLanding")         # x 380..624
 l.flow(-48, -330, 448, 136, drain_scale=0.5, drain_floor=1.0)
 # The one fight of the room: a familiar Needle in the new Core context, so
 # the player sees a kill refill the bar (bible sec. 42, 15-30 min).
-l.enemy("Needle", 200, -194)
+# needle_ledge is needle.tres with aggro_range 160 instead of 200: Rook walks
+# the shaft floor 194 px under it, and a 200 px Needle tracked him to
+# Landing 1's east lip, then lunged off it as he climbed up (out of FZ1, onto
+# floor 0). At 160 it wakes only once Rook is on Landing 1 (he lands 180 px
+# away), so the fight happens on the landing, inside the zone.
+l.enemy("Needle", 200, -194, data="needle_ledge")
 
 # ---------------------------------------------------------------- the first Anchor
 l.anchor("uc_lift", 500, -576, -1)
@@ -83,8 +91,8 @@ l.exit(624, -672, 16, 96, "undercity/CollectorBay", "from_lift")
 # ---------------------------------------------------------------- set dressing
 # The hanging lift car: its body under the roof, two cables to the ceiling
 # (thin pillars read as taut cables; the 'cables' decor draws a sag).
-l.decor("crates", 290, -220, 80, 60, RUST)
-for x in (262, 318):
+l.decor("crates", 264, -220, 80, 60, RUST)
+for x in (236, 292):
     l.decor("pillar", x, -280, 2, 480, STEEL)
 # Shaft ribs and dead sea-green service tubes (ambience only, they flicker).
 l.decor("pipes", 180, -40, 300, 12, CONCRETE)
@@ -99,7 +107,7 @@ l.decor("lamp", 600, -576, 6, 64, STEEL, SODIUM)
 l.neon(600, -640, 8, 14, SODIUM, 1, False)
 # The landmark lights up once the Collector is down.
 car = l.switch("CarLit", "flag:collector_drone_defeated")
-l.neon(290, -300, 30, 6, SODIUM, 3, False, parent=car)
+l.neon(264, -300, 30, 6, SODIUM, 3, False, parent=car)
 
 l.write(OUT + "BrokenLift.tscn")
 finish()

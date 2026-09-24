@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
 [ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
 [ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
 [ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Resource" path="res://data/enemies/needle_ledge.tres" id="enemy_needle_ledge"]
 [ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="anchor"]
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
@@ -111,12 +112,12 @@ size = Vector2(60, 8)
 one_way = true
 
 [node name="LiftCarRoof" type="StaticBody2D" parent="Geometry"]
-position = Vector2(250, -280)
+position = Vector2(224, -280)
 script = ExtResource("block")
 size = Vector2(80, 16)
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
-position = Vector2(290, -280)
+position = Vector2(264, -280)
 script = ExtResource("collect")
 persist_id = "sb_uc_lift_car"
 kind = 0
@@ -159,6 +160,7 @@ drain_floor = 1.0
 
 [node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
 position = Vector2(200, -194)
+data = ExtResource("enemy_needle_ledge")
 
 [node name="Spawn_uc_lift" type="Marker2D" parent="Spawns"]
 position = Vector2(500, -576)
@@ -205,7 +207,7 @@ target_room = "res://world/rooms/undercity/CollectorBay.tscn"
 target_entry = &"from_lift"
 
 [node name="Decor1" type="Node2D" parent="Props"]
-position = Vector2(290, -220)
+position = Vector2(264, -220)
 script = ExtResource("decor")
 kind = 2
 size = Vector2(80, 60)
@@ -213,7 +215,7 @@ color = Color(0.3, 0.22, 0.17, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
 [node name="Decor2" type="Node2D" parent="Props"]
-position = Vector2(262, -280)
+position = Vector2(236, -280)
 script = ExtResource("decor")
 kind = 0
 size = Vector2(2, 480)
@@ -221,7 +223,7 @@ color = Color(0.2, 0.24, 0.24, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
 [node name="Decor3" type="Node2D" parent="Props"]
-position = Vector2(318, -280)
+position = Vector2(292, -280)
 script = ExtResource("decor")
 kind = 0
 size = Vector2(2, 480)
@@ -310,7 +312,7 @@ script = ExtResource("switch")
 visible_when = "flag:collector_drone_defeated"
 
 [node name="Neon8" type="Node2D" parent="Props/CarLit"]
-position = Vector2(290, -300)
+position = Vector2(264, -300)
 script = ExtResource("neon")
 size = Vector2(30, 6)
 color = Color(0.85, 0.58, 0.3, 1)
