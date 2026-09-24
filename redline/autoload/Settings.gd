@@ -20,7 +20,8 @@ var master_volume: float = 1.0:
 	set(v): master_volume = clampf(v, 0.0, 1.0)
 var sfx_volume: float = 0.8:
 	set(v): sfx_volume = clampf(v, 0.0, 1.0)
-var show_debug_overlay: bool = true
+## Off by default for playtesters; F1 toggles it (labs and slice).
+var show_debug_overlay: bool = false
 ## Accessibility (bible §24): dropping unbanked Scrap on death can be disabled.
 var currency_loss: bool = true
 ## Redline Core difficulty (bible §6): 0 Normal, 1 Story/Assist, 2 Redline Challenge.

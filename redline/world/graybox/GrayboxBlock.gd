@@ -19,9 +19,15 @@ const COLOR_ONE_WAY := Color("5c7a8a")
 		_rebuild()
 
 var _shape_node: CollisionShape2D
+var _theme: DistrictTheme
 
 
 func _ready() -> void:
+	var n := get_parent()
+	while n and not _theme:
+		if n is Room:
+			_theme = (n as Room).theme
+		n = n.get_parent()
 	_rebuild()
 
 
@@ -43,8 +49,16 @@ func _rebuild() -> void:
 
 
 func _draw() -> void:
+	var solid := _theme.solid_color if _theme else COLOR_SOLID
+	var edge := _theme.edge_color if _theme else COLOR_EDGE
 	if one_way:
-		draw_rect(Rect2(Vector2.ZERO, Vector2(size.x, 3)), COLOR_ONE_WAY)
+		draw_rect(Rect2(Vector2.ZERO, Vector2(size.x, 3)), _theme.one_way_color if _theme else COLOR_ONE_WAY)
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), COLOR_SOLID)
-	draw_rect(Rect2(Vector2.ZERO, Vector2(size.x, 1)), COLOR_EDGE)
+	draw_rect(Rect2(Vector2.ZERO, size), solid)
+	draw_rect(Rect2(Vector2.ZERO, Vector2(size.x, 1)), edge)
+	if _theme and size.y > 24.0:
+		# Subtle vertical banding: reads as masonry/concrete rather than a flat box.
+		var x := 8.0
+		while x < size.x:
+			draw_rect(Rect2(x, 2, 1, size.y - 2), solid.darkened(0.12))
+			x += 24.0

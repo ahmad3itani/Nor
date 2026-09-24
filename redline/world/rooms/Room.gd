@@ -17,6 +17,8 @@ extends Node2D
 @export var draw_grid: bool = true
 @export var world_room: bool = false
 @export var district_name: String = ""
+## Palette/backdrop/weather. Null = graybox look (labs).
+@export var theme: DistrictTheme
 
 var player: Player
 var camera: PlayerCamera
@@ -45,6 +47,10 @@ func _ready() -> void:
 	add_child(camera)
 	camera.set_bounds(bounds)
 	camera.make_current()
+	if theme:
+		var backdrop := DistrictBackdrop.new()
+		backdrop.setup(theme, camera)
+		add_child(backdrop)
 	respawn()
 	camera.follow(player)
 	EventBus.player_died.connect(_on_player_died)

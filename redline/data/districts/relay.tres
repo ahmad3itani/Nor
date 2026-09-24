@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DistrictTheme" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/districts/DistrictTheme.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+district_name = "The Relay"
+sky_top = Color(0.05, 0.04, 0.06, 1)
+sky_bottom = Color(0.12, 0.08, 0.07, 1)
+far_color = Color(0.09, 0.07, 0.07, 1)
+mid_color = Color(0.13, 0.1, 0.09, 1)
+window_colors = PackedColorArray(1, 0.75, 0.4, 1)
+window_density = 0.05
+solid_color = Color(0.2, 0.16, 0.15, 1)
+edge_color = Color(0.55, 0.42, 0.3, 1)
+one_way_color = Color(0.5, 0.4, 0.3, 1)
+rain = false

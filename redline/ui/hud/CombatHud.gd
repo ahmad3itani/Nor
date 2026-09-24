@@ -54,7 +54,9 @@ func _ready() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.draw.connect(_draw_hud)
 	add_child(_root)
-	EventBus.player_spawned.connect(func(p: Node2D) -> void: _player = p as Player)
+	EventBus.player_spawned.connect(func(p: Node2D) -> void:
+		_player = p as Player
+		_prompt = "")
 	EventBus.reactor_changed.connect(func(_c: float, _m: float, critical: bool) -> void: _critical = critical)
 	EventBus.style_changed.connect(func(_p: float, _r: int) -> void: _rank_flash = 0.3)
 	EventBus.interact_prompt_changed.connect(func(t: String) -> void: _prompt = t)

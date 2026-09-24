@@ -1,0 +1,289 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_01.tres" id="frag_mf_lowlight_01"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
+
+[node name="FloodedAlley" type="Node2D"]
+script = ExtResource("room")
+room_name = "Flooded Alley"
+bounds = Rect2(-64, -400, 1900, 496)
+draw_grid = false
+world_room = true
+district_name = "Lowlight"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -400)
+script = ExtResource("block")
+size = Vector2(16, 304)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(1880, 96)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1816, -400)
+script = ExtResource("block")
+size = Vector2(16, 304)
+
+[node name="Spawn_from_relay" type="Marker2D" parent="Spawns"]
+position = Vector2(24, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_relay"
+is_default = true
+
+[node name="Spawn_from_market" type="Marker2D" parent="Spawns"]
+position = Vector2(1770, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_market"
+facing = -1
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(-64, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/Relay.tscn"
+target_entry = &"from_alley"
+
+[node name="Exit2" type="Area2D" parent="Triggers"]
+position = Vector2(1816, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/MarketRun.tscn"
+target_entry = &"from_alley"
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(40, -50)
+script = ExtResource("block")
+size = Vector2(50, 8)
+one_way = true
+
+[node name="Block1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(90, -100)
+script = ExtResource("block")
+size = Vector2(70, 100)
+
+[node name="Block2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(380, -100)
+script = ExtResource("block")
+size = Vector2(70, 100)
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(415, -100)
+script = ExtResource("collect")
+persist_id = "cs_alley_dash"
+kind = 2
+
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(60, -200)
+script = ExtResource("hint")
+size = Vector2(100, 100)
+hint_id = "alley_gap"
+text = "Too far to jump. Maybe later."
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(470, -96)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "alley_slide"
+text = "Run and hold [{action}] to slide"
+action = &"move_down"
+
+[node name="Fence" type="StaticBody2D" parent="Geometry"]
+position = Vector2(560, -160)
+script = ExtResource("block")
+size = Vector2(120, 136)
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(700, -300)
+script = ExtResource("flow")
+size = Vector2(720, 300)
+
+[node name="Hint3" type="Area2D" parent="Triggers"]
+position = Vector2(720, -96)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "alley_attack"
+text = "[{action}] attack"
+action = &"attack_light"
+
+[node name="Hint4" type="Area2D" parent="Triggers"]
+position = Vector2(860, -96)
+script = ExtResource("hint")
+size = Vector2(60, 96)
+hint_id = "alley_dodge"
+text = "[{action}] dodge - it passes through attacks"
+action = &"dodge"
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(960, -2)
+
+[node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(1150, -2)
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(860, -56)
+script = ExtResource("block")
+size = Vector2(70, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1220, -50)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1250, -96)
+script = ExtResource("block")
+size = Vector2(50, 8)
+one_way = true
+
+[node name="BuildingTop" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1300, -140)
+script = ExtResource("block")
+size = Vector2(120, 100)
+
+[node name="TunnelEnd" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1404, -40)
+script = ExtResource("block")
+size = Vector2(16, 40)
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1300, -40)
+script = ExtResource("wall")
+size = Vector2(16, 40)
+persist_id = "alley_tunnel_wall"
+max_health = 20.0
+
+[node name="Collectible2" type="Area2D" parent="Interactables"]
+position = Vector2(1368, 0)
+script = ExtResource("collect")
+persist_id = "mf_lowlight_01"
+kind = 1
+fragment = ExtResource("frag_mf_lowlight_01")
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(1360, -170)
+script = ExtResource("neon")
+size = Vector2(34, 10)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 4
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(300, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 70)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(740, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 70)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(1080, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 70)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(1600, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 70)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(230, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(28, 26)
+color = Color(0.2, 0.2, 0.25, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(1500, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(30, 24)
+color = Color(0.2, 0.2, 0.25, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(900, -130)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(400, 12)
+color = Color(0.22, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor8" type="Node2D" parent="Props"]
+position = Vector2(1330, -148)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(18, 10)
+color = Color(0.26, 0.26, 0.32, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor9" type="Node2D" parent="Props"]
+position = Vector2(1000, -220)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(600, 40)
+color = Color(0.18, 0.18, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(620, -190)
+script = ExtResource("neon")
+size = Vector2(22, 8)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 3
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(1000, -120)
+script = ExtResource("neon")
+size = Vector2(26, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 3

@@ -22,6 +22,8 @@ func _ready() -> void:
 	add_child(main)
 	if _tour_name == "combat":
 		_combat_tour.call_deferred()
+	elif _tour_name == "slice":
+		_slice_tour.call_deferred()
 	else:
 		_tour.call_deferred()
 
@@ -170,4 +172,37 @@ func _combat_tour() -> void:
 				return (e as Enemy).data.flying and (e as Enemy).ai == Enemy.AI.WINDUP and (e as Enemy).ai_time > 0.4).is_empty():
 			break
 	await _shot("c05_drone_aim_critical_core")
+	get_tree().quit()
+
+
+## One shot per spawn marker of every slice room, plus the boss mid-fight.
+func _slice_tour() -> void:
+	await _frames(5)
+	Game.new_game()
+	var dir := "res://world/rooms/lowlight"
+	for f in DirAccess.get_files_at(dir):
+		if not f.ends_with(".tscn"):
+			continue
+		var scene: PackedScene = load("%s/%s" % [dir, f])
+		var probe := scene.instantiate()
+		var ids: Array[StringName] = []
+		for m in probe.find_children("*", "SpawnMarker", true, false):
+			ids.append((m as SpawnMarker).spawn_id)
+		probe.free()
+		for id in ids:
+			SceneRouter.goto_room("%s/%s" % [dir, f], id)
+			(SceneRouter.current_room as Room).player.input_source = _input
+			await _frames(30)
+			await _shot("s_%s_%s" % [f.get_basename(), id])
+	SceneRouter.goto_room("%s/WardenTower.tscn" % dir, &"from_bell")
+	var room := SceneRouter.current_room as Room
+	room.player.input_source = _input
+	room.player.combat.config = room.player.combat.config.duplicate()
+	room.player.combat.config.max_health = 99
+	room.player.combat.health = 99
+	_input.move_x = 1
+	await _frames(60)
+	_input.move_x = 0
+	await _frames(150)
+	await _shot("s_boss_fight")
 	get_tree().quit()

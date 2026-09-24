@@ -1,0 +1,309 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Watcher.tscn" id="scene_Watcher"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="scene_Hopper"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Shield.tscn" id="scene_Shield"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
+
+[node name="NeonRoofs" type="Node2D"]
+script = ExtResource("room")
+room_name = "Neon Roofs"
+bounds = Rect2(-64, -500, 2500, 596)
+draw_grid = false
+world_room = true
+district_name = "Lowlight"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -500)
+script = ExtResource("block")
+size = Vector2(16, 304)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2420, -500)
+script = ExtResource("block")
+size = Vector2(16, 304)
+
+[node name="Roof1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -100)
+script = ExtResource("block")
+size = Vector2(448, 196)
+
+[node name="Roof2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(480, -100)
+script = ExtResource("block")
+size = Vector2(280, 196)
+
+[node name="Roof3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(872, -120)
+script = ExtResource("block")
+size = Vector2(308, 216)
+
+[node name="Roof4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1250, -80)
+script = ExtResource("block")
+size = Vector2(250, 176)
+
+[node name="Roof5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1530, -90)
+script = ExtResource("block")
+size = Vector2(470, 186)
+
+[node name="Roof6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2080, -90)
+script = ExtResource("block")
+size = Vector2(356, 186)
+
+[node name="Spawn_from_stack" type="Marker2D" parent="Spawns"]
+position = Vector2(20, -100)
+script = ExtResource("spawn")
+spawn_id = &"from_stack"
+is_default = true
+
+[node name="Spawn_from_bell" type="Marker2D" parent="Spawns"]
+position = Vector2(2380, -90)
+script = ExtResource("spawn")
+spawn_id = &"from_bell"
+facing = -1
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(-64, -196)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/ApartmentStack.tscn"
+target_entry = &"from_roofs"
+
+[node name="Exit2" type="Area2D" parent="Triggers"]
+position = Vector2(2420, -186)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/BellTower.tscn"
+target_entry = &"from_roofs"
+
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(640, -196)
+script = ExtResource("hint")
+size = Vector2(80, 96)
+hint_id = "roofs_slidejump"
+text = "Wide gap: slide, then jump out of the slide"
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(380, -480)
+script = ExtResource("flow")
+size = Vector2(2040, 480)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1400, -150)
+script = ExtResource("block")
+size = Vector2(60, 8)
+one_way = true
+
+[node name="HighRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1500, -200)
+script = ExtResource("block")
+size = Vector2(100, 30)
+
+[node name="ShardLedge" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1744, -200)
+script = ExtResource("block")
+size = Vector2(60, 30)
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(1774, -200)
+script = ExtResource("collect")
+persist_id = "cs_roofs"
+kind = 2
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(1500, -300)
+script = ExtResource("hint")
+size = Vector2(90, 100)
+hint_id = "roofs_dodgejump"
+text = "Dodge, then jump mid-dodge to carry its speed"
+
+[node name="Block1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(698, -200)
+script = ExtResource("block")
+size = Vector2(4, 60)
+
+[node name="Watcher1" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(700, -202)
+
+[node name="Block2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1348, -230)
+script = ExtResource("block")
+size = Vector2(4, 150)
+
+[node name="Watcher2" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(1350, -232)
+
+[node name="Block3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2148, -220)
+script = ExtResource("block")
+size = Vector2(4, 150)
+
+[node name="Watcher3" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(2150, -222)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(600, -102)
+
+[node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(1000, -122)
+
+[node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(1100, -122)
+
+[node name="Hopper2" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(1650, -92)
+
+[node name="Shield1" parent="Enemies" instance=ExtResource("scene_Shield")]
+position = Vector2(1850, -92)
+
+[node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
+position = Vector2(2250, -200)
+
+[node name="Hint3" type="Area2D" parent="Triggers"]
+position = Vector2(1760, -196)
+script = ExtResource("hint")
+size = Vector2(60, 100)
+hint_id = "roofs_shield"
+text = "Shields block from the front. Go behind, above, or [{action}] heavy."
+action = &"attack_heavy"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(100, -100)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(620, -100)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(1020, -120)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(1400, -80)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(1700, -90)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(2300, -90)
+script = ExtResource("decor")
+kind = 8
+size = Vector2(22, 14)
+color = Color(0.24, 0.24, 0.3, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(300, -100)
+script = ExtResource("decor")
+kind = 10
+size = Vector2(34, 16)
+color = Color(0.24, 0.2, 0.22, 1)
+accent = Color(0.49, 0.8, 0.5, 1)
+
+[node name="Decor8" type="Node2D" parent="Props"]
+position = Vector2(900, -260)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(700, 50)
+color = Color(0.18, 0.18, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(200, -140)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 5
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(560, -150)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 5
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(980, -170)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 5
+
+[node name="Neon4" type="Node2D" parent="Props"]
+position = Vector2(1320, -120)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(0.49, 1, 0.6, 1)
+strokes = 5
+
+[node name="Neon5" type="Node2D" parent="Props"]
+position = Vector2(1900, -150)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 5
+
+[node name="Neon6" type="Node2D" parent="Props"]
+position = Vector2(2250, -130)
+script = ExtResource("neon")
+size = Vector2(36, 12)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 5

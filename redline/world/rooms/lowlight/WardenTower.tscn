@@ -1,0 +1,166 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="PackedScene" path="res://bosses/WardenKrail.tscn" id="scene_WardenKrail"]
+[ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
+[ext_resource type="PackedScene" path="res://interactables/DashModule.tscn" id="scene_DashModule"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
+
+[node name="WardenTower" type="Node2D"]
+script = ExtResource("room")
+room_name = "Warden Tower"
+bounds = Rect2(-64, -300, 544, 364)
+draw_grid = false
+world_room = true
+district_name = "Lowlight"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="WallLeftUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -300)
+script = ExtResource("block")
+size = Vector2(16, 204)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(464, -300)
+script = ExtResource("block")
+size = Vector2(16, 204)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -300)
+script = ExtResource("block")
+size = Vector2(512, 30)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(512, 96)
+
+[node name="Spawn_from_bell" type="Marker2D" parent="Spawns"]
+position = Vector2(16, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_bell"
+is_default = true
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(-64, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/BellTower.tscn"
+target_entry = &"from_warden"
+
+[node name="Exit2" type="Area2D" parent="Triggers"]
+position = Vector2(464, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/lowlight/Relay.tscn"
+target_entry = &"from_lift"
+requires_flag = "warden_krail_defeated"
+
+[node name="ArenaGateLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-32, -96)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+
+[node name="ExitGate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(448, -96)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+closed = true
+open_flag = "warden_krail_defeated"
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(60, -72)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(300, -72)
+script = ExtResource("block")
+size = Vector2(64, 8)
+one_way = true
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(208, -200)
+script = ExtResource("neon")
+size = Vector2(60, 14)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 6
+flicker = false
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(90, -150)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(28, 60)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(330, -150)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(28, 60)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(0, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(12, 270)
+color = Color(0.16, 0.15, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(208, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(12, 270)
+color = Color(0.16, 0.15, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(416, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(12, 270)
+color = Color(0.16, 0.15, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="WardenKrail1" parent="Enemies" instance=ExtResource("scene_WardenKrail")]
+position = Vector2(330, -2)
+
+[node name="BossArena" type="Area2D" parent="Triggers"]
+position = Vector2(40, -250)
+script = ExtResource("arena")
+size = Vector2(400, 250)
+boss_path = NodePath("../../Enemies/WardenKrail1")
+gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
+reward_scene = ExtResource("scene_DashModule")

@@ -10,6 +10,8 @@ extends Area2D
 		size = v.snapped(Vector2.ONE)
 		_rebuild()
 @export var label: String = "FLOW ZONE"
+## Shown the first time the player ever enters any Flow Zone (onboarding).
+@export var first_entry_hint: String = "HOSTILE ZONE  —  your Core drains here. Fight and move to refill it."
 
 var _shape_node: CollisionShape2D
 
@@ -41,6 +43,9 @@ func _rebuild() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
 		(body as Player).reactor.enter_flow()
+		if first_entry_hint != "" and not Game.has_flag("hint_first_flow"):
+			Game.set_flag("hint_first_flow")
+			EventBus.hint_requested.emit(first_entry_hint, 4.0)
 
 
 func _on_body_exited(body: Node2D) -> void:
