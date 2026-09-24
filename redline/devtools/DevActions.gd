@@ -39,10 +39,21 @@ static func unlock_all() -> void:
 	for c in Game.catalog.circuits:
 		if not st.owned_circuits.has(String(c.id)):
 			st.owned_circuits.append(String(c.id))
+	# A campaign profile may still be unarmed: fill empty slots with the kit.
+	if st.melee_weapon == "":
+		st.melee_weapon = GameState.DEFAULT_MELEE
+	if st.ranged_weapon == "":
+		st.ranged_weapon = GameState.DEFAULT_RANGED
+	# set_flag(false), never erase: the HUD only reacts to flag_changed.
+	Game.set_flag("core_hud_hidden", false)
 	Game.set_ability(&"dash", true)
-	st.core_shards = maxi(st.core_shards, 3)
+	# Every Core Shard in the game after M7 (five, capacity 9, D-082).
+	st.core_shards = maxi(st.core_shards, 5)
 	st.scrap_banked = maxi(st.scrap_banked, 9999)
-	for f in ["transit_pass", "map_lowlight", "map_lens", "injector_upgrades"]:
+	var flags: Array[String] = ["transit_pass", "map_lens", "injector_upgrades"]
+	for d in Game.world_map.districts():
+		flags.append("map_%s" % d)
+	for f in flags:
 		Game.set_flag(f, 1)
 	for r in Game.world_map.rooms:
 		if not st.visited_rooms.has(r.room_path):

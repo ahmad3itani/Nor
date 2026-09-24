@@ -27,6 +27,13 @@ var _lore_text: String = ""
 var _lore_time: float = 0.0
 var _boss: Enemy
 var _boss_title: String = ""
+## Onboarding (bible §42): the Core readout stays hidden until the first Flow
+## Zone explains it (flag core_hud_hidden), then fills in and names itself.
+const CORE_REVEAL_SECONDS := 1.0
+const CORE_ONLINE_SECONDS := 2.0
+var _core_hidden: bool = false
+var _core_reveal: float = 0.0
+var _core_online: float = 0.0
 
 
 func _ready() -> void:
@@ -73,14 +80,44 @@ func _ready() -> void:
 			_lore_title = "MEMORY FRAGMENT  —  " + frag.title
 			_lore_text = frag.text
 			_lore_time = LORE_SECONDS)
+	EventBus.flag_changed.connect(_on_flag_changed)
+	EventBus.game_state_reset.connect(_sync_core_hidden)
+	_sync_core_hidden()
 	EventBus.room_entered.connect(func(district: String, room_name: String) -> void:
 		_banner = district.to_upper()
 		_banner_sub = room_name
 		_banner_time = BANNER_SECONDS if district != "" else 0.0)
 
 
+## Snap to the profile without the reveal (new game, load).
+func _sync_core_hidden() -> void:
+	_core_hidden = Game.has_flag("core_hud_hidden")
+	_core_reveal = 0.0
+	_core_online = 0.0
+
+
+func _on_flag_changed(id: String, _value: Variant) -> void:
+	if id != "core_hud_hidden":
+		return
+	var hidden := Game.has_flag(id)
+	if _core_hidden and not hidden:
+		_core_reveal = CORE_REVEAL_SECONDS
+		_core_online = CORE_ONLINE_SECONDS
+	elif hidden:
+		_core_reveal = 0.0
+		_core_online = 0.0
+	_core_hidden = hidden
+
+
+## Whether the Core bar and its label are drawn (tests, onboarding).
+func core_bar_visible() -> bool:
+	return not _core_hidden
+
+
 func _process(delta: float) -> void:
 	_time += delta
+	_core_reveal = maxf(_core_reveal - delta, 0.0)
+	_core_online = maxf(_core_online - delta, 0.0)
 	_rank_flash = maxf(_rank_flash - delta, 0.0)
 	_hint_time = maxf(_hint_time - delta, 0.0)
 	_banner_time = maxf(_banner_time - delta, 0.0)
@@ -105,27 +142,25 @@ func _draw_hud() -> void:
 		var r := Rect2(base + Vector2(i * (PIP.x + 2), 0), PIP)
 		_root.draw_rect(r, RED if i < combat.health else DIM)
 
-	# Redline Core bar.
-	var reactor := _player.reactor
-	var bar := Rect2(base + Vector2(0, 9), Vector2(92, 4))
-	var frac := reactor.charge / reactor.config.max_charge
-	var fill_color := RED
-	if reactor.is_critical() and reactor.in_flow() and not Settings.flash_reduction:
-		fill_color = RED.lerp(Color.WHITE, 0.5 + 0.5 * sin(_time * 12.0))
-	_root.draw_rect(bar, DIM)
-	_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)
-	var core_label := "CORE %d%s" % [int(reactor.charge), "  FLOW" if reactor.in_flow() else ""]
-	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), core_label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
+	# Redline Core bar (hidden until the campaign introduces the Core).
+	if core_bar_visible():
+		_draw_core(font, base)
 
-	# Ranged weapon + ammo.
+	# Ranged weapon + ammo; an empty slot (unarmed start) is a dim outline.
 	var w := combat.ranged_weapon()
+	var y := base.y + 21
 	if w:
 		var ammo := int(combat.ammo.get(w.id, 0))
-		var y := base.y + 21
 		_root.draw_string(font, Vector2(base.x, y), w.display_name.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("c9c3d6"))
 		var ax := base.x + 62
 		for i in w.ammo_max:
 			_root.draw_rect(Rect2(ax + i * 4, y - 5, 2, 5), Color("ffe28a") if i < ammo else DIM)
+	else:
+		_root.draw_rect(Rect2(base.x, y - 6, 56, 7), DIM, false, 1.0)
+	# The melee slot has no readout of its own; when empty, a small outline
+	# after the ranged slot shows there is a second slot to fill.
+	if combat.melee_weapon == null:
+		_root.draw_rect(Rect2(base.x + 116, y - 6, 18, 7), DIM, false, 1.0)
 
 	# Injectors (green pips after health).
 	var inj_x := base.x + combat.config.max_health * (PIP.x + 2) + 6
@@ -191,6 +226,24 @@ func _draw_hud() -> void:
 	_root.draw_rect(mbar, DIM)
 	_root.draw_rect(Rect2(mbar.position, Vector2(mbar.size.x * meter.rank_progress(), 2)), col)
 	_root.draw_string(font, pos + Vector2(0, 12), "STYLE %d" % int(meter.points), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color("c9c3d6"))
+
+
+func _draw_core(font: Font, base: Vector2) -> void:
+	var reactor := _player.reactor
+	var bar := Rect2(base + Vector2(0, 9), Vector2(92, 4))
+	var frac := reactor.charge / reactor.config.max_charge
+	# First reveal: the bar visibly fills from empty over CORE_REVEAL_SECONDS.
+	if _core_reveal > 0.0:
+		frac *= 1.0 - _core_reveal / CORE_REVEAL_SECONDS
+	var fill_color := RED
+	if reactor.is_critical() and reactor.in_flow() and not Settings.flash_reduction:
+		fill_color = RED.lerp(Color.WHITE, 0.5 + 0.5 * sin(_time * 12.0))
+	_root.draw_rect(bar, DIM)
+	_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)
+	var core_label := "CORE %d%s" % [int(reactor.charge), "  FLOW" if reactor.in_flow() else ""]
+	if _core_online > 0.0:
+		core_label = "CORE ONLINE"
+	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), core_label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
 
 
 func _draw_centered(font: Font, text: String, y: float, size: int, color: Color) -> void:

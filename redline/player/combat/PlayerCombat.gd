@@ -75,12 +75,17 @@ func injector_capacity() -> int:
 	return config.injector_max + Game.injector_bonus()
 
 
+## null clears a slot: the campaign starts Rook unarmed (bible §42), and every
+## melee entry point already gates on wants_melee(), every shot on
+## ranged_weapon(), so an empty slot simply does nothing.
 func set_loadout(melee: WeaponData, ranged: WeaponData) -> void:
-	if melee:
-		melee_weapon = melee
+	melee_weapon = melee
+	# A fresh array: the exported one may be the scene's shared default.
+	var slots: Array[WeaponData] = []
 	if ranged:
-		ranged_weapons = [ranged]
-		ranged_index = 0
+		slots.append(ranged)
+	ranged_weapons = slots
+	ranged_index = 0
 	_refill_ammo()
 
 

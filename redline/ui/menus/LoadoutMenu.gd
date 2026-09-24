@@ -21,6 +21,8 @@ func rebuild() -> void:
 	add_label("Rested. Health, injectors and Core restored. Progress saved.", UiTheme.MUTED)
 	var st := Game.state
 	add_label("WEAPONS", UiTheme.ACCENT)
+	# Both slots always show, "—" while empty (the campaign starts unarmed).
+	add_label("Melee: %s    Ranged: %s" % [_slot_name(st.melee_weapon), _slot_name(st.ranged_weapon)], UiTheme.MUTED)
 	for id in st.owned_weapons:
 		var w := Game.catalog.weapon(id)
 		if w == null:
@@ -49,6 +51,11 @@ func rebuild() -> void:
 	_desc = add_label("", UiTheme.MUTED)
 	_desc.custom_minimum_size = Vector2(340, 24)
 	focus_index(keep)
+
+
+static func _slot_name(id: String) -> String:
+	var w := Game.catalog.weapon(id) if id != "" else null
+	return w.display_name if w else "—"
 
 
 func _describe_text(text: String) -> void:
