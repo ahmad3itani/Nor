@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Attack"]
+script = ExtResource("1_attack")
+id = &"needle_lunge"
+startup = 0.45
+active = 0.12
+recovery = 0.45
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(150, -140)
+hitstop = 0.06
+hitbox = Rect2(0, -24, 30, 16)
+lunge_speed = 190.0
+ground_friction = 600.0
+swing_sfx = &"enemy_attack"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"needle"
+display_name = "Needle"
+max_health = 30.0
+max_poise = 10.0
+stagger_time = 0.5
+mass = 1.0
+move_speed = 55.0
+accel = 600.0
+body_size = Vector2(12, 26)
+aggro_range = 200.0
+attack_cooldown = 1.1
+reactor_reward = 12.0
+style_value = 40.0
+color = Color(0.82, 0.38, 0.38, 1)
+attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])
