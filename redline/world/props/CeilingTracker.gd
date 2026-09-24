@@ -16,8 +16,19 @@ const STATE_NAMES: PackedStringArray = ["DORMANT", "EMERGE", "TRACK", "LOCK", "C
 
 ## Chest height above Rook's feet: where the line of sight and the bolt aim.
 const CHEST := 20.0
-## Lock-timer threshold where the cone starts filling red (readability).
+## Lock-timer threshold where the cone starts filling red (readability). The
+## fill grows from nothing here to the full cone at lock_time, so it reads as
+## a building warning rather than popping in half-sized.
 const WARN_AT := 0.5
+## Alpha of the growing red warning fill during TRACK.
+const WARN_ALPHA := 0.35
+## LOCK is "solid red": a high-alpha base that still lets Rook show through,
+## with a brighter pulse layered on top (dropped under flash reduction).
+const LOCK_ALPHA := 0.7
+const LOCK_PULSE_ALPHA := 0.2
+const LOCK_PULSE_HZ := 4.0
+## COOLDOWN/RETRACT cone: a fainter amber, "it is still watching, but spent".
+const SPENT_ALPHA_SCALE := 0.5
 ## How far the eye hangs below its hatch when fully out (px).
 const DROP := 12.0
 const AMBER := Color(1.0, 0.72, 0.3, 0.12)
@@ -51,7 +62,8 @@ const HOUSING := Color(0.12, 0.1, 0.12, 1.0)
 
 var state: State = State.DORMANT
 var state_time: float = 0.0
-## Seconds Rook has been continuously in the cone (resets when he leaves it).
+## Seconds of standing in the cone: builds while Rook stands, drains while he
+## moves inside it, and resets when he leaves it.
 var lock_timer: float = 0.0
 ## Counters for tests and the debug overlay.
 var lock_count: int = 0
@@ -77,6 +89,9 @@ func _physics_process(delta: float) -> void:
 		return
 	var p := _player()
 	if p == null:
+		# No one to shoot: a windup never ends in a bolt at nothing.
+		if state == State.LOCK:
+			_set_state(State.COOLDOWN)
 		return
 	var px := _local_x(p)
 	# Frame 1 of this room load: a player who starts past lost_x (backtracking,
@@ -112,7 +127,13 @@ func _run_active(p: Player, px: float, delta: float) -> void:
 		State.TRACK:
 			_follow(px, delta)
 			if _in_cone(p):
-				lock_timer += delta
+				# "Keep moving": the lock builds only while Rook stands, and
+				# moving on bleeds it off, so a short stop under the eye is
+				# always free and stepping away always answers the red fill.
+				if absf(p.velocity.x) <= config.still_speed:
+					lock_timer += delta
+				else:
+					lock_timer = maxf(0.0, lock_timer - config.move_drain * delta)
 				if lock_timer >= config.lock_time:
 					lock_count += 1
 					_set_state(State.LOCK)
@@ -122,10 +143,13 @@ func _run_active(p: Player, px: float, delta: float) -> void:
 		State.LOCK:
 			# The eye plants while it winds up: the cone freezes so the
 			# telegraph reads as "this spot", and stepping out is the answer.
-			if state_time >= config.windup:
-				fire_bolt()
-				EventBus.tracker_locked.emit(tracker_id)
-				lock_timer = 0.0
+			if p.combat.dead:
+				# Rook died during the windup: no shot at a corpse, no lock
+				# reported to telemetry.
+				_set_state(State.COOLDOWN)
+			elif state_time >= config.windup:
+				if fire_bolt():
+					EventBus.tracker_locked.emit(tracker_id)
 				_set_state(State.COOLDOWN)
 		State.COOLDOWN:
 			_follow(px, delta)
@@ -189,11 +213,12 @@ func has_line_of_sight_to(point: Vector2) -> bool:
 
 ## Fires the config's bolt at Rook's chest (aimed at fire time). The tracker is
 ## the attacker: a perfect dodge reports it, but it is no Enemy, so there is no
-## enemy credit and death causes read "unknown/collector_eye_bolt".
-func fire_bolt() -> void:
+## enemy credit and death causes read "unknown/collector_eye_bolt". Returns
+## false (and spawns nothing) without a live player or a bolt to fire.
+func fire_bolt() -> bool:
 	var p := _player()
-	if p == null or config == null or config.attack == null or config.attack.projectile == null:
-		return
+	if p == null or p.combat.dead or config == null or config.attack == null or config.attack.projectile == null:
+		return false
 	var proj := config.attack.projectile
 	var aim := (p.global_position + Vector2(0, -CHEST) - global_position).normalized()
 	var parent: Node = _room() if _room() != null else get_parent()
@@ -202,6 +227,7 @@ func fire_bolt() -> void:
 		Projectile.spawn(parent, self, config.attack, global_position, aim.rotated(deg_to_rad(offset)), CombatLayers.PLAYER_HURTBOX)
 	bolts_fired += 1
 	AudioManager.play_sfx(config.attack.swing_sfx)
+	return true
 
 
 func state_name() -> String:
@@ -256,20 +282,21 @@ func _draw_cone(apex: Vector2) -> void:
 	var full := PackedVector2Array([apex, Vector2(-w, floor_local), Vector2(w, floor_local)])
 	match state:
 		State.LOCK:
-			var a := 0.45
+			draw_colored_polygon(full, Color(RED, LOCK_ALPHA))
 			if not Settings.flash_reduction:
-				a = 0.4 + 0.15 * sin(state_time * TAU * 4.0)
-			draw_colored_polygon(full, Color(RED, a))
+				var pulse := 0.5 + 0.5 * sin(state_time * TAU * LOCK_PULSE_HZ)
+				draw_colored_polygon(full, Color(1, 1, 1, LOCK_PULSE_ALPHA * pulse))
 		State.COOLDOWN, State.RETRACT:
-			draw_colored_polygon(full, Color(AMBER, AMBER.a * 0.5))
+			draw_colored_polygon(full, Color(AMBER, AMBER.a * SPENT_ALPHA_SCALE))
 		_:
 			draw_colored_polygon(full, AMBER)
 			if lock_timer >= WARN_AT:
-				# Red fills down from the apex as the lock builds.
-				var f := clampf(lock_timer / config.lock_time, 0.0, 1.0)
+				# Red fills down from the apex, from nothing at WARN_AT to the
+				# whole cone at lock_time.
+				var f := clampf((lock_timer - WARN_AT) / maxf(config.lock_time - WARN_AT, 0.001), 0.0, 1.0)
 				var depth := apex.lerp(Vector2(0, floor_local), f)
 				var half := w * f
-				draw_colored_polygon(PackedVector2Array([apex, Vector2(-half, depth.y), Vector2(half, depth.y)]), Color(RED, 0.35))
+				draw_colored_polygon(PackedVector2Array([apex, Vector2(-half, depth.y), Vector2(half, depth.y)]), Color(RED, WARN_ALPHA))
 
 
 func _draw_editor() -> void:

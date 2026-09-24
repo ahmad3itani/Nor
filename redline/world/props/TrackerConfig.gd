@@ -14,8 +14,17 @@ extends Resource
 @export var cone_half_width: float = 32.0
 ## Floor height (room y) the cone is drawn down to.
 @export var floor_y: float = 0.0
-## Seconds Rook must stay in the cone (with line of sight) before it locks.
+## Seconds Rook must stand in the cone (with line of sight) before it locks.
 @export var lock_time: float = 1.0
+## Rook counts as standing when |velocity.x| is at or below this (px/s). The
+## lock only builds while he stands: at 150 vs 110 px/s the gap opens at just
+## 40 px/s, so leaving the cone from its centre takes ~0.8 s, and a lock that
+## kept building while he ran would punish the very answer the eye teaches.
+@export var still_speed: float = 20.0
+## Lock seconds bled off per second while he moves inside the cone. Moving on
+## always drains the red fill; a one-frame nudge (~0.03 s of drain) does not
+## cheese it, but a real step does.
+@export var move_drain: float = 2.0
 ## Telegraph: the cone is solid red with a "!" this long before the bolt.
 @export var windup: float = 0.6
 ## After a shot it keeps tracking but cannot lock for this long.
@@ -43,6 +52,10 @@ func validate() -> PackedStringArray:
 		errors.append("tracker speed must be < run speed %d px/s (got %.1f)" % [int(RUN_SPEED), speed])
 	if cooldown < 1.0:
 		errors.append("tracker cooldown must be >= 1.0 s (got %.2f)" % cooldown)
+	if still_speed <= 0.0 or still_speed >= RUN_SPEED:
+		errors.append("tracker still_speed must be in (0, %d) px/s (got %.1f)" % [int(RUN_SPEED), still_speed])
+	if move_drain < 1.0:
+		errors.append("tracker move_drain must be >= 1.0 so moving on bleeds the lock at least as fast as standing builds it (got %.2f)" % move_drain)
 	if cone_half_width <= 0.0:
 		errors.append("tracker cone_half_width must be > 0")
 	if emerge_time < 0.0 or retract_time < 0.0 or sweep_time < 0.0:
