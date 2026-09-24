@@ -11,7 +11,12 @@ extends Resource
 ## written "FromRoom>ToRoom". Drawn as dashed lines instead of doorways.
 @export var transit_links: PackedStringArray = []
 ## Exploring this share of a district's cells sets "map_charted_<district>".
+## The fallback for districts without their own entry below.
 @export_range(0.1, 1.0) var charted_threshold: float = 0.7
+## Per-district chart thresholds, district -> share in (0, 1]. Districts
+## differ in how many of their cells a path can reach at all (tall shafts,
+## sealed walls), so one global share would make some charts impossible.
+@export var district_thresholds: Dictionary = {}
 ## Player pins per profile (bible §20 "player pins").
 @export var max_pins: int = 12
 ## District display names for the map legend.
@@ -23,6 +28,11 @@ func room(room_id: String) -> MapRoomData:
 		if r.room_id() == room_id:
 			return r
 	return null
+
+
+## The share of a district's cells that charts it.
+func threshold_for(district: String) -> float:
+	return float(district_thresholds.get(district, charted_threshold))
 
 
 func rooms_in(district: String) -> Array[MapRoomData]:

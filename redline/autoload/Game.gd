@@ -361,7 +361,7 @@ func map_reveal(room_path: String, local_pos: Vector2) -> void:
 	if room == null:
 		return
 	var flag := "map_charted_%s" % room.district
-	if not has_flag(flag) and MapProgress.district_ratio(state, world_map, room.district) >= world_map.charted_threshold:
+	if not has_flag(flag) and MapProgress.district_ratio(state, world_map, room.district) >= world_map.threshold_for(room.district):
 		set_flag(flag)
 
 

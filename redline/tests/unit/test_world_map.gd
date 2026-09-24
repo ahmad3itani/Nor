@@ -11,6 +11,7 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	Game.world_map = Game.WORLD_MAP
 	Game.new_game()
 
 
@@ -89,6 +90,40 @@ func test_reveal_marks_cells_and_charts_the_district() -> void:
 			y += 96.0
 	check(MapProgress.district_ratio(Game.state, map, "lowlight") > 0.95, "sweep should explore the district")
 	check(Game.has_flag("map_charted_lowlight"), "charted flag should be set past the threshold")
+
+
+## Chart thresholds per district (M7, D8a). The interim Lowlight value keeps
+## Nix's chart as hard as before the four new Lowlight rooms landed: 0.7 of
+## the 1465 pre-M7 cells is 1026 cells, 0.34 of the new 3012 total. D8b
+## replaces both values with measured ones.
+func test_district_thresholds() -> void:
+	check_near(map.threshold_for("lowlight"), 0.34, 0.0001, "interim lowlight threshold")
+	check_near(map.threshold_for("undercity"), 0.5, 0.0001, "undercity threshold")
+	check_near(map.threshold_for("relay"), map.charted_threshold, 0.0001, "districts without an entry use charted_threshold")
+	# Game.map_reveal must read the per-district value, not charted_threshold.
+	# A full sweep of Lowlight reveals 0.999 of it (a few corner cells are
+	# never within reach), so 1.0 is out of reach and 0.9 is not.
+	for pair: Array in [[1.0, false], [0.9, true]]:
+		Game.new_game()
+		var dup := map.duplicate() as WorldMapData
+		dup.district_thresholds = {"lowlight": pair[0]}
+		dup.charted_threshold = 0.1
+		Game.world_map = dup
+		_sweep_district("lowlight")
+		Game.world_map = map
+		check(Game.has_flag("map_charted_lowlight") == pair[1], "threshold %.2f: charted should be %s" % [pair[0], pair[1]])
+
+
+func _sweep_district(district: String) -> void:
+	for r in Game.world_map.rooms_in(district):
+		var b: Rect2 = WorldMapIndex.room_info(r.room_path)["bounds"]
+		var y := b.position.y + 32.0
+		while y < b.end.y:
+			var x := b.position.x + 32.0
+			while x < b.end.x:
+				Game.map_reveal(r.room_path, Vector2(x, y))
+				x += 96.0
+			y += 96.0
 
 
 func test_pins_toggle_and_cap() -> void:
