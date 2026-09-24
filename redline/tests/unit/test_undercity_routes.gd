@@ -168,8 +168,45 @@ func test_harness_close_dialogue() -> void:
 
 
 # --- room tests (one owner per function) ---
+## Wake (bible §42 0-5 min): the forward walk from slab 14. Tap over the
+## cabinet, held jump up the 48 px ward step, the shutter lever, up the
+## grating one-ways onto the walkway (its Scrap), the drop, the east door.
 func test_wake_route() -> void:
-	print("PENDING: Wake")
+	_campaign()
+	await _enter(WAKE, &"start")
+	var ok := await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 720], ["interact"], ["wait", 20],
+		["run", 888], ["jump", 888], ["jump", 968], ["jump", 1050], ["run", 1120], ["run", 1236]])
+	if not ok:
+		return
+	check(Game.has_flag("uc_ward_shutter"), "the lever should set uc_ward_shutter")
+	check(Game.is_collected("sb_uc_wake_walkway"), "the walkway Scrap should be collected on the route")
+	check(bot.player.global_position.x >= 1230.0, "Rook should reach the east door (x %.0f)" % bot.player.global_position.x)
+	_assert_exit(1, UC + "MedicalRuin.tscn", &"from_wake")
+
+
+## The variable-jump reward: the sill 52 px above the ward floor takes a
+## full held jump (56 px peak). From the start entry the cabinet hop comes
+## first (the same two steps as the route).
+func test_wake_sill() -> void:
+	_campaign()
+	await _enter(WAKE, &"start")
+	if await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 560], ["jump", 560], ["wait", 30]]):
+		check(Game.is_collected("sb_uc_wake_sill"), "a full held jump should land the sill Scrap")
+
+
+## Walking in from the Medical Ruin (backtrack, legacy saves): the east lever
+## opens the shutter from that side, and the ward step and sill still work
+## westbound.
+func test_wake_from_east() -> void:
+	_campaign()
+	await _enter(WAKE, &"from_medical")
+	if not await _run([["run", 800], ["interact"], ["wait", 20]]):
+		return
+	check(Game.has_flag("uc_ward_shutter"), "the east lever should set uc_ward_shutter")
+	var shutter := SceneRouter.current_room.find_child("WardShutter", true, false) as Gate
+	check(shutter != null and not shutter.closed, "the WardShutter should be open")
+	if await _run([["run", 660], ["jump", 600], ["run", 560], ["jump", 560], ["wait", 30]]):
+		check(Game.is_collected("sb_uc_wake_sill"), "the sill should be reachable from the east")
 
 
 ## Bible §42 0-5 min: the rack arms an unarmed Rook, the first chain kills
