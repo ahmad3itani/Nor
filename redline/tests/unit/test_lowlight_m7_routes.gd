@@ -174,12 +174,15 @@ func test_power_block_route() -> void:
 	var passes: Array = []
 	var on_pass := func(id: String, margin: float) -> void: passes.append([id, margin, player.is_low])
 	EventBus.shutter_passed.connect(on_pass)
+	# Shafts B and D: the top step sits 32 px under the floor's lip, too low for
+	# Rook to walk east under it, so the bot takes the zigzag steps west first.
 	var ok := await _run([
-		["run", 680], ["attack", 1], ["run", 990], ["wait", 30],                           # L0: B1, S1, down shaft A
-		["run", 440], ["attack", 1], ["run", -20], ["wait", 20],                                        # L1: B2, the clock through S2, down shaft B
-		["runjump", 396, 520], ["run", 700], ["shoot", 1, "up"], ["run", 990],              # L2: trench, high B3, S3, down shaft C
-		["run", 800], ["attack", 1], ["run", 594], ["slide", 500], ["run", 402], ["slide", 330], ["run", -20], ["wait", 20],   # L3: B4, S4a, duct, S4b low
-		["run", 880], ["interact"], ["run", 960],                                           # L4: reroute, StationGate
+		["run", 680], ["attack", 1], ["run", 990], ["wait", 30],                   # L0: B1, S1, down shaft A
+		["run", 440], ["attack", 1], ["run", -20], ["wait", 20],                   # L1: B2, the clock through S2, down shaft B
+		["runjump", 396, 520], ["run", 700], ["shoot", 1, "up"], ["run", 990],     # L2: trench, high B3, S3, down shaft C
+		["run", 800], ["attack", 1], ["run", 594], ["slide", 500],                 # L3: B4, S4a, the duct slot
+		["run", 402], ["slide", 330], ["run", -20], ["wait", 20],                  # S4b low, down shaft D
+		["run", 880], ["interact"], ["run", 960],                                  # L4: reroute, StationGate
 	])
 	EventBus.shutter_passed.disconnect(on_pass)
 	if not ok:
