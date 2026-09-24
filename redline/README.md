@@ -4,7 +4,7 @@ A high-speed 2D pixel-art action platformer set in the megacity of Veyra, built 
 **Movement is life. Violence buys time. Curiosity reveals the truth.**
 
 - Design source of truth: [`Docs/DESIGN_BIBLE.md`](Docs/DESIGN_BIBLE.md)
-- Current milestone: **M4 Validation**. The playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
+- Current milestone: **M5 World Framework** ([`Docs/M5_WORLD_FRAMEWORK_REPORT.md`](Docs/M5_WORLD_FRAMEWORK_REPORT.md), [`ECONOMY`](Docs/ECONOMY.md)): map, transit, Nix, NPC/world state, economy audit. **M4 Validation:** the playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
 - **All art and audio are placeholders** (D-026). Final assets must follow [`Docs/ART_BIBLE.md`](Docs/ART_BIBLE.md).
 - Project logs: [`DECISIONS`](Docs/DECISIONS.md) · [`CHANGELOG`](Docs/CHANGELOG.md) · [`TODO`](Docs/TODO.md) · [`KNOWN_ISSUES`](Docs/KNOWN_ISSUES.md) · [`CIRCUITS`](Docs/CIRCUITS.md)
 
@@ -45,12 +45,12 @@ audio/       MusicSynth (procedural stems)
 playtest/    PlaytestSession, PlaytestConfig, PlaytestVariant, SurveyQuestion, PlaytestAnalyzer (M4)
 player/      controller/ (Player, config, input, FSM), states/, combat/, reactor/, style/, animation/, abilities/
 enemies/     base/ (Enemy, EnemyData, EnemyBehavior, EncounterDirector), behaviors/, variants/*.tscn
-world/       rooms/ (Room, labs, lowlight/*.tscn), anchors/, transitions/, districts/, props/, hazards/, camera/, graybox/
-data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, playtest/, catalog.tres
-ui/          debug/ (overlay, tuning panel), hud/, menus/, dialogue/
+world/       rooms/ (Room, labs, lowlight/*.tscn), map/ (world map data, fog, index), anchors/, transitions/, districts/, props/, hazards/, camera/, graybox/
+data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, playtest/, world/, catalog.tres
+ui/          debug/ (overlay, tuning panel), hud/, menus/, dialogue/, map/
 vfx/         dust, hit sparks, slash arcs
 tests/       TestRunner + unit/test_*.gd + fixtures/
 devtools/    lab controllers, movement probe, perf probe, capture tour, route bot
-Docs/        bible, Art Bible, M1–M4 reports, playtest kit, Circuits, decision/changelog/todo/issue logs
+Docs/        bible, Art Bible, M1–M5 reports, playtest kit, Circuits, Economy, decision/changelog/todo/issue logs
 ```
 Folders from the bible's architecture that later milestones will fill are kept with `.gitkeep`.

@@ -36,4 +36,9 @@
 | K-32 | Playtest | The first frames after a room load include one-off loading spikes (e.g. one 55 ms frame entering the Warden Tower in a bot run). | Low | Repeated spikes are the problem; singles on entry are expected. |
 | K-33 | Playtest | A crash keeps the session up to the last autosave (every 20 s, and on every death). | Info | `autosave_interval` in `PlaytestConfig`. |
 | K-34 | Playtest | No exported build is committed: `export_presets.cfg` stays gitignored, and export templates must be installed in the editor. | Info | Steps in `PLAYTEST_KIT.md` §2. |
+| K-35 | Map | The map redraws every explored cell and geometry piece each frame. Fine for 7 rooms; with many districts it should be cached. | Low | TODO. |
+| K-36 | Map | The cursor pans freely; it doesn't snap to rooms or icons. At the widest zoom, small icons overlap. | Low | Human check. |
+| K-37 | Map | The labs have no map (the map is world rooms only). | Info | By design. |
+| K-38 | Transit | Travel starts only from an Anchor menu, not from the map (D-047). | Low | Design call. |
+| K-39 | Tools | The slice's room `.tscn` files were produced by a Python generator that isn't committed. The scenes are the source of truth and editable in Godot, but bulk layout edits are manual until M6 tooling. | Medium | M6 content pipeline. |
 

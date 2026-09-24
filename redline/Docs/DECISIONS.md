@@ -201,3 +201,43 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 ## D-043: Damage carries its source
 - `PlayerCombat.take_damage()` gets a `source` string ("needle/needle_stab", "hazard", "pit", "burnout"), kept as `last_damage_source`. Telemetry reads it on `player_damaged` and `player_died`. No new coupling: combat doesn't know telemetry exists.
 
+---
+
+# M5: World Framework
+
+## D-044: M5 started before the §44 playtest (FLAG: process)
+- Bible §44 says not to scale production before external playtesters pass the slice. You asked for M5 while the M4 playtest is still pending.
+- **Decision:** build the M5 *framework* (systems) on top of the existing slice, and add only what it needs to be exercised: one NPC (Nix), one quest, set dressing and Scrap stashes. No new rooms or districts. The playtest kit covers the new systems, so one round tests both.
+
+## D-045: The map is data plus the room scenes themselves
+- `data/world/world_map.tres` holds one offset per room. Everything drawn comes from the room scenes via `WorldMapIndex`. Tests prove exits and entries meet on the map and rooms don't overlap. Lifts are declared transit links.
+- This fits M6 (content pipeline): a new room only needs an offset.
+
+## D-046: Fog of discovery rules
+- 64 px cells, revealed within 112 px of Rook. Outlines are known once a room is visited or its district's base map is owned. Geometry and Anchor/gate icons appear only in explored cells. NPC and boss pins appear once the room is visited.
+- This follows bible §20: "Nix provides base maps; exploration fills detail."
+
+## D-047: Transit needs Nix's pass and starts at Anchors (FLAG, low)
+- Bible §7 says Anchors "later [permit] fast travel", and §13 gives Nix "transit". Transit costs a 60-Scrap pass. It goes from any Anchor menu to any Anchor you've rested at, and arriving counts as resting there (it sets the respawn point).
+- **Open question:** free with the first Anchor instead? Also allow travelling from the map?
+
+## D-048: Secret hints show a count per room, never a position
+- The Surveyor's lens (Nix, or the Chart Lowlight reward) draws "?n" at the centre of each room that still hides n secrets. Bible §20: "indicate that something remains undiscovered without giving exact coordinates."
+
+## D-049: Economy targets (FLAG: numbers)
+- These are tested in `test_economy`:
+  - a thorough first run covers 45–85% of all stock (currently 59%);
+  - the essentials are affordable early;
+  - a full re-clear of respawning enemies pays at most 15% of stock.
+- To reach this, walls and secret spots now hold Scrap, instead of prices being cut. See `ECONOMY.md`.
+
+## D-050: NPC state = talk counts + conditions; world state = switches
+- `talks_<npc>` counts conversations. Dialogue rules accept `Game.check_condition` expressions (`atleast:`, `ability:`, `collected:`, `flag:`, `!`). `WorldStateSwitch` shows set dressing by condition, so the Relay visibly changes with progress (bible §13).
+- Relationship values, choices and branching arcs belong to M8 (narrative).
+
+## D-051: The map shares the pad View button with the lab reset (FLAG, low)
+- The `map` action is M / pad View. In the labs, View also resets; the map opens only in world rooms, so they never both fire in one place. Keyboard and controller parity holds (`test_input_map`).
+
+## D-052: New folders `world/map/` and `ui/map/` (low risk)
+- The bible's §31 layout has no map folder. Map data and logic live in `world/map/` (with the rooms), and drawing lives in `ui/map/`.
+

@@ -9,7 +9,7 @@
   - Keep keyboard and controller parity.
   - Commit in small logical units.
   - Flag conflicts with the bible in `Docs/DECISIONS.md` instead of silently changing the design.
-- Current state: M0–M3 are done; M4 (validation) tooling is done and **waiting for a human playtest** (`Docs/PLAYTEST_KIT.md`). When session files or a report come back, the next step is data-driven changes per failing §44 line (flag each in DECISIONS). **Do not start M5 or later unless the user asks.**
+- Current state: M0–M3 and M5 (world framework) are done; M4 (validation) tooling is done and **waiting for a human playtest** (`Docs/PLAYTEST_KIT.md`). When session files or a report come back, the next step is data-driven changes per failing §44 line (flag each in DECISIONS). **Do not start M6 or later unless the user asks.**
 - Art and audio are procedural placeholders (D-026). Don't mass-produce final assets; anything final must follow `Docs/ART_BIBLE.md`.
 - Keep `Docs/DECISIONS.md`, `CHANGELOG.md`, `TODO.md` and `KNOWN_ISSUES.md` up to date.
 
@@ -39,3 +39,4 @@ godot --headless res://devtools/PlaytestReport.tscn -- --in=/abs/sessions --out=
 - **Rooms:** after any layout change to `world/rooms/lowlight/*.tscn`, update the `RouteBot` steps in `tests/unit/test_slice_routes.gd` and run the `slice_routes` and `slice_world` tests. Level metrics: a jump rises 56.4 px (use ≤ 48 px steps), and a run-jump spans about 100 px centre to centre. A node name duplicated in a `.tscn` leaks bodies.
 - **Pitfall:** a `preload()`ed const's typed-property assignment can fail to parse in 4.3; `load()` at runtime instead.
 - **Playtest (M4):** `autoload/Playtest.gd` only listens to EventBus; gameplay must never depend on it. New things worth measuring get an explicit EventBus signal and a recorder handler, then a line in `PlaytestAnalyzer`. Experiments are `PlaytestVariant` data applied to a copy. Headless runs never record unless a test sets `Playtest.allow_headless` and a temp `Playtest.dir`. Recording is local only; never add networking.
+- **Map (M5):** a new room needs an entry in `data/world/world_map.tres` (offset so its exits meet neighbours; `test_world_map` checks). Map icons come from the room scene itself (`WorldMapIndex`); use `MapMarker` only for things no node implies (ability gates). World consequences use `WorldStateSwitch` + `Game.check_condition`. Run `--filter=economy` after changing any price or drop.

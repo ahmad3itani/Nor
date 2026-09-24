@@ -1,6 +1,16 @@
 # REDLINE TODO
 
-## Now: run the M4 playtest (humans)
+## Now: humans (M4 playtest now also covers M5)
+- [ ] Run the playtest (`PLAYTEST_KIT.md`). Also watch whether testers open the map, where, and whether pins and transit get used.
+- [ ] Confirm or overrule D-044 (M5 before §44), D-047 (transit gating), D-049 (economy targets) and D-051 (View button).
+
+## M5 follow-ups
+- [ ] Cache the map drawing into a texture once there are many districts (K-35).
+- [ ] Travel from the map screen, if D-047 says so.
+- [ ] Commit real room-authoring tooling in M6. The slice rooms were made with an uncommitted generator (K-39).
+- [ ] Saved Circuit loadout presets (bible §11), once there are more Circuits.
+
+## M4 playtest (humans)
 - [ ] Recruit 5–8 external testers (2+ on a controller, 1+ non-dev machine) and run sessions as described in `PLAYTEST_KIT.md`.
 - [ ] Collect the `session_*.json` files and note sheets, then run `devtools/PlaytestReport.tscn`.
 - [ ] Confirm or overrule D-038 to D-041 (especially D-039 recording default and D-041 §44 thresholds).

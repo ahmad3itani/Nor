@@ -1,5 +1,43 @@
 # REDLINE Changelog
 
+## 0.5.0-m5: World Framework
+
+Bible §36 M5, built on the existing slice (D-044). Report: `M5_WORLD_FRAMEWORK_REPORT.md`. Economy: `ECONOMY.md`.
+
+### Map (bible §20)
+- `world/map/`: WorldMapData (room offsets, transit links, rules), WorldMapIndex (reads rooms), MapProgress (fog cells), MapMarker.
+- Map screen (M / pad View, or the pause menu):
+  - fog;
+  - outlines from visits or the base map;
+  - Anchors, NPC pins, bosses, gates, ability gates;
+  - quest notes, pins, the dropped cache, transit lines;
+  - district completion;
+  - pan, zoom and pin.
+
+### World
+- **Nix, the cartographer:** base map, transit pass, Surveyor's lens.
+- **Chart Lowlight** quest. Dead Air gets map notes.
+- **Transit** between rested Anchors, from the Anchor menu.
+- **NPC state:** talk counts, and condition rules in dialogue.
+- **WorldStateSwitch:** the Relay gains a radio mast, Krail's banner and Nix's city map as you progress.
+- The journal shows district completion.
+
+### Economy
+- `EconomyAudit` and `test_economy`.
+- Walls and four secret spots now hold Scrap, raising first-run coverage from 35% to 59%.
+
+### Save
+- Schema v3: explored bitsets, pins and Anchors rested, with a v2 → v3 migration.
+
+### Telemetry
+- Map opens, pins and fast travel are recorded. The report shows map opens per room.
+
+### Fixed
+- Quest rewards that set flags re-entered completion and paid out twice.
+
+### Tests
+- 166 (20 new).
+
 ## 0.4.0-m4: Validation tooling (awaiting the human playtest)
 
 Bible §36 M4 instrumentation. The playtest itself needs external testers (D-038). Report: `M4_VALIDATION_REPORT.md`. Kit: `PLAYTEST_KIT.md`.
