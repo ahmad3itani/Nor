@@ -71,6 +71,11 @@ signal boss_defeated(boss_id: String)
 ## The vertical slice's ending beat (Relay after the boss): stats card.
 signal slice_completed
 
+# M5 world framework.
+signal map_pins_changed
+signal fast_traveled(from_key: String, to_key: String)
+signal map_opened
+
 # M4 playtest instrumentation.
 signal item_purchased(shop_id: StringName, item_id: String, price: int)
 ## Settings changed in the menu (overlay visibility, volumes).

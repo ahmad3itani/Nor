@@ -69,6 +69,7 @@ func _enter_world(carry: Dictionary) -> void:
 	var path := SceneRouter.current_room_path
 	if not Game.state.visited_rooms.has(path):
 		Game.state.visited_rooms.append(path)
+	Game.map_reveal(path, player.position + Vector2(0, -16))
 	var drop := Game.state.dropped_scrap
 	if drop.get("room", "") == path and int(drop.get("amount", 0)) > 0:
 		var cache := ScrapCache.new()
@@ -100,6 +101,9 @@ func _physics_process(_delta: float) -> void:
 		return
 	if player.global_position.y > bounds.end.y + kill_margin:
 		_pit_fall()
+	# Fog of discovery: a few times a second is plenty at run speed.
+	if Engine.get_physics_frames() % 6 == 0:
+		Game.map_reveal(SceneRouter.current_room_path, player.global_position - global_position + Vector2(0, -16))
 
 
 ## Pits hurt but never send you back to an Anchor (bible §2.8 fast recovery).

@@ -9,7 +9,7 @@ extends Node
 ## - If the primary file is corrupt, the backup is tried before giving up.
 ## Since M3 the payload is GameState.to_dict() plus "schema_version".
 
-const CURRENT_SCHEMA_VERSION := 2
+const CURRENT_SCHEMA_VERSION := 3
 const DEFAULT_SAVE_DIR := "user://saves"
 
 var save_dir: String = DEFAULT_SAVE_DIR
@@ -74,6 +74,8 @@ func migrate(data: Dictionary) -> Dictionary:
 				result = _migrate_v0_to_v1(result)
 			1:
 				result = _migrate_v1_to_v2(result)
+			2:
+				result = _migrate_v2_to_v3(result)
 			_:
 				push_error("SaveManager: no migration from schema %d" % version)
 				return {}
@@ -102,6 +104,22 @@ func _migrate_v1_to_v2(data: Dictionary) -> Dictionary:
 	out["play_time_sec"] = float(stats.get("play_time_sec", 0.0))
 	out["deaths"] = int(stats.get("deaths", 0))
 	out["schema_version"] = 2
+	return out
+
+
+## v3 (M5) adds the map: explored cells, pins and the Anchors rested at.
+## Old saves keep every room they visited (outlines stay known through
+## visited_rooms) and their respawn Anchor joins the transit network.
+func _migrate_v2_to_v3(data: Dictionary) -> Dictionary:
+	var out := data.duplicate(true)
+	out["map_explored"] = out.get("map_explored", {})
+	out["map_pins"] = out.get("map_pins", [])
+	var rested: Array = out.get("anchors_rested", [])
+	var room := str(out.get("last_anchor_room", ""))
+	if room != "" and not rested.has("%s|%s" % [room, out.get("last_anchor_id", "")]):
+		rested.append("%s|%s" % [room, out.get("last_anchor_id", "")])
+	out["anchors_rested"] = rested
+	out["schema_version"] = 3
 	return out
 
 

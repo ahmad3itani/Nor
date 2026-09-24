@@ -37,6 +37,12 @@ var equipped_circuits: Array[String] = []
 
 var last_anchor_room: String = ""
 var last_anchor_id: String = ""
+## Every Anchor rested at, as "room_path|anchor_id": the transit network (M5).
+var anchors_rested: Array[String] = []
+## Fog of discovery: room id -> bitset of explored cells (MapProgress).
+var map_explored: Dictionary = {}
+## Player map pins: {"room": room_id, "x": float, "y": float}.
+var map_pins: Array = []
 var visited_rooms: Array[String] = []
 var play_time_sec: float = 0.0
 var deaths: int = 0
@@ -76,6 +82,9 @@ func to_dict() -> Dictionary:
 		"equipped_circuits": equipped_circuits.duplicate(),
 		"last_anchor_room": last_anchor_room,
 		"last_anchor_id": last_anchor_id,
+		"anchors_rested": anchors_rested.duplicate(),
+		"map_explored": _explored_to_json(),
+		"map_pins": map_pins.duplicate(true),
 		"visited_rooms": visited_rooms.duplicate(),
 		"play_time_sec": play_time_sec,
 		"deaths": deaths,
@@ -102,7 +111,21 @@ static func from_dict(d: Dictionary) -> GameState:
 	s.equipped_circuits.assign(d.get("equipped_circuits", []))
 	s.last_anchor_room = str(d.get("last_anchor_room", ""))
 	s.last_anchor_id = str(d.get("last_anchor_id", ""))
+	s.anchors_rested.assign(d.get("anchors_rested", []))
+	var explored: Dictionary = d.get("map_explored", {})
+	for id: String in explored:
+		s.map_explored[id] = Marshalls.base64_to_raw(str(explored[id]))
+	s.map_pins = (d.get("map_pins", []) as Array).duplicate(true)
 	s.visited_rooms.assign(d.get("visited_rooms", []))
 	s.play_time_sec = float(d.get("play_time_sec", 0.0))
 	s.deaths = int(d.get("deaths", 0))
 	return s
+
+
+## Bitsets go to JSON as base64 (compact, and JSON has no byte arrays).
+func _explored_to_json() -> Dictionary:
+	var out := {}
+	for id: String in map_explored:
+		out[id] = Marshalls.raw_to_base64(map_explored[id])
+	return out
+

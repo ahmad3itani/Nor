@@ -4,6 +4,7 @@ extends Node
 ## here instead of touching the state dictionary directly.
 
 const CATALOG := preload("res://data/catalog.tres")
+const WORLD_MAP := preload("res://data/world/world_map.tres")
 const START_ROOM := "res://world/rooms/lowlight/Relay.tscn"
 const START_ENTRY := &"start"
 
@@ -12,6 +13,7 @@ var abilities: PlayerAbilities = PlayerAbilities.new()
 var state: GameState = GameState.new()
 var profile_id: int = 1
 var catalog: ItemCatalog = CATALOG
+var world_map: WorldMapData = WORLD_MAP
 var quests: QuestTracker
 
 
@@ -101,6 +103,27 @@ func has_flag(id: String) -> bool:
 
 func flag_int(id: String) -> int:
 	return int(state.flags.get(id, 0))
+
+
+## Small condition language shared by map markers and world-state switches:
+## "flag:x", "ability:dash", "collected:id", "" (always true); prefix "!" to
+## negate. Keeps world consequences in data instead of one-off scripts.
+func check_condition(expr: String) -> bool:
+	if expr == "":
+		return true
+	if expr.begins_with("!"):
+		return not check_condition(expr.substr(1))
+	var kind := expr.get_slice(":", 0)
+	var arg := expr.get_slice(":", 1)
+	match kind:
+		"flag":
+			return has_flag(arg)
+		"ability":
+			return arg in abilities and bool(abilities.get(arg))
+		"collected":
+			return is_collected(arg)
+	push_warning("Game.check_condition: unknown condition '%s'" % expr)
+	return false
 
 
 func all_flags(ids: PackedStringArray) -> bool:
@@ -232,6 +255,9 @@ func mark_collected(id: String) -> void:
 ## Resting: bank scrap, set the respawn point, save. Health/injector/core refill
 ## is applied to the live player by the Anchor itself.
 func rest_at_anchor(room_path: String, anchor_id: String) -> void:
+	var key := "%s|%s" % [room_path, anchor_id]
+	if not state.anchors_rested.has(key):
+		state.anchors_rested.append(key)
 	state.scrap_banked += state.scrap_unbanked
 	state.scrap_unbanked = 0
 	state.last_anchor_room = room_path
@@ -269,3 +295,60 @@ func respawn_room() -> String:
 
 func respawn_entry() -> StringName:
 	return StringName(state.last_anchor_id) if state.last_anchor_id != "" else START_ENTRY
+
+
+# --- Map and transit (bible §20, M5) ----------------------------------------------------
+
+## Called by the current room as Rook moves: clears fog around him and sets
+## "map_charted_<district>" once enough of a district has been explored.
+func map_reveal(room_path: String, local_pos: Vector2) -> void:
+	if MapProgress.reveal(state, world_map, room_path, local_pos) == 0:
+		return
+	var room := world_map.room(room_path.get_file().get_basename())
+	if room == null:
+		return
+	var flag := "map_charted_%s" % room.district
+	if not has_flag(flag) and MapProgress.district_ratio(state, world_map, room.district) >= world_map.charted_threshold:
+		set_flag(flag)
+
+
+## Toggles a player pin near (room, pos): removes one within `radius`,
+## otherwise adds one if under the limit. Returns true if a pin now exists.
+func toggle_pin(room_id: String, pos: Vector2, radius: float = 48.0) -> bool:
+	for i in state.map_pins.size():
+		var p: Dictionary = state.map_pins[i]
+		if p["room"] == room_id and Vector2(float(p["x"]), float(p["y"])).distance_to(pos) <= radius:
+			state.map_pins.remove_at(i)
+			EventBus.map_pins_changed.emit()
+			return false
+	if state.map_pins.size() >= world_map.max_pins:
+		return false
+	state.map_pins.append({"room": room_id, "x": pos.x, "y": pos.y})
+	EventBus.map_pins_changed.emit()
+	return true
+
+
+## Transit (bible §13 Nix, §7 Anchors "later fast travel"): once the pass is
+## owned, any Anchor rested at is a destination from any other Anchor.
+func transit_unlocked() -> bool:
+	return has_flag("transit_pass")
+
+
+func transit_destinations(exclude_room: String = "", exclude_id: String = "") -> Array[String]:
+	var out: Array[String] = []
+	for key in state.anchors_rested:
+		if key != "%s|%s" % [exclude_room, exclude_id]:
+			out.append(key)
+	return out
+
+
+## Travel to a rested Anchor: it becomes the respawn point (you rested there
+## on arrival), then the room loads at that Anchor's spawn.
+func travel_to(key: String) -> void:
+	var room := key.get_slice("|", 0)
+	var anchor := key.get_slice("|", 1)
+	var from := "%s|%s" % [state.last_anchor_room, state.last_anchor_id]
+	rest_at_anchor(room, anchor)
+	EventBus.fast_traveled.emit(from, key)
+	SceneRouter.transition_to(room, StringName(anchor))
+

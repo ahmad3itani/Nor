@@ -5,6 +5,8 @@ extends Resource
 @export var npc_id: String = ""
 @export var display_name: String = ""
 @export var color: Color = Color("9a8fb5")
+## Role shown on the map's NPC pins ("Mechanic"); empty = no pin.
+@export var map_label: String = ""
 @export var rules: Array[NpcDialogueRule] = []
 
 
