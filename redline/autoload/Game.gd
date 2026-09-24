@@ -7,6 +7,8 @@ const CATALOG := preload("res://data/catalog.tres")
 const WORLD_MAP := preload("res://data/world/world_map.tres")
 const START_ROOM := "res://world/rooms/lowlight/Relay.tscn"
 const START_ENTRY := &"start"
+## How a New Game begins (campaign vs legacy slice start, D-063).
+const ONBOARDING := preload("res://data/world/onboarding.tres")
 
 ## Session abilities (Movement/Combat Lab toggles and world unlocks share this).
 var abilities: PlayerAbilities = PlayerAbilities.new()
@@ -14,6 +16,8 @@ var state: GameState = GameState.new()
 var profile_id: int = 1
 var catalog: ItemCatalog = CATALOG
 var world_map: WorldMapData = WORLD_MAP
+## Overridable so tests can run a campaign start without touching data.
+var onboarding: OnboardingConfig = ONBOARDING
 var quests: QuestTracker
 
 
@@ -42,6 +46,27 @@ func new_game() -> void:
 	state = GameState.new()
 	abilities = PlayerAbilities.new()
 	EventBus.game_state_reset.emit()
+
+
+## New Game from the title (bible §42): the campaign start once the Undercity
+## is live (unarmed, Core readout hidden), otherwise exactly new_game().
+func start_campaign() -> void:
+	new_game()
+	if not onboarding.enforce:
+		return
+	state.owned_weapons.assign(onboarding.start_owned_weapons)
+	state.melee_weapon = onboarding.start_melee
+	state.ranged_weapon = onboarding.start_ranged
+	for f: String in onboarding.start_flags:
+		set_flag(f, onboarding.start_flags[f])
+
+
+func campaign_start_room() -> String:
+	return onboarding.campaign_start_room if onboarding.enforce else START_ROOM
+
+
+func campaign_start_entry() -> StringName:
+	return onboarding.campaign_start_entry if onboarding.enforce else START_ENTRY
 
 
 func load_game(p_profile: int = 1) -> bool:
@@ -224,11 +249,22 @@ func grant_circuit(id: String) -> void:
 	EventBus.circuit_granted.emit(id)
 
 
+## The only source of the "WEAPON ACQUIRED" banner. A weapon found while its
+## slot is empty (the unarmed campaign start) is equipped on the spot, so the
+## live player can use it immediately; a full slot is left as the player set it.
 func grant_weapon(id: String) -> void:
 	if id == "" or state.owned_weapons.has(id):
 		return
 	state.owned_weapons.append(id)
 	var w := catalog.weapon(id)
+	if w:
+		var melee := w.kind == WeaponData.Kind.MELEE
+		if melee and state.melee_weapon == "":
+			state.melee_weapon = id
+			EventBus.loadout_changed.emit()
+		elif not melee and state.ranged_weapon == "":
+			state.ranged_weapon = id
+			EventBus.loadout_changed.emit()
 	EventBus.hint_requested.emit("WEAPON ACQUIRED  —  %s" % (w.display_name if w else id), 3.0)
 	EventBus.weapon_granted.emit(id)
 
@@ -291,12 +327,27 @@ func recover_dropped_scrap() -> int:
 	return amount
 
 
+## Pre-Anchor respawn (D-063): until the first rest, the last room entry (or
+## mid-room EntryCheckpoint) is the respawn point, so an early death never
+## sends a new player back to the title start. Ignored once an Anchor is set.
+func note_room_entry(path: String, entry: StringName) -> void:
+	if state.last_anchor_room != "":
+		return
+	state.last_entry_room = path
+	state.last_entry_id = String(entry)
+
+
+## Anchor first, then the pre-Anchor entry, then the slice start.
 func respawn_room() -> String:
-	return state.last_anchor_room if state.last_anchor_room != "" else START_ROOM
+	if state.last_anchor_room != "":
+		return state.last_anchor_room
+	return state.last_entry_room if state.last_entry_room != "" else START_ROOM
 
 
 func respawn_entry() -> StringName:
-	return StringName(state.last_anchor_id) if state.last_anchor_id != "" else START_ENTRY
+	if state.last_anchor_room != "":
+		return StringName(state.last_anchor_id) if state.last_anchor_id != "" else START_ENTRY
+	return StringName(state.last_entry_id) if state.last_entry_room != "" else START_ENTRY
 
 
 # --- Map and transit (bible §20, M5) ----------------------------------------------------

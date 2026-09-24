@@ -86,6 +86,7 @@ func _enter_world(carry: Dictionary) -> void:
 	EventBus.room_leaving.connect(_on_room_leaving)
 	EventBus.loadout_changed.connect(_on_loadout_changed)
 	EventBus.room_entered.emit(district_name, room_name)
+	Game.note_room_entry(SceneRouter.current_room_path, active_spawn().spawn_id)
 
 
 func _on_loadout_changed() -> void:

@@ -37,6 +37,10 @@ var equipped_circuits: Array[String] = []
 
 var last_anchor_room: String = ""
 var last_anchor_id: String = ""
+## Pre-Anchor respawn point (D-063): the last room entry or EntryCheckpoint
+## reached before the first rest. Unused once an Anchor is set.
+var last_entry_room: String = ""
+var last_entry_id: String = ""
 ## Every Anchor rested at, as "room_path|anchor_id": the transit network (M5).
 var anchors_rested: Array[String] = []
 ## Fog of discovery: room id -> bitset of explored cells (MapProgress).
@@ -82,6 +86,8 @@ func to_dict() -> Dictionary:
 		"equipped_circuits": equipped_circuits.duplicate(),
 		"last_anchor_room": last_anchor_room,
 		"last_anchor_id": last_anchor_id,
+		"last_entry_room": last_entry_room,
+		"last_entry_id": last_entry_id,
 		"anchors_rested": anchors_rested.duplicate(),
 		"map_explored": _explored_to_json(),
 		"map_pins": map_pins.duplicate(true),
@@ -111,6 +117,9 @@ static func from_dict(d: Dictionary) -> GameState:
 	s.equipped_circuits.assign(d.get("equipped_circuits", []))
 	s.last_anchor_room = str(d.get("last_anchor_room", ""))
 	s.last_anchor_id = str(d.get("last_anchor_id", ""))
+	# Optional keys default like the rest: no schema bump needed (D-087).
+	s.last_entry_room = str(d.get("last_entry_room", ""))
+	s.last_entry_id = str(d.get("last_entry_id", ""))
 	s.anchors_rested.assign(d.get("anchors_rested", []))
 	var explored: Dictionary = d.get("map_explored", {})
 	for id: String in explored:

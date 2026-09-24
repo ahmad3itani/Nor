@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OnboardingConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/OnboardingConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+enforce = false
+campaign_start_room = "res://world/rooms/lowlight/Relay.tscn"
+campaign_start_entry = &"start"
+start_owned_weapons = PackedStringArray()
+start_melee = ""
+start_ranged = ""
+start_flags = {
+"core_hud_hidden": true
+}
+title_subtitle = "vertical slice  —  Lowlight"
