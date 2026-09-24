@@ -523,8 +523,154 @@ func test_first_pursuit_post_win() -> void:
 	check(live != null and not live.visible, "the red hatch ring should go dark after the boss")
 
 
+## BrokenLift: the shaft foot to the top of climb 2 (climb 1, Landing 1 and
+## the Needle in FZ1, climb 2); the rest leaves FZ1 for Landing 2, climb 3 and
+## the Top Landing past the uc_lift Anchor to the arena door.
+const BROKEN_LIFT := UC + "BrokenLift.tscn"
+const BROKEN_LIFT_TO_CLIMB2 := [
+	["run", 460], ["jump", 460], ["jump", 540], ["jump", 460], ["jump", 380], ["run", 200], ["attack", 3],
+	["run", 180], ["jump", 180], ["jump", 100], ["jump", 180],
+]
+const BROKEN_LIFT_TO_DOOR := [
+	["jump", 262], ["run", 350], ["jump", 350], ["jump", 270], ["jump", 350], ["jump", 430], ["run", 600],
+]
+
+
+## The plain route (Needle pacified, no resting: the Anchor opens UI) ends at
+## the arena door and walks through it into the Collector Bay.
 func test_broken_lift_route() -> void:
-	print("PENDING: BrokenLift")
+	_campaign(true)
+	await _enter(BROKEN_LIFT, &"from_pursuit")
+	check(Game.state.last_entry_room == BROKEN_LIFT and Game.state.last_entry_id == "from_pursuit", "pre-Anchor respawn should record the shaft foot")
+	_assert_exit(-1, UC + "FirstPursuit.tscn", &"from_lift")
+	if not await _run(BROKEN_LIFT_TO_CLIMB2 + BROKEN_LIFT_TO_DOOR):
+		return
+	var p := bot.player
+	check(p.global_position.y < -570.0 and p.is_on_floor(), "should stand on the Top Landing (at %s)" % p.global_position.round())
+	check(not Game.has_flag("core_hud_hidden") and Game.has_flag("hint_first_flow"), "walking through FZ1 should reveal the Core")
+	_assert_exit(1, UC + "CollectorBay.tscn", &"from_lift")
+	if await _run([["exit", 1]]):
+		check(SceneRouter.current_room.name == "CollectorBay", "the east door leads to the Collector Bay")
+
+
+## Curiosity: dropping east off climb 2's top step lands on the car roof and
+## its Scrap.
+func test_lift_car() -> void:
+	_campaign(true)
+	await _enter(BROKEN_LIFT, &"from_pursuit")
+	if not await _run(BROKEN_LIFT_TO_CLIMB2 + [["run", 264], ["wait", 20]]):
+		return
+	check(Game.is_collected("sb_uc_lift_car"), "the lift-car roof Scrap should be collected (Rook at %s)" % bot.player.global_position.round())
+	check(bot.player.global_position.y > -290.0 and bot.player.global_position.y < -270.0, "Rook should stand on the car roof (at %s)" % bot.player.global_position.round())
+
+
+## The Core lesson at a slow pace: 20 s inside FZ1 in Normal mode with the
+## Needle live. Rook walks toward it on Landing 1 and fights it there (light
+## chains until it drops), then dawdles on the landing before climb 2; the
+## Core never falls to critical (25). The first entry reveals the Core bar.
+func test_fz1_pace() -> void:
+	_campaign(true)
+	check(Game.has_flag("core_hud_hidden"), "the Core bar starts hidden")
+	await _enter(BROKEN_LIFT, &"from_pursuit", false)
+	var p := bot.player
+	p.reactor.apply_mode(0)
+	p.reactor.charge = 70.0
+	# Frames spent in FZ1 and the lowest charge seen there (arrays: lambdas
+	# capture by value).
+	var inside := [0]
+	var lowest := [100.0]
+	var sample := func() -> void:
+		if is_instance_valid(p) and p.reactor.in_flow():
+			inside[0] += 1
+			lowest[0] = minf(lowest[0], p.reactor.charge)
+	get_tree().physics_frame.connect(sample)
+	var needle := SceneRouter.current_room.find_child("Needle1", true, false) as Enemy
+	# Up climb 1, then a few steps west until the Needle (160 px aggro) wakes.
+	var ok: bool = await _run(BROKEN_LIFT_TO_CLIMB2.slice(0, 5) + [["run", 300]])
+	# Fight it where it stands: close in, face it, and chain light attacks
+	# until it drops (a live Needle steps and lunges, so a fixed script
+	# would whiff).
+	var input := bot.input
+	var since_swing := 99
+	for i in 900:
+		if not ok or not is_instance_valid(needle) or needle.is_dead() or not is_instance_valid(p):
+			break
+		var dx := needle.global_position.x - p.global_position.x
+		since_swing += 1
+		if absf(dx) > 30.0 or signf(dx) != float(p.facing):
+			input.move_x = int(signf(dx))
+		else:
+			input.move_x = 0
+			if since_swing >= 22:
+				input.press_light()
+				since_swing = 0
+		await physics_frames(1)
+	input.move_x = 0
+	ok = ok and not bot.lost_player and is_instance_valid(p)
+	await physics_frames(30)
+	check(not is_instance_valid(needle) or needle.is_dead(), "the Needle should fall on Landing 1")
+	# The slow part: dawdle on Landing 1, then climb 2 at a walk.
+	ok = ok and await _run([["run", 200], ["wait", 990]] + BROKEN_LIFT_TO_CLIMB2.slice(7))
+	get_tree().physics_frame.disconnect(sample)
+	if not ok:
+		return
+	check(inside[0] >= 1200, "the slow pace should spend 20 s in FZ1 (%.1f s)" % (inside[0] / 60.0))
+	check(lowest[0] > 25.0, "the Core should stay above critical at a 20 s pace (lowest %.1f)" % lowest[0])
+	check(not Game.has_flag("core_hud_hidden"), "FZ1's first entry should clear core_hud_hidden")
+	check(Game.has_flag("hint_first_flow"), "FZ1's first entry should set hint_first_flow")
+
+
+## Challenge mode idling in FZ1: the floor holds the Core at 1 and nothing
+## burns (D-085).
+func test_fz1_challenge_floor() -> void:
+	_campaign(true)
+	await _enter(BROKEN_LIFT, &"from_pursuit", true, false)
+	var p := bot.player
+	p.reactor.config = load("res://data/reactor/reactor_challenge.tres")
+	p.reactor.charge = 60.0
+	if not await _run(BROKEN_LIFT_TO_CLIMB2.slice(0, 5)):
+		return
+	check(p.reactor.in_flow(), "Landing 1 is inside FZ1")
+	var hits := []
+	var spy := func(amount: int, _health: int) -> void: hits.append(amount)
+	EventBus.player_damaged.connect(spy)
+	var hp := p.combat.health
+	await physics_frames(1800)
+	EventBus.player_damaged.disconnect(spy)
+	check_near(p.reactor.charge, 1.0, 0.0001, "30 s idle in FZ1 should stop at the floor")
+	check(hits.is_empty() and p.combat.health == hp, "no burnout damage in FZ1 (hits %s)" % str(hits))
+	check(p.reactor.is_critical(), "the heartbeat still plays at the floor")
+
+
+## The first Anchor ends the pre-Anchor respawn (D-063): before resting a
+## death returns Rook to the shaft foot, after resting at uc_lift to the Anchor.
+func test_broken_lift_anchor_respawn() -> void:
+	_campaign(true)
+	await _enter(BROKEN_LIFT, &"from_pursuit")
+	var room := SceneRouter.current_room
+	bot.player.combat.take_damage(99, Vector2.ZERO, 0.0, true)
+	for i in 240:
+		await physics_frames(1)
+		if SceneRouter.current_room != room and is_instance_valid(SceneRouter.current_room) and not SceneRouter.transitioning:
+			break
+	await physics_frames(2)
+	var p := (SceneRouter.current_room as Room).player
+	check(SceneRouter.current_room_path == BROKEN_LIFT and p.global_position.distance_to(Vector2(-20, 0)) < 24.0,
+			"a death before resting should return to from_pursuit (at %s)" % p.global_position.round())
+	Game.rest_at_anchor(BROKEN_LIFT, "uc_lift")
+	check(Game.respawn_room() == BROKEN_LIFT and Game.respawn_entry() == &"uc_lift", "resting should make uc_lift the respawn")
+	room = SceneRouter.current_room
+	p.combat.take_damage(99, Vector2.ZERO, 0.0, true)
+	for i in 240:
+		await physics_frames(1)
+		if SceneRouter.current_room != room and is_instance_valid(SceneRouter.current_room) and not SceneRouter.transitioning:
+			break
+	await physics_frames(2)
+	check(SceneRouter.current_room != room, "the second death did not reload a room")
+	p = (SceneRouter.current_room as Room).player
+	check(SceneRouter.current_room_path == BROKEN_LIFT and p.global_position.distance_to(Vector2(500, -576)) < 24.0,
+			"a death after resting should return to uc_lift (at %s)" % p.global_position.round())
+	check(p.combat.health == p.combat.config.max_health, "the Anchor respawn restores health")
 
 
 func test_collector_bay_post_win_route() -> void:
