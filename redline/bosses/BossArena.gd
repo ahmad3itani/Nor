@@ -3,6 +3,9 @@ extends Area2D
 ## Boss encounter controller (bible §17 rules): the Anchor sits just outside
 ## (short runback), gates close on entry, the intro plays once and is skipped
 ## on later attempts, defeat sets a flag, opens the gates and spawns the reward.
+## The reward can never be missed: a room re-entered after the win spawns it
+## again, and the pickup frees itself once it has been taken (a Collectible
+## by persist_id, an AbilityPickup by its flag).
 ## Origin: top-left of the trigger area.
 
 @export var size: Vector2 = Vector2(400, 200)
@@ -12,12 +15,16 @@ extends Area2D
 @export var boss_path: NodePath
 @export var gate_paths: Array[NodePath] = []
 @export var reward_scene: PackedScene
+## Where the reward lands, in the arena parent's space (room space in
+## generated rooms): on the floor, never mid-air. INF = where the boss died.
+@export var reward_position: Vector2 = Vector2.INF
 ## Seconds of intro banner before the boss acts (first attempt only).
 @export var intro_time: float = 2.2
 @export var retry_intro_time: float = 0.6
 
 var boss: Enemy
 var started: bool = false
+var _reward: Node2D
 
 
 func _ready() -> void:
@@ -35,6 +42,8 @@ func _ready() -> void:
 		if boss:
 			boss.queue_free()
 		_set_gates(false)
+		# Left before picking the reward up: it waits here on the next visit.
+		_spawn_reward.call_deferred(Vector2.INF)
 		return
 	if boss:
 		boss.ai_enabled = false
@@ -65,15 +74,32 @@ func _on_body_entered(body: Node2D) -> void:
 		boss.set_ai(Enemy.AI.ENGAGE)
 
 
-func _on_boss_died(_e: Enemy) -> void:
+func _on_boss_died(e: Enemy) -> void:
+	# The boss is freed at death_time, before the delay below ends: read
+	# everything needed from it now.
+	var died_at := e.global_position
+	var delay := e.data.death_time + 0.2
 	Game.set_flag(defeated_flag())
 	EventBus.boss_defeated.emit(boss_id)
-	await get_tree().create_timer(boss.data.death_time + 0.2, false, true).timeout
+	await get_tree().create_timer(delay, false, true).timeout
 	_set_gates(false)
-	if reward_scene:
-		var reward := reward_scene.instantiate() as Node2D
-		reward.position = boss.global_position if is_instance_valid(boss) else global_position + size * 0.5
-		get_parent().add_child(reward)
+	_spawn_reward(died_at)
+
+
+## `fallback` (global) is used when reward_position is INF; with no fallback
+## either, the arena centre.
+func _spawn_reward(fallback: Vector2) -> void:
+	if reward_scene == null or not is_inside_tree() or is_instance_valid(_reward):
+		return
+	var parent := get_parent()
+	var reward := reward_scene.instantiate() as Node2D
+	if reward_position != Vector2.INF:
+		reward.position = reward_position
+	else:
+		var at := fallback if fallback != Vector2.INF else global_position + size * 0.5
+		reward.position = (parent as Node2D).to_local(at) if parent is Node2D else at
+	_reward = reward
+	parent.add_child(reward)
 
 
 func _set_gates(closed: bool) -> void:
