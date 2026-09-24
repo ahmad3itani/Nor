@@ -1,6 +1,19 @@
 # REDLINE TODO
 
-## Now: M1 gate (humans)
+## Now: M2 gate (humans), covering M1 too
+- [ ] Playtest the Combat Lab with keyboard **and** a controller. Use the checklist in `M2_COMBAT_REPORT.md`.
+- [ ] Confirm or overrule the flagged decisions D-016, D-018 and D-022 in `DECISIONS.md`.
+- [ ] Judge core pressure (F11 modes) and the style rank's legibility.
+- [ ] Do **not** start M3 (vertical slice) until both labs pass the playtest.
+
+## M2 follow-ups (only if the playtest asks for them)
+- [ ] A combat tuning panel: extend the F3 panel to the active weapon's `AttackData`.
+- [ ] Enemy body blocking or a "shove" (D-024).
+- [ ] Pool projectiles and particles if profiling on real hardware shows spikes. The 11 ms max happens on respawn.
+- [ ] Parry (bible §8, midgame), healing injectors (§7), executions, elites. These are M3+ scope.
+- [ ] Use `score_multiplier` once challenge scoring exists (M9).
+
+## M1 gate (humans)
 - [ ] Playtest the Movement Lab with keyboard **and** a controller (Xbox or PlayStation layout). Use the checklist in `M1_MOVEMENT_REPORT.md`.
 - [ ] Confirm or overrule the flagged decisions D-001, D-005 and D-009 in `DECISIONS.md`.
 - [ ] Verify a stable 60 FPS on real hardware, at 60 Hz and at 120/144 Hz monitor refresh rates.

@@ -1,5 +1,59 @@
 # REDLINE Changelog
 
+## 0.2.0-m2: Combat Lab (awaiting the human playtest)
+
+All M2 scope from bible §36. Development stops here for a playtest.
+
+### Combat core (`combat/`, `weapons/`)
+- Data resources: `AttackData`, `ProjectileData` and `WeaponData`.
+- Hit plumbing: `HitInfo`, `CombatResult`, `Hurtbox`, and query-based hit delivery (D-017).
+- Ray-cast projectiles that can't tunnel through geometry.
+- Weapon data for the Pulse Blade (3-hit chain, heavy, launcher, air light, air heavy), the Service Pistol and the Scattergun.
+
+### Player
+- `PlayerCombat` component:
+  - health pips;
+  - attack buffers and contextual melee selection;
+  - hit delivery;
+  - ammo and reload;
+  - recoil;
+  - damage intake, perfect dodge and hazards.
+- New `MeleeState` (data-driven lunge, air hang and cancels) and `HurtState`.
+- Hitstop that keeps buffering presses during freeze frames.
+- Launcher → jump-cancel → air combo loop, slide attacks, dodge-cancels.
+
+### Enemies (`enemies/`)
+- A shared `Enemy` body with telegraphed attacks, poise/stagger, armor, launch physics, enemy-on-enemy impacts, wall slams, hazards and death flight.
+- `EnemyBehavior` children for the **Needle**, **Shield** (frontal guard, slow turn) and **Scout Drone** (hovers, aimed bolt).
+- `EncounterDirector` caps simultaneous attackers at 2.
+- `ai_enabled=false` turns any enemy into a practice dummy.
+
+### Reactor and style
+- `ReactorCore`:
+  - drains only in Flow Zones and burns out at zero;
+  - refills from hits, kills, environmental kills, perfect dodges and movement feats;
+  - modes: Normal, Story/Assist, Redline Challenge (`Settings.reactor_mode`).
+- `StyleMeter` and `PlayerStyle`: ranks D → REDLINE, variety penalty, aerial and movement multipliers, kill and environmental bonuses, decay, damage loss.
+
+### World and UI
+- **Combat Lab:** safe dummies plus three Flow Zone arenas with spikes, a slam wall and platforms. Enemies auto-respawn.
+- **Hazards and zones:** `SpikeHazard`, `FlowZone`, `EnemySpawner`.
+- **HUD:** health, core bar, ammo, style rank, and a critical vignette that respects flash reduction.
+- **Debug overlay:** now also shows combat, core and style state.
+- 18 new synthesized SFX.
+- Dev keys: F9 ranged weapon, F10 respawn enemies, F11 core mode, F12 switch lab.
+
+### Tooling and tests
+- 71 tests (34 new).
+- The test runner takes `-- --filter=<substring>`.
+- `devtools/PerfProbe`: wall-time CPU cost under fight load.
+- The capture tour gained `--tour=combat`.
+
+### Fixed
+- Point-blank shots missed enemies that overlapped the muzzle or the shooter.
+- Projectiles could pass a freed shooter to receivers, which crashes Godot 4.3.
+- The M1 performance figure came from an unreliable monitor; corrected in `KNOWN_ISSUES.md`.
+
 ## 0.1.1-m1 — M1 polish (still awaiting the human playtest)
 
 Everything here is M1 polish that didn't need playtest feedback. M2 has not started.

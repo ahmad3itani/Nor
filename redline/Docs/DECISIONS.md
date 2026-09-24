@@ -72,3 +72,43 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 ## D-015: The tuning panel writes to the live resource
 - Sliders change the active `PlayerMovementConfig` in place, so there's no copy-and-apply step and states see the change on the next tick. Save writes the preset `.tres` when run from the editor. Exported builds can't write `res://`, so they save to `user://tuning/`. The panel is mouse-driven and its controls never take keyboard focus, so movement keys keep working while it's open. Like the other debug tools, it has no controller binding (D-006).
 
+## D-016: Shared combat code lives in `combat/` (FLAG, low risk)
+- Bible §31 has no folder for code that both the player and enemies use. `AttackData`, `HitInfo`, `Hurtbox`, `Projectile`, `CombatQuery`, `CombatLayers` and `CombatResult` now sit in a top-level `combat/` folder instead of being duplicated under `player/combat` and `enemies/`. `WeaponData` stays in `weapons/`, enemy code in `enemies/`, and player-only combat code in `player/combat/`.
+
+## D-017: Hits are delivered by queries, not by Area2D signals
+- Melee hitboxes are rectangles in each attack's data, checked with a physics shape query on every active tick. Projectiles cast a ray each tick. Hurtboxes are passive `Area2D`s.
+- This is deterministic within a tick (Area2D overlap signals arrive a frame late), and the tests can rely on it.
+- An attack hits each target at most once per swing.
+
+## D-018: Scattergun gets a small mid-air recoil nudge (FLAG)
+- **Context:** bible §9 asks for "movement interaction" on every weapon, but **Recoil Launch** is a separate traversal unlock in §5.
+- **Decision:** in the air, the Scattergun pushes Rook 190 px/s away from where he aims. Shooting straight down cancels the fall and gives a small hop, well below a jump. The ground push is 90 px/s. The Pistol's recoil is negligible.
+- Recoil Launch can later scale `air_recoil` up, or add a charged blast.
+- **Open question for design:** keep this nudge, or zero `air_recoil` until the unlock?
+
+## D-019: Perfect dodge = getting hit early in a dodge
+- A hit that arrives while dodge/dash i-frames are active **and** within 0.14 s of starting the dodge counts as perfect: no damage, a short freeze, style and core rewards (bible §8).
+- Later dodge i-frames still avoid damage, but give no reward.
+- An evaded attack can't hit again during the same swing (generous, bible §8 "generous Dodge").
+
+## D-020: Hazards ignore dodge i-frames
+- Spikes hurt Rook even mid-dodge and bounce him out. Hazards test positioning, not timing, and this is the common genre convention. Enemies die on spikes, which counts as an environmental kill.
+
+## D-021: Health is in pips; enemy attacks deal 1 in M2
+- Rook has 5 pips (bible §7: forgiving early game). Player attacks use normal HP numbers against enemies (Needle 30, Shield 60, Drone 20). The field is the same `AttackData.damage`, interpreted by the receiver.
+
+## D-022: Burnout drains health rather than killing instantly (FLAG)
+- The bible says the core "burns energy continuously" but doesn't say what happens at zero. The prototype drains 1 pip every 1.5 s at zero (3 s on Assist, 1 s on Challenge), so an empty core is urgent but recoverable by fighting.
+- **Open question for design:** instant death, health drain, or something else, such as losing access to abilities?
+
+## D-023: Style rewards stay small
+- Bible §10 says style must never block story. The only mechanical reward in M2 is a bigger core refill on kills at higher ranks (+15% per rank). Scrap, medals and leaderboard score come with M3 or later.
+
+## D-024: Enemies don't physically block Rook
+- Enemy bodies collide with the world, but not with Rook or with each other. A simple separation force stops them from stacking.
+- This keeps high-speed movement (pillar §2.1) from getting snagged on crowds, at the cost of Rook being able to stand inside an enemy. Point-blank shots handle that case (see the report, §6).
+- Revisit if playtests say enemies feel "ghostly".
+
+## D-025: Main now boots into the Combat Lab
+- M2 is the current milestone, so the game starts in the Combat Lab. **F12** switches to the Movement Lab. Both labs share the same Room, player, camera and dev keys.
+

@@ -100,7 +100,7 @@ All distances are in px, measured centre to centre. A 12 px body clears a gap ab
 | Camera doesn't fight the player | ⚠️ Needs a human | Dead zone, floor-locked vertical, held look-ahead; `test_camera_stays_inside_bounds` |
 | Restart instant | ✅ | R / Back resets in the same physics tick; the kill plane respawns (tested) |
 | Tuning without editing controller logic | ✅ | All values in `.tres`; F3 live sliders; F5 hot reload; F6 presets (`test_tuning_panel`) |
-| Stable 60 FPS in lab | ⚠️ Needs real hardware | Physics averages 1.5 ms per tick (3.7 ms worst) with dust and audio active. Only software-rendered FPS was observable here (K-2). |
+| Stable 60 FPS in lab | ⚠️ Needs real hardware | CPU cost is about 0.6–0.9 ms per frame, measured headless by wall time. (This corrects an earlier 1.5 ms figure; see K-2.) Only software-rendered FPS was observable here. |
 | Moving for minutes is fun | ⚠️ **This is the gate** | Human playtest required. |
 
 ## 6. Known issues
