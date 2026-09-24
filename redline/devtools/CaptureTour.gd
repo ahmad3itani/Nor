@@ -18,12 +18,15 @@ func _ready() -> void:
 			_tour_name = arg.trim_prefix("--tour=")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	var main := MAIN.instantiate()
-	main.start_room = "res://world/rooms/CombatLab.tscn" if _tour_name == "combat" else "res://world/rooms/MovementLab.tscn"
+	if _tour_name != "ui":
+		main.start_room = "res://world/rooms/CombatLab.tscn" if _tour_name == "combat" else "res://world/rooms/MovementLab.tscn"
 	add_child(main)
 	if _tour_name == "combat":
 		_combat_tour.call_deferred()
 	elif _tour_name == "slice":
 		_slice_tour.call_deferred()
+	elif _tour_name == "ui":
+		_ui_tour.call_deferred()
 	else:
 		_tour.call_deferred()
 
@@ -205,4 +208,49 @@ func _slice_tour() -> void:
 	_input.move_x = 0
 	await _frames(150)
 	await _shot("s_boss_fight")
+	get_tree().quit()
+
+
+## Menus and dialogue as a player sees them (title -> Relay -> menus).
+func _ui_tour() -> void:
+	await _frames(30)
+	await _shot("u01_title")
+	Game.new_game()
+	var menus := get_tree().root.find_child("Menus", true, false)
+	(menus.get_node("TitleMenu") as MenuScreen).close_menu()
+	SceneRouter.goto_room(Game.START_ROOM, Game.START_ENTRY)
+	await _frames(10)
+	var room := SceneRouter.current_room as Room
+	room.player.input_source = _input
+	var orr: NpcProfile = load("res://data/npcs/orr.tres")
+	EventBus.dialogue_requested.emit(orr.pick_dialogue(), "Orr")
+	await _frames(40)
+	await _shot("u02_dialogue")
+	var box := get_tree().root.find_child("DialogueBox", true, false)
+	while box.is_open():
+		box.shown_chars = 9999.0
+		box.advance()
+	await _frames(5)
+	Game.grant_circuit("rebound")
+	Game.grant_circuit("predator")
+	Game.state.scrap_banked = 180
+	EventBus.menu_requested.emit(&"loadout")
+	await _frames(5)
+	await _shot("u03_loadout")
+	(menus.get_node("LoadoutMenu") as MenuScreen).close_menu()
+	EventBus.menu_requested.emit(&"shop_vell")
+	await _frames(5)
+	await _shot("u04_shop")
+	(menus.get_node("ShopMenu") as MenuScreen).close_menu()
+	EventBus.menu_requested.emit(&"journal")
+	await _frames(5)
+	await _shot("u05_journal")
+	(menus.get_node("JournalMenu") as MenuScreen).close_menu()
+	EventBus.menu_requested.emit(&"settings")
+	await _frames(5)
+	await _shot("u06_settings")
+	(menus.get_node("SettingsMenu") as MenuScreen).close_menu()
+	EventBus.menu_requested.emit(&"slice_end")
+	await _frames(5)
+	await _shot("u07_slice_end")
 	get_tree().quit()

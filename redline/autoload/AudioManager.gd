@@ -45,6 +45,9 @@ func apply_volume() -> void:
 	var sfx := AudioServer.get_bus_index(SFX_BUS)
 	if sfx >= 0:
 		AudioServer.set_bus_volume_db(sfx, linear_to_db(Settings.sfx_volume))
+	var music := AudioServer.get_bus_index(&"Music")
+	if music >= 0:
+		AudioServer.set_bus_volume_db(music, linear_to_db(Settings.music_volume))
 
 
 ## volume_scale: 0..1+ multiplier (e.g. landing impact). Unknown ids warn once.

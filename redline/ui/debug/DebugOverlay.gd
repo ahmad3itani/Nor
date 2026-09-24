@@ -28,6 +28,7 @@ func _ready() -> void:
 	visible = Settings.show_debug_overlay
 	EventBus.player_spawned.connect(func(p: Node2D) -> void: _player = p as Player)
 	EventBus.player_respawned.connect(_on_respawned)
+	EventBus.settings_changed.connect(func() -> void: visible = Settings.show_debug_overlay)
 
 
 func _on_respawned(_p: Node2D, spawn_id: StringName) -> void:

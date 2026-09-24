@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SfxBank" load_steps=29 format=3]
+[gd_resource type="Resource" script_class="SfxBank" load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
 [ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
@@ -341,6 +341,214 @@ volume_db = -15.0
 pitch_jitter = 0.0
 cooldown = 0.1
 
+[sub_resource type="Resource" id="Sfx_anchor"]
+script = ExtResource("1_def")
+id = &"anchor"
+wave = 2
+duration = 0.5
+freq_start = 220.0
+freq_end = 440.0
+noise_mix = 0.0
+tone = 0.5
+volume_db = -10.0
+pitch_jitter = 0.0
+cooldown = 0.3
+
+[sub_resource type="Resource" id="Sfx_scrap_pickup"]
+script = ExtResource("1_def")
+id = &"scrap_pickup"
+wave = 1
+duration = 0.05
+freq_start = 1400.0
+freq_end = 1800.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -22.0
+pitch_jitter = 0.12
+cooldown = 0.03
+
+[sub_resource type="Resource" id="Sfx_scrap_recover"]
+script = ExtResource("1_def")
+id = &"scrap_recover"
+wave = 1
+duration = 0.35
+freq_start = 600.0
+freq_end = 1600.0
+noise_mix = 0.0
+tone = 0.7
+volume_db = -12.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_heal_start"]
+script = ExtResource("1_def")
+id = &"heal_start"
+wave = 2
+duration = 0.2
+freq_start = 300.0
+freq_end = 500.0
+noise_mix = 0.0
+tone = 0.5
+volume_db = -16.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_heal"]
+script = ExtResource("1_def")
+id = &"heal"
+wave = 2
+duration = 0.3
+freq_start = 500.0
+freq_end = 900.0
+noise_mix = 0.0
+tone = 0.6
+volume_db = -12.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_collect"]
+script = ExtResource("1_def")
+id = &"collect"
+wave = 1
+duration = 0.3
+freq_start = 800.0
+freq_end = 1600.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -11.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_wall_break"]
+script = ExtResource("1_def")
+id = &"wall_break"
+wave = 3
+duration = 0.35
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.2
+volume_db = -6.0
+pitch_jitter = 0.05
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_repeater"]
+script = ExtResource("1_def")
+id = &"repeater"
+wave = 2
+duration = 0.4
+freq_start = 440.0
+freq_end = 880.0
+noise_mix = 0.2
+tone = 0.7
+volume_db = -11.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_quest_complete"]
+script = ExtResource("1_def")
+id = &"quest_complete"
+wave = 1
+duration = 0.5
+freq_start = 523.0
+freq_end = 1046.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -10.0
+pitch_jitter = 0.0
+cooldown = 0.5
+
+[sub_resource type="Resource" id="Sfx_ui_tick"]
+script = ExtResource("1_def")
+id = &"ui_tick"
+wave = 1
+duration = 0.03
+freq_start = 1200.0
+freq_end = 1200.0
+noise_mix = 0.0
+tone = 0.9
+volume_db = -20.0
+pitch_jitter = 0.0
+cooldown = 0.02
+
+[sub_resource type="Resource" id="Sfx_purchase"]
+script = ExtResource("1_def")
+id = &"purchase"
+wave = 1
+duration = 0.18
+freq_start = 900.0
+freq_end = 1400.0
+noise_mix = 0.0
+tone = 0.8
+volume_db = -12.0
+pitch_jitter = 0.0
+cooldown = 0.1
+
+[sub_resource type="Resource" id="Sfx_gate"]
+script = ExtResource("1_def")
+id = &"gate"
+wave = 0
+duration = 0.3
+freq_start = 90.0
+freq_end = 60.0
+noise_mix = 0.5
+tone = 0.2
+volume_db = -10.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_boss_roar"]
+script = ExtResource("1_def")
+id = &"boss_roar"
+wave = 0
+duration = 0.7
+freq_start = 110.0
+freq_end = 55.0
+noise_mix = 0.6
+tone = 0.25
+volume_db = -5.0
+pitch_jitter = 0.0
+cooldown = 0.5
+
+[sub_resource type="Resource" id="Sfx_boss_slam"]
+script = ExtResource("1_def")
+id = &"boss_slam"
+wave = 3
+duration = 0.45
+freq_start = 100.0
+freq_end = 100.0
+noise_mix = 1.0
+tone = 0.12
+volume_db = -4.0
+pitch_jitter = 0.0
+cooldown = 0.2
+
+[sub_resource type="Resource" id="Sfx_ability_unlock"]
+script = ExtResource("1_def")
+id = &"ability_unlock"
+wave = 2
+duration = 0.9
+freq_start = 330.0
+freq_end = 1320.0
+noise_mix = 0.1
+tone = 0.7
+volume_db = -8.0
+pitch_jitter = 0.0
+cooldown = 0.5
+
+[sub_resource type="Resource" id="Sfx_shoot_revolver"]
+script = ExtResource("1_def")
+id = &"shoot_revolver"
+wave = 0
+duration = 0.16
+freq_start = 500.0
+freq_end = 90.0
+noise_mix = 0.6
+tone = 0.4
+volume_db = -8.0
+pitch_jitter = 0.04
+cooldown = 0.0
+
 [resource]
 script = ExtResource("2_bank")
-sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up")])
+sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up"), SubResource("Sfx_anchor"), SubResource("Sfx_scrap_pickup"), SubResource("Sfx_scrap_recover"), SubResource("Sfx_heal_start"), SubResource("Sfx_heal"), SubResource("Sfx_collect"), SubResource("Sfx_wall_break"), SubResource("Sfx_repeater"), SubResource("Sfx_quest_complete"), SubResource("Sfx_ui_tick"), SubResource("Sfx_purchase"), SubResource("Sfx_gate"), SubResource("Sfx_boss_roar"), SubResource("Sfx_boss_slam"), SubResource("Sfx_ability_unlock"), SubResource("Sfx_shoot_revolver")])

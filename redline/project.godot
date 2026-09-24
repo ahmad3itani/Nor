@@ -21,6 +21,7 @@ SaveManager="*res://autoload/SaveManager.gd"
 AudioManager="*res://autoload/AudioManager.gd"
 SceneRouter="*res://autoload/SceneRouter.gd"
 InputGlyphs="*res://autoload/InputGlyphs.gd"
+MusicDirector="*res://autoload/MusicDirector.gd"
 
 [debug]
 

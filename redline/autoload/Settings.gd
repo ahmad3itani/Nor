@@ -20,6 +20,8 @@ var master_volume: float = 1.0:
 	set(v): master_volume = clampf(v, 0.0, 1.0)
 var sfx_volume: float = 0.8:
 	set(v): sfx_volume = clampf(v, 0.0, 1.0)
+var music_volume: float = 0.6:
+	set(v): music_volume = clampf(v, 0.0, 1.0)
 ## Off by default for playtesters; F1 toggles it (labs and slice).
 var show_debug_overlay: bool = false
 ## Accessibility (bible §24): dropping unbanked Scrap on death can be disabled.
@@ -46,6 +48,7 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	vibration_strength = cfg.get_value("accessibility", "vibration_strength", vibration_strength)
 	master_volume = cfg.get_value("audio", "master_volume", master_volume)
 	sfx_volume = cfg.get_value("audio", "sfx_volume", sfx_volume)
+	music_volume = cfg.get_value("audio", "music_volume", music_volume)
 	show_debug_overlay = cfg.get_value("debug", "show_debug_overlay", show_debug_overlay)
 	reactor_mode = cfg.get_value("gameplay", "reactor_mode", reactor_mode)
 	currency_loss = cfg.get_value("accessibility", "currency_loss", currency_loss)
@@ -59,6 +62,7 @@ func save_settings() -> Error:
 	cfg.set_value("accessibility", "vibration_strength", vibration_strength)
 	cfg.set_value("audio", "master_volume", master_volume)
 	cfg.set_value("audio", "sfx_volume", sfx_volume)
+	cfg.set_value("audio", "music_volume", music_volume)
 	cfg.set_value("debug", "show_debug_overlay", show_debug_overlay)
 	cfg.set_value("gameplay", "reactor_mode", reactor_mode)
 	cfg.set_value("accessibility", "currency_loss", currency_loss)

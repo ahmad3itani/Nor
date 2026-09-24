@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://ui/debug/DebugOverlay.gd" id="2_debug"]
@@ -8,6 +8,11 @@
 [ext_resource type="Script" path="res://ui/menus/MenuHost.gd" id="6_menus"]
 [ext_resource type="Script" path="res://ui/menus/LoadoutMenu.gd" id="7_loadout"]
 [ext_resource type="Script" path="res://ui/menus/ShopMenu.gd" id="8_shop"]
+[ext_resource type="Script" path="res://ui/menus/PauseMenu.gd" id="9_pause"]
+[ext_resource type="Script" path="res://ui/menus/JournalMenu.gd" id="10_journal"]
+[ext_resource type="Script" path="res://ui/menus/SettingsMenu.gd" id="11_settings"]
+[ext_resource type="Script" path="res://ui/menus/SliceEndMenu.gd" id="12_slice_end"]
+[ext_resource type="Script" path="res://ui/menus/TitleMenu.gd" id="13_title"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -41,6 +46,21 @@ script = ExtResource("7_loadout")
 
 [node name="ShopMenu" type="CanvasLayer" parent="Menus"]
 script = ExtResource("8_shop")
+
+[node name="PauseMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("9_pause")
+
+[node name="JournalMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("10_journal")
+
+[node name="SettingsMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("11_settings")
+
+[node name="SliceEndMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("12_slice_end")
+
+[node name="TitleMenu" type="CanvasLayer" parent="Menus"]
+script = ExtResource("13_title")
 
 [node name="FadeLayer" type="CanvasLayer" parent="."]
 layer = 90
