@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Resource" path="res://data/enemies/brains/needle.tres" id="brain_res"]
 
 [sub_resource type="Resource" id="Attack"]
 script = ExtResource("1_attack")
@@ -31,6 +32,7 @@ move_speed = 55.0
 accel = 600.0
 body_size = Vector2(12, 26)
 aggro_range = 200.0
+brain = ExtResource("brain_res")
 attack_cooldown = 1.1
 reactor_reward = 12.0
 scrap_drop = 5

@@ -185,3 +185,20 @@ func test_boss_arena_locks_rewards_and_remembers() -> void:
 		player.teleport((rewards[0] as Node2D).global_position)
 		await physics_frames(3)
 		check(Game.abilities.dash and Game.has_flag("unlocked_dash"), "dash not granted")
+
+
+## M6 pipeline proof: the Signal Drone is data only (EnemyData + a brain of
+## existing modules + a copied variant scene). It hovers high, keeps its
+## distance and fires with line of sight.
+func test_data_only_signal_drone_hovers_and_fires() -> void:
+	var d := _spawn("res://enemies/variants/SignalDrone.tscn", Vector2(260, -40))
+	check((d.data as EnemyData).validate().is_empty(), "signal drone data invalid: %s" % (d.data as EnemyData).validate())
+	check(d.behavior is ModularBehavior, "should run on modules")
+	check(await _wait_for_damage(480), "signal drone never hit the player")
+	var lowest := -INF
+	for i in 300:
+		await physics_frames(1)
+		if i > 180:
+			lowest = maxf(lowest, d.global_position.y)
+	check(lowest < player.global_position.y - 70.0, "should settle hovering well above (lowest y %.0f)" % lowest)
+	check(absf(d.global_position.x - player.global_position.x) > 90.0, "should keep its distance (x %.0f)" % d.global_position.x)

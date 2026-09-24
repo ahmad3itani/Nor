@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+[ext_resource type="Resource" path="res://data/enemies/brains/watcher.tres" id="brain_res"]
 
 [sub_resource type="Resource" id="P"]
 script = ExtResource("3_proj")
@@ -43,6 +44,7 @@ flying = true
 anchored = true
 body_size = Vector2(12, 12)
 aggro_range = 320.0
+brain = ExtResource("brain_res")
 attack_cooldown = 1.8
 reactor_reward = 8.0
 scrap_drop = 4

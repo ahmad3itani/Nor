@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="EnemyBrain" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://enemies/modules/EnemyBrain.gd" id="brain"]
+[ext_resource type="Script" path="res://enemies/modules/LookModule.gd" id="look_base"]
+[ext_resource type="Script" path="res://enemies/modules/AttackRule.gd" id="attack_rule"]
+[ext_resource type="Script" path="res://enemies/modules/GuardFrontal.gd" id="guard_frontal"]
+[ext_resource type="Script" path="res://enemies/modules/LookShieldPlate.gd" id="look_shield"]
+[ext_resource type="Script" path="res://enemies/modules/MoveSlowTurn.gd" id="move_slow_turn"]
+
+[sub_resource type="Resource" id="move"]
+script = ExtResource("move_slow_turn")
+turn_delay = 0.5
+approach_until = 28.0
+
+[sub_resource type="Resource" id="atk0"]
+script = ExtResource("attack_rule")
+max_range = 36.0
+needs_target_in_front = true
+face_target = false
+
+[sub_resource type="Resource" id="guard"]
+script = ExtResource("guard_frontal")
+
+[sub_resource type="Resource" id="look0"]
+script = ExtResource("look_shield")
+color = Color(0.498, 0.714, 0.851, 1)
+
+[resource]
+script = ExtResource("brain")
+movement = SubResource("move")
+attacks = Array[ExtResource("attack_rule")]([SubResource("atk0")])
+guard = SubResource("guard")
+looks = Array[ExtResource("look_base")]([SubResource("look0")])

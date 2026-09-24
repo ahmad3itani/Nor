@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyBrain" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://enemies/modules/EnemyBrain.gd" id="brain"]
+[ext_resource type="Script" path="res://enemies/modules/LookModule.gd" id="look_base"]
+[ext_resource type="Script" path="res://enemies/modules/AttackRule.gd" id="attack_rule"]
+[ext_resource type="Script" path="res://enemies/modules/LookSpringLegs.gd" id="look_legs"]
+[ext_resource type="Script" path="res://enemies/modules/MoveApproach.gd" id="move_approach"]
+
+[sub_resource type="Resource" id="move"]
+script = ExtResource("move_approach")
+keep_distance = 70.0
+retreat_within = 35.0
+
+[sub_resource type="Resource" id="atk0"]
+script = ExtResource("attack_rule")
+max_range = 130.0
+needs_floor = true
+
+[sub_resource type="Resource" id="look0"]
+script = ExtResource("look_legs")
+
+[resource]
+script = ExtResource("brain")
+movement = SubResource("move")
+attacks = Array[ExtResource("attack_rule")]([SubResource("atk0")])
+looks = Array[ExtResource("look_base")]([SubResource("look0")])

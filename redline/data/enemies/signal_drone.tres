@@ -3,27 +3,27 @@
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
-[ext_resource type="Resource" path="res://data/enemies/brains/scout_drone.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://data/enemies/brains/signal_drone.tres" id="brain_res"]
 
 [sub_resource type="Resource" id="Proj"]
 script = ExtResource("3_proj")
-speed = 150.0
-lifetime = 2.4
+speed = 230.0
+lifetime = 2.0
 pellets = 1
 spread_deg = 0.0
-color = Color(1, 0.23, 0.31, 1)
-tracer_length = 6.0
+color = Color(0.345, 0.878, 0.91, 1)
+tracer_length = 10.0
 
 [sub_resource type="Resource" id="Attack"]
 script = ExtResource("1_attack")
-id = &"drone_bolt"
-startup = 0.7
+id = &"signal_pulse"
+startup = 0.9
 active = 0.05
-recovery = 0.6
+recovery = 0.8
 cancel_time = 0.0
 damage = 1.0
 poise_damage = 0.0
-knockback = Vector2(120, -100)
+knockback = Vector2(110, -90)
 hitstop = 0.05
 hitbox = Rect2(0, 0, 1, 1)
 lunge_speed = 0.0
@@ -32,22 +32,22 @@ swing_sfx = &"enemy_shoot"
 
 [resource]
 script = ExtResource("2_enemy")
-id = &"scout_drone"
-display_name = "Scout Drone"
-max_health = 20.0
+id = &"signal_drone"
+display_name = "Signal Drone"
+max_health = 24.0
 max_poise = 8.0
 stagger_time = 0.6
 mass = 0.8
-move_speed = 90.0
-accel = 300.0
+move_speed = 70.0
+accel = 260.0
 friction = 400.0
 flying = true
 body_size = Vector2(14, 10)
-aggro_range = 280.0
+aggro_range = 360.0
 brain = ExtResource("brain_res")
-attack_cooldown = 1.6
-reactor_reward = 10.0
-scrap_drop = 6
-style_value = 45.0
-color = Color(0.85, 0.72, 0.35, 1)
+attack_cooldown = 2.2
+reactor_reward = 12.0
+scrap_drop = 7
+style_value = 50.0
+color = Color(0.3, 0.55, 0.62, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])

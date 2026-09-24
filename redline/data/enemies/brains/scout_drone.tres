@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyBrain" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://enemies/modules/EnemyBrain.gd" id="brain"]
+[ext_resource type="Script" path="res://enemies/modules/LookModule.gd" id="look_base"]
+[ext_resource type="Script" path="res://enemies/modules/AttackRule.gd" id="attack_rule"]
+[ext_resource type="Script" path="res://enemies/modules/LookRotor.gd" id="look_rotor"]
+[ext_resource type="Script" path="res://enemies/modules/MoveHover.gd" id="move_hover"]
+
+[sub_resource type="Resource" id="move"]
+script = ExtResource("move_hover")
+hover_offset = Vector2(96, -70)
+bob_amplitude = 6.0
+
+[sub_resource type="Resource" id="atk0"]
+script = ExtResource("attack_rule")
+max_range = 260.0
+face_target = false
+
+[sub_resource type="Resource" id="look0"]
+script = ExtResource("look_rotor")
+
+[resource]
+script = ExtResource("brain")
+movement = SubResource("move")
+attacks = Array[ExtResource("attack_rule")]([SubResource("atk0")])
+looks = Array[ExtResource("look_base")]([SubResource("look0")])

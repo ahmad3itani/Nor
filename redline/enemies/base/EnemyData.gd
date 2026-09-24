@@ -35,6 +35,9 @@ extends Resource
 @export var attacks: Array[AttackData] = []
 ## Pause between the end of one attack and the next wind-up.
 @export var attack_cooldown: float = 1.0
+## Decision-making for ModularBehavior (M6 reusable modules). Bosses with
+## bespoke behavior scripts leave it empty.
+@export var brain: EnemyBrain
 
 @export_group("Launch physics")
 ## Launched/killed bodies moving faster than this damage what they hit.
@@ -61,6 +64,8 @@ func validate() -> PackedStringArray:
 		errors.append("%s: health, poise and mass must be > 0" % id)
 	if attacks.is_empty():
 		errors.append("%s: needs at least one attack" % id)
+	if brain:
+		errors.append_array(brain.validate_for(self))
 	for a in attacks:
 		errors.append_array(a.validate())
 		# Readability rule (bible §17): enemy wind-ups must be long enough to see.

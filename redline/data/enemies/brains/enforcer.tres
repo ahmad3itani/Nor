@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyBrain" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://enemies/modules/EnemyBrain.gd" id="brain"]
+[ext_resource type="Script" path="res://enemies/modules/AttackRule.gd" id="attack_rule"]
+[ext_resource type="Script" path="res://enemies/modules/MoveApproach.gd" id="move_approach"]
+
+[sub_resource type="Resource" id="move"]
+script = ExtResource("move_approach")
+keep_distance = 30.0
+
+[sub_resource type="Resource" id="atk0"]
+script = ExtResource("attack_rule")
+max_range = 38.0
+max_height_difference = 30.0
+
+[sub_resource type="Resource" id="atk1"]
+script = ExtResource("attack_rule")
+attack_index = 1
+max_range = 110.0
+max_height_difference = 30.0
+
+[resource]
+script = ExtResource("brain")
+movement = SubResource("move")
+attacks = Array[ExtResource("attack_rule")]([SubResource("atk0"), SubResource("atk1")])

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://enemies/base/Enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/shield.tres" id="2_data"]
-[ext_resource type="Script" path="res://enemies/behaviors/ShieldBehavior.gd" id="3_behavior"]
+[ext_resource type="Script" path="res://enemies/modules/ModularBehavior.gd" id="3_behavior"]
 [ext_resource type="Script" path="res://combat/Hurtbox.gd" id="4_hurtbox"]
 [ext_resource type="Script" path="res://enemies/base/EnemyVisual.gd" id="5_visual"]
 

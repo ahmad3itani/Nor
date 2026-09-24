@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Resource" path="res://data/enemies/brains/enforcer.tres" id="brain_res"]
 
 [sub_resource type="Resource" id="Baton2"]
 script = ExtResource("1_attack")
@@ -66,6 +67,7 @@ move_speed = 60.0
 accel = 600.0
 body_size = Vector2(14, 30)
 aggro_range = 220.0
+brain = ExtResource("brain_res")
 attack_cooldown = 1.0
 reactor_reward = 25.0
 scrap_drop = 20
