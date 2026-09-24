@@ -76,6 +76,29 @@ signal map_pins_changed
 signal fast_traveled(from_key: String, to_key: String)
 signal map_opened
 
+# M7 district mechanics (Undercity / Lowlight set pieces). Each is recorded by
+# autoload/Playtest.gd and reported by PlaytestAnalyzer.
+## A power breaker was struck; everything wired to `circuit` reacts (shutters,
+## scanners, clamps listen for their own circuit).
+signal breaker_hit(circuit: StringName)
+## Rook got under a timed power shutter before it dropped. margin_s is the
+## time that was left on its countdown (small = a close call).
+signal shutter_passed(shutter_id: String, margin_s: float)
+## A scanner beam saw Rook. mode is the beam's state when tripped
+## (ScannerBeam defines it: live vs calibration).
+signal scanner_tripped(beam_id: String, mode: int)
+## A grid clamp dropped; staggered_boss = it landed on a boss and staggered it.
+signal clamp_dropped(clamp_id: String, staggered_boss: bool)
+## A chase set piece began (Rook crossed its start area).
+signal chase_started(chase_id: String)
+## The pursuer caught Rook; he restarts from checkpoint index `checkpoint`.
+signal chase_caught(chase_id: String, checkpoint: int)
+## Rook reached the chase's end area. min_lead is the smallest gap (s) he
+## kept over the pursuer, for tuning how tense the chase really was.
+signal chase_completed(chase_id: String, seconds: float, catches: int, min_lead: float)
+## A ceiling tracker (Collector eye) locked on to Rook.
+signal tracker_locked(tracker_id: String)
+
 # M4 playtest instrumentation.
 signal item_purchased(shop_id: StringName, item_id: String, price: int)
 ## Settings changed in the menu (overlay visibility, volumes).
