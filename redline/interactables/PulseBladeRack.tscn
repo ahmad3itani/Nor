@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://interactables/WeaponPickup.gd" id="1_pickup"]
+
+[node name="PulseBladeRack" type="Area2D"]
+script = ExtResource("1_pickup")
+weapon_id = "pulse_blade"
+flag_id = "got_pulse_blade"
