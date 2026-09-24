@@ -301,6 +301,8 @@ func respawn(at: Vector2, face: int = 1) -> void:
 	is_low = false
 	_apply_stance()
 	metrics.on_respawn(at)
+	# Teleports must not be smeared across frames when physics interpolation is on.
+	reset_physics_interpolation()
 	state_machine.force_state(&"idle")
 
 

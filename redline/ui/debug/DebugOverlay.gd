@@ -50,10 +50,11 @@ func _process(_delta: float) -> void:
 
 func _build_text() -> String:
 	var lines: PackedStringArray = []
-	lines.append("REDLINE M1 MOVEMENT LAB   FPS %d   phys %.2fms   x%.2f" % [
+	lines.append("REDLINE M1 MOVEMENT LAB   FPS %d   phys %.2fms   x%.2f   %dHz interp %s" % [
 		Engine.get_frames_per_second(),
 		Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
-		Engine.time_scale])
+		Engine.time_scale, Engine.physics_ticks_per_second,
+		"ON" if get_tree().physics_interpolation else "off"])
 	if _player == null or not is_instance_valid(_player):
 		return "\n".join(lines)
 	var p := _player
@@ -67,7 +68,8 @@ func _build_text() -> String:
 	lines.append("last jump  h %.1fpx   d %.1fpx   air %.2fs" % [m.last_jump_height, m.last_jump_distance, m.last_airtime])
 	lines.append("count  jump %d  slide %d  dodge %d  dash %d" % [m.jumps, m.slides, m.dodges, m.dashes])
 	lines.append("preset %s   dash %s   spawn %s" % [p.config.preset_name, "ON" if p.abilities.dash else "off", _spawn_label])
-	lines.append("[F1] overlay [R] reset [Tab] station [F2] dash [F4] slowmo [F5] reload [F6] preset")
+	lines.append("[F1] overlay [R] reset [Tab] station [F2] dash [F3] tune [F4] slowmo")
+	lines.append("[F5] reload [F6] preset [F7] interp [F8] tick rate")
 	return "\n".join(lines)
 
 

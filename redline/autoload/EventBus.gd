@@ -21,3 +21,5 @@ signal camera_impulse_requested(offset: Vector2)
 signal room_loaded(room: Node)
 ## Movement tuning was swapped or hot-reloaded (debug overlay shows the preset name).
 signal movement_config_changed(config: Resource)
+## Tuning panel asks to discard live edits and reload the active preset from disk.
+signal movement_config_reload_requested

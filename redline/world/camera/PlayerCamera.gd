@@ -58,6 +58,7 @@ func snap_to_target() -> void:
 	_impulse_vel = Vector2.ZERO
 	global_position = _clamp_to_bounds(_focus + _look_ahead)
 	reset_smoothing()
+	reset_physics_interpolation()
 
 
 func add_trauma(amount: float) -> void:
