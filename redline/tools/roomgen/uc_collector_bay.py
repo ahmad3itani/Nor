@@ -100,6 +100,12 @@ c.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(72, -224)', 'scrip
 lit = c.switch("BayLit", "flag:collector_drone_defeated")
 c.neon(120, -210, 20, 6, SODIUM, 3, False, parent=lit)
 c.neon(376, -210, 20, 6, SODIUM, 3, False, parent=lit)
+# M8: Krail's lift stopped, so the last load never went up: a third crate
+# lies toppled by the hoist and a cut cable hangs from the hatch (the "same
+# crates" thread). Recovery is still hauling something; nothing says what.
+s = c.switch("CargoStranded", "flag:warden_krail_defeated")
+c.decor("crates", 330, 0, 24, 14, CRATE, CRATE_ACCENT, parent=s)
+c.decor("cables", 252, -110, 4, 40, "0.16, 0.15, 0.2, 1", parent=s)
 
 c.write(OUT + "CollectorBay.tscn")
 finish()
