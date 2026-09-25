@@ -92,13 +92,13 @@ func test_reveal_marks_cells_and_charts_the_district() -> void:
 	check(Game.has_flag("map_charted_lowlight"), "charted flag should be set past the threshold")
 
 
-## Chart thresholds per district (M7, D8a). The interim Lowlight value keeps
-## Nix's chart as hard as before the four new Lowlight rooms landed: 0.7 of
-## the 1465 pre-M7 cells is 1026 cells, 0.34 of the new 3012 total. D8b
-## replaces both values with measured ones.
+## Chart thresholds per district (M7, D8a; final values D8b). D8a's interim
+## Lowlight 0.34 kept Nix's chart as hard as before the four new Lowlight
+## rooms landed; D8b set both from measured standable coverage (see
+## test_thresholds_match_standable_coverage).
 func test_district_thresholds() -> void:
-	check_near(map.threshold_for("lowlight"), 0.34, 0.0001, "interim lowlight threshold")
-	check_near(map.threshold_for("undercity"), 0.5, 0.0001, "undercity threshold")
+	check_near(map.threshold_for("lowlight"), 0.5, 0.0001, "lowlight threshold")
+	check_near(map.threshold_for("undercity"), 0.4, 0.0001, "undercity threshold")
 	check_near(map.threshold_for("relay"), map.charted_threshold, 0.0001, "districts without an entry use charted_threshold")
 	# Game.map_reveal must read the per-district value, not charted_threshold.
 	# A full sweep of Lowlight reveals 0.999 of it (a few corner cells are
@@ -124,6 +124,37 @@ func _sweep_district(district: String) -> void:
 				Game.map_reveal(r.room_path, Vector2(x, y))
 				x += 96.0
 			y += 96.0
+
+
+## Final chart thresholds (M7, D8b). Each district's share must lie within
+## [0.6, 0.85] of its standable coverage: the share a player reaches who
+## stands on every surface of every room (secrets included). Below 0.6 the
+## chart is a formality; above 0.85 it demands near-perfect sweeping of
+## rooms whose tall bounds hold many cells no path reaches.
+func test_thresholds_match_standable_coverage() -> void:
+	for district in ["undercity", "lowlight"]:
+		var standable := _standable_ratio(district)
+		var t := map.threshold_for(district)
+		print("  [D8b] %s: standable %.3f, threshold %.2f (band %.3f..%.3f)" % [district, standable, t, 0.6 * standable, 0.85 * standable])
+		check(t >= 0.6 * standable - 0.0001 and t <= 0.85 * standable + 0.0001,
+			"%s threshold %.2f outside [0.6, 0.85] x standable %.3f" % [district, t, standable])
+
+
+## Reveals from Rook's body centre (17 px above the top) every 32 px along
+## the top of every graybox block and one-way in the district, into a scratch
+## state, and returns the district ratio: an upper bound on real exploration.
+func _standable_ratio(district: String) -> float:
+	var state := GameState.new()
+	for r in map.rooms_in(district):
+		for blk: Dictionary in WorldMapIndex.room_info(r.room_path)["blocks"]:
+			var rect: Rect2 = blk["rect"]
+			var x := rect.position.x
+			while true:
+				MapProgress.reveal(state, map, r.room_path, Vector2(minf(x, rect.end.x), rect.position.y - 17.0))
+				if x >= rect.end.x:
+					break
+				x += 32.0
+	return MapProgress.district_ratio(state, map, district)
 
 
 func test_pins_toggle_and_cap() -> void:

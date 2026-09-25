@@ -116,8 +116,8 @@ script = ExtResource("1_map")
 rooms = Array[ExtResource("2_room")]([SubResource("r0"), SubResource("r1"), SubResource("r2"), SubResource("r3"), SubResource("r4"), SubResource("r5"), SubResource("r6"), SubResource("r7"), SubResource("r8"), SubResource("r9"), SubResource("r10"), SubResource("r11"), SubResource("r12"), SubResource("r13"), SubResource("r14"), SubResource("r15"), SubResource("r16"), SubResource("r17")])
 transit_links = PackedStringArray("Relay>BellTower", "BellTower>Relay", "WardenTower>Relay")
 district_thresholds = {
-"lowlight": 0.34,
-"undercity": 0.5
+"lowlight": 0.5,
+"undercity": 0.4
 }
 district_names = {
 "lowlight": "Lowlight",
