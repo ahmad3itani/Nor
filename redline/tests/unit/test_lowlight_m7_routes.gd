@@ -1172,40 +1172,44 @@ func test_warden_tower_clamp_in_room() -> void:
 		pin.call()
 	check(drops.is_empty() and c.state == GridClamp.State.READY, "the clamp stays idle until a breaker is hit (%s)" % c.state_name())
 	# D2b: the boxes are high breakers (jump + air light). No grounded swing
-	# made from either arena one-way's nearest standing point reaches one.
+	# made from either arena one-way's nearest standing point reaches one,
+	# with the Pulse Blade or the Split Katars (the melee weapons; guns are
+	# meant to reach high breakers straight up, bible D-071).
 	var be := room.find_child("Breaker_wt_grid_e", true, false) as Breaker
 	var ways: Array = []
 	for n in room.find_children("OneWay*", "GrayboxBlock", true, false):
 		ways.append(n)
 	check(be != null and ways.size() == 2, "WardenTower needs Breaker_wt_grid_e and two arena one-ways")
 	if be != null and ways.size() == 2:
-		for w in ways:
-			var ow := w as GrayboxBlock
-			var west := ow.global_position.x < 208.0
-			var stand_x := ow.global_position.x - 5.0 if west else ow.global_position.x + ow.size.x + 5.0
-			for kind in ["light", "heavy", "launcher"]:
-				var before: int = bw.trips + be.trips
-				p.teleport(Vector2(stand_x, ow.global_position.y - 1.0))
-				await physics_frames(4)
-				pin.call()
-				p.facing = -1 if west else 1
-				check(p.is_on_floor() and absf(p.global_position.y - ow.global_position.y) < 1.5,
-					"Rook stands on %s at x %.0f (at %s)" % [ow.name, stand_x, p.global_position])
-				input.up_held = kind == "launcher"
-				for swing in (3 if kind == "light" else 1):
-					if kind == "light":
-						input.press_light()
-					else:
-						input.press_heavy()
-					for f in 18:
+		for weapon in ["split_katars", "pulse_blade"]:  # the blade last: the jump below uses it
+			p.combat.set_loadout(Game.catalog.weapon(weapon), null)
+			for w in ways:
+				var ow := w as GrayboxBlock
+				var west := ow.global_position.x < 208.0
+				var stand_x := ow.global_position.x - 5.0 if west else ow.global_position.x + ow.size.x + 5.0
+				for kind in ["light", "heavy", "launcher"]:
+					var before: int = bw.trips + be.trips
+					p.teleport(Vector2(stand_x, ow.global_position.y - 1.0))
+					await physics_frames(4)
+					pin.call()
+					p.facing = -1 if west else 1
+					check(p.is_on_floor() and absf(p.global_position.y - ow.global_position.y) < 1.5,
+						"Rook stands on %s at x %.0f (at %s)" % [ow.name, stand_x, p.global_position])
+					input.up_held = kind == "launcher"
+					for swing in (4 if kind == "light" else 1):
+						if kind == "light":
+							input.press_light()
+						else:
+							input.press_heavy()
+						for f in 18:
+							await physics_frames(1)
+							pin.call()
+					for f in 30:
 						await physics_frames(1)
 						pin.call()
-				for f in 30:
-					await physics_frames(1)
-					pin.call()
-				input.up_held = false
-				check(bw.trips + be.trips == before,
-					"a grounded %s from %s (x %.0f) must not reach a breaker (w %d, e %d)" % [kind, ow.name, stand_x, bw.trips, be.trips])
+					input.up_held = false
+					check(bw.trips + be.trips == before,
+						"a grounded %s %s from %s (x %.0f) must not reach a breaker (w %d, e %d)" % [weapon, kind, ow.name, stand_x, bw.trips, be.trips])
 		p.teleport(Vector2(44, 0))
 		p.facing = 1
 		await physics_frames(20)
