@@ -70,7 +70,10 @@ w.decor("banner", 300, -140, 30, 50, "0.3, 0.08, 0.12, 1", "0.8, 0.8, 0.75, 1") 
 # the walkway (about -234) so Rook's sprite never overlaps it.
 w.decor("pipes", 1080, -244, 120, 10, STEEL)
 # The Collector's eye flickering behind the grate: the first red; it never attacks.
-w.neon(1080, -250, 36, 8, RED, 2)
+# M8: it lives in CollectorMarkLive (wrapped in place, so numbered names keep
+# their numbers) and goes dark once the Collector falls (CollectorMarkDead).
+mark = w.switch("CollectorMarkLive", "!flag:collector_drone_defeated")
+w.neon(1080, -250, 36, 8, RED, 2, parent=mark)
 w.neon(120, -200, 30, 6, SEA, 3, True)            # flickering service tubes (ambience)
 w.neon(480, -200, 30, 6, SEA, 3, True)
 w.neon(1220, -120, 14, 6, SODIUM, 2, False)       # steady sodium lamp over the exit (route only)
@@ -80,6 +83,12 @@ w.neon(1220, -120, 14, 6, SODIUM, 2, False)       # steady sodium lamp over the 
 # MedicalRuin never see it. Once finished or skipped it never plays again;
 # a quit mid-scene replays it. Appended last so no numbered name shifts.
 w.sequence_trigger("SeqOpening", "uc_opening", -48, -140, 150, 140, autoplay=True, require_spawn="start")
+
+# --- M8 world state: the Wake's only red goes dark with the Collector ---
+# Red belongs to the Collector alone (ART_BIBLE §3), as in the First Pursuit
+# hatch ring: once it is gone its mark over the walkway is an unlit tube.
+dead = w.switch("CollectorMarkDead", "flag:collector_drone_defeated")
+w.neon(1080, -250, 36, 8, "0.28, 0.28, 0.3, 1", 1, False, parent=dead)
 
 w.write(OUT + "Wake.tscn")
 finish()

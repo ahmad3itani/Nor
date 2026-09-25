@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Resource" path="res://data/sequences/uc_opening.tres" id="seq_uc_opening"]
 [ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
@@ -221,7 +222,11 @@ size = Vector2(120, 10)
 color = Color(0.2, 0.24, 0.24, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
-[node name="Neon1" type="Node2D" parent="Props"]
+[node name="CollectorMarkLive" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "!flag:collector_drone_defeated"
+
+[node name="Neon1" type="Node2D" parent="Props/CollectorMarkLive"]
 position = Vector2(1080, -250)
 script = ExtResource("neon")
 size = Vector2(36, 8)
@@ -257,3 +262,15 @@ size = Vector2(150, 140)
 sequence = ExtResource("seq_uc_opening")
 autoplay = true
 require_spawn = &"start"
+
+[node name="CollectorMarkDead" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:collector_drone_defeated"
+
+[node name="Neon5" type="Node2D" parent="Props/CollectorMarkDead"]
+position = Vector2(1080, -250)
+script = ExtResource("neon")
+size = Vector2(36, 8)
+color = Color(0.28, 0.28, 0.3, 1)
+strokes = 1
+flicker = false
