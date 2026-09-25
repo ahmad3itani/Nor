@@ -1,7 +1,8 @@
 """Undercity palette and constants for the 00 UNDERCITY room generators.
 
 Visual thesis: dead sea-green service tubes for ambience (they flicker; a
-broken tube is neon(..., SEA, 1, True)), warm sodium lamps only along the
+broken tube, neon(..., SEA, 1, True, broken=True), is a secret
+cue and nothing else), warm sodium lamps only along the
 route, Collector red only on the Collector, radio cyan only on Orr's radio.
 Each room has its own generator, tools/roomgen/uc_<snake_room>.py, which
 imports RoomGen, finish and this module, writes one room and calls finish().

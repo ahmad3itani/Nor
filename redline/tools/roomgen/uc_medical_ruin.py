@@ -72,7 +72,7 @@ m.hint("stack_heal", 1480, -96, 80, 96, "Hurt? Stand still and hold on: [{action
 # --- Dressing (placeholder art, D-026; sea tubes = ambience, sodium = route) ---
 m.decor("pipes", 216, -300, 520, 12, STEEL)                  # corridor service run
 m.neon(60, -300, 28, 6, SEA, 2)                               # corridor tubes
-m.neon(300, -300, 28, 6, SEA, 1, True)                        # a broken one
+m.neon(300, -300, 28, 6, SEA, 3, True)                        # ambience (a broken tube would be a secret cue)
 m.decor("radio", 420, 0, 18, 14, STEEL, SEA)                  # the intake terminal's body
 m.decor("crates", 30, 0, 26, 22, RUST)                        # dumped supply cases by the door
 # The extraction pit (landmark): three chairs with chest clamps under the lamp.

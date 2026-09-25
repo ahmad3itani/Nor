@@ -251,21 +251,21 @@ position = Vector2(40, -120)
 script = ExtResource("neon")
 size = Vector2(24, 6)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Neon2" type="Node2D" parent="Props"]
 position = Vector2(560, -300)
 script = ExtResource("neon")
 size = Vector2(24, 6)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Neon3" type="Node2D" parent="Props"]
 position = Vector2(60, -640)
 script = ExtResource("neon")
 size = Vector2(24, 6)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Neon4" type="Node2D" parent="Props"]
 position = Vector2(560, -60)

@@ -97,9 +97,9 @@ for x in (236, 292):
 # Shaft ribs and dead sea-green service tubes (ambience only, they flicker).
 l.decor("pipes", 180, -40, 300, 12, CONCRETE)
 l.decor("pipes", 470, -700, 260, 12, CONCRETE)
-l.neon(40, -120, 24, 6, SEA, 1, True)
-l.neon(560, -300, 24, 6, SEA, 1, True)
-l.neon(60, -640, 24, 6, SEA, 1, True)
+l.neon(40, -120, 24, 6, SEA, 3, True)
+l.neon(560, -300, 24, 6, SEA, 3, True)
+l.neon(60, -640, 24, 6, SEA, 3, True)
 # Steady sodium marks the route only: one per climb and one by the exit.
 for x, y in [(560, -60), (110, -250), (380, -460)]:
     l.neon(x, y, 8, 14, SODIUM, 1, False)

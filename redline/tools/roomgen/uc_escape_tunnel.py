@@ -45,10 +45,10 @@ t.hint("market_shoot", 120, -96, 60, 96, "[{action}] shoot - aim with the move k
 # Secret 3: a panel sealing the recess, 204 px over the floor: far out of
 # blade reach (jump peak 56), two pistol shots aimed straight up.
 t.wall("uc_tunnel_panel", 560, -236, 48, 16, 12, scrap=30)
-t.neon(600, -250, 4, 20, SEA, 1, True)            # a broken tube: the secret cue
+t.neon(600, -250, 4, 20, SEA, 1, True, broken=True)            # a broken tube: the secret cue
 
 # Landmark: the derailed tram the player squeezed past from the bay.
-t.decor("train", 300, 0, 300, 60, RUST, SODIUM)
+t.decor("train", 300, 0, 300, 60, RUST, STEEL)   # no sodium accent: sodium is the route
 for x in [60, 250]:
     t.neon(x, -214, 36, 4, SEA, 3, True)          # dead service tubes in the tunnel mouth
 

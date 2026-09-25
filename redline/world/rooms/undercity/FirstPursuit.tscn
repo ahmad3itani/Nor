@@ -102,14 +102,14 @@ position = Vector2(60, -300)
 script = ExtResource("neon")
 size = Vector2(4, 30)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Neon2" type="Node2D" parent="Props"]
 position = Vector2(560, -300)
 script = ExtResource("neon")
 size = Vector2(4, 30)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Decor1" type="Node2D" parent="Props"]
 position = Vector2(180, -330)
@@ -225,7 +225,7 @@ position = Vector2(1900, -260)
 script = ExtResource("neon")
 size = Vector2(4, 30)
 color = Color(0.62, 0.8, 0.72, 1)
-strokes = 1
+strokes = 3
 
 [node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
 position = Vector2(2760, -2)
@@ -305,6 +305,7 @@ script = ExtResource("neon")
 size = Vector2(4, 26)
 color = Color(0.62, 0.8, 0.72, 1)
 strokes = 1
+broken = true
 
 [node name="NPC_orr_radio" type="Area2D" parent="Interactables"]
 position = Vector2(3990, 0)

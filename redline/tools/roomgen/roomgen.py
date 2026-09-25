@@ -157,9 +157,10 @@ class RoomGen:
     def switch(self, name, condition):
         self.add("Props", name, "Node2D", ['script = %s' % self._script("switch"), 'visible_when = %s' % q(condition)], name)
         return "Props/" + name
-    def neon(self, x, y, w, h, color, strokes=3, flicker=True, parent="Props"):
+    def neon(self, x, y, w, h, color, strokes=3, flicker=True, parent="Props", broken=False):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("neon"), 'size = Vector2(%d, %d)' % (w, h), 'color = Color(%s)' % color, 'strokes = %d' % strokes]
         if not flicker: p.append('flicker = false')
+        if broken: p.append('broken = true')   # a secret cue (NeonSign.broken)
         return self.add(parent, "Neon", "Node2D", p)
     def gate(self, x, y, w, h, closed=False, open_flag="", name=None):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("gate"), 'size = Vector2(%d, %d)' % (w, h)]

@@ -44,7 +44,7 @@ p.block(1380, 0, 2764, BIG, "FloorB")             # x 1380..4144
 p.block(300, -380, 120, 356, "PipeBundle1")
 p.hint("alley_slide", 180, -96, 60, 96, "Run and hold [{action}] to slide", "move_down")  # reused Lowlight id: taught once
 for x in (60, 560):
-    p.neon(x, -300, 4, 30, SEA, 1, True)          # dead service tubes, ambience only
+    p.neon(x, -300, 4, 30, SEA, 3, True)          # dead service tubes, ambience only
 p.decor("pipes", 180, -330, 200, 12, STEEL)
 p.decor("pipes", 560, -300, 240, 12, STEEL)
 
@@ -71,7 +71,7 @@ p.block(1640, -380, 120, 356, "PipeBundle2")
 # Past lost_x: the eye loads GONE for anyone who spawns or respawns here.
 p.spawn("pursuit_mid", 1820, 0, 1)
 p.respawn_point("pursuit_mid", 1800, -200, 16, 200)   # a death in C never replays A and B
-p.neon(1900, -260, 4, 30, SEA, 1, True)
+p.neon(1900, -260, 4, 30, SEA, 3, True)
 p.enemy("Hopper", 2760, -2)                       # warm-up, alone: 440 px from pair 2
 p.enemy("Needle", 3200, -2)                       # pair 2 (max_attackers 2: only these two together)
 p.enemy("Hopper", 3320, -2)
@@ -89,7 +89,7 @@ p.block(3820, -200, 76, 16, "CacheRoof")
 p.wall("uc_pursuit_cache", 3820, -184, 16, 40, 20, scrap=20)
 p.block(3880, -184, 16, 40, "CacheBack")
 p.collectible(0, "sb_uc_pursuit_cache", 3856, -144, scrap=30)
-p.neon(3800, -230, 4, 26, SEA, 1, True)           # the broken tube over the cache roof: the secret cue
+p.neon(3800, -230, 4, 26, SEA, 1, True, broken=True)           # the broken tube over the cache roof: the secret cue
 
 # Final breathing space: Orr's radio, the first NPC (figure=false, verb Listen).
 p.npc("orr_radio", 3990, 0, -1)
