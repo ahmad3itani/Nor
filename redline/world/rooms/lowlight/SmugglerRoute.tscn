@@ -1,10 +1,28 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
-[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://interactables/Breaker.gd" id="breaker"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/transitions/PowerShutter.gd" id="shutter"]
+[ext_resource type="Resource" path="res://data/level/shutter_run.tres" id="level_shutter_run"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="scene_Hopper"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
+[ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
+[ext_resource type="Script" path="res://interactables/FlagSwitch.gd" id="lever"]
+[ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="anchor"]
+[ext_resource type="Resource" path="res://data/npcs/iko.tres" id="npc_iko"]
+[ext_resource type="Script" path="res://interactables/NPC.gd" id="npc"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Shield.tscn" id="scene_Shield"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
-[ext_resource type="Script" path="res://world/rooms/FlagDeclaration.gd" id="flagdecl"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -36,6 +54,321 @@ theme = ExtResource("theme")
 [node name="EncounterDirector" type="Node" parent="."]
 script = ExtResource("director")
 
+[node name="WallWestUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -540)
+script = ExtResource("block")
+size = Vector2(16, 444)
+
+[node name="WallEastUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2420, -540)
+script = ExtResource("block")
+size = Vector2(16, 444)
+
+[node name="Canopy" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -540)
+script = ExtResource("block")
+size = Vector2(2468, 40)
+
+[node name="PumpFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1820, 0)
+script = ExtResource("block")
+size = Vector2(600, 96)
+
+[node name="Breaker_sr_pump" type="Area2D" parent="Interactables"]
+position = Vector2(2192, -96)
+script = ExtResource("breaker")
+breaker_id = "sr_pump"
+circuit = &"sr_pump"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(2200, -96)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(2, 404)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Shutter_SR" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1960, -200)
+script = ExtResource("shutter")
+size = Vector2(16, 200)
+shutter_id = "SR"
+circuit = &"sr_pump"
+timing = ExtResource("level_shutter_run")
+latch_flag = "sr_shutter_latched"
+
+[node name="Hopper1" parent="Enemies" instance=ExtResource("scene_Hopper")]
+position = Vector2(2080, -2)
+
+[node name="P2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1464, 0)
+script = ExtResource("block")
+size = Vector2(260, 16)
+
+[node name="Pipe" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1582, -200)
+script = ExtResource("block")
+size = Vector2(48, 176)
+
+[node name="Culvert" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1330, 72)
+script = ExtResource("block")
+size = Vector2(420, 16)
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1728, 24)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="P3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1200, 0)
+script = ExtResource("block")
+size = Vector2(152, 16)
+
+[node name="Sill" type="StaticBody2D" parent="Geometry"]
+position = Vector2(640, 0)
+script = ExtResource("block")
+size = Vector2(464, 96)
+
+[node name="Floodgate" type="StaticBody2D" parent="Geometry"]
+position = Vector2(740, -420)
+script = ExtResource("block")
+size = Vector2(48, 396)
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1048, -48)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1000, -96)
+script = ExtResource("block")
+size = Vector2(40, 8)
+one_way = true
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1048, -144)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay5" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1032, -192)
+script = ExtResource("block")
+size = Vector2(24, 8)
+one_way = true
+
+[node name="DashLedge" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1060, -240)
+script = ExtResource("block")
+size = Vector2(44, 16)
+
+[node name="Shrine" type="StaticBody2D" parent="Geometry"]
+position = Vector2(788, -240)
+script = ExtResource("block")
+size = Vector2(38, 16)
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(807, -240)
+script = ExtResource("collect")
+persist_id = "cs_smuggler_dash"
+kind = 2
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(950, -280)
+script = ExtResource("marker")
+kind = 0
+label = "Too wide to jump"
+resolved_when = "ability:dash"
+
+[node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
+position = Vector2(900, -150)
+
+[node name="DenFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(688, 96)
+
+[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
+position = Vector2(320, -48)
+script = ExtResource("block")
+size = Vector2(56, 8)
+one_way = true
+
+[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
+position = Vector2(264, -96)
+script = ExtResource("block")
+size = Vector2(48, 8)
+one_way = true
+
+[node name="Loft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(30, -144)
+script = ExtResource("block")
+size = Vector2(230, 16)
+
+[node name="CacheWallW" type="StaticBody2D" parent="Geometry"]
+position = Vector2(14, -240)
+script = ExtResource("block")
+size = Vector2(16, 96)
+
+[node name="CacheCeiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(30, -240)
+script = ExtResource("block")
+size = Vector2(86, 16)
+
+[node name="Breakable1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(100, -224)
+script = ExtResource("wall")
+size = Vector2(16, 80)
+persist_id = "sr_den_cache"
+max_health = 40.0
+needs_heavy = true
+scrap_inside = 60
+
+[node name="Collectible2" type="Area2D" parent="Interactables"]
+position = Vector2(60, -144)
+script = ExtResource("collect")
+persist_id = "sb_sr_cache"
+kind = 0
+scrap_amount = 60
+
+[node name="Lever1" type="Area2D" parent="Interactables"]
+position = Vector2(40, 0)
+script = ExtResource("lever")
+flag_id = "shortcut_smuggler_route"
+used_text = "Hatch unbolted. The Stack is through here; the den Anchor gets you back to the Power Block."
+
+[node name="Hatch" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -96)
+script = ExtResource("gate")
+size = Vector2(16, 96)
+closed = true
+open_flag = "shortcut_smuggler_route"
+
+[node name="Spawn_smuggler_den" type="Marker2D" parent="Spawns"]
+position = Vector2(230, 0)
+script = ExtResource("spawn")
+spawn_id = &"smuggler_den"
+
+[node name="Anchor1" type="Area2D" parent="Interactables"]
+position = Vector2(230, 0)
+script = ExtResource("anchor")
+anchor_id = &"smuggler_den"
+
+[node name="NPC_iko" type="Area2D" parent="Interactables"]
+position = Vector2(150, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_iko")
+facing = 1
+present_when = PackedStringArray("!flag:met_iko")
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(380, -2)
+facing = 1
+
+[node name="Shield1" parent="Enemies" instance=ExtResource("scene_Shield")]
+position = Vector2(520, -2)
+facing = 1
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(300, -300)
+script = ExtResource("flow")
+size = Vector2(440, 300)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(2300, -150)
+script = ExtResource("neon")
+size = Vector2(20, 10)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 3
+
+[node name="Neon2" type="Node2D" parent="Props"]
+position = Vector2(780, -460)
+script = ExtResource("neon")
+size = Vector2(20, 10)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 3
+
+[node name="Neon3" type="Node2D" parent="Props"]
+position = Vector2(-20, -130)
+script = ExtResource("neon")
+size = Vector2(20, 10)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 3
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(96, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 40)
+color = Color(0.32, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(196, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 40)
+color = Color(0.32, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(276, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 40)
+color = Color(0.32, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(470, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(30, 24)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(600, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(26, 26)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor7" type="Node2D" parent="Props"]
+position = Vector2(180, -144)
+script = ExtResource("decor")
+kind = 3
+size = Vector2(30, 12)
+color = Color(0.32, 0.24, 0.2, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon4" type="Node2D" parent="Props"]
+position = Vector2(150, -80)
+script = ExtResource("neon")
+size = Vector2(16, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 2
+
+[node name="Decor8" type="Node2D" parent="Props"]
+position = Vector2(1480, -300)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(260, 12)
+color = Color(0.2, 0.22, 0.28, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor9" type="Node2D" parent="Props"]
+position = Vector2(1880, -260)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(300, 12)
+color = Color(0.2, 0.22, 0.28, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
 [node name="Spawn_from_power" type="Marker2D" parent="Spawns"]
 position = Vector2(2380, 0)
 script = ExtResource("spawn")
@@ -43,20 +376,10 @@ spawn_id = &"from_power"
 is_default = true
 facing = -1
 
-[node name="Block1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(2348, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
-
 [node name="Spawn_from_stack" type="Marker2D" parent="Spawns"]
 position = Vector2(20, 0)
 script = ExtResource("spawn")
 spawn_id = &"from_stack"
-
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(-12, 0)
-script = ExtResource("block")
-size = Vector2(64, 16)
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(2420, -96)
@@ -71,7 +394,18 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/ApartmentStack.tscn"
 target_entry = &"from_smuggler"
+requires_flag = "shortcut_smuggler_route"
 
-[node name="FlagDeclaration" type="Node" parent="Triggers"]
-script = ExtResource("flagdecl")
-produces = PackedStringArray("shortcut_smuggler_route")
+[node name="Hint1" type="Area2D" parent="Triggers"]
+position = Vector2(2240, -96)
+script = ExtResource("hint")
+size = Vector2(100, 96)
+hint_id = "sr_eye"
+text = "A chalk eye. Someone uses this route."
+
+[node name="Hint2" type="Area2D" parent="Triggers"]
+position = Vector2(1060, -340)
+script = ExtResource("hint")
+size = Vector2(44, 100)
+hint_id = "alley_gap"
+text = "Too far to jump. Maybe later."

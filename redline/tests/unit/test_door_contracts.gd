@@ -72,8 +72,7 @@ const DOORS := [
 	["lowlight/RainlineChase", Rect2(-64, -96, 16, 96), "lowlight/SecurityStation", &"from_rainline", "", &"from_security", Vector2(20, 0), 1],
 	["lowlight/RainlineChase", Rect2(4144, -96, 16, 96), "lowlight/BellTower", &"from_rainline", "", &"from_bell", Vector2(4100, 0), -1],
 	["lowlight/SmugglerRoute", Rect2(2420, -96, 16, 96), "lowlight/PowerBlock", &"from_smuggler", "", &"from_power", Vector2(2380, 0), -1],
-	# Final requires_flag: shortcut_smuggler_route (the SmugglerRoute room task).
-	["lowlight/SmugglerRoute", Rect2(-64, -96, 16, 96), "lowlight/ApartmentStack", &"from_smuggler", "", &"from_stack", Vector2(20, 0), 1],
+	["lowlight/SmugglerRoute", Rect2(-64, -96, 16, 96), "lowlight/ApartmentStack", &"from_smuggler", "shortcut_smuggler_route", &"from_stack", Vector2(20, 0), 1],
 	# Final requires_flag: shortcut_smuggler_route (D2b, with the HatchGate).
 	["lowlight/ApartmentStack", Rect2(624, -96, 16, 96), "lowlight/SmugglerRoute", &"from_stack", "", &"from_smuggler", Vector2(580, 0), -1],
 	["lowlight/ApartmentStack", Rect2(-64, -96, 16, 96), "lowlight/MarketRun", &"from_stack", "", &"from_market", Vector2(20, 0), 1],
