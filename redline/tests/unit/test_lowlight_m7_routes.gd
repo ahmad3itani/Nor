@@ -1220,9 +1220,13 @@ func test_stack_hatch_both_ways() -> void:
 	p.teleport(Vector2(632, 0))
 	await physics_frames(20)
 	check(SceneRouter.current_room == room, "the hatch exit needs shortcut_smuggler_route")
-	# Unbolted (the den lever): Stack -> Smuggler Route -> Stack.
+	check(Game.has_flag("hint_stack_hatch"), "the bolted hatch says so ('Bolted from the other side.')")
+	# Unbolted (the den lever): Stack -> Smuggler Route -> Stack. Arriving
+	# through the hatch (inside the hint box) must not claim it is bolted.
 	Game.set_flag("shortcut_smuggler_route")
+	Game.set_flag("hint_stack_hatch", false)
 	await _enter(STACK, &"from_smuggler")
+	check(not Game.has_flag("hint_stack_hatch"), "no 'bolted' line once the hatch is open")
 	gate = SceneRouter.current_room.find_child("HatchGate", true, false) as Gate
 	check(gate != null and not gate.closed, "the HatchGate opens with the flag")
 	if not await _run([["exit", 1]]):

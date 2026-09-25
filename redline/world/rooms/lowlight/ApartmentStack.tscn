@@ -123,6 +123,7 @@ script = ExtResource("hint")
 size = Vector2(60, 96)
 hint_id = "stack_hatch"
 text = "Bolted from the other side."
+skip_when = "flag:shortcut_smuggler_route"
 
 [node name="MapMarker1" type="Node2D" parent="Props"]
 position = Vector2(600, -60)

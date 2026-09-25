@@ -9,6 +9,10 @@ extends Area2D
 @export_multiline var text: String = ""
 @export var action: StringName = &""
 @export var seconds: float = 3.5
+## Stays silent while this condition holds (Game.check_condition), e.g. a
+## "bolted" door hint that is moot once the door is open. Not marked as shown,
+## so it can still fire if the condition stops holding.
+@export var skip_when: String = ""
 
 
 func _ready() -> void:
@@ -28,8 +32,15 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if not body is Player or Game.has_flag("hint_" + hint_id):
 		return
+	if skip_when != "" and Game.check_condition(skip_when):
+		return
 	Game.set_flag("hint_" + hint_id)
 	var t := text
 	if action != &"":
 		t = t.replace("{action}", InputGlyphs.label(action))
 	EventBus.hint_requested.emit(t, seconds)
+
+
+## ContentValidator protocol: skip_when reads flags.
+func content_flags() -> Dictionary:
+	return {"conditions": [skip_when] if skip_when != "" else []}

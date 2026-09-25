@@ -146,9 +146,10 @@ class RoomGen:
         if drain_scale != 1.0: p.append('drain_scale = %.2f' % drain_scale)
         if drain_floor != 0.0: p.append('drain_floor = %.1f' % drain_floor)
         return self.add("Zones", "Flow", "Area2D", p)
-    def hint(self, hid, x, y, w, h, text, action=""):
+    def hint(self, hid, x, y, w, h, text, action="", skip_when=""):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("hint"), 'size = Vector2(%d, %d)' % (w, h), 'hint_id = %s' % q(hid), 'text = %s' % q(text)]
         if action: p.append('action = &%s' % q(action))
+        if skip_when: p.append('skip_when = %s' % q(skip_when))
         return self.add("Triggers", "Hint", "Area2D", p)
     def mapmarker(self, x, y, label, resolved_when, kind=0):
         return self.add("Props", "MapMarker", "Node2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("marker"),

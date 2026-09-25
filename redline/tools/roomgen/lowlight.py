@@ -201,7 +201,9 @@ s.exit(-64, -96, 16, 96, "MarketRun", "from_stack")
 s.exit(624, -864, 16, 96, "NeonRoofs", "from_stack")
 s.exit(624, -96, 16, 96, "SmugglerRoute", "from_stack", flag="shortcut_smuggler_route")
 s.gate(608, -96, 16, 96, closed=True, open_flag="shortcut_smuggler_route", name="HatchGate")
-s.hint("stack_hatch", 540, -96, 60, 96, "Bolted from the other side.")
+# Silent once unbolted: Rook then arrives through this hatch (from_smuggler
+# sits inside the hint box) and the line would be false.
+s.hint("stack_hatch", 540, -96, 60, 96, "Bolted from the other side.", skip_when="flag:shortcut_smuggler_route")
 s.mapmarker(600, -60, "Hatch: bolted from the tunnel side", "flag:shortcut_smuggler_route")
 s.neon(600, -130, 20, 8, VIOLET)  # the smugglers' chalk eye
 s.hint("stack_heal", 60, -96, 80, 96, "Hurt? Stand still and hold on: [{action}] uses an injector", "heal")
