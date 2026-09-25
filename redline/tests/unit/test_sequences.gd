@@ -203,11 +203,21 @@ func test_skip_parity() -> void:
 	_auto(4.0)
 	var res: Array = []
 	_start(seq, res)
-	await physics_frames(4)
-	check(Cinematics.is_playing() and Cinematics.current.index <= 1, "skip lands in the opening wait")
+	# Skip while the SeqLine (step 4) shows: flag a already set by run(); b,
+	# the music clear and the gated steps are still ahead.
+	for i in 300:
+		if Cinematics.is_playing() and Cinematics.current.index == 4:
+			break
+		await get_tree().process_frame
+	check(Cinematics.is_playing() and Cinematics.current.index == 4 and Cinematics.overlay.line_on, "skip lands on the line")
+	check(Game.has_flag("test_seq_parity_a") and Game.flag_int("test_seq_parity_b") == 0, "part-way: a set, b ahead")
 	Cinematics.request_skip()
 	await _until_finished(10)
 	check(res.size() == 1 and res[0].skipped, "mid-way run skipped")
+	check(finished.size() == 3 and finished[-1][1] and finished[-1][3] == 4,
+		"skip reports the step it landed on (4): %s" % [finished[-1]])
+	check(finished[0][3] == 9 and finished[1][3] == 9, "watched and INSTANT runs end on the last step")
+	check(marks.size() == 3 and marks.count("test_parity_end") == 3, "one mark per run: %s" % [marks])
 	var skipped := _parity_state()
 	check(watched["flags"] == instant["flags"], "watched vs INSTANT flags: %s / %s" % [watched["flags"], instant["flags"]])
 	check(watched["flags"] == skipped["flags"], "watched vs skipped flags: %s / %s" % [watched["flags"], skipped["flags"]])
@@ -215,6 +225,87 @@ func test_skip_parity() -> void:
 		check(s["facing"] == -1, "facing -1 in every path")
 		check(s["music"] == -1, "music override cleared in every path")
 	_check_restored("parity")
+
+
+## Built in code: runtime rules the content checks leave to the player.
+func _code_seq(id: String, steps: Array[SequenceStep], locking: bool) -> SequenceData:
+	var seq := SequenceData.new()
+	seq.id = id
+	seq.steps = steps
+	seq.lock_input = locking
+	seq.letterbox = locking
+	seq.hide_hud = locking
+	seq.theatre_only = true
+	return seq
+
+
+func test_parallel_abort_and_tapless_rules() -> void:
+	# A non-blocking step whose run() completed is not finish()ed again.
+	var mark := SeqMark.new()
+	mark.mark = "test_parallel"
+	mark.blocking = false
+	var probe := ProbeStep.new()
+	probe.blocking = false
+	var pause := SeqWait.new()
+	pause.seconds = 0.2
+	_auto(4.0)
+	_start(_code_seq("test_code_parallel", [mark, probe, pause] as Array[SequenceStep], true))
+	await _until_finished()
+	check(marks == ["test_parallel"], "a non-blocking SeqMark emits once in AUTO: %s" % [marks])
+	check(probe.finishes.is_empty(), "a completed parallel step is not finish()ed again")
+	# hold_for_input in a non-locking play (no SkipGate, no tap) keeps its clock.
+	var line := SeqLine.new()
+	line.text = "Hold."
+	line.seconds = 2.0
+	line.hold_for_input = true
+	_play()
+	var res: Array = []
+	_start(_code_seq("test_code_tapless", [line] as Array[SequenceStep], false), res)
+	for i in 180:
+		if not res.is_empty():
+			break
+		await get_tree().process_frame
+	check(res.size() == 1 and not res[0].aborted(), "a tapless hold_for_input line ends on its clock")
+	# An aborted bark leaves no actor tinted; its SeqLine clears nothing later.
+	var flash := SeqActorFlash.new()
+	flash.actor = "@rook"
+	flash.color = Color(1, 0, 0)
+	flash.seconds = 2.0
+	flash.pulses = 1
+	flash.blocking = false
+	var bark_line := SeqLine.new()
+	bark_line.text = "Bark."
+	bark_line.seconds = 2.0
+	var base := room.player.modulate
+	_auto(1.0)
+	var bark_res: Array = []
+	_start(_code_seq("test_code_bark", [flash, bark_line] as Array[SequenceStep], false), bark_res)
+	await physics_frames(20)
+	check(room.player.modulate != base, "the bark tints Rook")
+	var ended_in_listener: Array = []
+	var chain := func(id: String, _s: bool, _t: float, _i: int, _n: int, _nom: float) -> void:
+		if id == "test_code_bark":
+			ended_in_listener.append(1)
+	EventBus.sequence_finished.connect(chain)
+	_start(_seq(PARITY))
+	EventBus.sequence_finished.disconnect(chain)
+	await physics_frames(2)
+	check(bark_res.size() == 1 and bark_res[0].aborted() and ended_in_listener.size() == 1, "the locking play aborted the bark")
+	check(room.player.modulate == base, "the aborted flash put modulate back")
+	check(Cinematics.locks_input() and Cinematics.current.seq.id == "test_seq_parity", "the locking play is current")
+	# A play a finished-listener starts inside Cinematics.abort() stays current.
+	var restarted: Array = []
+	var restart := func(id: String, _s: bool, _t: float, _i: int, _n: int, _nom: float) -> void:
+		if id == "test_seq_parity" and restarted.is_empty():
+			restarted.append(1)
+			_start(_code_seq("test_code_after", [pause] as Array[SequenceStep], false))
+	EventBus.sequence_finished.connect(restart)
+	Cinematics.abort()
+	EventBus.sequence_finished.disconnect(restart)
+	check(restarted.size() == 1 and Cinematics.is_playing() and Cinematics.current.seq.id == "test_code_after",
+		"a play started from the abort's listener stays current")
+	await _until_finished()
+	_check_restored("parallel/abort")
 
 
 func test_input_locked_during_sequence() -> void:
