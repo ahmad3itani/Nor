@@ -75,3 +75,215 @@ func test_settings_menu_fits_viewport() -> void:
 	check(menu.page == &"main", "open_menu must reset to the main page")
 	menu.close_menu()
 	menu.queue_free()
+
+
+# --- SkipGate (pure logic) ---
+
+const DT := 1.0 / 60.0
+
+var _prev_skip := false
+var _prev_adv := false
+
+
+## Feeds `gate` frame by frame. segments: [seconds, skip_held, adv_held];
+## just_pressed is derived from the previous frame. Returns every non-NONE
+## output as [Out, time].
+func _drive(gate: SkipGate, segments: Array) -> Array:
+	var outs: Array = []
+	var t := 0.0
+	for seg in segments:
+		var frames := roundi(float(seg[0]) / DT)
+		for i in frames:
+			var s: bool = seg[1]
+			var a: bool = seg[2]
+			var o := gate.update(DT, s, s and not _prev_skip, a, a and not _prev_adv)
+			_prev_skip = s
+			_prev_adv = a
+			t += DT
+			if o != SkipGate.Out.NONE:
+				outs.append([o, t])
+	return outs
+
+
+func _new_gate(first_view: bool) -> SkipGate:
+	_prev_skip = false
+	_prev_adv = false
+	return SkipGate.new(first_view)
+
+
+func _kinds(outs: Array) -> Array:
+	return outs.map(func(o: Array) -> int: return o[0])
+
+
+func test_skip_gate_first_view_needs_hold() -> void:
+	var g := _new_gate(true)
+	check(not g.prompt_visible, "first view prompt must start hidden")
+	# A 0.5 s hold (Space = skip + advance) then release: neither TAP nor SKIP.
+	var outs := _drive(g, [[0.3, false, false], [0.5, true, true], [0.1, false, false]])
+	check(outs.is_empty(), "a 0.5 s hold must do nothing on a first view (got %s)" % str(_kinds(outs)))
+	check(g.progress_ratio() == 0.0, "progress must reset on release")
+	outs = _drive(g, [[0.85, true, true]])
+	check(_kinds(outs) == [SkipGate.Out.SKIP], "a 0.85 s hold must skip (got %s)" % str(_kinds(outs)))
+	# Prompt: hidden until the first tracked press, then 2 s after a tap.
+	g = _new_gate(true)
+	_drive(g, [[0.3, false, false]])
+	check(not g.prompt_visible, "prompt visible before any press")
+	outs = _drive(g, [[0.1, true, true], [0.05, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP], "single tap should TAP")
+	check(g.prompt_visible, "prompt must show right after a tap on a first view")
+	check(g.prompt_text().begins_with("Hold ["), "hold prompt text: %s" % g.prompt_text())
+	_drive(g, [[2.0, false, false]])
+	check(not g.prompt_visible, "prompt must hide 2 s after the last press")
+	# Progress grows while holding and resets on release.
+	g = _new_gate(true)
+	_drive(g, [[0.3, false, false], [0.5, true, true]])
+	check(g.progress_ratio() > 0.3, "progress must grow while holding (%.2f)" % g.progress_ratio())
+	_drive(g, [[DT, false, false]])
+	check(g.progress_ratio() == 0.0, "progress must reset on release")
+
+
+func test_skip_gate_tap_advances_never_skips() -> void:
+	for first in [true, false]:
+		var g := _new_gate(first)
+		var outs := _drive(g, [[0.3, false, false], [0.2, true, true], [0.3, false, false]])
+		check(_kinds(outs) == [SkipGate.Out.TAP], "first_view=%s: a 0.2 s tap must TAP once (got %s)" % [first, str(_kinds(outs))])
+		if outs.size() == 1:
+			# Fired on the release frame (0.3 + 0.2 s, then the release frame).
+			check_near(outs[0][1], 0.5 + DT, 0.001, "TAP must fire on the release frame")
+
+
+func test_skip_gate_repeat_short_hold() -> void:
+	var g := _new_gate(false)
+	check(g.prompt_visible, "repeat view prompt must show from frame 0")
+	var outs := _drive(g, [[0.3, false, false], [0.45, true, false]])
+	check(_kinds(outs) == [SkipGate.Out.SKIP], "repeat view 0.45 s hold must skip (got %s)" % str(_kinds(outs)))
+	g = _new_gate(false)
+	outs = _drive(g, [[0.3, false, false], [1.0, false, true], [0.1, false, false]])
+	check(outs.is_empty(), "holding an advance-only action must never skip (got %s)" % str(_kinds(outs)))
+
+
+func test_skip_gate_grace_and_carried_press() -> void:
+	var g := _new_gate(true)
+	var outs := _drive(g, [[0.1, false, false], [1.0, true, true], [0.1, false, false]])
+	check(outs.is_empty(), "a press begun inside the grace must never fire (got %s)" % str(_kinds(outs)))
+	# A press already down when the gate starts (entry mash).
+	g = _new_gate(true)
+	_prev_skip = true
+	_prev_adv = true
+	outs = _drive(g, [[1.0, true, true]])
+	check(outs.is_empty(), "a press held from before the gate must never fire")
+	# A press carried across a pause is dropped until released.
+	g = _new_gate(true)
+	_drive(g, [[0.3, false, false], [0.5, true, true]])
+	g.notify_unpaused()
+	outs = _drive(g, [[1.0, true, true]])
+	check(outs.is_empty(), "a press held across notify_unpaused must be ignored (got %s)" % str(_kinds(outs)))
+	outs = _drive(g, [[0.3, false, false], [0.1, true, true], [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP], "after release, a new tap works again (got %s)" % str(_kinds(outs)))
+
+
+func test_skip_gate_press_twice_setting() -> void:
+	Settings.cinematic_skip_hold = false
+	var tap := [0.05, true, true]
+	# Repeat view (gaps are release to next press).
+	var g := _new_gate(false)
+	var outs := _drive(g, [[0.3, false, false], tap, [0.3, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP, SkipGate.Out.SKIP], "repeat: taps 0.3 s apart -> TAP, SKIP (got %s)" % str(_kinds(outs)))
+	g = _new_gate(false)
+	outs = _drive(g, [[0.3, false, false], tap, [0.1, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP], "repeat: taps 0.1 s apart -> TAP, NONE (got %s)" % str(_kinds(outs)))
+	g = _new_gate(false)
+	outs = _drive(g, [[0.3, false, false], tap, [0.9, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP, SkipGate.Out.TAP], "repeat: taps 0.9 s apart -> TAP, TAP (got %s)" % str(_kinds(outs)))
+	# First view.
+	g = _new_gate(true)
+	outs = _drive(g, [[0.3, false, false], tap, [0.1, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP], "first: taps 0.1 s apart -> one advance, no skip (got %s)" % str(_kinds(outs)))
+	g = _new_gate(true)
+	outs = _drive(g, [[0.3, false, false], tap, [0.3, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP, SkipGate.Out.TAP], "first: the first window only teaches (got %s)" % str(_kinds(outs)))
+	check(g.prompt_visible and g.prompt_text().contains("again to skip"), "press-twice prompt not shown: %s" % g.prompt_text())
+	outs = _drive(g, [[1.0, false, false], tap, [0.3, false, false], tap, [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP, SkipGate.Out.SKIP], "first: a later pair skips (got %s)" % str(_kinds(outs)))
+	# Holds keep working under Press twice.
+	g = _new_gate(true)
+	outs = _drive(g, [[0.3, false, false], [0.85, true, true]])
+	check(_kinds(outs) == [SkipGate.Out.SKIP], "hold must still skip under Press twice (got %s)" % str(_kinds(outs)))
+
+
+func test_skip_gate_skip_action_alone() -> void:
+	var g := _new_gate(true)
+	var outs := _drive(g, [[0.3, false, false], [0.85, true, false]])
+	check(_kinds(outs) == [SkipGate.Out.SKIP], "cinematic_skip alone held 0.85 s must skip (got %s)" % str(_kinds(outs)))
+	g = _new_gate(true)
+	outs = _drive(g, [[0.3, false, false], [0.1, true, false], [0.1, false, false]])
+	check(outs.is_empty(), "a short cinematic_skip-only press is not an advance (got %s)" % str(_kinds(outs)))
+	g = _new_gate(true)
+	outs = _drive(g, [[0.3, false, false], [0.1, true, true], [0.1, false, false]])
+	check(_kinds(outs) == [SkipGate.Out.TAP], "the same press with an advance action must TAP (got %s)" % str(_kinds(outs)))
+
+
+func test_advance_actions_match_dialogue_box() -> void:
+	var box_script: GDScript = preload("res://ui/dialogue/DialogueBox.gd")
+	check(SkipGate.ADVANCE_ACTIONS == box_script.ADVANCE_ACTIONS, "SkipGate.ADVANCE_ACTIONS drifted from DialogueBox")
+
+
+func test_cinematic_mode_headless_is_instant() -> void:
+	CinematicMode.teardown()
+	check(CinematicMode.current() == CinematicMode.Mode.INSTANT, "headless runner must default to INSTANT")
+	CinematicMode.set_mode(CinematicMode.Mode.AUTO)
+	check(CinematicMode.current() == CinematicMode.Mode.AUTO, "set_mode(AUTO) did not stick")
+	check(CinematicMode.current() == CinematicMode.Mode.AUTO, "set_mode(AUTO) did not stick on a second read")
+	var calls: Array = []
+	var probe := func() -> void: calls.append(1)
+	CinematicMode.register_teardown(probe)
+	CinematicMode.register_teardown(probe)
+	CinematicMode.push_hud_hide(&"sequence")
+	CinematicMode.bark_line = true
+	CinematicMode.theatre = true
+	CinematicMode.teardown()
+	check(calls.size() == 1, "teardown must run each registered callable once (ran %d)" % calls.size())
+	check(CinematicMode.current() == CinematicMode.Mode.INSTANT, "teardown must restore INSTANT")
+	check(not CinematicMode.hud_hidden and not CinematicMode.bark_line and not CinematicMode.theatre, "teardown left a flag set")
+	CinematicMode._teardowns.erase(probe)
+
+
+func test_glyph_labels_nonempty() -> void:
+	var was_pad := InputGlyphs.using_pad
+	var expected := {false: ["Space", "Space", "E"], true: ["A", "A", "D-Pad Up"]}
+	var names := ["cinematic_skip", "jump", "interact"]
+	for pad in [false, true]:
+		InputGlyphs.using_pad = pad
+		var labels := [InputGlyphs.label(&"cinematic_skip"), InputGlyphs.label(&"jump"), InputGlyphs.label(&"interact")]
+		for i in 3:
+			check(labels[i] != "" and labels[i] != names[i], "pad=%s: %s label is '%s'" % [pad, names[i], labels[i]])
+		check(labels == expected[pad], "pad=%s: labels %s, expected %s" % [pad, str(labels), str(expected[pad])])
+		for first in [true, false]:
+			for hold in [true, false]:
+				Settings.cinematic_skip_hold = hold
+				var g := SkipGate.new(first)
+				check(not g.prompt_text().contains("[]"), "prompt has an empty glyph: %s" % g.prompt_text())
+	InputGlyphs.using_pad = was_pad
+
+
+func test_press_action_helper_timing() -> void:
+	var probe := _InputProbe.new()
+	add_child(probe)
+	await get_tree().process_frame
+	await press_action(&"cinematic_skip", 3)
+	await get_tree().process_frame
+	check(probe.just_frames == 1, "expected exactly one just_pressed frame, got %d" % probe.just_frames)
+	check(probe.held_frames == 3, "expected 3 held frames, got %d" % probe.held_frames)
+	check(not Input.is_action_pressed(&"cinematic_skip"), "the helper did not release the action")
+	probe.queue_free()
+
+
+class _InputProbe extends Node:
+	var just_frames := 0
+	var held_frames := 0
+
+	func _process(_delta: float) -> void:
+		if Input.is_action_just_pressed(&"cinematic_skip"):
+			just_frames += 1
+		if Input.is_action_pressed(&"cinematic_skip"):
+			held_frames += 1
