@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_01.tres" id="frag_mf_lowlight_01"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="scaffold_m8_note_bad" type="Node2D"]
+script = ExtResource("room")
+room_name = "Scaffold M8 note"
+bounds = Rect2(-64, -270, 800, 400)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(784, 96)
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Collectible1" type="Area2D" parent="Interactables"]
+position = Vector2(400, -16)
+script = ExtResource("collect")
+persist_id = "t_m8_fragment"
+kind = 1
+fragment = ExtResource("frag_mf_lowlight_01")
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(440, -16)
+script = ExtResource("marker")
+kind = 2
+label = "Something here"
+resolved_when = ""
+
+[node name="MapMarker2" type="Node2D" parent="Props"]
+position = Vector2(600, -16)
+script = ExtResource("marker")
+kind = 2
+label = "Far enough"
+resolved_when = ""

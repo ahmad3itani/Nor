@@ -2,7 +2,7 @@
 M7 helper contract.
 
 Run from redline/ (-B: do not rewrite the tracked __pycache__):
-    python3 -B tools/roomgen/fixtures_scaffold.py             # write tests/fixtures/scaffold_*.tscn
+    python3 -B tools/roomgen/fixtures_scaffold.py             # write tests/fixtures/scaffold_*.tscn (incl. scaffold_m8_*)
     python3 -B tools/roomgen/fixtures_scaffold.py --check     # self-test, then exit 1 if the fixtures drifted
     python3 -B tools/roomgen/fixtures_scaffold.py --selftest  # only the in-memory helper assertions
 
@@ -131,6 +131,25 @@ def selftest():
     r = _gen()
     r.enemy("Needle", 100, 0)
     expect(_node(r.render(), "Needle1") == ["position = Vector2(100, 0)"], "plain enemy unchanged")
+    # M8 helpers: nested switches, a second NPC post, NOTE markers.
+    r = _gen()
+    outer = r.switch("Outer", "flag:a")
+    inner = r.switch("Inner", "!flag:b", parent=outer)
+    expect(outer == "Props/Outer" and inner == "Props/Outer/Inner", "switch returns its full path")
+    r.npc("mara", 10, 0)
+    r.npc("mara", 200, 0, name="NPC_mara_post", present_when=("flag:act1_complete",))
+    r.mapmarker(50, -20, "Dash gap", "ability:dash")
+    r.mapmarker(90, -40, "Signal here?", "flag:c", kind=2, shown_when="flag:d")
+    t = r.render()
+    expect('[node name="Inner" type="Node2D" parent="Props/Outer"]' in t and 'visible_when = "!flag:b"' in _node(t, "Inner"), "nested switch")
+    expect('[node name="NPC_mara" type="Area2D" parent="Interactables"]' in t, "first post keeps NPC_<profile>")
+    expect('[node name="NPC_mara_post" type="Area2D" parent="Interactables"]' in t
+           and 'present_when = PackedStringArray("flag:act1_complete")' in _node(t, "NPC_mara_post"), "npc name=")
+    expect(not has(_node(t, "MapMarker1"), "shown_when"), "mapmarker without shown_when unchanged")
+    expect(_node(t, "MapMarker1") == ["position = Vector2(50, -20)", 'script = ExtResource("marker")', "kind = 0",
+                                      'label = "Dash gap"', 'resolved_when = "ability:dash"'], "plain mapmarker output unchanged")
+    m2 = _node(t, "MapMarker2")
+    expect("kind = 2" in m2 and 'shown_when = "flag:d"' in m2, "NOTE mapmarker shown_when")
     return fails
 
 
@@ -150,6 +169,24 @@ def write_fixtures():
     r.ext["probe"] = ("Script", "res://tests/fixtures/ProtocolProbe.gd")
     r.raw("Triggers", "ProtocolProbe", "Node", ['script = ExtResource("probe")'])
     r.write(OUT + "scaffold_protocol.tscn")
+    # M8 lint cases (new files; the two above stay byte-identical).
+    # A WorldStateSwitch holding collision: the one error is the GrayboxBlock.
+    r = RoomGen("scaffold_m8_switch_bad", (-64, -270, 800, 400), "undercity", "Test", "Scaffold M8 switch")
+    r.block(-48, 0, 784, BIG, "Floor")
+    r.spawn("start", 40, 0, 1, default=True)
+    sw = r.switch("BadSwitch", "flag:t_switch")
+    r.raw(sw, "Lamp", "Node2D", ["position = Vector2(200, -40)"])
+    r.raw(sw, "SolidCrate", "StaticBody2D", ["position = Vector2(300, -32)", 'script = %s' % r._script("block"), "size = Vector2(32, 32)"])
+    r.lever("t_switch", 100, 0)
+    r.write(OUT + "scaffold_m8_switch_bad.tscn")
+    # A NOTE map marker 40 px from a memory fragment (bible §20: never where).
+    r = RoomGen("scaffold_m8_note_bad", (-64, -270, 800, 400), "undercity", "Test", "Scaffold M8 note")
+    r.block(-48, 0, 784, BIG, "Floor")
+    r.spawn("start", 40, 0, 1, default=True)
+    r.collectible(1, "t_m8_fragment", 400, -16, fragment="mf_lowlight_01")
+    r.mapmarker(440, -16, "Something here", "", kind=2)
+    r.mapmarker(600, -16, "Far enough", "", kind=2)
+    r.write(OUT + "scaffold_m8_note_bad.tscn")
 
 
 if __name__ == "__main__":

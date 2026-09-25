@@ -10,6 +10,11 @@ clamp, scanner, chase, respawn_point, declare_flags. Exit targets containing
 "/" are folder-qualified ("undercity/Wake"); bare names stay in Lowlight.
 Scripts named here are only loaded when a room uses the helper, so they can
 land with the task that owns them.
+
+M8 additions (defaults keep every generator's output byte-identical):
+switch(parent=) nests a switch (returns its full path), npc(name=) gives a
+second post of the same profile its own node name (D-123), and
+mapmarker(shown_when=) is emitted only when set (NOTE markers, kind=2).
 """
 import sys
 
@@ -116,11 +121,11 @@ class RoomGen:
     def anchor(self, aid, x, y, facing=1):
         self.spawn(aid, x, y, facing)
         return self.add("Interactables", "Anchor", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("anchor"), 'anchor_id = &%s' % q(aid)])
-    def npc(self, profile, x, y, facing=-1, present_when=()):
+    def npc(self, profile, x, y, facing=-1, present_when=(), name=None):
         prof = self._res("npc_" + profile, "Resource", "res://data/npcs/%s.tres" % profile)
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("npc"), 'profile = %s' % prof, 'facing = %d' % facing]
         if present_when: p.append('present_when = %s' % strings(present_when))
-        return self.add("Interactables", "NPC_" + profile, "Area2D", p, "NPC_" + profile)
+        return self.add("Interactables", "NPC_" + profile, "Area2D", p, name or "NPC_" + profile)
     def repeater(self, flag, x, y):
         return self.add("Interactables", "Repeater", "Area2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("repeater"), 'flag_id = %s' % q(flag)])
     def lever(self, flag, x, y, text=""):
@@ -151,12 +156,14 @@ class RoomGen:
         if action: p.append('action = &%s' % q(action))
         if skip_when: p.append('skip_when = %s' % q(skip_when))
         return self.add("Triggers", "Hint", "Area2D", p)
-    def mapmarker(self, x, y, label, resolved_when, kind=0):
-        return self.add("Props", "MapMarker", "Node2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("marker"),
-            'kind = %d' % kind, 'label = %s' % q(label), 'resolved_when = %s' % q(resolved_when)])
-    def switch(self, name, condition):
-        self.add("Props", name, "Node2D", ['script = %s' % self._script("switch"), 'visible_when = %s' % q(condition)], name)
-        return "Props/" + name
+    def mapmarker(self, x, y, label, resolved_when, kind=0, shown_when=""):
+        p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("marker"),
+             'kind = %d' % kind, 'label = %s' % q(label), 'resolved_when = %s' % q(resolved_when)]
+        if shown_when: p.append('shown_when = %s' % q(shown_when))
+        return self.add("Props", "MapMarker", "Node2D", p)
+    def switch(self, name, condition, parent="Props"):
+        self.add(parent, name, "Node2D", ['script = %s' % self._script("switch"), 'visible_when = %s' % q(condition)], name)
+        return parent + "/" + name
     def neon(self, x, y, w, h, color, strokes=3, flicker=True, parent="Props", broken=False):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("neon"), 'size = Vector2(%d, %d)' % (w, h), 'color = Color(%s)' % color, 'strokes = %d' % strokes]
         if not flicker: p.append('flicker = false')
