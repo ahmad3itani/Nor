@@ -15,13 +15,33 @@ extends Resource
 ## "Read" for a terminal or note.
 @export var verb: String = "Talk"
 @export var rules: Array[NpcDialogueRule] = []
+## M8 character arc (D-117). Null for voices without one (radios, terminals,
+## notes, test fixtures): their picking is exactly the M7 rule list.
+@export var arc: NpcArc
+## M8 "new lines" cue for arc-less voices (the Relay radio board): the NPC
+## shows the pending tick while the dialogue it would play now has not been
+## heard (NPC sets the code flag heard_<dialogue id> when it closes).
+@export var cue_new_lines: bool = false
 
 
+## Pick order with an arc: story rules (every rule but the fallback: intros,
+## one-shots, quest turn-ins) > the arc's oldest pending beat > the current
+## stage's idle lines > the fallback. Without an arc: first matching rule.
 func pick_dialogue() -> DialogueData:
-	for r in rules:
+	var story_end := rules.size() - 1 if arc else rules.size()
+	for i in story_end:
+		var r := rules[i]
 		if r.dialogue and r.matches():
 			return r.dialogue
-	return null
+	if arc == null or rules.is_empty():
+		return null
+	var d := arc.pending_beat()
+	if d == null:
+		d = arc.idle()
+	if d:
+		return d
+	var fb := rules[rules.size() - 1]
+	return fb.dialogue if fb.dialogue and fb.matches() else null
 
 
 func validate() -> PackedStringArray:
@@ -39,4 +59,6 @@ func validate() -> PackedStringArray:
 			errors.append("%s: rule without dialogue" % npc_id)
 		else:
 			errors.append_array(r.dialogue.validate())
+	if arc and arc.npc_id != npc_id:
+		errors.append("%s: arc belongs to '%s'" % [npc_id, arc.npc_id])
 	return errors
