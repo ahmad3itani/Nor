@@ -133,7 +133,7 @@ profile = ExtResource("npc_nix")
 facing = 1
 
 [node name="NPC_iko" type="Area2D" parent="Interactables"]
-position = Vector2(760, 0)
+position = Vector2(580, 0)
 script = ExtResource("npc")
 profile = ExtResource("npc_iko")
 facing = -1

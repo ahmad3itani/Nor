@@ -34,10 +34,11 @@ r.oneway(760, -80, 150)
 r.npc("vell", 850, -80, -1)
 r.npc("nix", 330, 0, 1)
 # Iko sets up her stall here after the first meeting in the Smuggler Route
-# den (D-076). Her 24 px interact box (748..772) is clear of Mara (648..672);
-# Rook standing on Vell's first step (-40) is above it, so the steps never
-# pick her prompt.
-r.npc("iko", 760, 0, -1, present_when=["flag:met_iko"])
+# den (D-076). She stands on open floor at 580: her body and head (up to
+# -37) would sit inside Vell's first step (700..770 at -40) further east.
+# Her 24 px interact box (568..592) is clear of Mara (648..672) and the
+# Anchor (470).
+r.npc("iko", 580, 0, -1, present_when=["flag:met_iko"])
 r.exit(1024, -96, 16, 96, "FloodedAlley", "from_relay")
 r.gate(-32, -96, 16, 96, closed=True, open_flag="shortcut_bell_lift", name="LiftGate")
 r.exit(-48, -96, 16, 96, "BellTower", "from_lift", flag="shortcut_bell_lift")

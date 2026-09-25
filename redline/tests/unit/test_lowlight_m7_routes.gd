@@ -1302,8 +1302,8 @@ func test_relay_iko_presence() -> void:
 	var on_menu := func(id: StringName) -> void:
 		menus.append(id)
 	EventBus.menu_requested.connect(on_menu)
-	await _run([["run", 760], ["interact"]])
-	check(not dialogue_box.is_open() and menus.is_empty(), "nothing to talk to at x 760 before met_iko")
+	await _run([["run", 580], ["interact"]])
+	check(not dialogue_box.is_open() and menus.is_empty(), "nothing to talk to at x 580 before met_iko")
 	Game.set_flag("met_iko")
 	await physics_frames(2)
 	check(iko.is_present() and iko.visible, "Iko is at the Relay after met_iko")
