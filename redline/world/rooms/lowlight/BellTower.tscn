@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -442,3 +443,11 @@ kind = 2
 size = Vector2(30, 26)
 color = Color(0.3, 0.22, 0.16, 1)
 accent = Color(1, 0.81, 0.35, 1)
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(40, -1000)
+script = ExtResource("marker")
+kind = 2
+label = "Orr: crates go up here every night"
+resolved_when = "flag:warden_krail_defeated"
+shown_when = "flag:dead_air_complete"

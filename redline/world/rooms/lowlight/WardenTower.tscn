@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/DashModule.tscn" id="scene_DashModule"]
 [ext_resource type="Resource" path="res://data/sequences/ll_krail_intro.tres" id="seq_intro"]
+[ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -236,3 +237,11 @@ kind = 9
 size = Vector2(30, 5)
 color = Color(0.3, 0.08, 0.12, 1)
 accent = Color(1, 0.8, 0.7, 1)
+
+[node name="MapMarker1" type="Node2D" parent="Props"]
+position = Vector2(240, -125)
+script = ExtResource("marker")
+kind = 2
+label = "Nix: on every map. Why?"
+resolved_when = ""
+shown_when = "flag:arcbeat_nix_krail"

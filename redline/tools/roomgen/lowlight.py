@@ -485,6 +485,10 @@ b.decor("banner", 260, -960, 40, 6, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", pare
 # the Relay / Collector Bay crate colours.
 s = b.switch("CargoLeft", "flag:warden_krail_defeated")
 b.decor("crates", 300, -960, 30, 26, "0.3, 0.22, 0.16, 1", "1, 0.81, 0.35, 1", parent=s)
+# M8 map note (a rumour, bible §19/§20): Orr's word about the lift, at the
+# lift door on floor 4, from Dead Air until the Warden falls. Main path only.
+b.mapmarker(40, -1000, "Orr: crates go up here every night", "flag:warden_krail_defeated", kind=2,
+            shown_when="flag:dead_air_complete")
 b.write(OUT + "BellTower.tscn")
 
 # ---------------------------------------------------------------- Warden Tower (boss)
@@ -542,6 +546,9 @@ w.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(40, -250)', 'scrip
 down = w.switch("KrailBannersDown", "flag:warden_krail_defeated")
 for x in [90, 330]:
     w.decor("banner", x, 0, 30, 5, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=down)
+# M8 map note: Nix's question after Krail (arc_nix krail beat); it never
+# resolves in Act I (the thread continues in later acts).
+w.mapmarker(240, -125, "Nix: on every map. Why?", "", kind=2, shown_when="flag:arcbeat_nix_krail")
 w.write(OUT + "WardenTower.tscn")
 
 finish()

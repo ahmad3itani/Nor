@@ -109,6 +109,10 @@ r.neon(2650, -236, 12, 6, CYAN)
 # stop (the parked car is simply never built once chase_rainline_done is set).
 w = r.switch("SweeperWreck", "flag:chase_rainline_done")
 r.decor("train", 3540, 196, 140, 40, "0.25, 0.1, 0.1, 1", parent=w)
+# M8 map note (a rumour): Orr's line about the Rainline, at the chase start,
+# from his line until the chase is run.
+r.mapmarker(428, -100, "Orr: the Rainline is running again", "flag:chase_rainline_done", kind=2,
+            shown_when="flag:orr_rainline_line")
 r.write(OUT + "RainlineChase.tscn")
 
 finish()
