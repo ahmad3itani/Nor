@@ -123,8 +123,10 @@ s.exit(-64, -96, 16, 96, "PowerBlock", "from_security")
 s.exit(1232, -480, 16, 96, "RainlineChase", "from_security")
 
 # ---------------------------------------------------------------- hints
-s.hint("ss_calib", 0, -96, 40, 96, "Scanners. Live ones bite. These are on calibration.")
-s.hint("ss_low", 50, -96, 40, 96, "Low beam: jump it [{action}]", "jump")
+# The calibration note and the first shape share one hint: from_power (x 20)
+# sat inside a separate ss_calib box and ss_low fired 0.2 s later, replacing
+# the only line that says this lane is harmless.
+s.hint("ss_low", 50, -96, 40, 96, "Scanners on calibration: harmless. Low beam: jump it [{action}]", "jump")
 s.hint("ss_high", 150, -96, 50, 96, "High beam: slide under [{action}]", "move_down")
 s.hint("ss_full", 255, -96, 50, 96, "Full beam: dodge through it. Scanners read a dodge as a blur [{action}]", "dodge")
 s.hint("ss_pulse", 760, -96, 60, 96, "It blinks. Wait for dark, or dodge.")

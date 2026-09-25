@@ -421,21 +421,14 @@ target_room = "res://world/rooms/lowlight/RainlineChase.tscn"
 target_entry = &"from_security"
 
 [node name="Hint1" type="Area2D" parent="Triggers"]
-position = Vector2(0, -96)
-script = ExtResource("hint")
-size = Vector2(40, 96)
-hint_id = "ss_calib"
-text = "Scanners. Live ones bite. These are on calibration."
-
-[node name="Hint2" type="Area2D" parent="Triggers"]
 position = Vector2(50, -96)
 script = ExtResource("hint")
 size = Vector2(40, 96)
 hint_id = "ss_low"
-text = "Low beam: jump it [{action}]"
+text = "Scanners on calibration: harmless. Low beam: jump it [{action}]"
 action = &"jump"
 
-[node name="Hint3" type="Area2D" parent="Triggers"]
+[node name="Hint2" type="Area2D" parent="Triggers"]
 position = Vector2(150, -96)
 script = ExtResource("hint")
 size = Vector2(50, 96)
@@ -443,7 +436,7 @@ hint_id = "ss_high"
 text = "High beam: slide under [{action}]"
 action = &"move_down"
 
-[node name="Hint4" type="Area2D" parent="Triggers"]
+[node name="Hint3" type="Area2D" parent="Triggers"]
 position = Vector2(255, -96)
 script = ExtResource("hint")
 size = Vector2(50, 96)
@@ -451,14 +444,14 @@ hint_id = "ss_full"
 text = "Full beam: dodge through it. Scanners read a dodge as a blur [{action}]"
 action = &"dodge"
 
-[node name="Hint5" type="Area2D" parent="Triggers"]
+[node name="Hint4" type="Area2D" parent="Triggers"]
 position = Vector2(760, -96)
 script = ExtResource("hint")
 size = Vector2(60, 96)
 hint_id = "ss_pulse"
 text = "It blinks. Wait for dark, or dodge."
 
-[node name="Hint6" type="Area2D" parent="Triggers"]
+[node name="Hint5" type="Area2D" parent="Triggers"]
 position = Vector2(380, -480)
 script = ExtResource("hint")
 size = Vector2(60, 96)

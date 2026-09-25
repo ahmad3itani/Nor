@@ -28,6 +28,9 @@ func validate() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not ResourceLoader.exists(campaign_start_room):
 		errors.append("onboarding start room %s does not exist" % campaign_start_room)
+	elif not WorldMapIndex.room_info(campaign_start_room)["spawns"].has(String(campaign_start_entry)):
+		# Room._ready would quietly fall back to the default spawn.
+		errors.append("onboarding start entry %s is not a spawn in %s" % [campaign_start_entry, campaign_start_room.get_file()])
 	var catalog := load("res://data/catalog.tres") as ItemCatalog
 	var listed := Array(start_owned_weapons)
 	for id in [start_melee, start_ranged]:

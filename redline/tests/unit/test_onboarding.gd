@@ -136,6 +136,25 @@ func _first_room_enter() -> Dictionary:
 
 # --- Campaign start ------------------------------------------------------------------
 
+## Hints queue (bible §42): a second hint waits until the first has been up
+## HINT_MIN_SECONDS instead of replacing it at once (Security Station's
+## calibration line, the Maintenance Shaft's dodge line). Duplicates are not
+## queued twice.
+func test_hud_hints_queue_with_a_minimum_hold() -> void:
+	var hud := _hud()
+	hud.call("request_hint", "first", 3.5)
+	hud.call("request_hint", "second", 3.5)
+	hud.call("request_hint", "second", 3.5)
+	check(hud.call("current_hint") == "first", "the first hint shows first")
+	await physics_frames(60)
+	check(hud.call("current_hint") == "first", "the first hint holds for at least 2 s (%s)" % hud.call("current_hint"))
+	await physics_frames(70)
+	check(hud.call("current_hint") == "second", "the second hint follows after the hold (%s)" % hud.call("current_hint"))
+	await physics_frames(230)
+	check(hud.call("current_hint") == "", "the duplicate was not queued (%s)" % hud.call("current_hint"))
+	hud.queue_free()
+
+
 func test_start_campaign_state() -> void:
 	_start_campaign()
 	var st := Game.state
@@ -182,6 +201,9 @@ func test_config_validates() -> void:
 	bad.campaign_start_room = "res://nope/Nowhere.tscn"
 	bad.start_owned_weapons = PackedStringArray(["no_such_weapon"])
 	check(bad.validate().size() == 2, "missing room and unknown weapon should both be errors: %s" % [bad.validate()])
+	var typo := _campaign_config()
+	typo.campaign_start_entry = &"strat"
+	check(typo.validate().size() == 1, "a start entry that is not a spawn in the room should be an error: %s" % [typo.validate()])
 
 
 # --- Unarmed start and pickups -----------------------------------------------------

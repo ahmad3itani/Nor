@@ -17,6 +17,13 @@ var _rank_flash: float = 0.0
 var _prompt: String = ""
 var _hint: String = ""
 var _hint_time: float = 0.0
+## Hints queue instead of overwriting (bible §42: a lesson line nobody can
+## read teaches nothing). A newer hint waits until the current one has been
+## up HINT_MIN_SECONDS (or ends); a short backlog keeps only the newest.
+const HINT_MIN_SECONDS := 2.0
+const HINT_QUEUE_MAX := 2
+var _hint_shown: float = 0.0
+var _hint_queue: Array[Array] = []
 var _banner: String = ""
 var _banner_sub: String = ""
 var _banner_time: float = 0.0
@@ -67,9 +74,7 @@ func _ready() -> void:
 	EventBus.reactor_changed.connect(func(_c: float, _m: float, critical: bool) -> void: _critical = critical)
 	EventBus.style_changed.connect(func(_p: float, _r: int) -> void: _rank_flash = 0.3)
 	EventBus.interact_prompt_changed.connect(func(t: String) -> void: _prompt = t)
-	EventBus.hint_requested.connect(func(t: String, s: float) -> void:
-		_hint = t
-		_hint_time = s)
+	EventBus.hint_requested.connect(request_hint)
 	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void:
 		_boss = b as Enemy
 		_boss_title = title)
@@ -82,6 +87,7 @@ func _ready() -> void:
 			_lore_time = LORE_SECONDS)
 	EventBus.flag_changed.connect(_on_flag_changed)
 	EventBus.game_state_reset.connect(_sync_core_hidden)
+	EventBus.game_state_reset.connect(clear_hints)
 	_sync_core_hidden()
 	EventBus.room_entered.connect(func(district: String, room_name: String) -> void:
 		_banner = district.to_upper()
@@ -109,6 +115,42 @@ func _on_flag_changed(id: String, _value: Variant) -> void:
 	_core_hidden = hidden
 
 
+func request_hint(t: String, seconds: float) -> void:
+	if _hint_time <= 0.0:
+		_show_hint(t, seconds)
+	elif t == _hint:
+		_hint_time = maxf(_hint_time, seconds)
+	elif not _hint_queue.any(func(q: Array) -> bool: return q[0] == t):
+		_hint_queue.append([t, seconds])
+		while _hint_queue.size() > HINT_QUEUE_MAX:
+			_hint_queue.pop_front()
+
+
+func _show_hint(t: String, seconds: float) -> void:
+	_hint = t
+	_hint_time = seconds
+	_hint_shown = 0.0
+
+
+func clear_hints() -> void:
+	_hint = ""
+	_hint_time = 0.0
+	_hint_queue.clear()
+
+
+## The hint line on screen now, or "" (tests).
+func current_hint() -> String:
+	return _hint if _hint_time > 0.0 else ""
+
+
+func _tick_hints(delta: float) -> void:
+	_hint_time = maxf(_hint_time - delta, 0.0)
+	_hint_shown += delta
+	if not _hint_queue.is_empty() and (_hint_time <= 0.0 or _hint_shown >= HINT_MIN_SECONDS):
+		var next: Array = _hint_queue.pop_front()
+		_show_hint(next[0], next[1])
+
+
 ## Whether the Core bar and its label are drawn (tests, onboarding).
 func core_bar_visible() -> bool:
 	return not _core_hidden
@@ -119,7 +161,7 @@ func _process(delta: float) -> void:
 	_core_reveal = maxf(_core_reveal - delta, 0.0)
 	_core_online = maxf(_core_online - delta, 0.0)
 	_rank_flash = maxf(_rank_flash - delta, 0.0)
-	_hint_time = maxf(_hint_time - delta, 0.0)
+	_tick_hints(delta)
 	_banner_time = maxf(_banner_time - delta, 0.0)
 	_lore_time = maxf(_lore_time - delta, 0.0)
 	var target_alpha := 0.0

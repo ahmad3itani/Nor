@@ -146,6 +146,7 @@ script = ExtResource("neon")
 size = Vector2(4, 30)
 color = Color(0.62, 0.8, 0.72, 1)
 strokes = 1
+broken = true
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
 position = Vector2(578, -480)
@@ -262,7 +263,7 @@ text = "[{action}] dodge - it passes through attacks"
 action = &"dodge"
 
 [node name="Hint2" type="Area2D" parent="Triggers"]
-position = Vector2(180, -96)
+position = Vector2(300, -96)
 script = ExtResource("hint")
 size = Vector2(60, 96)
 hint_id = "uc_air"
@@ -275,7 +276,7 @@ script = ExtResource("decor")
 kind = 8
 size = Vector2(60, 60)
 color = Color(0.3, 0.22, 0.17, 1)
-accent = Color(0.85, 0.58, 0.3, 1)
+accent = Color(0.2, 0.24, 0.24, 1)
 
 [node name="Decor2" type="Node2D" parent="Props"]
 position = Vector2(150, -140)

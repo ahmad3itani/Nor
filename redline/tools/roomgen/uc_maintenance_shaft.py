@@ -60,7 +60,7 @@ s.block(224, -480, 400, 16, "Floor2")             # x 224..624; 14 px from the l
 # route). Two light blade hits break it.
 s.block(544, -556, 80, 16, "ClosetCeiling")
 s.wall("uc_shaft_closet", 544, -540, 16, 60, 20)
-s.neon(530, -600, 4, 30, SEA, 1, True)
+s.neon(530, -600, 4, 30, SEA, 1, True, broken=True)
 s.collectible(0, "sb_uc_shaft_closet", 578, -480, scrap=30)
 s.collectible(1, "mf_undercity_01", 604, -480, fragment="mf_undercity_01")
 
@@ -94,11 +94,14 @@ s.exit(-64, -96, 16, 96, "undercity/MedicalRuin", "from_shaft")
 s.exit(624, -816, 16, 96, "undercity/FirstPursuit", "from_shaft")
 
 # ---------------------------------------------------------------- hints (the pump room)
+# One verb at a time (§23): the dodge line fires by the door, the air-attack
+# line only under the Scout (x 300..360), past where its first bolt is dodged
+# and about 1.9 s of walking later (the HUD also holds each hint >= 2 s).
 s.hint("alley_dodge", 20, -96, 80, 96, "[{action}] dodge - it passes through attacks", "dodge")   # reused id
-s.hint("uc_air", 180, -96, 60, 96, "Jump, then [{action}] to reach things above you", "attack_light")
+s.hint("uc_air", 300, -96, 60, 96, "Jump, then [{action}] to reach things above you", "attack_light")
 
 # ---------------------------------------------------------------- landmark and dressing
-s.decor("ac", 200, 0, 60, 60, RUST, SODIUM)       # the giant rusted pump wheel
+s.decor("ac", 200, 0, 60, 60, RUST, STEEL)        # the giant rusted pump wheel (no sodium: route only)
 s.decor("pipes", 150, -140, 300, 12, STEEL)
 s.decor("pipes", 450, -300, 300, 12, STEEL)
 s.decor("cables", 300, -860, 560, 40, CONCRETE)
