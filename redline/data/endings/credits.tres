@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CreditsData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://story/CreditsData.gd" id="1_credits"]
+[ext_resource type="Script" path="res://story/CreditsSection.gd" id="2_section"]
+
+[sub_resource type="Resource" id="Resource_credits_00"]
+script = ExtResource("2_section")
+heading = "REDLINE"
+lines = PackedStringArray("A work in progress.")
+
+[sub_resource type="Resource" id="Resource_credits_01"]
+script = ExtResource("2_section")
+heading = "DESIGN, CODE, PLACEHOLDER ART & AUDIO"
+lines = PackedStringArray("The REDLINE team")
+
+[sub_resource type="Resource" id="Resource_credits_02"]
+script = ExtResource("2_section")
+heading = "PLAYTESTERS"
+lines = PackedStringArray("Everyone who sent a session file.")
+
+[sub_resource type="Resource" id="Resource_credits_03"]
+script = ExtResource("2_section")
+heading = "ENGINE"
+lines = PackedStringArray("Made with Godot Engine", "godotengine.org/license")
+
+[resource]
+script = ExtResource("1_credits")
+sections = Array[ExtResource("2_section")]([SubResource("Resource_credits_00"), SubResource("Resource_credits_01"), SubResource("Resource_credits_02"), SubResource("Resource_credits_03")])
+closing_line = "Thank you for playing."

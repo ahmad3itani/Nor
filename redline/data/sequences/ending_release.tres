@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqFade.gd" id="3_fade"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMusic.gd" id="4_music"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="5_line"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="7_mark"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqTitleCard.gd" id="8_title"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCredits.gd" id="9_credits"]
+[ext_resource type="Resource" path="res://data/endings/credits.tres" id="10_roll"]
+
+[sub_resource type="Resource" id="Resource_ending_release_00"]
+script = ExtResource("3_fade")
+to_alpha = 1.0
+seconds = 0.0
+label = "cover"
+
+[sub_resource type="Resource" id="Resource_ending_release_01"]
+script = ExtResource("4_music")
+state = 0
+label = "silence"
+
+[sub_resource type="Resource" id="Resource_ending_release_02"]
+script = ExtResource("5_line")
+speaker_id = ""
+text = "You don't pull and you don't hold. You change it."
+label = "narration"
+
+[sub_resource type="Resource" id="Resource_ending_release_03"]
+script = ExtResource("5_line")
+speaker_id = ""
+text = "The lights stay on."
+label = "narration"
+
+[sub_resource type="Resource" id="Resource_ending_release_04"]
+script = ExtResource("5_line")
+speaker_id = ""
+text = "Three short. Three long. This time the tapping finishes."
+label = "tap code"
+only_when = "flag:mem_seen_mf_lowlight_04"
+
+[sub_resource type="Resource" id="Resource_ending_release_05"]
+script = ExtResource("5_line")
+speaker_id = "mara"
+text = "You came back. That's new."
+label = "mara"
+only_when = "atleast:arc_mara_stage:1"
+
+[sub_resource type="Resource" id="Resource_ending_release_06"]
+script = ExtResource("5_line")
+speaker_id = "vell"
+text = "Relay's full. First time I've had to turn the heat up."
+label = "vell"
+only_when = "atleast:arc_vell_stage:1"
+
+[sub_resource type="Resource" id="Resource_ending_release_07"]
+script = ExtResource("7_mark")
+mark = "ending_release_title"
+label = "title mark"
+
+[sub_resource type="Resource" id="Resource_ending_release_08"]
+script = ExtResource("8_title")
+title = "RELEASE"
+subtitle = "PLACEHOLDER ENDING"
+seconds = 2.5
+label = "title card"
+
+[sub_resource type="Resource" id="Resource_ending_release_09"]
+script = ExtResource("9_credits")
+credits = ExtResource("10_roll")
+mark = "ending_release_credits"
+label = "credits"
+
+[resource]
+script = ExtResource("1_seq")
+id = "ending_release"
+room = ""
+steps = Array[ExtResource("2_step")]([SubResource("Resource_ending_release_00"), SubResource("Resource_ending_release_01"), SubResource("Resource_ending_release_02"), SubResource("Resource_ending_release_03"), SubResource("Resource_ending_release_04"), SubResource("Resource_ending_release_05"), SubResource("Resource_ending_release_06"), SubResource("Resource_ending_release_07"), SubResource("Resource_ending_release_08"), SubResource("Resource_ending_release_09")])
+seen_flag = "ending_seen_release"
+budget_seconds = 90.0
+theatre_only = true
