@@ -44,6 +44,40 @@ Bible §40 requires this document before any final asset is produced. It fixes t
   
   Keep them reserved so colorblind-safe variants can swap them in one place.
 
+### Undercity palette (00 UNDERCITY, M7)
+A flooded civic disposal complex (`DISTRICTS.md`). The values are the placeholder source of truth, in `tools/roomgen/undercity_style.py` (RGB, 0–1):
+
+| Name | Value | Hex (approx.) | Role |
+|---|---|---|---|
+| SEA | 0.62, 0.8, 0.72 | `#9eccb8` | Flickering service tubes: the ambience |
+| SODIUM | 0.85, 0.58, 0.3 | `#d9944d` | Steady lamps: **the route only** |
+| RED | 0.91, 0.16, 0.24 | `#e8283d` | **The Collector only** (eye, hatch ring, drone) |
+| CYAN | 0.35, 0.88, 0.91 | `#59e0e8` | **Orr's radio only** |
+| CONCRETE | 0.16, 0.2, 0.19 | `#293330` | Walls and slabs |
+| RUST | 0.3, 0.22, 0.17 | `#4d382b` | Pipes, gurneys, banners |
+| STEEL | 0.2, 0.24, 0.24 | `#333d3d` | Rails, cages, the lift |
+| CRATE | 0.3, 0.22, 0.16 (accent 1, 0.81, 0.35) | `#4d3829` / `#ffcf59` | The Bell Tower lift crates, matching `lowlight.py` so the lift reads the same in both districts |
+
+Colour-role rules:
+- **Red is the Collector's.** Nothing else in the Undercity is red, so red always means "it sees you". After the Collector falls, the First Pursuit hatch ring goes dark (a `WorldStateSwitch`).
+- **Cyan is the radio's.** A cyan light is always Orr, never a hazard or a pickup.
+- **Sodium marks the route.** Never put a sodium lamp over a secret or a dead end.
+- **A broken SEA tube is a secret cue** (`neon(..., SEA, 1, True)`, one stroke, flickering): the Maintenance Shaft closet, the First Pursuit cache roof, the Escape Tunnel panel.
+- SEA sits close to the reserved healing green `#7dff9a`. Check final art with a colourblind filter (K-46).
+
+The theme, `data/districts/undercity.tres`:
+
+| Field | Value |
+|---|---|
+| sky_top / sky_bottom | (0.02, 0.03, 0.03) / (0.06, 0.1, 0.09) |
+| far_color / mid_color | (0.05, 0.075, 0.07) / (0.075, 0.105, 0.1) |
+| window_colors | SEA-ish (0.62, 0.78, 0.7) and sodium-ish (0.8, 0.55, 0.3), density 0.04 |
+| solid_color / edge_color | (0.14, 0.17, 0.16) / (0.36, 0.48, 0.44) |
+| one_way_color | (0.46, 0.36, 0.27) (rust) |
+| rain | on: 26 vertical drops (angle 0), colour (0.6, 0.75, 0.7, 0.18), read as seepage. Fallback `rain = false` if it reads as weather (K-47) |
+
+- **Lowlight's new rooms (M7)** keep the Lowlight palette (`tools/roomgen/lowlight_style.py`: RED, CYAN, AMBER, GREEN, VIOLET). Power Block's Transformer Core arcs are red until the grid is rerouted, then cyan; Security Station adds white security light with red strobes; the smugglers mark their route with violet chalk-eye neon.
+
 ## 4. Outlines and shading
 - **Characters:** a 1 px dark outline (`#1a1320` range), colored per region, with no pure black. Enemies use a slightly warmer outline than the environment so they separate at speed.
 - **Environment:** no outlines. Shape comes from value steps: 3 values per material, plus 1 edge highlight on top edges (the `edge_color` in the theme).
