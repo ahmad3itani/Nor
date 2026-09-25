@@ -94,8 +94,8 @@ signal clamp_dropped(clamp_id: String, staggered_boss: bool)
 signal chase_started(chase_id: String)
 ## The pursuer caught Rook; he restarts from checkpoint index `checkpoint`.
 signal chase_caught(chase_id: String, checkpoint: int)
-## Rook reached the chase's end area. min_lead is the smallest gap (s) he
-## kept over the pursuer, for tuning how tense the chase really was.
+## Rook reached the chase's end area. min_lead is the smallest gap (px of path progress)
+## he kept over the pursuer, for tuning how tense the chase really was.
 signal chase_completed(chase_id: String, seconds: float, catches: int, min_lead: float)
 ## A ceiling tracker (Collector eye) locked on to Rook.
 signal tracker_locked(tracker_id: String)
