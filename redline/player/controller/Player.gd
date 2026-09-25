@@ -30,6 +30,13 @@ const WORLD_LAYER_BIT := 1
 @onready var hurtbox_shape: CollisionShape2D = $Hurtbox/Shape
 
 var input_source: PlayerInputSource = PlayerInputSource.new()
+## Scripted sequences (M8) take control through this override and never touch
+## input_source, so a RouteBot/BossBot bound before a scene is still bound after.
+var input_override: PlayerInputSource = null
+## True while a locking sequence owns Rook: every hit and scanner trip is
+## ignored. A separate field because `invulnerable` is rewritten every frame by
+## the dodge/dash states, so saving/restoring it around a scene would be unsafe.
+var cinematic_lock: bool = false
 var state_machine := PlayerStateMachine.new()
 var metrics := MovementMetrics.new()
 var last_input := PlayerInputFrame.new()
@@ -105,7 +112,7 @@ func apply_config(new_config: PlayerMovementConfig) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var input := input_source.sample(config)
+	var input := (input_override if input_override else input_source).sample(config)
 	if hitstop_timer > 0.0:
 		hitstop_timer -= delta
 		_buffer_presses(input)

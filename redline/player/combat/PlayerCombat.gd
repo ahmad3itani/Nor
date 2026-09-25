@@ -362,6 +362,9 @@ func _tick_reload(delta: float) -> void:
 func receive_hit(hit: HitInfo) -> int:
 	if dead:
 		return CombatResult.IGNORED
+	# A locking scene owns Rook: no damage and no perfect dodge under it (M8).
+	if player.cinematic_lock:
+		return CombatResult.IGNORED
 	if player.invulnerable:
 		var state := player.state_machine.current
 		var window := config.perfect_dodge_window + Game.circuit_value(&"perfect_window_bonus")

@@ -216,7 +216,7 @@ func _check_player() -> void:
 		_side = 1 if pr.get_center().x > br.get_center().x else -1
 	if not is_live() or not pr.intersects(br):
 		return
-	if p.combat.dead or p.invulnerable or p.combat.hurt_invuln_timer > 0.0:
+	if p.combat.dead or p.invulnerable or p.cinematic_lock or p.combat.hurt_invuln_timer > 0.0:
 		return
 	if absf(p.velocity.x) > data.blur_speed:
 		return
