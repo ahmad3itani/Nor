@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="ActData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://story/ActData.gd" id="1_act"]
+[ext_resource type="Script" path="res://story/ActStandingLine.gd" id="2_line"]
+[ext_resource type="Resource" path="res://data/sequences/act1_close.tres" id="3_close"]
+
+[sub_resource type="Resource" id="Resource_act1_00"]
+script = ExtResource("2_line")
+condition = "flag:dead_air_complete"
+text = "Orr's board hears all of Lowlight now. He listens to it all night."
+
+[sub_resource type="Resource" id="Resource_act1_01"]
+script = ExtResource("2_line")
+condition = "!flag:dead_air_complete"
+text = "Half of Orr's board is still deaf. He keeps turning the dials anyway."
+
+[sub_resource type="Resource" id="Resource_act1_02"]
+script = ExtResource("2_line")
+condition = "flag:chart_lowlight_complete"
+text = "Nix has Lowlight on paper, every alley of it. The Spire isn't on it yet."
+
+[sub_resource type="Resource" id="Resource_act1_03"]
+script = ExtResource("2_line")
+condition = "flag:mem_seen_mf_lowlight_03"
+text = "Krail's ledger says REDLINE too. Nobody will say what it means."
+
+[sub_resource type="Resource" id="Resource_act1_04"]
+script = ExtResource("2_line")
+condition = "flag:met_iko"
+text = "Iko has a stall at the Relay now. Business is good. Too good."
+
+[sub_resource type="Resource" id="Resource_act1_05"]
+script = ExtResource("2_line")
+condition = "atleast:memories_remembered:1"
+text = "Some of what you remembered doesn't fit together yet."
+
+[sub_resource type="Resource" id="Resource_act1_06"]
+script = ExtResource("2_line")
+condition = ""
+text = "The Spire has lost a Warden. It will send someone to ask why."
+
+[resource]
+script = ExtResource("1_act")
+act = 1
+name = "RUN"
+complete_flag = "act1_complete"
+close_sequence = ExtResource("3_close")
+standing = Array[ExtResource("2_line")]([SubResource("Resource_act1_00"), SubResource("Resource_act1_01"), SubResource("Resource_act1_02"), SubResource("Resource_act1_03"), SubResource("Resource_act1_04"), SubResource("Resource_act1_05"), SubResource("Resource_act1_06")])
+max_standing = 3
