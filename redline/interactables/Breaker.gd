@@ -23,18 +23,19 @@ const FLASH := Color(1, 1, 1, 0.9)
 ## breaker's box spans -40..-16 (ground light attacks), a high breaker's
 ## -96..-72 (jump + air light, or any gun straight up). Nothing higher.
 const HIGHEST_TOP := -96.0
-## Source of truth for how high a grounded attack reaches: the first light
-## attack of Rook's starting blade (its hitbox y-range, feet = 0).
-const REACH_WEAPON := "res://data/weapons/pulse_blade.tres"
-## Fallback if that weapon cannot be read (blade_light_1's hitbox today).
-const GROUNDED_REACH := Vector2(-30.0, -8.0)
+## Source of truth for how far a grounded attack reaches: every grounded
+## swing (light chain, heavy, launcher) of every melee weapon in the item
+## catalog, so a new weapon or a retune moves the band (M7 D2b review).
+const REACH_CATALOG := "res://data/catalog.tres"
+## Fallback band if the catalog cannot be read (the katar launcher's top,
+## the blade heavy's bottom today).
+const GROUNDED_REACH := Vector2(-46.0, 0.0)
 ## Half of Rook's standing collider (12 px wide): he can stand with his
 ## centre this far past a platform's end.
 const PLAYER_HALF_WIDTH := 6.0
-## Fallback horizontal reach past a platform's end: blade_light_1's hitbox
-## end (28) + its lunge over startup + active (70 px/s * 0.11 s) + the half
-## width.
-const GROUNDED_REACH_X := 41.7
+## Fallback horizontal reach past a platform's end (blade_heavy today: its
+## hitbox end 38 + its lunge under ground friction ~11 + the half width).
+const GROUNDED_REACH_X := 54.9
 
 @export var breaker_id: String = ""
 @export var circuit: StringName = &""
@@ -200,8 +201,9 @@ func content_flags() -> Dictionary:
 ## Placement standard, measured against the first solid block under the box
 ## (one-way platforms are ignored for the floor, but a breaker a grounded
 ## attack from a one-way could reach defeats the "reach it from the floor"
-## read, so it warns). The one-way's span is widened by the attack's
-## horizontal reach: Rook can stand at its very end and swing outwards.
+## read, so it warns). The one-way's span is widened by the longest grounded
+## swing's horizontal reach (any catalog melee weapon's light, heavy or
+## launcher): Rook can stand at its very end and swing outwards.
 func content_errors(room: Node) -> PackedStringArray:
 	var out := PackedStringArray()
 	if circuit == &"":
@@ -231,25 +233,57 @@ func content_errors(room: Node) -> PackedStringArray:
 	return out
 
 
-## Band (top, bottom) above a standing surface that a grounded light attack
-## hits, read from the blade's AttackData so it follows weapon tuning.
+## Band (top, bottom) above a standing surface that a grounded attack hits:
+## the union of every grounded swing's hitbox y-range (feet = 0).
 static func grounded_reach() -> Vector2:
-	var w := load(REACH_WEAPON) as WeaponData
-	if w == null or w.light_chain.is_empty() or w.light_chain[0] == null:
+	var attacks := _grounded_attacks()
+	if attacks.is_empty():
 		return GROUNDED_REACH
-	var box: Rect2 = w.light_chain[0].hitbox
-	return Vector2(box.position.y, box.end.y)
+	var band := Vector2(INF, -INF)
+	for a in attacks:
+		band = Vector2(minf(band.x, a.hitbox.position.y), maxf(band.y, a.hitbox.end.y))
+	return band
 
 
-## How far past a standing surface's end a grounded light attack reaches:
-## the hitbox's far edge, the lunge it travels until its active frames end,
-## and Rook's half width (read from the same AttackData as grounded_reach).
+## How far past a standing surface's end a grounded attack reaches: the
+## longest of every grounded swing's hitbox far edge plus the lunge it
+## travels (under its ground friction) until its active frames end, plus
+## Rook's half width. A swing started from a run carries more speed, but
+## that run would carry Rook off the platform's end first.
 static func grounded_reach_x() -> float:
-	var w := load(REACH_WEAPON) as WeaponData
-	if w == null or w.light_chain.is_empty() or w.light_chain[0] == null:
+	var attacks := _grounded_attacks()
+	if attacks.is_empty():
 		return GROUNDED_REACH_X
-	var a: AttackData = w.light_chain[0]
-	return a.hitbox.end.x + a.lunge_speed * (a.startup + a.active) + PLAYER_HALF_WIDTH
+	var best := 0.0
+	for a in attacks:
+		best = maxf(best, a.hitbox.end.x + lunge_distance(a))
+	return best + PLAYER_HALF_WIDTH
+
+
+## Ground distance a swing's lunge covers by the end of its active frames.
+static func lunge_distance(a: AttackData) -> float:
+	var t := a.startup + a.active
+	var v := a.lunge_speed
+	if a.ground_friction <= 0.0:
+		return v * t
+	var t_stop := v / a.ground_friction
+	if t >= t_stop:
+		return v * t_stop * 0.5
+	return v * t - 0.5 * a.ground_friction * t * t
+
+
+static func _grounded_attacks() -> Array[AttackData]:
+	var out: Array[AttackData] = []
+	var cat := load(REACH_CATALOG) as ItemCatalog
+	if cat == null:
+		return out
+	for w in cat.weapons:
+		if w == null or w.kind != WeaponData.Kind.MELEE:
+			continue
+		for a in w.light_chain + [w.heavy, w.launcher]:
+			if a != null:
+				out.append(a)
+	return out
 
 
 ## Position of `n` in `room` space, summing Node2D offsets. The validator

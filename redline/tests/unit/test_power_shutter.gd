@@ -451,12 +451,19 @@ func test_validator_breaker_too_high_is_error() -> void:
 
 
 ## A high breaker beside (not above) a one-way at -72 still warns when Rook,
-## standing at the one-way's end, reaches it with a grounded light swing
-## (D2b: Warden Tower's first one-ways at 60..124 / 300..364 did).
+## standing at the one-way's end, reaches it with a grounded swing (D2b:
+## Warden Tower's first one-ways at 60..124 / 300..364 did). The reach is the
+## longest grounded swing of any catalog melee weapon: the blade heavy
+## (38 + ~11 lunge) outreaches every light, and a one-way at 108 still let a
+## heavy reach the box at 36..52 in the real room.
 func test_validator_breaker_beside_oneway_warns() -> void:
 	var reach_x := Breaker.grounded_reach_x()
-	check(reach_x > 30.0, "grounded reach past a platform end includes hitbox, lunge and half width (%.1f)" % reach_x)
-	for case in [[60.0, true], [120.0, false]]:
+	var blade := load("res://data/weapons/pulse_blade.tres") as WeaponData
+	var heavy_x := blade.heavy.hitbox.end.x + Breaker.lunge_distance(blade.heavy) + Breaker.PLAYER_HALF_WIDTH
+	check(reach_x >= heavy_x - 0.01, "grounded reach %.1f should cover the blade heavy (%.1f)" % [reach_x, heavy_x])
+	var katars := load("res://data/weapons/split_katars.tres") as WeaponData
+	check(Breaker.grounded_reach().x <= katars.launcher.hitbox.position.y, "the reach band should include the katar launcher's top")
+	for case in [[60.0, true], [100.0, true], [120.0, false]]:
 		var room := Node2D.new()
 		var floor_block := GrayboxBlock.new()
 		floor_block.size = Vector2(512, 64)
