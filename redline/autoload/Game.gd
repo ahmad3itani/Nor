@@ -221,8 +221,11 @@ func circuit_value(stat: StringName) -> float:
 	return v
 
 
+## Extra injector charges bought in shops. Each shop keeps its own upgrade
+## flag (Mara's Spare Injector, Iko's Bootleg Injector) so ShopMenu.is_owned
+## can mark each item owned independently; the bonuses stack.
 func injector_bonus() -> int:
-	return flag_int("injector_upgrades")
+	return flag_int("injector_upgrades") + flag_int("injector_upgrades_bootleg")
 
 
 func equip_weapon(id: String) -> void:

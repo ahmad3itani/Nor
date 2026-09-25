@@ -1,10 +1,35 @@
-[gd_resource type="Resource" script_class="ShopData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="ShopData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://progression/ShopData.gd" id="1"]
 [ext_resource type="Script" path="res://progression/ShopItem.gd" id="2"]
+
+[sub_resource type="Resource" id="i0"]
+script = ExtResource("2")
+kind = 2
+item_id = "bootleg_injector"
+price = 260
+display_name = "Bootleg Injector"
+description = "+1 injector charge. Warden stock; the seal's been filed off."
+upgrade_flag = "injector_upgrades_bootleg"
+max_purchases = 1
+
+[sub_resource type="Resource" id="i1"]
+script = ExtResource("2")
+kind = 0
+item_id = "hot_wire"
+
+[sub_resource type="Resource" id="i2"]
+script = ExtResource("2")
+kind = 0
+item_id = "live_current"
+
+[sub_resource type="Resource" id="i3"]
+script = ExtResource("2")
+kind = 0
+item_id = "slipstream"
 
 [resource]
 script = ExtResource("1")
 id = &"shop_iko"
 title = "Iko  —  Black Market"
-items = Array[ExtResource("2")]([])
+items = Array[ExtResource("2")]([SubResource("i0"), SubResource("i1"), SubResource("i2"), SubResource("i3")])
