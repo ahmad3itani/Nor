@@ -1,5 +1,66 @@
 # REDLINE Changelog
 
+## 0.7.0-m7: District Production, batch 1 (Act I: Undercity + Lowlight)
+
+Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet: `DISTRICTS.md`. Decisions D-061..D-099.
+
+### New Game
+- **New Game starts unarmed in Undercity/Wake** (`data/world/onboarding.tres`, `OnboardingConfig`, D-062). The title subtitle is data ("Act I — Undercity to Lowlight"); the end card is reworded for Act I.
+- Before the first Anchor rest, death and Continue return to the last room entry (`GameState.last_entry_room/last_entry_id`, D-063), or to an `EntryCheckpoint` (D-088). No save schema bump (D-087, D-090).
+- The Core HUD stays hidden until the first Flow Zone (`core_hud_hidden`, D-081).
+- Debug builds keep a "Slice (Relay start)" title entry (session kind `new_relay`, D-068).
+- Weapons are pickups: `PulseBladeRack.tscn` (Medical Ruin) and `ServicePistolDrop.tscn` (the Collector's reward), via `WeaponPickup`.
+
+### 00 Undercity (new district, 7 rooms, `world/rooms/undercity/`)
+- **Wake:** movement, jump and interact lessons; the ward shutter with a lever on each side; a solid sill reached only by a held jump (D-098).
+- **Medical Ruin:** the Pulse Blade rack, the dormant practice Needle (`needle_dormant`, 0 Scrap), three live Needles, the extraction pit, the `sb_uc_med_shelf` stash.
+- **Maintenance Shaft:** three climbs, the first composition (Needle + Scout Drone on Floor 2, `max_attackers` 2, D-089), the first secret `uc_shaft_closet` with `mf_undercity_01`, and the crew pocket with the `uc_note_crew` note.
+- **First Pursuit:** the slide lesson, the **Collector eye** chase (`CeilingTracker`, D-069), pair 2, the `uc_pursuit_cache` secret, Orr's radio (the first NPC), the `pursuit_mid` EntryCheckpoint, and a HatchLive switch that turns the red hatch ring off after the boss.
+- **Broken Lift:** the lift shaft, **FZ1** at half drain with a floor of 1 (the safe Core introduction, D-070/D-085), a ledge Needle (`needle_ledge`, D-097), the car-roof stash, and **`uc_lift`, the first Anchor**.
+- **Collector Bay:** the **Collector Drone** arena (D-064); the right exit needs `collector_drone_defeated`; the Service Pistol drops at (252, 0); the vent secret `uc_collector_vent` (40 Scrap).
+- **Escape Tunnel:** the Watcher pistol lesson (shot diagonally), the pistol-only panel `uc_tunnel_panel`, **FZ3** at full drain with a Needle and a Hopper, Orr's second radio call, the Dash-only shard `cs_uc_tunnel_dash`, and the gallery door up to the Relay.
+- Theme `data/districts/undercity.tres`; palette `tools/roomgen/undercity_style.py` (Art Bible §3).
+
+### 01 Lowlight completed (4 new rooms)
+- **Power Block**, the Grid thesis room (D-071): four floors introducing, reinforcing and combining breaker → timed shutter, the Transformer Core landmark, the Meter Room secret, the `power_block` Anchor and the reroute lever (`lowlight_power_rerouted`).
+- **Security Station:** scanner lanes (calibration, then live), the cell block and the Cell Four secret (`mf_lowlight_04`), the Monitor Corridor, and the roof breaker that darkens the searchlight.
+- **Rainline Chase:** the elevated line with the **Sweeper** chase (`ChaseDirector 'rainline'`, D-073), the G3 slide-jump over the LowRoad catch (D-074), the `rc_signal_box` secret and the `rainline_platform` Anchor.
+- **Smuggler Route:** the optional canal loop (D-075): the Pump Room shutter, the floodway, the Dash shrine `cs_smuggler_dash` (D-094), the den with the `smuggler_den` Anchor, **Iko**, the heavy-wall loft cache and the lever that unbolts the hatch to the Apartment Stack.
+- Existing rooms: the Relay gains the gallery door to the Undercity and Iko (after `met_iko`); Neon Roofs leads to Power Block and gains the RainlineLive lamp; the Apartment Stack gains the hatch (needs `shortcut_smuggler_route`, with a HatchGate, hint, map marker and neon); Bell Tower is entered from the Rainline; Warden Tower gains the **Grid Clamp** with two high breakers and `reward_position` (208, 0).
+- Bell Tower and Warden Tower moved on the world map (D-080).
+
+### Mechanics
+- `CeilingTracker` + `TrackerConfig` (the Collector eye; lock builds only while Rook stands still).
+- `CollectorDroneBehavior` (card deck, lanes, poise lock), `BossBot` for boss timing tests; `BossArena.reward_position` (D-077).
+- `Breaker`, `PowerShutter` + `ShutterTiming`, `GridClamp` + `ClampTiming` (the Grid).
+- `ScannerBeam` + `ScannerData` (nine presets in `data/level/`, D-072).
+- `ChaseDirector`, `Pursuer`, `PursuerData` (`derail_x`, `runout_speed`), `ChaseCheckpoint`.
+- `FlowZone.drain_scale` / `drain_floor`; `NpcProfile.figure` / `verb` (bodiless radios and terminals, D-065); `NPC.present_when` with map pins that follow it.
+- `EntryCheckpoint`, `WeaponPickup`, `FlagDeclaration` (world-skeleton stand-in, none left), `HintTrigger.skip_when` (D-096).
+- **Changed:** air swings hang only when they connect (`AttackData.air_velocity_on_hit`, D-093). Breaker placement lint uses every grounded swing (D-095). `Room` places the player at its spawn before adding it (D-091).
+- Player/enemy scaffolding: pit override, nonlethal damage, shove, exported enemy facing, `debug_draw`; `Enemy` boss flag, `min_telegraph`, ranged poise scale, `lock_aim`.
+- Enemy data: `collector_drone`, `needle_dormant`, `needle_ledge`; attacks `collector_*`, `grid_clamp_attack`.
+
+### Story, quests and economy
+- NPC profiles: `orr_radio`, `uc_terminal_intake`, `uc_note_crew`, `iko`; Orr and Mara gain their Undercity intros (D-086). Lore: `mf_undercity_01` "It Won't Come Out", `mf_lowlight_04` "Cell Four".
+- Quest **The Way Up** (`way_up`, 30 Scrap).
+- **Iko's shop:** Bootleg Injector 260, Hot Wire 150, Live Current 120, Slipstream 130. `Game.injector_bonus` counts `injector_upgrades_bootleg`. Hot Wire, Live Current and Slipstream join the catalog (15 Circuits).
+- Core Shards 3 → 5 (capacity 9), Memory Fragments 3 → 5, secrets 10 → 22 (D-082).
+- `EconomyAudit` reports a per-district breakdown. Final audit: one-time 1,772, sinks 2,230, coverage 79%, re-clear 332 of 334 (`ECONOMY.md`).
+- Chart thresholds per district: Lowlight 0.50, Undercity 0.40 (D-080).
+
+### Playtest
+- Recorder: first dodge, key flags, `pt` on every event, boss id on `boss_start`, tracker locks, scanner trips (live / calibration), breakers, clamp drops, shutter passes, chase catches.
+- Report: separate Krail and Collector lines, "Lowlight time, Relay arrival → slice_complete", the **Undercity timeline** (campaign runs only), and the district set-piece tables.
+- Survey: the Collector Drone, the Collector eye and the Rainline Sweeper join "Which enemy do you remember most?"; a new unscored "The Collector Drone felt fair." (still ten scored §44 questions).
+
+### Tools and tests
+- Room generators per room: `tools/roomgen/uc_*.py`, `ll_*.py`, with `undercity_style.py` / `lowlight_style.py`; fixture generators `fixtures_*.py`; new helpers (`weapon_pickup`, `respawn_point`, `declare_flags`, `scanner`, `breaker`, `shutter`, `clamp`, `chase`, `tracker`, `flow(drain_scale, drain_floor)`, `enemy(data=)`, `hint(skip_when=)`).
+- RouteBot: `shoot`, `dodge` and `dodgejump_airdodge` steps.
+- `CaptureTour --tour=undercity` (every Undercity spawn plus a Collector fight shot).
+- `test_door_contracts` (D-092), shared route-test harnesses `test_undercity_routes` and `test_lowlight_m7_routes` (each room's route and extra tests, the full Undercity walk from New Game, the full Lowlight chain), `test_onboarding` (v3 save fixture), `test_tracker`, `test_boss_collector`, `test_power_shutter`, `test_boss_grid_clamp`, `test_security`, `test_chase`, `test_props_m7`, `test_scaffold`.
+- Tests: 412 (223 new).
+
 ## 0.6.0-m6: Content Pipeline
 
 Bible §36 M6 (D-053). Report: `M6_CONTENT_PIPELINE_REPORT.md`. Guide: `CONTENT_PIPELINE.md`.
