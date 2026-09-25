@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PlaytestConfig" load_steps=20 format=3]
+[gd_resource type="Resource" script_class="PlaytestConfig" load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://playtest/PlaytestConfig.gd" id="1_cfg"]
 [ext_resource type="Script" path="res://playtest/SurveyQuestion.gd" id="2_q"]
@@ -39,7 +39,7 @@ script = ExtResource("2_q")
 id = "memorable_enemy"
 text = "Which enemy do you remember most?"
 kind = 2
-choices = PackedStringArray("Needle (blade grunt)", "Shield", "Scout Drone", "Hopper", "Watcher (sentry)", "Enforcer (gold elite)", "Warden Krail", "None / don't remember")
+choices = PackedStringArray("Needle (blade grunt)", "Shield", "Scout Drone", "Hopper", "Watcher (sentry)", "Enforcer (gold elite)", "Collector Drone (Undercity boss)", "Collector eye (ceiling hunter)", "Rainline Sweeper (chase)", "Warden Krail", "None / don't remember")
 criterion = "they remember at least one enemy"
 
 [sub_resource type="Resource" id="q5"]
@@ -69,6 +69,13 @@ id = "boss_fair"
 text = "Warden Krail felt fair."
 kind = 0
 criterion = "first boss feels fair"
+
+[sub_resource type="Resource" id="q13"]
+script = ExtResource("2_q")
+id = "collector_fair"
+text = "The Collector Drone felt fair."
+kind = 0
+criterion = ""
 
 [sub_resource type="Resource" id="q9"]
 script = ExtResource("2_q")
@@ -103,4 +110,4 @@ criterion = ""
 script = ExtResource("1_cfg")
 moment_tags = PackedStringArray("Confusing / lost", "Unfair hit", "Controls felt off", "Felt great", "Bug", "Performance hitch")
 variants = Array[ExtResource("5_v")]([ExtResource("3_base"), ExtResource("4_slide")])
-survey = Array[ExtResource("2_q")]([SubResource("q0"), SubResource("q1"), SubResource("q2"), SubResource("q3"), SubResource("q4"), SubResource("q5"), SubResource("q6"), SubResource("q7"), SubResource("q8"), SubResource("q9"), SubResource("q10"), SubResource("q11"), SubResource("q12")])
+survey = Array[ExtResource("2_q")]([SubResource("q0"), SubResource("q1"), SubResource("q2"), SubResource("q3"), SubResource("q4"), SubResource("q5"), SubResource("q6"), SubResource("q7"), SubResource("q8"), SubResource("q13"), SubResource("q9"), SubResource("q10"), SubResource("q11"), SubResource("q12")])

@@ -59,6 +59,30 @@ func test_config_and_variants_validate() -> void:
 	check(scored.size() == 10, "all ten §44 criteria should have a survey question, got %d" % scored.size())
 
 
+# M7: the Collector Drone (the §42 first mini-boss) gets its own unscored
+# question; boss_fair keeps Krail and its §44 criterion, so the scorecard
+# still counts ten criteria.
+func test_survey_names_both_bosses() -> void:
+	var by_id := {}
+	for q: SurveyQuestion in Playtest.config.survey:
+		by_id[q.id] = q
+	var enemy: SurveyQuestion = by_id.get("memorable_enemy")
+	check(enemy != null, "memorable_enemy question missing")
+	if enemy != null:
+		for c: String in ["Collector Drone (Undercity boss)", "Collector eye (ceiling hunter)", "Rainline Sweeper (chase)", "Warden Krail"]:
+			check(c in enemy.choices, "memorable_enemy should offer '%s'" % c)
+	var krail: SurveyQuestion = by_id.get("boss_fair")
+	check(krail != null and "Warden Krail" in krail.text, "boss_fair should still name Warden Krail")
+	check(krail != null and krail.criterion == "first boss feels fair", "boss_fair keeps its §44 criterion")
+	var collector: SurveyQuestion = by_id.get("collector_fair")
+	check(collector != null, "collector_fair question missing")
+	if collector != null:
+		check(collector.kind == SurveyQuestion.Kind.SCALE, "collector_fair should be a scale question")
+		check(collector.criterion == "", "collector_fair must stay unscored")
+	var scored := Playtest.config.survey.filter(func(q: SurveyQuestion) -> bool: return q.criterion != "")
+	check(scored.size() == 10, "the scored §44 set should stay at ten, got %d" % scored.size())
+
+
 func test_session_records_rooms_damage_death_and_frames() -> void:
 	var p := await _start()
 	check(Playtest.is_recording(), "session should be recording")
