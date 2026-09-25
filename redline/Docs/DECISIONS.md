@@ -466,3 +466,7 @@ Each was found by a route test and changed as little as possible:
 - Sodium is kept to the route: the pump wheel (Maintenance Shaft) and the tram (Escape Tunnel) now use a steel accent.
 - The Collector Bay vent lip had run over `ArenaGateLeft` and the vestibule, so Rook could drop out of a sealed fight. The alcove floor over x 16..56 is now solid (`VentFloor`), and only the lip in front of the panel (x 56..72) drops through, into the arena.
 
+
+## D-105: M8 batch = narrative systems + Act I integration; endings framework unreachable until Act V (FLAG)
+- Acts II-V do not exist, so M8 builds the sequence, memory, arc, world-state and ending systems fully and integrates them into Act I. Endings: complete framework + four placeholder sequences + credits, reachable only via the dev Ending theatre/tests; real conditions are data gated by future flags.
+- FLAG (process; redline/CLAUDE.md: 'Do not start M7 batch 2 (Ironworks) or any later district or milestone unless the user asks — bible §44 says not to scale content before the slice passes.'; bible §44: 'Do not scale production unless external playtesters independently report most of the following:'): M8, like M5-M7, starts before the §44 human playtest because the user asked ('START M8').
