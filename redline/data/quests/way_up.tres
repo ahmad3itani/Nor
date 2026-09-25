@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://quests/QuestData.gd" id="1"]
+[ext_resource type="Script" path="res://quests/QuestStage.gd" id="2"]
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+description = "Get past the Collector's bay at the top of the lift shaft."
+complete_flags = PackedStringArray("collector_drone_defeated")
+map_room = "CollectorBay"
+map_pos = Vector2(240, -120)
+map_note = "Orr: the Collector's nest"
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("2")
+description = "Follow the rail line up to the Relay and find Orr."
+complete_flags = PackedStringArray("met_orr")
+
+[resource]
+script = ExtResource("1")
+id = "way_up"
+title = "The Way Up"
+giver = "Orr (radio)"
+start_flag = "met_orr_radio"
+stages = Array[ExtResource("2")]([SubResource("s1"), SubResource("s2")])
+reward_scrap = 30
+complete_flag = "way_up_complete"
