@@ -14,8 +14,8 @@ tone = 0
 [sub_resource type="Resource" id="Shape_1"]
 script = ExtResource("3_shape")
 kind = 4
-pos = Vector2(96.0, 176.0)
-size = Vector2(4.0, 90.0)
+pos = Vector2(96.0, 110.0)
+size = Vector2(4.0, 70.0)
 tone = 2
 flicker = true
 
