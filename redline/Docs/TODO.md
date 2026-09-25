@@ -3,7 +3,7 @@
 ## Now: humans
 - [ ] The M4 playtest (`PLAYTEST_KIT.md`) is still the gate before M7 batch 2 (Ironworks and later, bible §44). Export playtest builds as **release** so the dev console is off (D-059).
 - [ ] **Decide which build the playtest uses (D-068):** the Act I campaign (New Game from the Undercity, about 20–37 min before the Relay) or the old slice (Relay start, debug builds only, K-58).
-- [ ] Confirm or overrule the M7 flags: D-061 (M7 before §44), D-062 (Undercity opening, unarmed start), D-063 (pre-Anchor entry respawn), D-068, D-072 (scanners respect i-frames), D-073 (one chase system), D-074 (Rainline G3 slide-jump), D-075 (Smuggler Route order), D-076 (Iko moves to the Relay), D-079 (Collector = first mini-boss), D-082 (shards/secrets/fragments), D-083 (pacing), D-085 (Challenge FZ3), D-087/D-090 (no schema bump), D-093 (air swings hang only on hit).
+- [ ] Confirm or overrule the M7 flags: D-061 (M7 before §44), D-062 (Undercity opening, unarmed start), D-063 (pre-Anchor entry respawn), D-068, D-072 (scanners respect i-frames), D-073 (one chase system), D-074 (Rainline G3 slide-jump), D-075 (Smuggler Route order), D-076 (Iko moves to the Relay), D-079 (Collector = first mini-boss), D-082 (shards/secrets/fragments), D-083 (pacing), D-085 (Challenge FZ3), D-087/D-090 (no schema bump), D-093 (air swings hang only on hit), D-101 (the Undercity combines after its boss), D-102 (the Undercity is linear).
 - [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
 
@@ -15,6 +15,9 @@
 - [ ] `test_pb_b3_reach` could add a Hot Wire case now that the circuit exists (D5a landed after Power Block).
 - [ ] `DevActions` grant-kit sets `injector_upgrades` but not `injector_upgrades_bootleg`, so the debug kit lacks Iko's charge.
 - [ ] RouteBot: a stationary diagonal aim for multi-shot volleys (K-57).
+- [ ] Escape Tunnel pistol lesson: widen the diagonal hit band and sweep it in a test (K-61).
+- [ ] Power Block: a respawn near the L0 entrance (K-62).
+- [ ] Chase, scanner, clamp and tracker numbers still in code: move them to their data resources (K-63).
 - [ ] **Boss Assist** (M9): an Assist-mode option for bosses (slower telegraphs or more pips), announced, never silent (§23).
 - [ ] **`timing_assist` setting** (not built, D-073): an announced option that scales pursuer speed and shutter clocks. §23 forbids silent difficulty changes.
 - [ ] **Rising-flood pursuer** (deferred): a second `PursuerData` style for a later district.
@@ -51,16 +54,17 @@
 - [ ] If testers quit early, record a lighter "exit survey" on quit to title.
 
 ## M3 gate, the §44 vertical-slice test (humans; run it with the M4 kit)
-- [ ] External playtesters play New Game → end card. Use the checklist in `M3_VERTICAL_SLICE_REPORT.md` §6 and record the end-card time and deaths.
+- [ ] External playtesters play the build chosen in D-068 (New Game is now the Undercity campaign; the old Relay-start slice is the debug-only "Slice (Relay start)" entry) → end card. Use the checklist in `M3_VERTICAL_SLICE_REPORT.md` §6 and record the end-card time and deaths.
 - [ ] Confirm or overrule the flagged decisions D-026 (placeholder art/audio), D-027, D-028 (6 of 10 rooms), D-033 (no map) and D-036 (slide-jump strength) in `DECISIONS.md`.
 - [ ] Decide who produces the production art and audio, and whether §44 runs on placeholders (D-026).
-- [ ] If the slice runs short of ~15 min, pick the next rooms: Power Block and Rainline Chase are the recommended ones (D-028).
+- [x] ~~If the slice runs short of ~15 min, pick the next rooms: Power Block and Rainline Chase (D-028).~~ Built in M7 batch 1, with Security Station and the Smuggler Route.
 - [ ] The M1 and M2 gates below are still open. The slice exercises both labs' systems, so one playtest can cover all three.
 - [ ] Do **not** start M4+ until the slice passes §44.
 
 ## M3 follow-ups (only if the playtest asks for them)
 - [ ] Slide-jump strength (`slide_jump_bonus` / `slide_jump_height_ratio`, D-036).
-- [ ] More Lowlight rooms (D-028), and more Circuits toward the 60–80 target.
+- [x] ~~More Lowlight rooms (D-028)~~: Lowlight is complete since M7 batch 1.
+- [ ] More Circuits toward the 60–80 target.
 - [ ] Saved loadout presets (bible §11) once there are enough Circuits to need them.
 - [ ] Map and fast travel (M5 scope, D-033), and Nix, if playtesters get lost.
 - [ ] Parry and executions (bible §8): not started.

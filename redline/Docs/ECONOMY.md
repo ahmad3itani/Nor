@@ -10,7 +10,7 @@ Audited in M7 (D5b) with all eleven new rooms merged: Undercity and the full Low
 
 | Source | Scrap |
 |---|---|
-| Enemies, each placed enemy killed once (62, plus the dormant Medical Ruin Needle, which drops nothing) | 332 |
+| Enemies, each placed enemy killed once (59 that pay Scrap: 14 in the Undercity for 71 and 45 in Lowlight for 261; the dormant Medical Ruin Needle drops nothing) | 332 |
 | Bosses: Warden Krail 150, Collector Drone 80 (one-time, counted by `EnemyData.boss`) | 230 |
 | Quest rewards (Dead Air 120, Chart Lowlight 100, The Way Up 30) | 250 |
 | Breakable-wall stashes (10 walls) | 400 |

@@ -2,7 +2,7 @@
 
 ## 0.7.0-m7: District Production, batch 1 (Act I: Undercity + Lowlight)
 
-Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet: `DISTRICTS.md`. Decisions D-061..D-099.
+Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet: `DISTRICTS.md`. Decisions D-061..D-104.
 
 ### New Game
 - **New Game starts unarmed in Undercity/Wake** (`data/world/onboarding.tres`, `OnboardingConfig`, D-062). The title subtitle is data ("Act I — Undercity to Lowlight"); the end card is reworded for Act I.
@@ -17,7 +17,7 @@ Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet:
 - **Maintenance Shaft:** three climbs, the first composition (Needle + Scout Drone on Floor 2, `max_attackers` 2, D-089), the first secret `uc_shaft_closet` with `mf_undercity_01`, and the crew pocket with the `uc_note_crew` note.
 - **First Pursuit:** the slide lesson, the **Collector eye** chase (`CeilingTracker`, D-069), pair 2, the `uc_pursuit_cache` secret, Orr's radio (the first NPC), the `pursuit_mid` EntryCheckpoint, and a HatchLive switch that turns the red hatch ring off after the boss.
 - **Broken Lift:** the lift shaft, **FZ1** at half drain with a floor of 1 (the safe Core introduction, D-070/D-085), a ledge Needle (`needle_ledge`, D-097), the car-roof stash, and **`uc_lift`, the first Anchor**.
-- **Collector Bay:** the **Collector Drone** arena (D-064); the right exit needs `collector_drone_defeated`; the Service Pistol drops at (252, 0); the vent secret `uc_collector_vent` (40 Scrap).
+- **Collector Bay:** the **Collector Drone** arena (D-064); the right exit needs the pistol (`got_service_pistol`, D-100); the Service Pistol drops at (252, 0); the vent secret `uc_collector_vent` (40 Scrap).
 - **Escape Tunnel:** the Watcher pistol lesson (shot diagonally), the pistol-only panel `uc_tunnel_panel`, **FZ3** at full drain with a Needle and a Hopper, Orr's second radio call, the Dash-only shard `cs_uc_tunnel_dash`, and the gallery door up to the Relay.
 - Theme `data/districts/undercity.tres`; palette `tools/roomgen/undercity_style.py` (Art Bible §3).
 
@@ -60,6 +60,13 @@ Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet:
 - `CaptureTour --tour=undercity` (every Undercity spawn plus a Collector fight shot).
 - `test_door_contracts` (D-092), shared route-test harnesses `test_undercity_routes` and `test_lowlight_m7_routes` (each room's route and extra tests, the full Undercity walk from New Game, the full Lowlight chain), `test_onboarding` (v3 save fixture), `test_tracker`, `test_boss_collector`, `test_power_shutter`, `test_boss_grid_clamp`, `test_security`, `test_chase`, `test_props_m7`, `test_scaffold`.
 - Tests: 412 (223 new).
+
+### Audit fixes
+- **Boss exits open on the reward, not the win (D-100).** Collector Bay's way out needs `got_service_pistol` and Warden Tower's needs `unlocked_dash`, so nobody reaches the pistol lesson or the Relay's Dash end card without the reward. `BossArena` also seals `ExitGate` on a re-armed fight and reports its reward's flag to the validator.
+- **Hints queue (D-103).** `CombatHud` holds a hint at least 2 s before the next one shows. Security Station folds its calibration note into the first beam's hint, and the Maintenance Shaft's air-attack hint moved under the Scout.
+- **Broken tubes are a distinct secret cue (D-104).** `NeonSign.broken` (askew, half lit, stuttering). The ambient tubes that copied the cue became 3-stroke tubes, the Collector Bay vent gained a cue, and the pump wheel and tram lost their sodium accents. The Collector Bay vent alcove no longer drops Rook out of the sealed arena.
+- **Flagged:** the Undercity's §41 order (D-101) and its lack of loops (D-102).
+- Small fixes: a scanner-only breaker circuit (Security Station roof) lights its breaker lamp for the offline window; the dev console restarts the Collector Drone too; `OnboardingConfig.validate` checks that the start entry is a spawn in the start room; Orr's shaft call no longer promises a Core burn in FZ1; Orr's radio speaks in the Undercity cyan and the intake terminal in sea-green; doc corrections (D-094 sweeps, ECONOMY enemy count 59, KNOWN_ISSUES table, TODO, K-23, K-35).
 
 ## 0.6.0-m6: Content Pipeline
 

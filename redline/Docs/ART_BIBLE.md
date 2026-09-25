@@ -62,7 +62,7 @@ Colour-role rules:
 - **Red is the Collector's.** Nothing else in the Undercity is red, so red always means "it sees you". After the Collector falls, the First Pursuit hatch ring goes dark (a `WorldStateSwitch`).
 - **Cyan is the radio's.** A cyan light is always Orr, never a hazard or a pickup.
 - **Sodium marks the route.** Never put a sodium lamp over a secret or a dead end.
-- **A broken SEA tube is a secret cue** (`neon(..., SEA, 1, True)`, one stroke, flickering): the Maintenance Shaft closet, the First Pursuit cache roof, the Escape Tunnel panel.
+- **A broken SEA tube is a secret cue** (`neon(..., SEA, 1, True, broken=True)`: `NeonSign.broken` draws it askew and half lit, with a stutter of quick dropouts; D-104): the Maintenance Shaft closet, the First Pursuit cache roof, the Collector Bay vent, the Escape Tunnel panel. Ambient tubes never set `broken` and use three strokes.
 - SEA sits close to the reserved healing green `#7dff9a`. Check final art with a colourblind filter (K-46).
 
 The theme, `data/districts/undercity.tres`:

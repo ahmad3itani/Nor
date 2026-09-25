@@ -307,7 +307,7 @@ Batch 1 builds bible §36 M7 for Act I: the new 00 Undercity district (the real 
 
 ## D-065: Radios and terminals are bodiless NPCs
 - `NpcProfile.figure = false` plus a `verb` ("Listen", "Read"). The mechanics doc's RadioTerminal class is not built.
-- **As built (choices the plan left open):** Orr's radio speaks as "Radio" in the rules that can play before he has named himself and as "Orr" after; the intake terminal speaks as "Terminal" (cyan), the crew note as "Note". The Undercity timeline keys the first NPC on the "Radio" name.
+- **As built (choices the plan left open):** Orr's radio speaks as "Radio" in the rules that can play before he has named himself and as "Orr" after; the intake terminal speaks as "Terminal" (sea-green; cyan is the radio's alone, so Orr's radio profile uses the Undercity CYAN), the crew note as "Note". The Undercity timeline keys the first NPC on the "Radio" name.
 
 ## D-066: Identical lessons share hint ids across districts
 - `alley_attack`, `alley_dodge`, `alley_slide`, `alley_gap`, `stack_heal`, `relay_anchor` and `market_shoot` are reused in the Undercity, so a lesson seen once is not repeated in Lowlight.
@@ -421,7 +421,7 @@ Batch 1 builds bible §36 M7 for Act I: the new 00 Undercity district (the real 
   - **Smuggler Route:** shrine at x 740..778, y -176, 64 px below a one-way DashLedge (1060..1104 at -240), across 282 px. The floodgate moved 48 px west (692..740), the top step became `oneway(1064, -192, 40)`, and the Flow zone now spans x 300..692. A take-off at the very end of the coyote window plus a perfect air dodge can still land, so its marker says "Too wide to jump (mostly)".
   - **Flooded Alley** (`cs_alley_dash`): a one-way take-off at -144 (x 100..160) and a DashShelf at x 450..506, y -80, 290 px away, shard at 468. A dash-jump reaches it from take-offs at x 154–174.
   - **Escape Tunnel** (`cs_uc_tunnel_dash`): unchanged, a 230 px gap at x 1830 whose sweep covers delays 0..27 from the step edges only. It probably leaks the same way (K-48).
-- The Smuggler and alley sweeps try every air-dodge frame the cooldown allows, take off at the lip and 8, 16 and 20 px past it, and count any landing on the target as a leak.
+- Both sweeps try every air-dodge frame the cooldown allows and count any landing on the target as a leak. The alley sweep takes off at the lip and 8, 16 and 20 px past it; the Smuggler sweep takes off at the lip and 8 px past it (16–20 px is the admitted residue, K-48).
 
 ## D-095: Breakers are placed out of every grounded swing's reach
 - `Breaker.content_errors` measures the union of the light chain, heavy and launcher of every melee weapon in the catalog, with each lunge integrated under ground friction (the blade heavy reaches 38 + ~11 + 6 px), and widens the one-way band by that reach. The Warden Tower breakers moved beside the clamp column (x 120..172 and 244..296) because a grounded light from the arena one-ways tripped them.
@@ -444,3 +444,25 @@ Each was found by a route test and changed as little as possible:
 
 ## D-099: PowerShutter pass margins read the open clock
 - `shutter_passed` reports `open - t_open` while the panel is still up, so a low pass under a closing shutter reads as a small margin. Power Block's intended S4b low line reaches the slot about 3.37 s after its breaker and reports about 0.23 s, although its real margin against the slot (open + drop + slot - t_open) is about 1.08 s. The route test asserts the ≥ 0.5 s margin for S1–S4a and a low pass for S4b. The playtest report will list S4b as a close call (K-52).
+
+## D-100: Boss exits open on the reward, not the win (audit fix)
+- `BossArena` sets `<boss>_defeated` at the kill but spawns the reward `death_time + 0.2` s later (1.8 s for the Collector, 1.6 s for Krail). Both way-out doors keyed on the defeat flag, so a Rook standing by the east door when the boss died could leave before the reward existed: Escape Tunnel (the pistol lesson) without the Service Pistol, the Relay (whose end card names the Dash) without Dash. Standing east of the drop, he could also leave without passing it.
+- Now Collector Bay's east exit and `ExitGate` key on `got_service_pistol`, and Warden Tower's on `unlocked_dash` (door contracts updated). `BossArena` lists `ExitGate` in `gate_paths`, so a re-armed fight (`quick_boss_restart` with the reward owned) seals it too. When a fight ends, `_set_gates(false)` skips a Gate whose own `open_flag` is not set yet. The reward scene's pickup flag is reported through `BossArena.content_flags()` (and `AbilityPickup.content_flags()`), so the flag lint sees who produces it.
+- Tests: `test_collector_bay_exit_waits_for_pistol` and `test_warden_tower_exit_waits_for_dash` kill the boss with Rook at the door and hold right for 2.5 s. `test_quick_boss_restart_rearms_krail` checks the re-sealed gate.
+
+## D-101: The Undercity's §41 combine beat comes after its boss (FLAG vs §41)
+- §41: "introduce a mechanic safely, reinforce it, combine it, then test it in the boss." In the Undercity as built, the eye is introduced in First Pursuit and the Core in Broken Lift FZ1. The Collector Drone's Drop Press tests only the eye half of "Keep moving"; Collector Bay has no Flow Zone. The Core is reinforced and combined with the new pistol and in-zone enemies in Escape Tunnel's FZ3, which plays after the boss as the district's epilogue. The Core is first tested under pressure in Lowlight.
+- Kept as built: a tutorial district, the §42 "first mini-boss" scale (D-079), and a new-mechanic room right before the first boss would break "one concept at a time" (§23). The alternative is a Core-feeding element in the Collector fight plus a combine beat before the bay. `DISTRICTS.md`'s §41 row and the M7 report's acceptance line now describe the real order. **Please confirm or overrule.**
+
+## D-102: The Undercity has no loop or shortcut (FLAG vs §14/§21)
+- The Undercity is a strict line (Wake → … → Escape Tunnel → Relay), one door forward and one back per room. §21 asks every district for alternate routes and §14 for loops and shortcuts. This is deliberate for the onboarding district: it is revisited through `uc_lift` transit and the Relay balcony door, and its revisit content (the Dash shard `cs_uc_tunnel_dash`) sits on that line. **Please confirm**, or add a small loop (e.g. an Escape Tunnel → Broken Lift return).
+
+## D-103: HUD hints queue; one lesson line at a time (audit fix)
+- `CombatHud` used to overwrite its single hint slot, so a hint fired right after another was never read: Security Station's "these are on calibration" line (the spawn sat inside its box, the low-beam box started 0.2 s of running later) and the Maintenance Shaft's dodge line (replaced by the air-attack line about 1 s later).
+- A hint now waits until the current one has been up `HINT_MIN_SECONDS` (2.0 s) or has ended. At most 2 wait, newest kept, and duplicates are not queued (`test_hud_hints_queue_with_a_minimum_hold`). The rooms are fixed too: Security Station folds the calibration note into the first beam's hint (`ss_low`, "Scanners on calibration: harmless. Low beam: jump it"; `ss_calib` is gone). The Maintenance Shaft's `uc_air` box moved from x 180..240 to 300..360, under the Scout, past where its first bolt is dodged.
+
+## D-104: A broken tube is its own NeonSign state (audit fix)
+- The secret cue `neon(..., SEA, 1, True)` differed from the ambient tubes only by its stroke count, and seven ambient tubes (Medical Ruin, First Pursuit, Broken Lift) used exactly the cue's signature. `NeonSign.broken` now draws the tube askew, half lit, with a stutter of three quick dropouts every 1.5 s (steady but still askew and half lit under flash reduction). `RoomGen.neon(..., broken=True)` sets it. Only the four secret cues use it: the Maintenance Shaft closet, the First Pursuit cache roof, the Escape Tunnel panel, and a new cue inside the Collector Bay vent alcove. The ambient tubes use the 3-stroke form.
+- Sodium is kept to the route: the pump wheel (Maintenance Shaft) and the tram (Escape Tunnel) now use a steel accent.
+- The Collector Bay vent lip had run over `ArenaGateLeft` and the vestibule, so Rook could drop out of a sealed fight. The alcove floor over x 16..56 is now solid (`VentFloor`), and only the lip in front of the panel (x 56..72) drops through, into the arena.
+

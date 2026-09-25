@@ -29,9 +29,9 @@ Screenshots from `CaptureTour --tour=undercity` and `--tour=slice`. The tours st
 | M7 item | Built | Proof |
 |---|---|---|
 | **Mechanic thesis: *Keep moving*** | The Collector eye (`CeilingTracker`, D-069) rides First Pursuit's ceiling and bolts a Rook who stands still for 1.0 s in its cone. Flow Zones drain the Core while Rook lingers (Broken Lift FZ1 at half drain and floored at 1; Escape Tunnel FZ3 at full drain), and hits refill it. No spikes or pits (D-067). | `test_tracker` (11), `test_first_pursuit_eye`, the `pursuit_mid` checkpoint test; `test_fz1_pace`, `test_fz1_challenge_floor` (30 s idle in Challenge ends at Core 1, no burnout); `test_fz3_pace` per Core mode |
-| **Visual thesis: a flooded civic disposal complex** | Sea-green flickering tubes for ambience, sodium lamps on the route only, red only on the Collector, cyan only on Orr's radio, concrete/rust/steel geometry, seepage rain (`undercity_style.py`, `undercity.tres`, Art Bible §3). A broken sea-green tube marks each secret. Landmarks per room (DISTRICTS.md). | The undercity tour runs clean (17 shots). Reviewed against the thesis: red appears only on the Collector's grate, hatch and drone; the landmarks read (tram, lift car, arena). At tour framing the sea-green tubes are small and dim, so the district reads mostly as dark concrete. That is a placeholder-art judgement for a human (§6). |
+| **Visual thesis: a flooded civic disposal complex** | Sea-green flickering tubes for ambience, sodium lamps on the route only, red only on the Collector, cyan only on Orr's radio, concrete/rust/steel geometry, seepage rain (`undercity_style.py`, `undercity.tres`, Art Bible §3). A broken sea-green tube (`NeonSign.broken`: askew, half lit, stuttering) marks each secret wall, the Collector Bay vent included; ambient tubes never use it (D-104). Landmarks per room (DISTRICTS.md). | The undercity tour runs clean (17 shots). Reviewed against the thesis: red appears only on the Collector's grate, hatch and drone; the landmarks read (tram, lift car, arena). At tour framing the sea-green tubes are small and dim, so the district reads mostly as dark concrete. That is a placeholder-art judgement for a human (§6). |
 | **Enemy ecosystem** | Needle (the first melee enemy, with a dormant 0-Scrap practice copy), Scout Drone (the dodge teacher), Hopper (vertical pressure), Watcher (the pistol teacher). No Shield or Enforcer; no new variants. The first composition (Needle + Scout Drone) is on Maintenance Shaft Floor 2 (D-089). | Room route tests per room; `test_shaft_first_composition` (blade only, two strings each); `test_escape_tunnel_route` kills the Watcher with three diagonal pistol shots |
-| **Boss test: the Collector Drone** | A 400 HP card-deck boss (Drop Press, Tag Volley, Claw Dive, Hook Sweep) in its own arena, scaled as the §42 first mini-boss (D-064, D-079). The Drop Press locks where Rook stands, in the eye's cone language, so it tests the district's thesis up close. It drops the Service Pistol at (252, 0), which the next room teaches. | `test_boss_collector` (15, including a blade `BossBot` win in about 26 s), `test_collector_bay_*`, the live `quick_boss_restart('collector_drone')` test |
+| **Boss test: the Collector Drone** | A 400 HP card-deck boss (Drop Press, Tag Volley, Claw Dive, Hook Sweep) in its own arena, scaled as the §42 first mini-boss (D-064, D-079). The Drop Press locks where Rook stands, in the eye's cone language, so it tests the district's thesis up close. It drops the Service Pistol at (252, 0), which the next room teaches; the way out opens only once the pistol is taken (D-100). The Drop Press tests the eye half of the thesis, not the Core (D-101). | `test_boss_collector` (15, including a blade `BossBot` win in about 26 s), `test_collector_bay_*`, the live `quick_boss_restart('collector_drone')` test |
 
 The walk as a whole: `test_full_undercity_walk` starts from the shipped New Game and walks Wake to the Relay balcony with each room's own route, carrying the state from door to door. It proves that each room is entered with exactly the kit the rooms before it hand out, that the main path never needs Dash or an Anchor rest, and that the walk charts the Undercity. The Collector fight is skipped there (the flag is set at the arena door); the boss has its own tests.
 
@@ -89,9 +89,9 @@ The Smuggler Route loop adds about 3–5 min before Krail (Dash at 46 / 63.5 / 8
 | Visual thesis per district | ✅ written and applied in placeholder art (`DISTRICTS.md`, Art Bible §3); final art waits for D-026 |
 | Enemy ecosystem per district | ✅ per-district rosters, one concept at a time in the Undercity, no new variants |
 | Boss test per district | ✅ the Collector Drone (tests the thesis via the Drop Press); Krail's Grid Clamp |
-| §41 introduce / reinforce / combine / test | ✅ one row per district (`DISTRICTS.md`) |
+| §41 introduce / reinforce / combine / test | ⚠️ Lowlight in order. The Undercity introduces the eye and the Core, but its combine beat (Escape Tunnel FZ3) plays after the Collector, which tests only the eye (D-101, flagged) |
 | §42 onboarding timeline | ⚠️ in band at the mid and high estimates; fast players early (D-083); unmeasured until the playtest |
-| §14 loops and shortcuts | ✅ Bell lift, Smuggler hatch, latching shutters, the quiet Rainline, the Relay gallery door, the old-save route |
+| §14 loops and shortcuts | ⚠️ Lowlight: Bell lift, Smuggler hatch, latching shutters, the quiet Rainline, the Relay gallery door, the old-save route. The Undercity is a strict line, revisited through `uc_lift` transit and the Relay balcony (D-102, flagged) |
 | Main path never needs an unowned ability | ✅ `test_full_undercity_walk` and `test_full_lowlight_chain`; Dash-only paths are optional secrets |
 
 ## 5. Flagged decisions (please confirm or overrule)
@@ -105,6 +105,8 @@ The Smuggler Route loop adds about 3–5 min before Krail (Dash at 46 / 63.5 / 8
 - **D-075** The Smuggler Route is optional and played 5th, not 8th.
 - **D-076** Iko moves from the den to the Relay.
 - **D-079** The Collector Drone is the §42 first mini-boss; Krail stays the §44 "first boss".
+- **D-101** The Undercity's §41 combine beat comes after its boss, and the boss tests only the eye.
+- **D-102** The Undercity has no loop or shortcut.
 - **D-082** Core Shards 5 (capacity 9), secrets 22, fragments 5.
 - **D-083** Pacing: fast players reach the Relay about 10 min early.
 - **D-085** Challenge mode burns in Escape Tunnel's FZ3 after about 11 s.
