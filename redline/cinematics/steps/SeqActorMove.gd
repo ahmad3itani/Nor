@@ -18,6 +18,7 @@ func run(p: SequencePlayer) -> void:
 	var n := _mover(p)
 	if n == null:
 		return
+	p.note_abort_restore(n, &"position")
 	var rest: Vector2 = p.memo(self, "rest", Vector2.ZERO if visual_only else n.position)
 	n.position = rest + from_offset
 	var t := p.adopt(p.create_tween())

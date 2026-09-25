@@ -6,7 +6,11 @@ extends SequenceStep
 @export var mark: String = ""
 
 
-func finish(_p: SequencePlayer) -> void:
+## Idempotent per play: a mark is emitted once however often finish() runs.
+func finish(p: SequencePlayer) -> void:
+	if p.memo(self, "emitted") != null:
+		return
+	p.memo(self, "emitted", true)
 	Cinematics.marked.emit(mark)
 
 

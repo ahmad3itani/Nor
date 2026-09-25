@@ -38,7 +38,11 @@ var _skip_requested: bool = false
 var _tap: bool = false
 var _last_frame: int = 0
 var _tweens: Array[Tween] = []
+## Non-blocking steps whose run() has not completed (finish()ed at the end).
 var _parallel: Array[SequenceStep] = []
+## Abort restores: [object, property, value] recorded by actor steps before
+## they first touch a node, put back in reverse order by abort() only.
+var _abort_restores: Array = []
 var _memo: Dictionary = {}
 var _lock_source := ScriptedInputSource.new()
 var _camera_used: bool = false
@@ -77,6 +81,11 @@ func is_auto() -> bool:
 
 func interrupted() -> bool:
 	return skipping or _aborted or not is_inside_tree()
+
+
+## True once abort() ran: steps must not finish() themselves afterwards.
+func aborted() -> bool:
+	return _aborted
 
 
 func overlay() -> CinematicOverlay:
@@ -129,7 +138,8 @@ func pace_line(length: int, hold: float, wait_for_tap: bool) -> void:
 				return
 		if is_instance_valid(ov):
 			ov.set_visible_chars(shown)
-		if not (wait_for_tap and not is_auto()) and _clock - start >= hold:
+		# No SkipGate (a non-locking play) means no tap can arrive: never wait for one.
+		if not (wait_for_tap and gate != null and not is_auto()) and _clock - start >= hold:
 			return
 		await ticked
 
@@ -147,6 +157,16 @@ func memo(step: SequenceStep, key: String, value: Variant = null) -> Variant:
 	if value != null:
 		_memo[k] = value
 	return _memo.get(k)
+
+
+## Records `obj.prop` before an actor step first changes it, so an abort (a
+## locking play cutting a bark, or a room abort) leaves no NPC displaced or
+## tinted. A skip or a normal end never uses it: finish() owns the end state.
+func note_abort_restore(obj: Object, prop: StringName) -> void:
+	for r: Array in _abort_restores:
+		if r[0] == obj and r[1] == prop:
+			return
+	_abort_restores.append([obj, prop, obj.get(prop)])
 
 
 func lock_source() -> ScriptedInputSource:
@@ -192,7 +212,7 @@ func run_timed() -> void:
 	if locking:
 		gate = SkipGate.new(first_view)
 		if seq.letterbox and is_instance_valid(overlay()):
-			overlay().letterbox(true, LETTERBOX_SECONDS)
+			adopt(overlay().letterbox(true, LETTERBOX_SECONDS))
 	for i in seq.steps.size():
 		if interrupted():
 			break
@@ -205,17 +225,28 @@ func run_timed() -> void:
 		if s.blocking:
 			await s.run(self)
 		else:
-			_parallel.append(s)
-			s.run(self)
+			_run_parallel(s)
 	if _aborted or done:
 		return
 	if skipping:
+		# step_index reports where the skip landed (K-S2), not the last step.
+		var skipped_at := index
 		_finish_from(index)
+		index = skipped_at
 	else:
 		_kill_tweens()
-		for s in _parallel:
+		for s in _parallel.duplicate():
 			s.finish(self)
 	_end(skipping)
+
+
+## A non-blocking step leaves _parallel once its run() completes, so the
+## end/skip does not finish() it a second time.
+func _run_parallel(s: SequenceStep) -> void:
+	_parallel.append(s)
+	await s.run(self)
+	if not interrupted():
+		_parallel.erase(s)
 
 
 func _eligible(s: SequenceStep) -> bool:
@@ -237,12 +268,11 @@ func _begin() -> void:
 ## every parallel step ends in its finish() state, in order.
 func _finish_from(from: int) -> void:
 	_kill_tweens()
-	for s in _parallel:
+	for s in _parallel.duplicate():
 		s.finish(self)
 	for i in range(maxi(from, 0), seq.steps.size()):
 		var s := seq.steps[i]
 		if _eligible(s):
-			index = i
 			s.finish(self)
 
 
@@ -279,6 +309,11 @@ func abort() -> void:
 	_aborted = true
 	index = -1
 	_kill_tweens()
+	for i in range(_abort_restores.size() - 1, -1, -1):
+		var r: Array = _abort_restores[i]
+		if is_instance_valid(r[0]):
+			(r[0] as Object).set(r[1], r[2])
+	_abort_restores.clear()
 	_end(false)
 	# Wake the suspended step so its coroutine returns (it sees interrupted()).
 	ticked.emit(0.0)

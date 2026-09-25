@@ -30,7 +30,8 @@ func run(p: SequencePlayer) -> void:
 	if blip != &"":
 		AudioManager.play_sfx(blip)
 	await p.pace_line(text.length(), nominal_seconds() * SubtitleStyle.time_scale(), hold_for_input)
-	finish(p)
+	# No finish() on abort (R3-1): the overlay may show a newer play's line.
+	if not p.aborted(): finish(p)
 
 
 func finish(p: SequencePlayer) -> void:

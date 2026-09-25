@@ -13,6 +13,7 @@ func run(p: SequencePlayer) -> void:
 	var n := p.ctx.resolve(actor) as CanvasItem if p.ctx else null
 	if n == null:
 		return
+	p.note_abort_restore(n, &"modulate")
 	var base: Color = p.memo(self, "base", n.modulate)
 	var t := p.adopt(p.create_tween())
 	if Settings.flash_reduction or pulses <= 0:

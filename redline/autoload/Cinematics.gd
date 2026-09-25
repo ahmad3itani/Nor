@@ -96,10 +96,14 @@ func request_skip() -> void:
 
 
 ## Stops the current play: restore only, no finish(), no seen flag.
+## The player's restore contract clears `current`; a play a finished-signal
+## listener starts from inside that abort stays current.
 func abort() -> void:
+	var p := current
 	if is_playing():
-		current.abort()
-	current = null
+		p.abort()
+	if current == p:
+		current = null
 
 
 func first_view(seq: SequenceData) -> bool:
