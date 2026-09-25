@@ -1,0 +1,62 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Resource" path="res://data/sequences/test_scaffold_trigger.tres" id="seq_test_scaffold_trigger"]
+[ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
+
+[node name="scaffold_m8_sequence" type="Node2D"]
+script = ExtResource("room")
+room_name = "Scaffold M8 sequence"
+bounds = Rect2(-64, -270, 800, 400)
+draw_grid = false
+world_room = true
+district_name = "Test"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(784, 96)
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(40, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Spawn_side" type="Marker2D" parent="Spawns"]
+position = Vector2(600, 0)
+script = ExtResource("spawn")
+spawn_id = &"side"
+facing = -1
+
+[node name="SeqTest" type="Area2D" parent="Triggers"]
+position = Vector2(-48, -140)
+script = ExtResource("sequence")
+size = Vector2(150, 140)
+sequence = ExtResource("seq_test_scaffold_trigger")
+autoplay = true
+require_spawn = &"start"

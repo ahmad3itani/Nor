@@ -150,6 +150,20 @@ def selftest():
                                       'label = "Dash gap"', 'resolved_when = "ability:dash"'], "plain mapmarker output unchanged")
     m2 = _node(t, "MapMarker2")
     expect("kind = 2" in m2 and 'shown_when = "flag:d"' in m2, "NOTE mapmarker shown_when")
+    # M8 sequence_trigger: named node, defaults omitted, options emitted.
+    r = _gen()
+    r.sequence_trigger("SeqPlain", "uc_opening", 10, -96, 64, 96)
+    r.sequence_trigger("SeqFull", "relay_arrival", -48, -240, 112, 96, play_when=["flag:a", "!flag:b"],
+                       autoplay=True, require_spawn="from_x", once=False)
+    t = r.render()
+    plain, full = _node(t, "SeqPlain"), _node(t, "SeqFull")
+    expect('[node name="SeqPlain" type="Area2D" parent="Triggers"]' in t, "sequence trigger keeps its name")
+    expect(plain == ["position = Vector2(10, -96)", 'script = ExtResource("sequence")', "size = Vector2(64, 96)",
+                     'sequence = ExtResource("seq_uc_opening")'], "plain sequence trigger emits no defaults: %s" % plain)
+    for prop in ['play_when = PackedStringArray("flag:a", "!flag:b")', "autoplay = true", 'require_spawn = &"from_x"', "once = false"]:
+        expect(prop in full, "sequence trigger: " + prop)
+    expect('path="res://world/props/SequenceTrigger.gd"' in t and 'path="res://data/sequences/relay_arrival.tres"' in t,
+           "sequence trigger ext_resources")
     return fails
 
 
@@ -187,6 +201,14 @@ def write_fixtures():
     r.mapmarker(440, -16, "Something here", "", kind=2)
     r.mapmarker(600, -16, "Far enough", "", kind=2)
     r.write(OUT + "scaffold_m8_note_bad.tscn")
+    # A SequenceTrigger placed in its own room (T07): autoplay from "start",
+    # playing a theatre-only one-SeqWait fixture sequence.
+    r = RoomGen("scaffold_m8_sequence", (-64, -270, 800, 400), "undercity", "Test", "Scaffold M8 sequence")
+    r.block(-48, 0, 784, BIG, "Floor")
+    r.spawn("start", 40, 0, 1, default=True)
+    r.spawn("side", 600, 0, -1)
+    r.sequence_trigger("SeqTest", "test_scaffold_trigger", -48, -140, 150, 140, autoplay=True, require_spawn="start")
+    r.write(OUT + "scaffold_m8_sequence.tscn")
 
 
 if __name__ == "__main__":

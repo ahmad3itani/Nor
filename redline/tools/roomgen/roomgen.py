@@ -15,6 +15,7 @@ M8 additions (defaults keep every generator's output byte-identical):
 switch(parent=) nests a switch (returns its full path), npc(name=) gives a
 second post of the same profile its own node name (D-123), and
 mapmarker(shown_when=) is emitted only when set (NOTE markers, kind=2).
+sequence_trigger() places a SequenceTrigger by name (T07).
 """
 import sys
 
@@ -50,6 +51,8 @@ SCRIPTS = {
  "clamp": "res://world/transitions/GridClamp.gd", "scanner": "res://world/hazards/ScannerBeam.gd",
  "chase": "res://world/hazards/ChaseDirector.gd", "chase_cp": "res://world/hazards/ChaseCheckpoint.gd",
  "respawn": "res://interactables/EntryCheckpoint.gd", "flagdecl": "res://world/rooms/FlagDeclaration.gd",
+ # M8 scripted sequences.
+ "sequence": "res://world/props/SequenceTrigger.gd",
 }
 SCENES = {n: "res://enemies/variants/%s.tscn" % n for n in ["Needle", "Shield", "ScoutDrone", "Hopper", "Watcher", "Enforcer"]}
 SCENES["WardenKrail"] = "res://bosses/WardenKrail.tscn"
@@ -156,6 +159,16 @@ class RoomGen:
         if action: p.append('action = &%s' % q(action))
         if skip_when: p.append('skip_when = %s' % q(skip_when))
         return self.add("Triggers", "Hint", "Area2D", p)
+    def sequence_trigger(self, name, seq_id, x, y, w, h, play_when=(), autoplay=False, require_spawn="", once=True):
+        """M8: a SequenceTrigger for data/sequences/<seq_id>.tres, named `name`
+        (never numbered: sequences and tests look it up by name)."""
+        seq = self._res("seq_" + seq_id, "Resource", "res://data/sequences/%s.tres" % seq_id)
+        p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("sequence"), 'size = Vector2(%d, %d)' % (w, h), 'sequence = %s' % seq]
+        if play_when: p.append('play_when = %s' % strings(play_when))
+        if autoplay: p.append('autoplay = true')
+        if require_spawn: p.append('require_spawn = &%s' % q(require_spawn))
+        if not once: p.append('once = false')
+        return self.add("Triggers", name, "Area2D", p, name)
     def mapmarker(self, x, y, label, resolved_when, kind=0, shown_when=""):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("marker"),
              'kind = %d' % kind, 'label = %s' % q(label), 'resolved_when = %s' % q(resolved_when)]

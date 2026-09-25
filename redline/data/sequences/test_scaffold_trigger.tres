@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="3_wait"]
+
+[sub_resource type="Resource" id="Resource_wait"]
+script = ExtResource("3_wait")
+seconds = 0.5
+label = "beat"
+
+[resource]
+script = ExtResource("1_seq")
+id = "test_scaffold_trigger"
+room = "res://tests/fixtures/scaffold_m8_sequence.tscn"
+preview_entry = &"start"
+steps = Array[ExtResource("2_step")]([SubResource("Resource_wait")])
+theatre_only = true
