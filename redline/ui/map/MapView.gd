@@ -106,6 +106,9 @@ func hover_text() -> String:
 	for a: Dictionary in info["anchors"]:
 		if _cell_seen(r, a["pos"]) and (r.offset + a["pos"]).distance_to(cursor) < best:
 			text += "   ·   Anchor%s" % ("  (transit)" if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]) else "")
+	for m: Dictionary in info["markers"]:
+		if int(m["kind"]) == MapMarker.Kind.NOTE and WorldMapIndex.marker_active(m) and (r.offset + m["pos"]).distance_to(cursor) < best:
+			text += "   ·   " + String(m["label"])
 	return text
 
 
@@ -216,7 +219,16 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			draw_rect(Rect2(p - Vector2(3, 4), Vector2(6, 8)), COL_GATE, false, 1.0)
 			draw_line(p + Vector2(-3, 0), p + Vector2(3, 0), COL_GATE)
 	for m: Dictionary in info["markers"]:
-		if _cell_seen(r, m["pos"]) and not Game.check_condition(m["resolved_when"]):
+		if not WorldMapIndex.marker_active(m):
+			continue
+		if int(m["kind"]) == MapMarker.Kind.NOTE:
+			# Rumours: shown once the room's outline is known (someone told
+			# Rook), in the quest-note look.
+			if _known(r):
+				var p := to_screen(r.offset + m["pos"])
+				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), COL_NOTE)
+				draw_string(font, p + Vector2(5, 3), m["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_NOTE)
+		elif _cell_seen(r, m["pos"]):
 			var p := to_screen(r.offset + m["pos"])
 			draw_circle(p, 4.0, COL_GATE)
 			draw_string(font, p + Vector2(-2, 3), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, COL_BG)

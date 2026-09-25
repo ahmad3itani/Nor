@@ -96,3 +96,10 @@ func test_producers_multimap() -> void:
 	check(v.consumed.get("proto_needed") == "first.tres", "consumed keeps the first consumer's file name")
 	check(v.consumers.get("proto_needed") == ["res://data/test/first.tres", "res://data/other/second.tres"],
 		"consumers must list every full path in order: %s" % v.consumers)
+
+
+## M8: a NOTE map marker never points at a secret (bible §20).
+func test_note_marker_secret_guard() -> void:
+	var v := ContentValidator.new().check_room("res://tests/fixtures/scaffold_m8_note_bad.tscn", false)
+	check(v.errors.size() == 1 and v.errors[0].begins_with("room scaffold_m8_note_bad: MapMarker1: NOTE 'Something here' is within 96 px"),
+		"expected exactly one NOTE-near-secret error: %s" % v.errors)

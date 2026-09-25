@@ -45,7 +45,8 @@ static func room_info(room_path: String) -> Dictionary:
 			info["bosses"].append({"flag": a.defeated_flag(), "title": a.boss_title, "pos": p + a.size * 0.5})
 		elif n is MapMarker:
 			var m := n as MapMarker
-			info["markers"].append({"kind": m.kind, "label": m.label, "resolved_when": m.resolved_when, "pos": p})
+			info["markers"].append({"kind": m.kind, "label": m.label, "resolved_when": m.resolved_when,
+				"shown_when": m.shown_when, "pos": p})
 		elif n is SpawnMarker:
 			info["spawns"][String((n as SpawnMarker).spawn_id)] = p
 	inst.free()
@@ -57,6 +58,15 @@ static func room_info(room_path: String) -> Dictionary:
 ## map draws: an NPC whose present_when fails has no pin and no hover text.
 static func npc_present(n: Dictionary) -> bool:
 	return NPC.conditions_pass(n.get("present_when", PackedStringArray()))
+
+
+## Whether a scanned marker shows now. Gates and landmarks show until
+## resolved; a NOTE shows once shown_when holds and until resolved_when does.
+static func marker_active(m: Dictionary) -> bool:
+	var resolved: String = m.get("resolved_when", "")
+	if int(m.get("kind", MapMarker.Kind.ABILITY_GATE)) == MapMarker.Kind.NOTE:
+		return Game.check_condition(m.get("shown_when", "")) and (resolved == "" or not Game.check_condition(resolved))
+	return not Game.check_condition(resolved)
 
 
 static func local_pos(n: Node, root: Node) -> Vector2:

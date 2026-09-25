@@ -133,6 +133,24 @@ func test_hub_music_layers_data() -> void:
 	check(bad.content_check().size() == 2, "a bad condition and a bad stem are both reported")
 
 
+func test_note_marker_active_rules() -> void:
+	var note := {"kind": MapMarker.Kind.NOTE, "shown_when": "flag:t_note_shown", "resolved_when": "flag:t_note_done"}
+	check(not WorldMapIndex.marker_active(note), "NOTE hidden before shown_when")
+	Game.set_flag("t_note_shown")
+	check(WorldMapIndex.marker_active(note), "NOTE shown once shown_when holds")
+	Game.set_flag("t_note_done")
+	check(not WorldMapIndex.marker_active(note), "NOTE gone once resolved")
+	var open_note := {"kind": MapMarker.Kind.NOTE, "shown_when": "", "resolved_when": ""}
+	check(WorldMapIndex.marker_active(open_note), "NOTE with no conditions always shows")
+	var gate := {"kind": MapMarker.Kind.ABILITY_GATE, "shown_when": "", "resolved_when": "ability:dash"}
+	check(WorldMapIndex.marker_active(gate), "gate shows while unresolved")
+	Game.set_ability(&"dash", true)
+	check(not WorldMapIndex.marker_active(gate), "gate resolves as before")
+	var markers: Array = WorldMapIndex.room_info("res://world/rooms/lowlight/FloodedAlley.tscn")["markers"]
+	check(markers.size() == 1 and markers[0].has("shown_when") and int(markers[0]["kind"]) == MapMarker.Kind.ABILITY_GATE,
+		"scanned markers carry kind and shown_when: %s" % [markers])
+
+
 func test_new_sfx_ids_exist() -> void:
 	for id in [&"radio_static", &"memory_open", &"memory_beat", &"memory_tear", &"memory_detail"]:
 		check(AudioManager.has_sfx(id), "missing sfx %s" % id)
