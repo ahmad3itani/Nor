@@ -10,6 +10,13 @@ extends Camera2D
 ##   view doesn't swing back each time the player lets go of the stick.
 ## - Impulses (landing, hits) run through a damped spring; shake is trauma^2
 ##   noise, scaled by Settings.screen_shake_scale (0 = off).
+## - Directed (M8 sequences): direct()/direct_node() take the view away from
+##   the follow logic and ease it to a framing (zoom 1.0..1.5, the "rare
+##   dramatic zoom" of §26); release() blends back to the follow target.
+##   Impulses and shake still apply while directed.
+
+const MIN_ZOOM := 1.0
+const MAX_ZOOM := 1.5
 
 @export var config: CameraConfig
 
@@ -23,6 +30,17 @@ var _impulse_vel: Vector2
 var _trauma: float = 0.0
 var _noise := FastNoiseLite.new()
 var _time: float = 0.0
+
+# Director state. _dir_mode: 0 = follow, 1 = directed, 2 = releasing.
+var _dir_mode: int = 0
+var _dir_from: Vector2
+var _dir_point: Vector2
+var _dir_node: Node2D = null
+var _dir_elapsed: float = 0.0
+var _dir_seconds: float = 0.0
+var _zoom_from: float = 1.0
+var _zoom_to: float = 1.0
+var _dir_ease: Tween.EaseType = Tween.EASE_IN_OUT
 
 
 func _ready() -> void:
@@ -61,6 +79,53 @@ func snap_to_target() -> void:
 	reset_physics_interpolation()
 
 
+## Takes the view to `point` (world coordinates) over `seconds`.
+func direct(point: Vector2, seconds: float, new_zoom := 1.0, ease_type := Tween.EASE_IN_OUT) -> void:
+	_begin_direct(seconds, new_zoom, ease_type)
+	_dir_node = null
+	_dir_point = point
+
+
+## Same, but keeps framing `node` while it moves.
+func direct_node(node: Node2D, seconds: float, new_zoom := 1.0) -> void:
+	_begin_direct(seconds, new_zoom, Tween.EASE_IN_OUT)
+	_dir_node = node
+	_dir_point = node.global_position if is_instance_valid(node) else global_position
+
+
+## Blends back to the follow target over `seconds` (0 = at once; callers then
+## snap_to_target()).
+func release(seconds: float) -> void:
+	if _dir_mode == 0:
+		return
+	_dir_from = global_position
+	_zoom_from = zoom.x
+	_zoom_to = 1.0
+	_dir_elapsed = 0.0
+	_dir_seconds = maxf(seconds, 0.0)
+	_dir_node = null
+	_dir_ease = Tween.EASE_IN_OUT
+	if _dir_seconds <= 0.0:
+		_dir_mode = 0
+		zoom = Vector2.ONE
+	else:
+		_dir_mode = 2
+
+
+func is_directed() -> bool:
+	return _dir_mode != 0
+
+
+func _begin_direct(seconds: float, new_zoom: float, ease_type: Tween.EaseType) -> void:
+	_dir_mode = 1
+	_dir_from = global_position
+	_zoom_from = zoom.x
+	_zoom_to = clampf(new_zoom, MIN_ZOOM, MAX_ZOOM)
+	_dir_elapsed = 0.0
+	_dir_seconds = maxf(seconds, 0.0)
+	_dir_ease = ease_type
+
+
 func add_trauma(amount: float) -> void:
 	_trauma = clampf(_trauma + amount, 0.0, 1.0)
 
@@ -78,8 +143,11 @@ func _physics_process(delta: float) -> void:
 	_update_look_ahead(delta)
 
 	var desired := _clamp_to_bounds(_focus + _look_ahead)
-	global_position.x = lerpf(global_position.x, desired.x, 1.0 - exp(-config.follow_rate_x * delta))
-	global_position.y = lerpf(global_position.y, desired.y, 1.0 - exp(-config.follow_rate_y * delta))
+	if _dir_mode != 0:
+		_update_directed(delta, desired)
+	else:
+		global_position.x = lerpf(global_position.x, desired.x, 1.0 - exp(-config.follow_rate_x * delta))
+		global_position.y = lerpf(global_position.y, desired.y, 1.0 - exp(-config.follow_rate_y * delta))
 
 	# Damped spring returns impulses to rest.
 	_impulse_vel += (-config.impulse_stiffness * _impulse - config.impulse_damping * _impulse_vel) * delta
@@ -92,6 +160,25 @@ func _physics_process(delta: float) -> void:
 		var t := _time * config.shake_frequency
 		shake = Vector2(_noise.get_noise_2d(t, 0.0), _noise.get_noise_2d(0.0, t)) * config.shake_max_offset * amount
 	offset = _impulse + shake
+
+
+## Directed/releasing framing: one eased curve drives position and zoom. The
+## focus keeps tracking Rook underneath, so a release lands on today's follow.
+func _update_directed(delta: float, follow_goal: Vector2) -> void:
+	_dir_elapsed += delta
+	var t := 1.0 if _dir_seconds <= 0.0 else clampf(_dir_elapsed / _dir_seconds, 0.0, 1.0)
+	var k: float = Tween.interpolate_value(0.0, 1.0, t, 1.0, Tween.TRANS_SINE, _dir_ease)
+	var z := lerpf(_zoom_from, _zoom_to, k)
+	zoom = Vector2(z, z)
+	var goal := follow_goal
+	if _dir_mode == 1:
+		if is_instance_valid(_dir_node):
+			_dir_point = _dir_node.global_position
+		goal = _clamp_to_bounds(_dir_point)
+	global_position = _dir_from.lerp(goal, k)
+	if _dir_mode == 2 and t >= 1.0:
+		_dir_mode = 0
+		zoom = Vector2.ONE
 
 
 func _target_point() -> Vector2:
