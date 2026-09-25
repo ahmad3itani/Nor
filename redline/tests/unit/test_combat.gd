@@ -298,3 +298,41 @@ func test_point_blank_when_shooter_center_inside_enemy() -> void:
 	input.press_ranged()
 	await physics_frames(4)
 	check(e.health < e.data.max_health or e.last_hit != null, "shot from inside the enemy registered nothing")
+
+
+## Jump peak (px above the floor at y 0) with an air light pressed `light_at`
+## frames after the jump press (-1: none; 0: the same frame).
+func _jump_peak(light_at: int) -> float:
+	player.respawn(Vector2(0, -2))
+	await physics_frames(3)
+	input.press_jump()
+	var peak := 0.0
+	for f in 90:
+		if f == light_at:
+			input.press_light()
+		await physics_frames(1)
+		peak = minf(peak, player.global_position.y)
+		if f > 5 and player.is_on_floor():
+			break
+	input.release_jump()
+	return -peak
+
+
+## M7 D2b: an air light hangs (and slows the fall) only when it connects. A
+## whiffed air light, or a light pressed on the jump frame, leaves the jump
+## as it was: chained whiffs used to lift a floor jump ~30 px and carry a
+## jump over the Dash gates. A hit still takes one of the airtime's hangs.
+func test_air_hang_only_on_hit() -> void:
+	var plain := await _jump_peak(-1)
+	var whiff := await _jump_peak(14)
+	check(absf(whiff - plain) < 1.0, "a whiffed air light should not lift the jump (%.1f vs %.1f)" % [whiff, plain])
+	check(player.combat.air_hang_left == player.combat.config.air_hang_uses, "a whiff takes no hang")
+	var same_frame := await _jump_peak(0)
+	check(same_frame < plain + 1.0, "a light on the jump frame should not super-jump (%.1f vs %.1f)" % [same_frame, plain])
+	# A drone just above the rising blade: the hit hangs Rook.
+	var e := _enemy(DRONE, Vector2(14, -78))
+	await physics_frames(2)
+	var hp := e.health
+	var hit := await _jump_peak(14)
+	check(e.health < hp, "setup: the air light should hit the drone")
+	check(hit > plain + 4.0, "a connecting air light should hang Rook (%.1f vs %.1f)" % [hit, plain])

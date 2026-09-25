@@ -47,7 +47,12 @@ extends Resource
 ## If true, airborne attackers get their vertical speed set to air_velocity_y (air hang).
 @export var sets_air_velocity: bool = false
 @export var air_velocity_y: float = -40.0
+## Applies (with air_velocity_y) only once the swing takes an air hang.
 @export var air_gravity_scale: float = 0.5
+## True: the hang is taken when the swing first connects, so a whiffed air
+## swing falls like a jump (M7 D2b: whiffed hangs let jump + chained air
+## lights glide past the Dash gates). False: at the swing's start (dives).
+@export var air_velocity_on_hit: bool = true
 
 @export_group("Chaining")
 ## Enemy combos: when this attack's active window ends, wind up the follow-up

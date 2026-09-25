@@ -101,9 +101,13 @@ a.exit(1816, -96, 16, 96, "MarketRun", "from_alley")
 # A gap at one height cannot tell Dash from a late air dodge (the 220 px
 # original leaked, and so would 234): the shelf drops 64 px across 290 px
 # from a one-way take-off at -144, as in the Smuggler Route. A dash-jump from
-# the lip crosses the shelf top at x ~455; no dodge-jump + air dodge lands on
-# it, even taken off 20 px late (282 px still leaked at 16 px late). From the
-# -96 block under the take-off the same gap is only 16 px down.
+# the lip crosses the shelf top at x ~455; the dodge-jump + air-dodge sweep
+# finds no landing on it, even taken off 20 px late (282 px still leaked at
+# 16 px late). From the -96 block under the take-off the same gap is only
+# 16 px down. Air lights hang only when they connect (AttackData
+# .air_velocity_on_hit, M7 D2b review): whiffed hangs let a floor jump +
+# chained air lights reach this -80 top (peak ~-85) and a lip jump + lights
+# glide past it; test_alley_dash_air_light_negative_sweep sweeps both.
 a.oneway(40, -48, 50)
 a.block(90, -96, 70, 16)
 a.oneway(100, -144, 60)  # take-off, x 100..160 (jumped up through from the block)

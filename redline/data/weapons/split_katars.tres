@@ -165,6 +165,7 @@ lunge_speed = 0.0
 sets_air_velocity = true
 air_velocity_y = 220.0
 air_gravity_scale = 1.0
+air_velocity_on_hit = false
 swing_sfx = &"slash_heavy"
 hit_sfx = &"hit_heavy"
 

@@ -1044,6 +1044,7 @@ func test_smuggler_dash_shard_negative_sweep() -> void:
 ## (the whole coyote window): at 282 px a take-off 16 px late still landed on
 ## the shelf's lip, at 290 px none does. A dash-jump from the lip crosses the
 ## shelf's top at x ~455 (test_slice_routes::test_dash_shard_needs_dash).
+## Air lights: test_alley_dash_air_light_negative_sweep.
 func test_smuggler_alley_dash_negative_sweep() -> void:
 	var alley := LL + "FloodedAlley.tscn"
 	var shelf := Rect2(450, -80, 56, 16)
@@ -1329,3 +1330,95 @@ func _iko_pin(room_path: String) -> Dictionary:
 
 func test_full_lowlight_chain() -> void:
 	print("PENDING: D6")
+
+
+## The alley DashShelf's top edge (x..x+width at y), from the room.
+func _flooded_alley_shelf() -> Rect2:
+	var b := SceneRouter.current_room.find_child("DashShelf", true, false) as GrayboxBlock
+	check(b != null, "FloodedAlley should have a DashShelf")
+	return Rect2(b.position, b.size) if b != null else Rect2()
+
+
+## One no-Dash attempt at the alley shelf: from `start` (holding toward
+## `dir`), optionally dodge `dodge_at` px before `jump_x` and jump when the
+## centre crosses it (jump_x NAN: jump at once, from the floor); then an air
+## light on frame `d` after the jump press (0 = the same frame) and every `g`
+## frames after it until landing (every air light, not just the three
+## hangs); optionally an air dodge from airborne frame `air_dodge`. Returns
+## "" or what leaked: the shard collected, or a landing at shelf height.
+func _flooded_alley_chain(start: Vector2, dir: int, jump_x: float, dodge_at: float, d: int, g: int, air_dodge: int, shelf: Rect2) -> String:
+	var p := bot.player
+	var inp := bot.input
+	p.respawn(start, dir)
+	inp.move_x = 0
+	await physics_frames(3)
+	inp.move_x = dir
+	if not is_nan(jump_x):
+		var dodged := -1
+		for f in 120:
+			if dodge_at > 0.0 and dodged < 0 and (jump_x - p.global_position.x) * dir < dodge_at:
+				inp.press_dodge()
+				dodged = f
+			await physics_frames(1)
+			if (p.global_position.x - jump_x) * dir >= 0.0 and (dodged < 0 or f - dodged >= 4):
+				break
+	inp.press_jump()
+	var leak := ""
+	var had_shard := Game.is_collected("cs_alley_dash")  # an earlier leak's pickup is gone
+	for f in 360:
+		if f >= d and (f - d) % g == 0:
+			inp.press_light()
+		if air_dodge > 0 and f >= air_dodge and f < air_dodge + 12:
+			inp.press_dodge()
+		await physics_frames(1)
+		if not had_shard and Game.is_collected("cs_alley_dash"):
+			leak = "collected"
+		elif f > 3 and p.is_on_floor() and p.global_position.y < shelf.position.y + 2.0:
+			leak = "landed at %s" % p.global_position.round()
+		if leak != "" or (f > 3 and p.is_on_floor()):
+			break
+	inp.release_jump()
+	inp.move_x = 0
+	return leak
+
+
+## Dash-gate integrity against air lights (M7 D2b review). Air lights used
+## to hang on every swing (three per airtime), the 4th+ swing still floated,
+## and a light on the jump frame was a super jump: a floor jump + chained
+## lights peaked ~-85 and landed on this -80 shelf, and a lip jump + lights
+## (+ an air dodge) glided ~340 px. Hangs now come only from a connecting
+## swing (AttackData.air_velocity_on_hit). Without Dash, with the Pulse Blade
+## and the Split Katars (Mara sells them long before Krail): (1) from the
+## floor beside the shelf on both sides, holding toward it, jump and chain
+## light presses from every start delay 0..30 frames (0 = the jump frame) at
+## every gap 6..14 frames until landing; (2) from the take-off lip (a
+## dodge-jump at the lip and 12 px late), chain lights at delays 0..30 (every
+## 3rd) and gaps 6/10/14, with and without an air dodge. Nothing may collect
+## the shard or land at shelf height.
+func test_alley_dash_air_light_negative_sweep() -> void:
+	await _enter(LL + "FloodedAlley.tscn", &"from_relay")
+	check(not Game.abilities.dash, "the sweep runs without Dash")
+	var shelf := _flooded_alley_shelf()
+	var leaks := PackedStringArray()
+	var tries := 0
+	for w in ["pulse_blade", "split_katars"]:
+		bot.player.combat.set_loadout(Game.catalog.weapon(w), null)
+		for side in [[Vector2(shelf.position.x - 30.0, 0), 1], [Vector2(shelf.end.x + 30.0, 0), -1]]:
+			for d in range(0, 31):
+				for g in range(6, 15):
+					tries += 1
+					var leak := await _flooded_alley_chain(side[0], side[1], NAN, 0.0, d, g, 0, shelf)
+					if leak != "":
+						leaks.append("%s floor %s d%d g%d: %s" % [w, side[0], d, g, leak])
+		for take_off in [160.0, 172.0]:
+			for d in range(0, 31, 3):
+				for g in [6, 10, 14]:
+					for ad in [0, 30]:
+						tries += 1
+						var leak := await _flooded_alley_chain(Vector2(110, -144), 1, take_off, 22.0, d, g, ad, shelf)
+						if leak != "":
+							leaks.append("%s lip %d d%d g%d ad%d: %s" % [w, take_off, d, g, ad, leak])
+		if leaks.size() > 12:
+			break
+	check(tries > 1000 or not leaks.is_empty(), "only %d attempts swept" % tries)
+	check(leaks.is_empty(), "the Flooded Alley Dash shard leaks to air lights without Dash: %s" % ", ".join(leaks))

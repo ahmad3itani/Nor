@@ -152,8 +152,9 @@ func test_dash_shard_needs_dash() -> void:
 ## with the dash starting from x 110: a dash-jump lands the shard from a jump
 ## at x 154 through the whole coyote window (x 174 and later); x 152 and
 ## earlier fall short of the shelf. Early slack: ~11 px before the last
-## standing point. Lowering the shelf to widen it lets a floor jump + air
-## light reach the shelf without Dash, so the gate keeps -80.
+## standing point. A -64 shelf widened it, but a floor jump then peaks only
+## ~8 px under the top (and, while whiffed air lights still hung, reached
+## it), so the gate keeps -80: 24 px over a floor jump's 56 px peak.
 func test_dash_shard_takeoff_window() -> void:
 	for c in [154, 166, 174]:
 		Game.new_game()
