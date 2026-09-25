@@ -1116,16 +1116,164 @@ func test_smuggler_iko_intro_and_hide() -> void:
 	check(iko != null and not iko.is_present() and not iko.visible, "the den Iko should hide after the meeting")
 
 
+# --- D7b: the re-plumbed existing rooms (tools/roomgen/lowlight.py, D2b) ---
+const WARDEN_TOWER := "res://world/rooms/lowlight/WardenTower.tscn"
+const STACK := "res://world/rooms/lowlight/ApartmentStack.tscn"
+const RELAY := "res://world/rooms/lowlight/Relay.tscn"
+const WT_CLAMP_HINT := "Breakers live. Drop the clamp on him."
+
+
+## Krail's boss test in the real Warden Tower: a retry (intro_seen), Krail
+## held under the clamp, and Rook trips the west breaker the way a player
+## does, jump + air light from under the box (36..52, top -96). The clamp
+## warns 1.0 s, drops 0.15 s and staggers Krail for its 30; the teaching line
+## shows exactly once. Nothing drops before the breaker is struck.
 func test_warden_tower_clamp_in_room() -> void:
-	print("PENDING: D7b")
+	Game.set_flag("warden_krail_intro_seen")
+	await _enter(WARDEN_TOWER, &"from_bell")
+	var room := SceneRouter.current_room as Room
+	var c := room.find_child("Clamp_wt_clamp", true, false) as GridClamp
+	var k := room.find_child("WardenKrail*", true, false) as Enemy
+	var bw := room.find_child("Breaker_wt_grid_w", true, false) as Breaker
+	check(c != null and k != null and bw != null, "WardenTower needs Clamp_wt_clamp, Krail and Breaker_wt_grid_w")
+	if c == null or k == null or bw == null:
+		return
+	check(c.arm_hint == WT_CLAMP_HINT and c.circuits.size() == 1 and c.circuits[0] == &"wt_clamp", "the clamp's line and circuit")
+	var hints: Array = []
+	var drops: Array = []
+	var staggered_at: Array = []
+	var on_hint := func(text: String, _seconds: float) -> void:
+		if text == WT_CLAMP_HINT:
+			hints.append(Engine.get_physics_frames())
+	var on_drop := func(id: String, st: bool) -> void:
+		drops.append([id, st])
+	EventBus.hint_requested.connect(on_hint)
+	EventBus.clamp_dropped.connect(on_drop)
+	var p := bot.player
+	var input := bot.input
+	# Into the arena under the west box: the fight starts and arms the clamp.
+	p.teleport(Vector2(44, 0))
+	p.facing = 1
+	await physics_frames(3)
+	check(c.state == GridClamp.State.READY, "the fight start arms the clamp (%s)" % c.state_name())
+	var hp := k.health
+	# Krail is held under the clamp's footprint (x 176..240) until the slam.
+	var pin := func() -> void:
+		if is_instance_valid(k) and not k.is_dead():
+			k.global_position = Vector2(208, 0)
+			k.velocity = Vector2.ZERO
+			if k.ai == Enemy.AI.STAGGER and staggered_at.is_empty():
+				staggered_at.append(Engine.get_physics_frames())
+	pin.call()
+	await physics_frames(2)
+	check(drops.is_empty() and c.state == GridClamp.State.READY, "the clamp stays idle until a breaker is hit (%s)" % c.state_name())
+	input.press_jump()
+	for f in 40:
+		await physics_frames(1)
+		pin.call()
+		if p.global_position.y <= -40.0 and p.velocity.y < 0.0:
+			break
+	input.press_light()
+	var tripped_at := -1
+	for f in 40:
+		await physics_frames(1)
+		pin.call()
+		if tripped_at < 0 and bw.trips > 0:
+			tripped_at = Engine.get_physics_frames()
+	input.release_jump()
+	check(tripped_at >= 0, "jump + air light from x 44 should trip wt_grid_w (feet near %.0f)" % p.global_position.y)
+	if tripped_at < 0:
+		EventBus.hint_requested.disconnect(on_hint)
+		EventBus.clamp_dropped.disconnect(on_drop)
+		return
+	var window := int(ceil((c.timing.warn + c.timing.drop + 0.1) * 60.0))
+	while Engine.get_physics_frames() - tripped_at < window and staggered_at.is_empty():
+		await physics_frames(1)
+		pin.call()
+	check(not staggered_at.is_empty(), "Krail should be staggered within %d frames of the trip (ai %s)" % [window, Enemy.AI.keys()[k.ai]])
+	check_near(hp - k.health, 30.0, 0.01, "Krail takes the clamp's 30")
+	check(drops == [["wt_clamp", true]], "clamp_dropped(wt_clamp, staggered): %s" % str(drops))
+	# The line fired once (Krail stood under it after hint_min) and never again.
+	await physics_frames(int(c.timing.hint_delay * 60.0))
+	check(hints.size() == 1, "the teaching line shows exactly once: %s" % str(hints))
+	check(Game.has_flag("hint_wt_clamp"), "the line's hint flag is set")
+	EventBus.hint_requested.disconnect(on_hint)
+	EventBus.clamp_dropped.disconnect(on_drop)
 
 
+## The Stack's ground-floor hatch is bolted from the tunnel side: without
+## shortcut_smuggler_route the HatchGate is shut and even standing in the
+## exit does nothing; with it, the door works both ways.
 func test_stack_hatch_both_ways() -> void:
-	print("PENDING: D7b")
+	await _enter(STACK, &"from_market")
+	var room := SceneRouter.current_room as Room
+	var gate := room.find_child("HatchGate", true, false) as Gate
+	check(gate != null and gate.closed, "the HatchGate should be shut without the flag")
+	_assert_exit(1, LL + "SmugglerRoute.tscn", &"from_stack", "shortcut_smuggler_route")
+	var p := bot.player
+	p.teleport(Vector2(580, 0))
+	await physics_frames(3)
+	await bot.run([["exit", 1]])
+	check(SceneRouter.current_room == room, "the bolted hatch must not open (in %s)" % SceneRouter.current_room.name)
+	check(p.global_position.x < 608.0, "the HatchGate blocks Rook (x %.0f)" % p.global_position.x)
+	# Standing inside the exit rect itself (past the gate) still does nothing.
+	p.teleport(Vector2(632, 0))
+	await physics_frames(20)
+	check(SceneRouter.current_room == room, "the hatch exit needs shortcut_smuggler_route")
+	# Unbolted (the den lever): Stack -> Smuggler Route -> Stack.
+	Game.set_flag("shortcut_smuggler_route")
+	await _enter(STACK, &"from_smuggler")
+	gate = SceneRouter.current_room.find_child("HatchGate", true, false) as Gate
+	check(gate != null and not gate.closed, "the HatchGate opens with the flag")
+	if not await _run([["exit", 1]]):
+		return
+	check(SceneRouter.current_room.name == "SmugglerRoute", "the hatch leads to the Smuggler Route (in %s)" % SceneRouter.current_room.name)
+	check(bot.player.global_position.distance_to(Vector2(20, 0)) < 24.0, "arrives at from_stack (at %s)" % bot.player.global_position)
+	await physics_frames(10)
+	if not await _run([["exit", -1]]):
+		return
+	check(SceneRouter.current_room.name == "ApartmentStack", "and back to the Stack (in %s)" % SceneRouter.current_room.name)
+	check(bot.player.global_position.distance_to(Vector2(580, 0)) < 24.0, "arrives at from_smuggler (at %s)" % bot.player.global_position)
 
 
+## Iko moves to the Relay after the den meeting (present_when flag:met_iko):
+## before it she is hidden, silent and off the map; after it she is there,
+## opens shop_iko, and the den Iko is gone from the room and the map.
 func test_relay_iko_presence() -> void:
-	print("PENDING: D7b")
+	await _enter(RELAY, &"start")
+	var iko := SceneRouter.current_room.find_child("NPC_iko", true, false) as NPC
+	check(iko != null, "the Relay should place Iko")
+	if iko == null:
+		return
+	check(not iko.is_present() and not iko.visible and not iko.can_interact(bot.player), "no Relay Iko before met_iko")
+	check(not WorldMapIndex.npc_present(_iko_pin(RELAY)), "no Relay Iko map pin before met_iko")
+	var menus: Array = []
+	var on_menu := func(id: StringName) -> void:
+		menus.append(id)
+	EventBus.menu_requested.connect(on_menu)
+	await _run([["run", 760], ["interact"]])
+	check(not dialogue_box.is_open() and menus.is_empty(), "nothing to talk to at x 760 before met_iko")
+	Game.set_flag("met_iko")
+	await physics_frames(2)
+	check(iko.is_present() and iko.visible, "Iko is at the Relay after met_iko")
+	check(WorldMapIndex.npc_present(_iko_pin(RELAY)), "the Relay Iko has a map pin after met_iko")
+	if await _run([["interact"]]):
+		await _close_dialogue()
+	EventBus.menu_requested.disconnect(on_menu)
+	check(menus.has(&"shop_iko"), "talking to the Relay Iko opens shop_iko (menus %s)" % str(menus))
+	check(not WorldMapIndex.npc_present(_iko_pin(SR)), "the den Iko has no map pin after met_iko")
+	await _enter(SR, &"from_stack")
+	var den := SceneRouter.current_room.find_child("NPC_iko", true, false) as NPC
+	check(den != null and not den.is_present() and not den.visible, "the den Iko is hidden after met_iko")
+
+
+## The map index entry of Iko in a room ({} if the room has none).
+func _iko_pin(room_path: String) -> Dictionary:
+	for n: Dictionary in WorldMapIndex.room_info(room_path)["npcs"]:
+		if n["id"] == "iko":
+			return n
+	check(false, "%s has no Iko in the map index" % room_path.get_file())
+	return {}
 
 
 func test_full_lowlight_chain() -> void:
