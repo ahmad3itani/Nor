@@ -35,6 +35,20 @@ func interact(player: Player) -> void:
 	AudioManager.play_sfx(&"anchor")
 	HitSpark.spawn(get_parent(), global_position + Vector2(0, -20), Vector2.UP, CORE_COLOR, 18, 120.0)
 	EventBus.anchor_rested.emit(self)
+	# M8 (D-112): recovered memories surface here, where the world is already
+	# safe, then the loadout opens as before. Never on pickup, never in danger.
+	var ids := MemoryLibrary.pending_for_rest()
+	if ids.is_empty() or not Settings.memories_at_anchors or not is_instance_valid(MemoryScenePlayer.active_instance):
+		EventBus.menu_requested.emit(&"loadout")
+		return
+	# Connected before the request: INSTANT playback finishes inside the emit.
+	EventBus.memory_playback_finished.connect(_after_memories, CONNECT_ONE_SHOT)
+	EventBus.memory_playback_requested.emit(ids, &"anchor")
+
+
+func _after_memories(_source: StringName) -> void:
+	if not MemoryLibrary.pending().is_empty():
+		EventBus.hint_requested.emit(MemoryLibrary.config().more_waiting_hint, 3.0)
 	EventBus.menu_requested.emit(&"loadout")
 
 
