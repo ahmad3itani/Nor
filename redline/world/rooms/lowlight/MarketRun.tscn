@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -327,3 +328,59 @@ script = ExtResource("neon")
 size = Vector2(30, 8)
 color = Color(0.91, 0.16, 0.24, 1)
 strokes = 3
+
+[node name="StallRadios" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:dead_air_complete"
+
+[node name="Decor11" type="Node2D" parent="Props/StallRadios"]
+position = Vector2(360, -22)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(10, 8)
+color = Color(0.25, 0.2, 0.2, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor12" type="Node2D" parent="Props/StallRadios"]
+position = Vector2(620, -22)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(10, 8)
+color = Color(0.25, 0.2, 0.2, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="Decor13" type="Node2D" parent="Props/StallRadios"]
+position = Vector2(880, -22)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(10, 8)
+color = Color(0.25, 0.2, 0.2, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="MarketLate" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:warden_krail_defeated"
+
+[node name="Decor14" type="Node2D" parent="Props/MarketLate"]
+position = Vector2(300, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 56)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor15" type="Node2D" parent="Props/MarketLate"]
+position = Vector2(700, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 56)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor16" type="Node2D" parent="Props/MarketLate"]
+position = Vector2(1880, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 56)
+color = Color(0.2, 0.2, 0.26, 1)
+accent = Color(1, 0.81, 0.35, 1)

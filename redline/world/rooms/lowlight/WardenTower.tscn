@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://data/level/clamp_krail.tres" id="level_clamp_krail"]
 [ext_resource type="Resource" path="res://data/combat/grid_clamp_attack.tres" id="clamp_attack"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="PackedScene" path="res://bosses/WardenKrail.tscn" id="scene_WardenKrail"]
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/DashModule.tscn" id="scene_DashModule"]
@@ -167,7 +168,11 @@ color = Color(0.91, 0.16, 0.24, 1)
 strokes = 6
 flicker = false
 
-[node name="Decor4" type="Node2D" parent="Props"]
+[node name="KrailBannersUp" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "!flag:warden_krail_defeated"
+
+[node name="Decor4" type="Node2D" parent="Props/KrailBannersUp"]
 position = Vector2(90, -150)
 script = ExtResource("decor")
 kind = 9
@@ -175,7 +180,7 @@ size = Vector2(28, 60)
 color = Color(0.3, 0.08, 0.12, 1)
 accent = Color(1, 0.8, 0.7, 1)
 
-[node name="Decor5" type="Node2D" parent="Props"]
+[node name="Decor5" type="Node2D" parent="Props/KrailBannersUp"]
 position = Vector2(330, -150)
 script = ExtResource("decor")
 kind = 9
@@ -211,3 +216,23 @@ boss_path = NodePath("../../Enemies/WardenKrail1")
 gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]
 reward_scene = ExtResource("scene_DashModule")
 intro_sequence = ExtResource("seq_intro")
+
+[node name="KrailBannersDown" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:warden_krail_defeated"
+
+[node name="Decor8" type="Node2D" parent="Props/KrailBannersDown"]
+position = Vector2(90, 0)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(30, 5)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="Decor9" type="Node2D" parent="Props/KrailBannersDown"]
+position = Vector2(330, 0)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(30, 5)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)

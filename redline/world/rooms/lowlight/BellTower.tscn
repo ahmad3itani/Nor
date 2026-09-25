@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://interactables/FlagSwitch.gd" id="lever"]
 [ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
@@ -366,7 +367,11 @@ size = Vector2(28, 8)
 color = Color(1, 0.81, 0.35, 1)
 strokes = 3
 
-[node name="Decor1" type="Node2D" parent="Props"]
+[node name="WardenBannerUp" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "!flag:warden_krail_defeated"
+
+[node name="Decor1" type="Node2D" parent="Props/WardenBannerUp"]
 position = Vector2(200, -1060)
 script = ExtResource("decor")
 kind = 9
@@ -404,4 +409,36 @@ script = ExtResource("decor")
 kind = 7
 size = Vector2(560, 12)
 color = Color(0.22, 0.22, 0.28, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="WardenBannerDown" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:warden_krail_defeated"
+
+[node name="Decor6" type="Node2D" parent="Props/WardenBannerDown"]
+position = Vector2(200, -1090)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(24, 16)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="Decor7" type="Node2D" parent="Props/WardenBannerDown"]
+position = Vector2(260, -960)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(40, 6)
+color = Color(0.3, 0.08, 0.12, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="CargoLeft" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:warden_krail_defeated"
+
+[node name="Decor8" type="Node2D" parent="Props/CargoLeft"]
+position = Vector2(300, -960)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(30, 26)
+color = Color(0.3, 0.22, 0.16, 1)
 accent = Color(1, 0.81, 0.35, 1)

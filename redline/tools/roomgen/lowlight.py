@@ -219,6 +219,21 @@ a.decor("ac", 1330, -148, 18, 10, "0.26, 0.26, 0.32, 1")
 a.decor("cables", 1000, -220, 600, 40, "0.18, 0.18, 0.24, 1")
 a.neon(620, -190, 22, 8, CYAN)
 a.neon(1000, -120, 26, 8, AMBER)
+# --- M8 world state (visual only; appended, so no numbered name shifts) ---
+# Iko's people chalk a violet eye by the Relay door once she has met Rook:
+# the Relay is under the smugglers' protection. On WallLeftUpper's face, 34 px
+# over the door opening. No MapMarker here (the alley keeps exactly one).
+s = a.switch("RelayMarked", "flag:met_iko")
+a.neon(40, -130, 12, 8, VIOLET, 2, False, parent=s)
+# Orr's on-air choice after the Act I close (arc_orr on_air): named, the
+# street gets wanted posters (no name on them, D-109); ghost, only tags.
+# Clear of the lamps (1080/1600), the crates (1500) and the chalk eye.
+s = a.switch("WantedPosters", "flag:orr_air_named")
+for x in [1120, 1680]:
+    a.decor("banner", x, -30, 18, 26, "0.3, 0.28, 0.22, 1", "1, 0.81, 0.35, 1", parent=s)
+s = a.switch("GhostTags", "flag:orr_air_ghost")
+for x in [1120, 1680]:
+    a.neon(x, -50, 14, 8, VIOLET, 2, True, parent=s)
 a.write(OUT + "FloodedAlley.tscn")
 
 # ---------------------------------------------------------------- Market Run
@@ -263,6 +278,17 @@ m.decor("ac", 1450, -144, 20, 12, "0.26, 0.26, 0.32, 1")
 m.decor("cables", 700, -200, 700, 40, "0.18, 0.18, 0.24, 1")
 for x, c in [(340, RED), (600, CYAN), (860, AMBER), (1480, GREEN), (2070, RED)]:
     m.neon(x, -80 if x < 1400 else -190, 30, 8, c)
+# --- M8 world state (visual only; appended) ---
+# The stalls tune in once Dead Air is done: a small radio on each crate
+# (crate tops -22), where the market bark plays.
+s = m.switch("StallRadios", "flag:dead_air_complete")
+for x in [360, 620, 880]:
+    m.decor("radio", x, -22, 10, 8, "0.25, 0.2, 0.2, 1", CYAN, parent=s)
+# With the Warden gone the market stays open late: three more lamps, clear of
+# the existing 150/450/1000/1700/2250.
+s = m.switch("MarketLate", "flag:warden_krail_defeated")
+for x in [300, 700, 1880]:
+    m.decor("lamp", x, -2, 6, 56, "0.2, 0.2, 0.26, 1", AMBER, parent=s)
 m.write(OUT + "MarketRun.tscn")
 
 # ---------------------------------------------------------------- Apartment Stack (vertical)
@@ -329,6 +355,12 @@ for y in [0, -384, -768]:
 s.decor("crates", 100, 0, 28, 24, "0.22, 0.2, 0.25, 1")
 s.decor("planter", 330, -576, 30, 16, "0.24, 0.2, 0.22, 1", "0.49, 0.8, 0.5, 1")
 s.decor("lamp", 520, -768, 6, 60, "0.2, 0.2, 0.26, 1", "1, 0.72, 0.4, 1")
+# --- M8 world state (visual only; appended) ---
+# Power is back: windows light on the stack's outer wall (WallRight, 624),
+# clear of the roofs door (-864..-768) and the hatch (-96..0).
+lit = s.switch("WindowsLit", "flag:lowlight_power_rerouted")
+for y in [-250, -440, -640]:
+    s.neon(612, y, 6, 10, AMBER, 1, False, parent=lit)
 s.write(OUT + "ApartmentStack.tscn")
 
 # ---------------------------------------------------------------- Neon Roofs
@@ -436,10 +468,23 @@ b.oneway(540, -1056, 84)
 b.flow(-48, -920, 672, 910)
 for y, c in [(-120, RED), (-360, AMBER), (-600, CYAN), (-840, RED), (-1110, AMBER)]:
     b.neon(320, y, 28, 8, c)
-b.decor("banner", 200, -1060, 24, 50, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1")
+# Krail's banner hangs until he falls (M8: wrapped in place so numbered
+# names keep their numbers; WardenBannerDown below holds what is left).
+up = b.switch("WardenBannerUp", "!flag:warden_krail_defeated")
+b.decor("banner", 200, -1060, 24, 50, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=up)
 b.decor("lamp", 250, -960, 6, 50, "0.2, 0.2, 0.26, 1", "1, 0.72, 0.4, 1")
 for y in [-240, -480, -720]:
     b.decor("pipes", 300, y - 120, 560, 12, "0.22, 0.22, 0.28, 1")
+# --- M8 world state (visual only; appended) ---
+# The banner comes down with the Warden: a torn stub and the cloth on floor 4,
+# clear of the Anchor (110) and the lever (40).
+down = b.switch("WardenBannerDown", "flag:warden_krail_defeated")
+b.decor("banner", 200, -1090, 24, 16, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=down)
+b.decor("banner", 260, -960, 40, 6, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=down)
+# The nightly crates were never loaded: they wait on floor 4 by the lift, in
+# the Relay / Collector Bay crate colours.
+s = b.switch("CargoLeft", "flag:warden_krail_defeated")
+b.decor("crates", 300, -960, 30, 26, "0.3, 0.22, 0.16, 1", "1, 0.81, 0.35, 1", parent=s)
 b.write(OUT + "BellTower.tscn")
 
 # ---------------------------------------------------------------- Warden Tower (boss)
@@ -477,8 +522,11 @@ w.clamp("wt_clamp", 176, -270, 64, -120, "clamp_krail", ["wt_clamp"], hint_id="w
         hint="Breakers live. Drop the clamp on him.")
 w.decor("pipes", 208, -2, 64, 2, AMBER)  # floor stripe under the footprint
 w.neon(208, -250, 60, 14, "0.91, 0.16, 0.24, 1", 6, False)
-w.decor("banner", 90, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1")
-w.decor("banner", 330, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1")
+# Krail's arena banners, cut down once he falls (M8: wrapped in place). The
+# red clamp neon above stays: it frames the clamp column.
+up = w.switch("KrailBannersUp", "!flag:warden_krail_defeated")
+w.decor("banner", 90, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=up)
+w.decor("banner", 330, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=up)
 # No centre pillar: the clamp column (176..240) is there, and decor draws
 # over geometry, so a pillar would hide the slab and its countdown lamps.
 for x in [0, 416]:
@@ -490,6 +538,10 @@ w.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(40, -250)', 'scrip
       'reward_scene = %s' % w._res("scene_DashModule", "PackedScene", "res://interactables/DashModule.tscn"),
       # M8: the scripted intro (first attempt locks; retries are an overlay).
       'intro_sequence = %s' % w._res("seq_intro", "Resource", "res://data/sequences/ll_krail_intro.tres")])
+# --- M8 world state (visual only; appended): the cut banners lie as rags ---
+down = w.switch("KrailBannersDown", "flag:warden_krail_defeated")
+for x in [90, 330]:
+    w.decor("banner", x, 0, 30, 5, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1", parent=down)
 w.write(OUT + "WardenTower.tscn")
 
 finish()

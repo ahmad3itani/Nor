@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/lore/mf_lowlight_01.tres" id="frag_mf_lowlight_01"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -309,3 +310,53 @@ script = ExtResource("neon")
 size = Vector2(26, 8)
 color = Color(1, 0.81, 0.35, 1)
 strokes = 3
+
+[node name="RelayMarked" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:met_iko"
+
+[node name="Neon4" type="Node2D" parent="Props/RelayMarked"]
+position = Vector2(40, -130)
+script = ExtResource("neon")
+size = Vector2(12, 8)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 2
+flicker = false
+
+[node name="WantedPosters" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:orr_air_named"
+
+[node name="Decor10" type="Node2D" parent="Props/WantedPosters"]
+position = Vector2(1120, -30)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(18, 26)
+color = Color(0.3, 0.28, 0.22, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor11" type="Node2D" parent="Props/WantedPosters"]
+position = Vector2(1680, -30)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(18, 26)
+color = Color(0.3, 0.28, 0.22, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="GhostTags" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:orr_air_ghost"
+
+[node name="Neon5" type="Node2D" parent="Props/GhostTags"]
+position = Vector2(1120, -50)
+script = ExtResource("neon")
+size = Vector2(14, 8)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 2
+
+[node name="Neon6" type="Node2D" parent="Props/GhostTags"]
+position = Vector2(1680, -50)
+script = ExtResource("neon")
+size = Vector2(14, 8)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 2

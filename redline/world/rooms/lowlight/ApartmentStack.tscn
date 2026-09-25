@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/lore/mf_lowlight_02.tres" id="frag_mf_lowlight_02"]
 [ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -400,3 +401,31 @@ kind = 1
 size = Vector2(6, 60)
 color = Color(0.2, 0.2, 0.26, 1)
 accent = Color(1, 0.72, 0.4, 1)
+
+[node name="WindowsLit" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:lowlight_power_rerouted"
+
+[node name="Neon7" type="Node2D" parent="Props/WindowsLit"]
+position = Vector2(612, -250)
+script = ExtResource("neon")
+size = Vector2(6, 10)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 1
+flicker = false
+
+[node name="Neon8" type="Node2D" parent="Props/WindowsLit"]
+position = Vector2(612, -440)
+script = ExtResource("neon")
+size = Vector2(6, 10)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 1
+flicker = false
+
+[node name="Neon9" type="Node2D" parent="Props/WindowsLit"]
+position = Vector2(612, -640)
+script = ExtResource("neon")
+size = Vector2(6, 10)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 1
+flicker = false
