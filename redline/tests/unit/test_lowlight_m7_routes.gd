@@ -161,6 +161,18 @@ const POWER_BLOCK := "res://world/rooms/lowlight/PowerBlock.tscn"
 const POWER_BLOCK_LATCHES := ["pb_s1_latched", "pb_s2_latched", "pb_s3_latched", "pb_s4a_latched", "pb_s4b_latched"]
 
 
+# Shafts B and D: the top step sits 32 px under the floor's lip, too low for
+# Rook to walk east under it, so the bot takes the zigzag steps west first.
+const POWER_BLOCK_ROUTE := [
+	["run", 680], ["attack", 1], ["run", 990], ["wait", 30],                   # L0: B1, S1, down shaft A
+	["run", 440], ["attack", 1], ["run", -20], ["wait", 20],                   # L1: B2, the clock through S2, down shaft B
+	["runjump", 396, 520], ["run", 700], ["shoot", 1, "up"], ["run", 990],     # L2: trench, high B3, S3, down shaft C
+	["run", 800], ["attack", 1], ["run", 594], ["slide", 500],                 # L3: B4, S4a, the duct slot
+	["run", 402], ["slide", 330], ["run", -20], ["wait", 20],                  # S4b low, down shaft D
+	["run", 880], ["interact"], ["run", 960],                                  # L4: reroute, StationGate
+]
+
+
 func _power_block_node(node_name: String) -> Node:
 	return SceneRouter.current_room.find_child(node_name, true, false)
 
@@ -174,16 +186,7 @@ func test_power_block_route() -> void:
 	var passes: Array = []
 	var on_pass := func(id: String, margin: float) -> void: passes.append([id, margin, player.is_low])
 	EventBus.shutter_passed.connect(on_pass)
-	# Shafts B and D: the top step sits 32 px under the floor's lip, too low for
-	# Rook to walk east under it, so the bot takes the zigzag steps west first.
-	var ok := await _run([
-		["run", 680], ["attack", 1], ["run", 990], ["wait", 30],                   # L0: B1, S1, down shaft A
-		["run", 440], ["attack", 1], ["run", -20], ["wait", 20],                   # L1: B2, the clock through S2, down shaft B
-		["runjump", 396, 520], ["run", 700], ["shoot", 1, "up"], ["run", 990],     # L2: trench, high B3, S3, down shaft C
-		["run", 800], ["attack", 1], ["run", 594], ["slide", 500],                 # L3: B4, S4a, the duct slot
-		["run", 402], ["slide", 330], ["run", -20], ["wait", 20],                  # S4b low, down shaft D
-		["run", 880], ["interact"], ["run", 960],                                  # L4: reroute, StationGate
-	])
+	var ok := await _run(POWER_BLOCK_ROUTE)
 	EventBus.shutter_passed.disconnect(on_pass)
 	if not ok:
 		return
@@ -1332,8 +1335,59 @@ func _iko_pin(room_path: String) -> Dictionary:
 	return {}
 
 
+# --- D6: the full Lowlight chain --------------------------------------------------------
+## The slice rooms' own routes (test_slice_routes.gd constants).
+const SLICE_ROUTES := preload("res://tests/unit/test_slice_routes.gd")
+## From the Relay balcony (from_undercity): off its east edge, down the two
+## one-way steps to the floor and out of the east door.
+const RELAY_FROM_UNDERCITY := [["run", 980], ["exit", 1]]
+
+
+## Bible §42/§36: the campaign continues from where the full Undercity walk
+## (test_undercity_routes::test_full_undercity_walk) leaves Rook, on the
+## Relay balcony with only the Pulse Blade and the Service Pistol and no Dash,
+## and walks the Lowlight main path to Warden Krail's door with the rooms' own
+## RouteBot steps, carrying the state: the Relay, the Flooded Alley, the
+## Market Run, the Apartment Stack, the Neon Roofs, then the M7 legs Power
+## Block (breakers, shutters, the reroute), Security Station (the scanners,
+## the roof breaker), the Rainline Chase (the Sweeper live) and the Bell
+## Tower up to the Warden Tower. Geometry-only like the room routes: enemies
+## pacified, Core drain off. Nothing on it may need Dash (Krail's drop).
 func test_full_lowlight_chain() -> void:
-	print("PENDING: D6")
+	_campaign(true, true, true)
+	for f in ["uc_ward_shutter", "collector_drone_defeated", "met_orr_radio"]:
+		Game.set_flag(f)
+	await _enter(RELAY, &"from_undercity")
+	var legs := [
+		["Relay", RELAY_FROM_UNDERCITY, "FloodedAlley"],
+		["FloodedAlley", SLICE_ROUTES.ALLEY_ROUTE, "MarketRun"],
+		["MarketRun", SLICE_ROUTES.MARKET_ROUTE, "ApartmentStack"],
+		["ApartmentStack", SLICE_ROUTES.STACK_ROUTE, "NeonRoofs"],
+		["NeonRoofs", SLICE_ROUTES.ROOFS_ROUTE, "PowerBlock"],
+		["PowerBlock", POWER_BLOCK_ROUTE + [["exit", 1]], "SecurityStation"],
+		["SecurityStation", SECURITY_ROUTE + SECURITY_ROOF + [["exit", 1]], "RainlineChase"],
+		["RainlineChase", _rainline_east_steps() + [["exit", 1]], "BellTower"],
+		["BellTower", SLICE_ROUTES.BELL_ROUTE, "WardenTower"],
+	]
+	for leg: Array in legs:
+		var room := SceneRouter.current_room as Room
+		check(room != null and room.name == leg[0], "the chain should be in %s, not %s" % [leg[0], room.name if room else "nothing"])
+		var have := Array(Game.state.owned_weapons)
+		have.sort()
+		check(have == ["pulse_blade", "service_pistol"], "%s: the campaign kit is the blade and the pistol, owns %s" % [leg[0], str(have)])
+		check(not Game.abilities.dash, "%s: the main path must never have Dash" % leg[0])
+		if not await _run(leg[1]):
+			return
+		check(SceneRouter.current_room != null and SceneRouter.current_room.name == leg[2], "%s should lead to %s, not %s" % [leg[0], leg[2], SceneRouter.current_room.name if SceneRouter.current_room else "nothing"])
+		if SceneRouter.current_room == null or SceneRouter.current_room.name != leg[2]:
+			return
+		_pacify()
+		await physics_frames(10)
+	for f in ["repeater_market", "repeater_stack", "repeater_bell", "lowlight_power_rerouted", "chase_rainline_done", "shortcut_bell_lift"]:
+		check(Game.has_flag(f), "the chain should leave %s set" % f)
+	check(not Game.has_flag("warden_krail_defeated"), "Krail is still waiting at the end of the chain")
+	var bosses := SceneRouter.current_room.find_children("*", "BossArena", true, false)
+	check(bosses.size() == 1, "the Warden Tower should hold Krail's arena")
 
 
 ## The alley DashShelf's top edge (x..x+width at y), from the room.

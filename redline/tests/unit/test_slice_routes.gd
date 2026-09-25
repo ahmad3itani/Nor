@@ -50,8 +50,45 @@ func _run_room(room_file: String, entry: StringName, steps: Array, next_room: St
 		check((SceneRouter.current_room as Room).name == next_room, "%s: ended in %s, expected %s" % [room_file, SceneRouter.current_room.name, next_room])
 
 
+# Room routes as constants: D6's full Lowlight chain (test_lowlight_m7_routes)
+# replays them back to back in the campaign state.
+const RELAY_TO_ALLEY := [["run", 980], ["exit", 1]]
+const ALLEY_ROUTE := [
+	["run", 440], ["slide", 720], ["run", 1282], ["attack", 3], ["run", 1368], ["run", 1230],
+	["jump", 1250], ["jump", 1275], ["jump", 1340], ["run", 1440], ["run", 1780], ["exit", 1],
+]
+const MARKET_ROUTE := [
+	["run", 1040], ["runjump", 1096, 1240], ["run", 1320], ["jump", 1320], ["jump", 1370], ["jump", 1450],
+	["run", 1500], ["interact"], ["run", 1600], ["run", 1984], ["attack", 3], ["run", 2070], ["run", 1955],
+	["jump", 1955], ["jump", 2030], ["run", 2180], ["run", 2300], ["exit", 1],
+]
+const STACK_ROUTE := [
+	["run", 460], ["jump", 460], ["jump", 540], ["jump", 460], ["jump", 380],
+	["run", 30], ["interact"],
+	["run", 180], ["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262],
+	["run", 460], ["jump", 460], ["jump", 540], ["jump", 460], ["jump", 380],
+	["run", 74], ["attack", 3], ["run", -10], ["run", 180],
+	["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262], ["run", 600], ["exit", 1],
+]
+const ROOFS_ROUTE := [
+	["run", 370], ["runjump", 396, 520], ["slidejump", 762, 900], ["run", 1150], ["runjump", 1176, 1300],
+	["run", 1430], ["jump", 1430], ["jump", 1520], ["dodgejump", 1600, 1774], ["run", 1830],
+	["run", 1990], ["runjump", 1996, 2130], ["run", 2400], ["exit", 1],
+]
+const BELL_ROUTE := [
+	["run", 130], ["jump", 130], ["jump", 200], ["jump", 130], ["jump", 180], ["jump", 262],
+	["run", 530], ["jump", 530], ["jump", 460], ["jump", 530], ["jump", 450], ["jump", 370],
+	["run", 30], ["interact"],
+	["run", 130], ["jump", 130], ["jump", 200], ["jump", 130], ["jump", 180], ["jump", 262],
+	["run", 548], ["heavy", 2], ["run", 602], ["run", 530],
+	["jump", 530], ["jump", 460], ["jump", 530], ["jump", 450], ["jump", 370],
+	["run", 40], ["interact"], ["run", 392],
+	["jump", 490], ["jump", 580], ["exit", 1],
+]
+
+
 func test_relay_to_alley() -> void:
-	await _run_room("Relay.tscn", &"start", [["run", 980], ["exit", 1]], "FloodedAlley")
+	await _run_room("Relay.tscn", &"start", RELAY_TO_ALLEY, "FloodedAlley")
 
 
 ## The gallery door (M7): two 48 px one-way steps up to the balcony, then
@@ -66,42 +103,24 @@ func test_relay_to_undercity() -> void:
 
 
 func test_flooded_alley_route_and_fragment() -> void:
-	await _run_room("FloodedAlley.tscn", &"from_relay", [
-		["run", 440], ["slide", 720], ["run", 1282], ["attack", 3], ["run", 1368], ["run", 1230],
-		["jump", 1250], ["jump", 1275], ["jump", 1340], ["run", 1440], ["run", 1780], ["exit", 1],
-	], "MarketRun")
+	await _run_room("FloodedAlley.tscn", &"from_relay", ALLEY_ROUTE, "MarketRun")
 	check(Game.state.memory_fragments.has("mf_lowlight_01"), "alley fragment not collected")
 
 
 func test_market_route_repeater_and_stash() -> void:
-	await _run_room("MarketRun.tscn", &"from_alley", [
-		["run", 1040], ["runjump", 1096, 1240], ["run", 1320], ["jump", 1320], ["jump", 1370], ["jump", 1450],
-		["run", 1500], ["interact"], ["run", 1600], ["run", 1984], ["attack", 3], ["run", 2070], ["run", 1955],
-		["jump", 1955], ["jump", 2030], ["run", 2180], ["run", 2300], ["exit", 1],
-	], "ApartmentStack")
+	await _run_room("MarketRun.tscn", &"from_alley", MARKET_ROUTE, "ApartmentStack")
 	check(Game.has_flag("repeater_market"), "market repeater not realigned")
 	check(Game.is_collected("cs_market"), "market core shard not collected")
 
 
 func test_apartment_stack_climb() -> void:
-	await _run_room("ApartmentStack.tscn", &"from_market", [
-		["run", 460], ["jump", 460], ["jump", 540], ["jump", 460], ["jump", 380],
-		["run", 30], ["interact"],
-		["run", 180], ["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262],
-		["run", 460], ["jump", 460], ["jump", 540], ["jump", 460], ["jump", 380],
-		["run", 74], ["attack", 3], ["run", -10], ["run", 180],
-		["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262], ["run", 600], ["exit", 1],
-	], "NeonRoofs")
+	await _run_room("ApartmentStack.tscn", &"from_market", STACK_ROUTE, "NeonRoofs")
 	check(Game.has_flag("repeater_stack"), "stack repeater not realigned")
 	check(Game.state.memory_fragments.has("mf_lowlight_02"), "stack fragment not collected")
 
 
 func test_neon_roofs_slide_jump_gate_and_shard() -> void:
-	await _run_room("NeonRoofs.tscn", &"from_stack", [
-		["run", 370], ["runjump", 396, 520], ["slidejump", 762, 900], ["run", 1150], ["runjump", 1176, 1300],
-		["run", 1430], ["jump", 1430], ["jump", 1520], ["dodgejump", 1600, 1774], ["run", 1830],
-		["run", 1990], ["runjump", 1996, 2130], ["run", 2400], ["exit", 1],
-	], "PowerBlock")
+	await _run_room("NeonRoofs.tscn", &"from_stack", ROOFS_ROUTE, "PowerBlock")
 	check(Game.is_collected("cs_roofs"), "roof core shard not collected")
 
 
@@ -121,16 +140,7 @@ func test_early_run_jump_falls_into_the_well_and_climbs_back() -> void:
 
 
 func test_bell_tower_climb_lever_and_office() -> void:
-	await _run_room("BellTower.tscn", &"from_rainline", [
-		["run", 130], ["jump", 130], ["jump", 200], ["jump", 130], ["jump", 180], ["jump", 262],
-		["run", 530], ["jump", 530], ["jump", 460], ["jump", 530], ["jump", 450], ["jump", 370],
-		["run", 30], ["interact"],
-		["run", 130], ["jump", 130], ["jump", 200], ["jump", 130], ["jump", 180], ["jump", 262],
-		["run", 548], ["heavy", 2], ["run", 602], ["run", 530],
-		["jump", 530], ["jump", 460], ["jump", 530], ["jump", 450], ["jump", 370],
-		["run", 40], ["interact"], ["run", 392],
-		["jump", 490], ["jump", 580], ["exit", 1],
-	], "WardenTower")
+	await _run_room("BellTower.tscn", &"from_rainline", BELL_ROUTE, "WardenTower")
 	check(Game.has_flag("repeater_bell"), "bell repeater not realigned")
 	check(Game.has_flag("shortcut_bell_lift"), "shortcut lever not pulled")
 	check(Game.state.memory_fragments.has("mf_lowlight_03"), "office fragment not collected")
