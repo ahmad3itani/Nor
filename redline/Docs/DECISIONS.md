@@ -230,6 +230,7 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
   - the essentials are affordable early;
   - a full re-clear of respawning enemies pays at most 15% of stock.
 - To reach this, walls and secret spots now hold Scrap, instead of prices being cut. See `ECONOMY.md`.
+- **M7 audit (D5b), all eleven new rooms merged:** one-time 1,772, sinks 2,230 (Iko +660), coverage 79%, one re-clear 332 against a cap of 334. No trim was needed: the Medical Ruin dormant Needle already drops 0, and the other remedies (First Pursuit's pair-2 Needle, halving the Undercity stashes, the Collector at 60) stay in reserve. **FLAG:** the re-clear is 2 Scrap under its cap, so the next respawning enemy placed on the map fails the rule; the next district needs new sinks before new enemies. Full JSON and the per-district table: `ECONOMY.md`. Core Shards 3 → 5 (max capacity 9) keep capacity at about 43% of the catalog's total Circuit cost (was 41%): budget confirmed, see `CIRCUITS.md`.
 
 ## D-050: NPC state = talk counts + conditions; world state = switches
 - `talks_<npc>` counts conversations. Dialogue rules accept `Game.check_condition` expressions (`atleast:`, `ability:`, `collected:`, `flag:`, `!`). `WorldStateSwitch` shows set dressing by condition, so the Relay visibly changes with progress (bible §13).

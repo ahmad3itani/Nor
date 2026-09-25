@@ -1,18 +1,29 @@
 # Circuits (bible §11)
 
-Circuits are build-changing chips slotted into Rook's Core. The bible targets 60–80 in the full game. The M3 slice ships **12**, covering the main build directions: momentum, glass cannon, defense, economy, sustain and precision.
+Circuits are build-changing chips slotted into Rook's Core. The bible targets 60–80 in the full game. The M3 slice shipped **12**, covering the main build directions: momentum, glass cannon, defense, economy, sustain and precision. M7 adds Iko's three black-market Circuits, for **15** in the catalog.
 
-## Rules in the slice
-- **Core Capacity:** 4 at the start (`ItemCatalog.base_core_capacity`), **+1 per Core Shard**. The slice has 3 shards, so the maximum is 7.
+## Rules
+- **Core Capacity:** 4 at the start (`ItemCatalog.base_core_capacity`), **+1 per Core Shard**. The world has **5** shards, so the maximum is **9** (M7, D-082).
+
+  | Shard | Where | Needs |
+  |---|---|---|
+  | `cs_market` | Market Run, the stash behind the cracked wall | nothing |
+  | `cs_roofs` | Neon Roofs, the high route | dodge-jump |
+  | `cs_alley_dash` | Flooded Alley, the Dash shelf near the start | Dash |
+  | `cs_smuggler_dash` | Smuggler Route | Dash |
+  | `cs_uc_tunnel_dash` | Escape Tunnel, the shard ledge (Undercity revisit) | Dash |
+
+  So capacity is at most 6 before Krail and 9 after the Dash revisits.
 - **Equipping:** only at an **Anchor** (the loadout opens after you rest). Equipping is free and instant; the constraint is capacity, not currency.
 - **Sources:**
   - **Vell's shop** (Scrap);
   - Vell's intro gift (**Scavenger**);
-  - the **Dead Air** reward (**Longline**).
+  - the **Dead Air** reward (**Longline**);
+  - **Iko's shop** (Scrap): Hot Wire, Live Current and Slipstream, next to the Bootleg Injector.
   
   **Emergency Loop** appears in the shop only after Dead Air is done.
 
-## The 12
+## The 15
 
 | Circuit | Cost | Price | Effect | Stats |
 |---|---|---|---|---|
@@ -28,8 +39,14 @@ Circuits are build-changing chips slotted into Rook's Core. The bible targets 60
 | Longline | 1 | 50 | Ranged shots travel 50% farther | `ranged_range` ×1.5 |
 | Clean Circuit | 1 | 70 | At full health, everything refills the Core 30% more | `full_health_reactor_bonus` +0.3 |
 | Runner's Debt | 1 | 80 | The Core drains 40% slower above run speed, 40% faster standing still | `runners_debt` 0.4 |
+| Hot Wire (Iko) | 2 | 150 | Overclocked rounds: ranged shots hit 50% harder but reach 30% less | `ranged_damage` ×1.5, `ranged_range` ×0.7 |
+| Live Current (Iko) | 1 | 120 | Spikes, walls and clamps deal 2.5× damage for you; your melee deals 15% less | `environmental_damage` ×2.5, `melee_damage` ×0.85 |
+| Slipstream (Iko) | 1 | 130 | Dodge/dash i-frames last 20% longer; the Core drains 25% slower above run speed, 25% faster standing still | `iframe_time` ×1.2, `runners_debt` +0.25 |
 
 All costs, prices and numbers live in `data/circuits/*.tres`.
+
+## Budget (M7, D-082: confirmed)
+The 15 Circuits cost **21** capacity together. At the full 9, Rook slots about 43% of that (4 of 21 at the start, 6 before Krail). Before M7 it was 7 of 17 (41%). So the two extra shards keep pace with Iko's three new Circuits instead of loosening the build choice: even a complete run still has to leave out more than half of the catalog, and the Circuits that cost 2 (six of the 15, Hot Wire among them) still compete for space. No price or cost changed. The five shards are counted by the Core Shard table above. Adding a shard or a Circuit should keep capacity at roughly 40–50% of the catalog's total cost.
 
 ## How it works (for developers)
 - `CircuitData` is declarative. `multipliers` **multiply** across all equipped Circuits (default 1.0), and `values` **add up** (default 0.0). Gameplay code never checks which Circuit is equipped. It asks for a stat:
