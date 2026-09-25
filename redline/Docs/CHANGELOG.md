@@ -59,7 +59,7 @@ Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet:
 - RouteBot: `shoot`, `dodge` and `dodgejump_airdodge` steps.
 - `CaptureTour --tour=undercity` (every Undercity spawn plus a Collector fight shot).
 - `test_door_contracts` (D-092), shared route-test harnesses `test_undercity_routes` and `test_lowlight_m7_routes` (each room's route and extra tests, the full Undercity walk from New Game, the full Lowlight chain), `test_onboarding` (v3 save fixture), `test_tracker`, `test_boss_collector`, `test_power_shutter`, `test_boss_grid_clamp`, `test_security`, `test_chase`, `test_props_m7`, `test_scaffold`.
-- Tests: 412 (223 new).
+- Tests: 415 (226 new).
 
 ### Audit fixes
 - **Boss exits open on the reward, not the win (D-100).** Collector Bay's way out needs `got_service_pistol` and Warden Tower's needs `unlocked_dash`, so nobody reaches the pistol lesson or the Relay's Dash end card without the reward. `BossArena` also seals `ExitGate` on a re-armed fight and reports its reward's flag to the validator.

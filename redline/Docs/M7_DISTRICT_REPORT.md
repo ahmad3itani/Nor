@@ -5,11 +5,11 @@
 | | |
 |---|---|
 | Version | `0.7.0-m7` |
-| Tests | 412 automated (223 new in M7), 0 failed |
+| Tests | 415 automated (226 new in M7), 0 failed |
 | Rooms | 11 new (7 Undercity, 4 Lowlight); 6 existing rooms re-plumbed (Relay, Flooded Alley, Apartment Stack, Neon Roofs, Bell Tower, Warden Tower) |
 | New Game | Starts unarmed in Undercity/Wake (`data/world/onboarding.tres`, D-062) |
 | Content gate | `ValidateContent` 0 errors, 8 warnings (flags read only by code); every room generator matches its scene (`--check`) |
-| Decisions | D-061 to D-099 (`DECISIONS.md`), the flagged ones in §5 below |
+| Decisions | D-061 to D-104 (`DECISIONS.md`), the flagged ones in §5 below |
 
 Screenshots from `CaptureTour --tour=undercity` and `--tour=slice`. The tours start from the debug full kit, so the HUD shows the Service Pistol and the Core bar even in Wake; a real New Game has neither there.
 
