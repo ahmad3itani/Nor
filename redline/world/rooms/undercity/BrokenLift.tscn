@@ -318,3 +318,15 @@ size = Vector2(30, 6)
 color = Color(0.85, 0.58, 0.3, 1)
 strokes = 3
 flicker = false
+
+[node name="CrewRadio" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:dead_air_complete"
+
+[node name="Decor7" type="Node2D" parent="Props/CrewRadio"]
+position = Vector2(450, -576)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(16, 12)
+color = Color(0.2, 0.24, 0.24, 1)
+accent = Color(0.35, 0.88, 0.91, 1)

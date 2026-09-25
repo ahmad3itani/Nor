@@ -25,7 +25,7 @@ One concept at a time: one Needle, max_attackers 1, only in FZ1.
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from roomgen import RoomGen, finish
-from undercity_style import OUT, BIG, SODIUM, SEA, CONCRETE, RUST, STEEL
+from undercity_style import OUT, BIG, SODIUM, SEA, CONCRETE, RUST, STEEL, CYAN
 
 l = RoomGen("BrokenLift", (-64, -800, 704, 896), "undercity", "Undercity", "Broken Lift", max_attackers=1)
 
@@ -108,6 +108,11 @@ l.neon(600, -640, 8, 14, SODIUM, 1, False)
 # The landmark lights up once the Collector is down.
 car = l.switch("CarLit", "flag:collector_drone_defeated")
 l.neon(264, -300, 30, 6, SODIUM, 3, False, parent=car)
+# M8: once Orr's repeaters are realigned (Dead Air), the Relay crew leaves a
+# radio by the Undercity Anchor: the Undercity is on the band now (cyan is
+# the radio's colour). TopLanding x 380..624; Anchor 500 (box 488..512).
+radio = l.switch("CrewRadio", "flag:dead_air_complete")
+l.decor("radio", 450, -576, 16, 12, STEEL, CYAN, parent=radio)
 
 l.write(OUT + "BrokenLift.tscn")
 finish()
