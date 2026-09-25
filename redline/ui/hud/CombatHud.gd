@@ -115,10 +115,17 @@ func _on_flag_changed(id: String, _value: Variant) -> void:
 	_core_hidden = hidden
 
 
+## M8: while a scene hides the HUD, or a bark line sits where hints go, new
+## hints queue (same de-dup and backlog rules) and appear with their full
+## duration once control returns, never under a sequence.
+func _hints_held() -> bool:
+	return CinematicMode.hud_hidden or CinematicMode.bark_line
+
+
 func request_hint(t: String, seconds: float) -> void:
-	if _hint_time <= 0.0:
+	if _hint_time <= 0.0 and not _hints_held():
 		_show_hint(t, seconds)
-	elif t == _hint:
+	elif t == _hint and _hint_time > 0.0:
 		_hint_time = maxf(_hint_time, seconds)
 	elif not _hint_queue.any(func(q: Array) -> bool: return q[0] == t):
 		_hint_queue.append([t, seconds])
@@ -161,9 +168,13 @@ func _process(delta: float) -> void:
 	_core_reveal = maxf(_core_reveal - delta, 0.0)
 	_core_online = maxf(_core_online - delta, 0.0)
 	_rank_flash = maxf(_rank_flash - delta, 0.0)
-	_tick_hints(delta)
-	_banner_time = maxf(_banner_time - delta, 0.0)
-	_lore_time = maxf(_lore_time - delta, 0.0)
+	if not _hints_held():
+		_tick_hints(delta)
+	# A hidden HUD freezes its banner and fragment card, so they are still
+	# readable when the scene hands control back.
+	if not CinematicMode.hud_hidden:
+		_banner_time = maxf(_banner_time - delta, 0.0)
+		_lore_time = maxf(_lore_time - delta, 0.0)
 	var target_alpha := 0.0
 	if _critical:
 		target_alpha = 0.35 if Settings.flash_reduction else 0.25 + 0.3 * (0.5 + 0.5 * sin(_time * 7.0))
@@ -172,6 +183,8 @@ func _process(delta: float) -> void:
 
 
 func _draw_hud() -> void:
+	if CinematicMode.hud_hidden:
+		return
 	if _player == null or not is_instance_valid(_player):
 		return
 	var font := ThemeDB.fallback_font

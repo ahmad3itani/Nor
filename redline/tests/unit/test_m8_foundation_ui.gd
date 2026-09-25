@@ -346,6 +346,88 @@ func test_background_three_looks() -> void:
 	check(is_equal_approx(SubtitleStyle.time_scale(), 2.0), "Slower must scale line time by 2")
 
 
+# --- HUD hint hold ---
+
+## CombatHud has no class_name; it is handled untyped like in test_onboarding.
+func _hud() -> Variant:
+	var hud = load("res://ui/hud/CombatHud.gd").new()
+	add_child(hud)
+	return hud
+
+
+func _frames(n: int) -> void:
+	for i in n:
+		await get_tree().process_frame
+
+
+func test_hint_during_hidden_hud_is_queued() -> void:
+	CinematicMode.teardown()
+	var hud = _hud()
+	await get_tree().process_frame
+	hud._banner_time = 2.0
+	hud._lore_time = 5.0
+	CinematicMode.hud_hidden = true
+	EventBus.hint_requested.emit("x", 3.0)
+	var shown := false
+	for i in 60:
+		await get_tree().process_frame
+		if hud.current_hint() != "":
+			shown = true
+	check(not shown, "a hint showed while the HUD was hidden")
+	check(hud._hint_queue.size() == 1 and hud._hint_queue[0][0] == "x", "the hint was not queued: %s" % str(hud._hint_queue))
+	check(is_equal_approx(hud._banner_time, 2.0), "banner timer ran while hidden (%.2f)" % hud._banner_time)
+	check(is_equal_approx(hud._lore_time, 5.0), "fragment card timer ran while hidden (%.2f)" % hud._lore_time)
+	CinematicMode.hud_hidden = false
+	await _frames(2)
+	check(hud.current_hint() == "x", "the queued hint did not show when the HUD returned")
+	check(hud._hint_time >= 2.9, "the hint lost time while queued (%.2f s left)" % hud._hint_time)
+	await _frames(170)
+	check(hud.current_hint() == "x", "the hint must stay up for its full duration")
+	hud.queue_free()
+	CinematicMode.teardown()
+
+
+func test_bark_line_holds_hints() -> void:
+	CinematicMode.teardown()
+	var hud = _hud()
+	await get_tree().process_frame
+	CinematicMode.bark_line = true
+	EventBus.hint_requested.emit("y", 2.0)
+	await _frames(10)
+	check(hud.current_hint() == "", "a hint showed under a bark line")
+	check(hud._hint_queue.size() == 1, "the hint was not queued under the bark")
+	check(not CinematicMode.hud_hidden, "a bark must not hide the HUD")
+	CinematicMode.bark_line = false
+	await _frames(2)
+	check(hud.current_hint() == "y", "the hint did not show after the bark")
+	hud.queue_free()
+	CinematicMode.teardown()
+
+
+func test_hud_hide_owner_counted() -> void:
+	CinematicMode.teardown()
+	var hud = _hud()
+	await get_tree().process_frame
+	CinematicMode.push_hud_hide(&"sequence")
+	CinematicMode.push_hud_hide(&"memory")
+	CinematicMode.pop_hud_hide(&"memory")
+	check(CinematicMode.hud_hidden, "popping one owner must keep the HUD hidden for the other")
+	EventBus.hint_requested.emit("z", 2.0)
+	await _frames(5)
+	check(hud.current_hint() == "", "hint showed while the sequence still hides the HUD")
+	CinematicMode.pop_hud_hide(&"never_pushed")
+	check(CinematicMode.hud_hidden, "popping an unknown owner must be a no-op")
+	CinematicMode.pop_hud_hide(&"sequence")
+	check(not CinematicMode.hud_hidden, "HUD still hidden after the last owner popped")
+	await _frames(2)
+	check(hud.current_hint() == "z", "the hint did not show after the last owner popped")
+	CinematicMode.push_hud_hide(&"sequence")
+	CinematicMode.push_hud_hide(&"memory")
+	CinematicMode.teardown()
+	check(not CinematicMode.hud_hidden and CinematicMode._hud_owners.is_empty(), "teardown must clear every owner")
+	hud.queue_free()
+
+
 class _InputProbe extends Node:
 	var just_frames := 0
 	var held_frames := 0
