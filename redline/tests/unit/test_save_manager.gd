@@ -86,3 +86,43 @@ func test_game_state_round_trips_through_json() -> void:
 
 func test_missing_profile_returns_empty() -> void:
 	check(SaveManager.load_profile(99).is_empty(), "expected empty dict")
+
+
+# --- M8 save rule (D-116: all M8 state is flags; no key, no schema bump) ---
+
+## The GameState key set is pinned: adding a key means updating this list AND
+## reading D-087/D-090 (new optional key -> from_dict default + old-save test).
+const GAME_STATE_KEYS := ["abilities", "anchors_rested", "collected", "core_shards", "deaths", "dropped_scrap",
+	"equipped_circuits", "flags", "health", "injectors", "last_anchor_id", "last_anchor_room", "last_entry_id",
+	"last_entry_room", "map_explored", "map_pins", "melee_weapon", "memory_fragments", "owned_circuits",
+	"owned_weapons", "play_time_sec", "ranged_weapon", "reactor_charge", "scrap_banked", "scrap_unbanked",
+	"visited_rooms"]
+const SAVE_V3 := "res://tests/fixtures/save_v3_slice.json"
+
+
+func test_m8_adds_no_game_state_keys() -> void:
+	var keys: Array = GameState.new().to_dict().keys()
+	keys.sort()
+	check(keys == GAME_STATE_KEYS, "GameState keys changed (D-090): %s" % [keys])
+	check(SaveManager.CURRENT_SCHEMA_VERSION == 3, "M8 needs no schema bump")
+
+
+func test_v3_fixture_loads_with_m8_defaults() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SAVE_V3))
+	var state := GameState.from_dict(SaveManager.migrate(raw))
+	check(int(state.flags.get("arc_orr_stage", 0)) == 0, "no arc stage in an M7 save")
+	check(int(state.flags.get("memories_remembered", 0)) == 0, "no memories remembered in an M7 save")
+	DirAccess.make_dir_recursive_absolute(TEST_DIR)
+	var f := FileAccess.open(SaveManager.profile_path(1), FileAccess.WRITE)
+	f.store_string(JSON.stringify(raw))
+	f.close()
+	check(Game.load_game(1), "the v3 fixture loads")
+	check(EndingResolver.resolve() == null, "no ending resolves from an M7 save")
+	check(ActLibrary.current_act() == 1, "an M7 save past Krail (no slice_end_seen) is still in Act I")
+	# JSON turns ints into floats; flag_int / atleast: still read 2.
+	Game.set_flag("memories_remembered", 2)
+	check(Game.save_game() == OK, "saved")
+	check(Game.load_game(1), "reloaded")
+	check(Game.flag_int("memories_remembered") == 2 and Game.check_condition("atleast:memories_remembered:2"),
+		"an int flag round-trips through JSON as 2 (%s)" % Game.state.flags.get("memories_remembered"))
+	Game.new_game()
