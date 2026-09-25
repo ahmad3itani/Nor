@@ -145,3 +145,19 @@ func test_dash_shard_needs_dash() -> void:
 	bot = await _enter("FloodedAlley.tscn", &"from_relay")
 	var ok: bool = await bot.run(steps)
 	check(ok and Game.is_collected("cs_alley_dash"), "dash shard unreachable with Dash: %s" % bot.failure)
+
+
+## The Dash take-off window at the alley gate (290 px, 64 px down from the
+## -144 one-way whose lip is x 160; Rook stands on it up to x ~165). Measured
+## with the dash starting from x 110: a dash-jump lands the shard from a jump
+## at x 154 through the whole coyote window (x 174 and later); x 152 and
+## earlier fall short of the shelf. Early slack: ~11 px before the last
+## standing point. Lowering the shelf to widen it lets a floor jump + air
+## light reach the shelf without Dash, so the gate keeps -80.
+func test_dash_shard_takeoff_window() -> void:
+	for c in [154, 166, 174]:
+		Game.new_game()
+		Game.set_ability(&"dash", true)
+		var bot := await _enter("FloodedAlley.tscn", &"from_relay")
+		await bot.run([["run", 65], ["jump", 65], ["jump", 125], ["jump", 140], ["run", 110], ["dashjump", c, 468]])
+		check(Game.is_collected("cs_alley_dash"), "a dash-jump taken off at x %d should reach the shard (%s)" % [c, bot.failure])
