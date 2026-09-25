@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://ui/debug/DebugOverlay.gd" id="2_debug"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://ui/menus/SurveyMenu.gd" id="15_survey"]
 [ext_resource type="Script" path="res://ui/menus/MapMenu.gd" id="16_map"]
 [ext_resource type="Script" path="res://ui/menus/DevConsole.gd" id="17_dev"]
+[ext_resource type="Script" path="res://ui/memory/MemoryScenePlayer.gd" id="18_memory"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -41,6 +42,10 @@ script = ExtResource("4_hud")
 
 [node name="DialogueBox" type="CanvasLayer" parent="."]
 script = ExtResource("5_dialogue")
+
+[node name="MemoryScenePlayer" type="CanvasLayer" parent="."]
+layer = 85
+script = ExtResource("18_memory")
 
 [node name="Menus" type="Node" parent="."]
 script = ExtResource("6_menus")
