@@ -171,11 +171,14 @@ func test_harness_close_dialogue() -> void:
 ## Wake (bible §42 0-5 min): the forward walk from slab 14. Tap over the
 ## cabinet, held jump up the 48 px ward step, the shutter lever, up the
 ## grating one-ways onto the walkway (its Scrap), the drop, the east door.
+const WAKE_ROUTE := [["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 720], ["interact"], ["wait", 20],
+	["run", 888], ["jump", 888], ["jump", 968], ["jump", 1050], ["run", 1120], ["run", 1236]]
+
+
 func test_wake_route() -> void:
 	_campaign()
 	await _enter(WAKE, &"start")
-	var ok := await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 720], ["interact"], ["wait", 20],
-		["run", 888], ["jump", 888], ["jump", 968], ["jump", 1050], ["run", 1120], ["run", 1236]])
+	var ok := await _run(WAKE_ROUTE)
 	if not ok:
 		return
 	check(Game.has_flag("uc_ward_shutter"), "the lever should set uc_ward_shutter")
@@ -242,6 +245,13 @@ func test_wake_from_east() -> void:
 ## Bible §42 0-5 min: the rack arms an unarmed Rook, the first chain kills
 ## the dormant orderly, the shelf is reachable with plain jumps, and the
 ## live Needles (pacified here: geometry only) sit on floor, pit and deck.
+## From from_wake: the rack, the dormant Needle, the pit, the shelf, the deck
+## Needles (pacified) and the east door.
+const MEDICAL_RUIN_ROUTE := [["run", 140], ["run", 236], ["attack", 3], ["run", 700], ["run", 850], ["jump", 910],
+	["run", 1028], ["jump", 1028], ["jump", 1110], ["run", 1140], ["run", 1340], ["attack", 3],
+	["run", 1690], ["jump", 1720], ["attack", 3], ["run", 1956]]
+
+
 func test_medical_ruin_route() -> void:
 	_campaign()
 	check(Game.state.melee_weapon == "", "the Medical Ruin kit is the bare, unarmed campaign")
@@ -250,9 +260,7 @@ func test_medical_ruin_route() -> void:
 	check(dormant != null, "no dormant Needle in the room")
 	if dormant == null:
 		return
-	if not await _run([["run", 140], ["run", 236], ["attack", 3], ["run", 700], ["run", 850], ["jump", 910],
-			["run", 1028], ["jump", 1028], ["jump", 1110], ["run", 1140], ["run", 1340], ["attack", 3],
-			["run", 1690], ["jump", 1720], ["attack", 3], ["run", 1956]]):
+	if not await _run(MEDICAL_RUIN_ROUTE):
 		return
 	check(Game.has_flag("got_pulse_blade") and Game.state.owned_weapons.has("pulse_blade"), "the rack should grant the Pulse Blade")
 	check(Game.state.melee_weapon == "pulse_blade", "the Pulse Blade should be equipped from the rack")
@@ -846,23 +854,27 @@ func test_collector_bay_wiring() -> void:
 ## Hopper are pacified and cut down on the way up. Each Watcher shot is its
 ## own step from x 222 facing east: "shoot ... diag" holds the facing
 ## direction, so a volley walks Rook out of the diagonal line.
+const ESCAPE_TUNNEL_VOLLEY := [["run", 200], ["run", 222], ["shoot", 1, "diag"], ["run", 200], ["run", 222], ["shoot", 1, "diag"],
+	["run", 200], ["run", 222], ["shoot", 1, "diag"]]
+## After the Watcher: up the FZ3 steps (cutting down the Needle and the
+## Hopper) and along the top floor to the Relay mouth.
+const ESCAPE_TUNNEL_CLIMB := [
+	["run", 672], ["jump", 730], ["run", 832], ["jump", 890], ["attack", 3], ["run", 992], ["jump", 1050],
+	["run", 1152], ["jump", 1210], ["attack", 3], ["run", 1312], ["jump", 1370], ["run", 1930],
+]
+
+
 func test_escape_tunnel_route() -> void:
 	_campaign(true, true, true)
 	Game.set_flag("collector_drone_defeated")
 	await _escape_tunnel_enter(&"from_bay", true)
 	var watcher := _escape_tunnel_enemy(&"watcher")
 	check(watcher != null, "the tunnel should hold a Watcher")
-	var volley := []
-	for i in 3:
-		volley += [["run", 200], ["run", 222], ["shoot", 1, "diag"]]
-	if not await _run(volley):
+	if not await _run(ESCAPE_TUNNEL_VOLLEY):
 		return
 	await physics_frames(20)
 	check(not is_instance_valid(watcher) or watcher.health <= 0.0, "three diagonal pistol shots should kill the Watcher")
-	if not await _run([
-		["run", 672], ["jump", 730], ["run", 832], ["jump", 890], ["attack", 3], ["run", 992], ["jump", 1050],
-		["run", 1152], ["jump", 1210], ["attack", 3], ["run", 1312], ["jump", 1370], ["run", 1930],
-	]):
+	if not await _run(ESCAPE_TUNNEL_CLIMB):
 		return
 	_assert_exit(1, LL + "Relay.tscn", &"from_undercity")
 	_assert_exit(-1, UC + "CollectorBay.tscn", &"from_tunnel")
@@ -992,5 +1004,93 @@ func _escape_tunnel_fz3(mode: int, start: float, seconds: float) -> Dictionary:
 	return {"burnout": tally.burnout, "kills": tally.kills, "charge": charge, "seconds": tally.frames / 60.0}
 
 
+# --- D6: the full walk -----------------------------------------------------------------
+## Bible §42: a campaign New Game, with the shipped onboarding config, played
+## from Wake to the Relay through all seven Undercity rooms with the rooms'
+## own RouteBot steps, carrying the state from door to door (weapons picked up
+## on the way, flags, health). Geometry-only like the room routes: enemies are
+## pacified (the Escape Tunnel Watcher stays live: it is the pistol lesson),
+## the Collector eye in FirstPursuit stays live, and the Core drain is off
+## (FZ1/FZ3 pace have their own tests). The main path must never need an
+## ability or a weapon the player has not picked up yet: no Dash anywhere, and
+## each room is entered with exactly the kit the rooms before it hand out.
 func test_full_undercity_walk() -> void:
-	print("PENDING: D6")
+	Game.onboarding = Game.ONBOARDING
+	Game.start_campaign()
+	check(Game.campaign_start_room() == WAKE and Game.campaign_start_entry() == &"start", "the shipped New Game should start in Wake at 'start'")
+	await _enter(Game.campaign_start_room(), Game.campaign_start_entry())
+	if not await _full_walk_leg("Wake", [], WAKE_ROUTE, UC + "MedicalRuin.tscn", &"from_wake"):
+		return
+	if not await _full_walk_leg("MedicalRuin", [], MEDICAL_RUIN_ROUTE, UC + "MaintenanceShaft.tscn", &"from_medical"):
+		return
+	check(Game.has_flag("got_pulse_blade"), "the Medical Ruin rack should arm Rook")
+	if not await _full_walk_leg("MaintenanceShaft", ["pulse_blade"], SHAFT_TO_CLOSET + SHAFT_CLOSET_TO_EXIT, UC + "FirstPursuit.tscn", &"from_shaft"):
+		return
+	# FirstPursuit: the eye chase, pair 2, then Orr's radio (a conversation).
+	_full_walk_expect("FirstPursuit", ["pulse_blade"])
+	if not await _run(FIRST_PURSUIT_TO_PAIR + [["run", 3980], ["interact"]]):
+		return
+	check(dialogue_box.is_open(), "Orr's radio should open a conversation")
+	await _close_dialogue()
+	check(Game.has_flag("met_orr_radio"), "the radio call should set met_orr_radio")
+	if not await _full_walk_leg("FirstPursuit", ["pulse_blade"], [["run", 4116]], UC + "BrokenLift.tscn", &"from_pursuit"):
+		return
+	# The Collector Drone fight itself is covered by M4's BossBot tests
+	# (test_boss_collector); the walk takes the arena as won and checks what the
+	# win leaves behind (open exit gate, the Service Pistol drop). Set before
+	# the door so CollectorBay loads in its post-win state.
+	if not await _run(BROKEN_LIFT_TO_CLIMB2 + BROKEN_LIFT_TO_DOOR):
+		return
+	check(not Game.has_flag("core_hud_hidden"), "FZ1 should have revealed the Core readout")
+	Game.set_flag("collector_drone_defeated")
+	if not await _full_walk_leg("BrokenLift", ["pulse_blade"], [], UC + "CollectorBay.tscn", &"from_lift"):
+		return
+	if not await _full_walk_leg("CollectorBay", ["pulse_blade"], [["run", 440]], UC + "EscapeTunnel.tscn", &"from_bay"):
+		return
+	check(Game.has_flag("got_service_pistol") and Game.state.ranged_weapon == "service_pistol", "the bay floor should hand over the Service Pistol")
+	if not await _full_walk_leg("EscapeTunnel", ["pulse_blade", "service_pistol"], ESCAPE_TUNNEL_VOLLEY + [["wait", 20]] + ESCAPE_TUNNEL_CLIMB,
+			LL + "Relay.tscn", &"from_undercity", &"watcher"):
+		return
+	var p := bot.player
+	check(p.global_position.distance_to(Vector2(0, -144)) < 40.0, "should arrive on the Relay balcony at from_undercity (at %s)" % p.global_position.round())
+	for f in ["uc_ward_shutter", "got_pulse_blade", "met_orr_radio", "got_service_pistol", "collector_drone_defeated"]:
+		check(Game.has_flag(f), "the walk should leave %s set" % f)
+	check(Game.state.last_anchor_room == "", "the main path needs no Anchor rest")
+
+
+## Asserts the walk is in `room_name` with exactly the weapons `owned` and
+## no movement ability beyond the base kit.
+func _full_walk_expect(room_name: String, owned: Array) -> void:
+	var room := SceneRouter.current_room as Room
+	check(room != null and room.name == room_name, "the walk should be in %s, not %s" % [room_name, room.name if room else "nothing"])
+	var have := Array(Game.state.owned_weapons)
+	have.sort()
+	var want := owned.duplicate()
+	want.sort()
+	check(have == want, "%s: the campaign should own exactly %s here, owns %s" % [room_name, str(want), str(have)])
+	check(not Game.abilities.dash and not Game.state.abilities.get("dash", false), "%s: the main path must never have Dash" % room_name)
+
+
+## One room of the walk: check the kit, run `steps`, check the exit contract,
+## walk through the east door and re-pacify the next room (keep: the id of an
+## enemy that stays live there).
+func _full_walk_leg(room_name: String, owned: Array, steps: Array, next_path: String, next_entry: StringName, keep := &"") -> bool:
+	_full_walk_expect(room_name, owned)
+	if not steps.is_empty() and not await _run(steps):
+		return false
+	if not _assert_exit(1, next_path, next_entry, "collector_drone_defeated" if room_name == "CollectorBay" else ""):
+		return false
+	if not await _run([["exit", 1]]):
+		return false
+	var ok := SceneRouter.current_room_path == next_path and Game.state.last_entry_id == String(next_entry)
+	check(ok, "%s's east door should lead to %s/%s (in %s/%s)" % [room_name, next_path.get_file(), next_entry, SceneRouter.current_room_path.get_file(), Game.state.last_entry_id])
+	var room := SceneRouter.current_room as Room
+	for e in room.find_children("*", "Enemy", true, false):
+		var enemy := e as Enemy
+		if enemy.ai_enabled and not (keep != &"" and enemy.data.id == keep):
+			enemy.ai_enabled = false
+			enemy.set_ai(Enemy.AI.IDLE)
+	room.player.reactor.config = room.player.reactor.config.duplicate()
+	room.player.reactor.config.drain_per_second = 0.0
+	await physics_frames(10)
+	return ok
