@@ -75,6 +75,12 @@ func load_game(p_profile: int = 1) -> bool:
 		return false
 	profile_id = p_profile
 	state = GameState.from_dict(data)
+	# M8 load derivation (the only one): a pre-M8 save that already passed the
+	# Act I end has slice_end_seen but no act1_complete. Derive it before
+	# game_state_reset so the hub, arcs and music see the finished act. No
+	# schema bump: flags need none (D-087/D-090).
+	if state.flags.get("slice_end_seen", false) and not state.flags.get("act1_complete", false):
+		state.flags["act1_complete"] = true
 	abilities = PlayerAbilities.new()
 	for key: String in state.abilities:
 		if key in abilities:
@@ -116,7 +122,13 @@ func capture_from_player(player: Player) -> void:
 # --- Flags ------------------------------------------------------------------------
 
 func set_flag(id: String, value: Variant = true) -> void:
-	if state.flags.get(id) == value:
+	# Skip equal numbers (a JSON load turns 2 into 2.0; re-setting it must not
+	# re-run every flag listener) and equal same-typed values. Never compare
+	# across bool/number with == (4.3 raises on int == bool and aborts the
+	# caller); a bool<->number change is a real change and emits.
+	var old: Variant = state.flags.get(id)
+	var num := func(v: Variant) -> bool: return typeof(v) == TYPE_INT or typeof(v) == TYPE_FLOAT
+	if (num.call(old) and num.call(value) and float(old) == float(value)) or (typeof(old) == typeof(value) and old == value):
 		return
 	state.flags[id] = value
 	EventBus.flag_changed.emit(id, value)
@@ -130,9 +142,13 @@ func flag_int(id: String) -> int:
 	return int(state.flags.get(id, 0))
 
 
-## Small condition language shared by map markers and world-state switches:
-## "flag:x", "ability:dash", "collected:id", "atleast:flag:n" (int flags such
-## as talk counts), "" (always true); prefix "!" to negate. Keeps world consequences in data instead of one-off scripts.
+## Small condition language shared by map markers, world-state switches and
+## the M8 story data: "flag:x", "ability:dash", "collected:id",
+## "atleast:flag:n" (int flags such as talk counts), "count:<metric>:n"
+## (fragments, shards, circuits, secrets; see count_metric), "" (always true);
+## prefix "!" to negate. One grammar, no AND/OR (D-119): a rule that needs
+## several conditions lists them. Keeps world consequences in data instead of
+## one-off scripts.
 func check_condition(expr: String) -> bool:
 	if expr == "":
 		return true
@@ -149,8 +165,26 @@ func check_condition(expr: String) -> bool:
 			return is_collected(arg)
 		"atleast":
 			return flag_int(arg) >= int(expr.get_slice(":", 2))
+		"count":
+			return count_metric(arg) >= int(expr.get_slice(":", 2))
 	push_warning("Game.check_condition: unknown condition '%s'" % expr)
 	return false
+
+
+## Progress counts for "count:<metric>:n" conditions. An unknown metric warns
+## and returns -1, so the condition is false (the validator also rejects it).
+func count_metric(name: String) -> int:
+	match name:
+		"fragments":
+			return state.memory_fragments.size()
+		"shards":
+			return state.core_shards
+		"circuits":
+			return state.owned_circuits.size()
+		"secrets":
+			return SliceStats.secrets_found()
+	push_warning("Game.count_metric: unknown metric '%s'" % name)
+	return -1
 
 
 func all_flags(ids: PackedStringArray) -> bool:
