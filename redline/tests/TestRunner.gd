@@ -47,6 +47,8 @@ func _run() -> void:
 			await suite.before_each()
 			await suite.call(method_name)
 			await suite.after_each()
+			# No scene (sequence, memory) or cinematic mode leaks into the next test.
+			CinematicMode.teardown()
 			var ok := suite.failures.size() == before
 			if not ok:
 				failed += 1
