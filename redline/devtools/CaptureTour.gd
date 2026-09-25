@@ -5,9 +5,16 @@ extends Node
 
 const MAIN := preload("res://Main.tscn")
 
+## Settings the tour may save (--tour=ui closes the SettingsMenu, which always
+## saves): never the developer's user://settings.cfg.
+const TOUR_SETTINGS_PATH := "user://capture_tour_settings.cfg"
+const _M8_SETTING_KEYS := ["subtitle_size", "subtitle_background", "speaker_labels", "subtitle_speed",
+	"cinematic_skip_hold", "memories_at_anchors"]
+
 var _out_dir := "user://captures"
 var _tour_name := "movement"
 var _input := ScriptedInputSource.new()
+var _settings_snapshot := {}
 
 
 func _ready() -> void:
@@ -16,6 +23,7 @@ func _ready() -> void:
 			_out_dir = arg.trim_prefix("--out=")
 		elif arg.begins_with("--tour="):
 			_tour_name = arg.trim_prefix("--tour=")
+	_settings_snapshot = prepare_session(_tour_name, OS.get_cmdline_user_args())
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	var main := MAIN.instantiate()
 	if _tour_name != "ui":
@@ -31,6 +39,58 @@ func _ready() -> void:
 		_ui_tour.call_deferred()
 	else:
 		_tour.call_deferred()
+
+
+## M8 session setup, before Main loads (T07):
+## - cinematics: INSTANT for every tour but `story`, unless `--cinematics=`
+##   says otherwise. Tours run windowed (PLAY by default), so the Wake opening
+##   would black out uc_Wake_start and the "mid-fight" shots would land inside
+##   the first-view boss intros; INSTANT keeps the M7 review frames.
+## - settings: the six M8 subtitle/scene settings take their defaults for the
+##   session (a --subtitle-size=N override still applies), and Settings saves
+##   to TOUR_SETTINGS_PATH, so neither the developer's settings leak into the
+##   frames nor the tour into the developer's settings.
+## Returns the snapshot restore_session() puts back.
+static func prepare_session(tour: String, args: PackedStringArray) -> Dictionary:
+	var snap := {"_path": Settings._path}
+	for k in _M8_SETTING_KEYS:
+		snap[k] = Settings.get(k)
+	Settings._path = TOUR_SETTINGS_PATH
+	Settings.subtitle_size = 0
+	Settings.subtitle_background = 1
+	Settings.speaker_labels = true
+	Settings.subtitle_speed = 0
+	Settings.cinematic_skip_hold = true
+	Settings.memories_at_anchors = true
+	var mode := tour_cinematic_mode(tour, args)
+	if mode >= 0:
+		CinematicMode.set_mode(mode as CinematicMode.Mode)
+	return snap
+
+
+## The mode a tour forces, or -1 to leave CinematicMode alone (story). An
+## explicit --cinematics=play|auto|instant always wins.
+static func tour_cinematic_mode(tour: String, args: PackedStringArray) -> int:
+	for a in args:
+		if a.begins_with("--cinematics="):
+			match a.trim_prefix("--cinematics="):
+				"play":
+					return CinematicMode.Mode.PLAY
+				"auto":
+					return CinematicMode.Mode.AUTO
+				"instant":
+					return CinematicMode.Mode.INSTANT
+	return -1 if tour == "story" else CinematicMode.Mode.INSTANT
+
+
+static func restore_session(snap: Dictionary) -> void:
+	for k in snap:
+		Settings.set(k, snap[k])
+
+
+func _quit() -> void:
+	restore_session(_settings_snapshot)
+	get_tree().quit()
 
 
 func _frames(n: int) -> void:
@@ -107,7 +167,7 @@ func _tour() -> void:
 	_input.down_held = true
 	await _frames(8)
 	await _shot("07_tuning_panel_slide_dust")
-	get_tree().quit()
+	_quit()
 
 
 func _combat_tour() -> void:
@@ -177,7 +237,7 @@ func _combat_tour() -> void:
 				return (e as Enemy).data.flying and (e as Enemy).ai == Enemy.AI.WINDUP and (e as Enemy).ai_time > 0.4).is_empty():
 			break
 	await _shot("c05_drone_aim_critical_core")
-	get_tree().quit()
+	_quit()
 
 
 ## One shot per spawn marker of every slice room, plus the boss mid-fight.
@@ -207,7 +267,7 @@ func _slice_tour() -> void:
 	_input.move_x = 0
 	await _frames(150)
 	await _shot("s_boss_fight")
-	get_tree().quit()
+	_quit()
 
 
 ## M7: one shot per spawn marker of every Undercity room (for the visual
@@ -237,7 +297,7 @@ func _undercity_tour() -> void:
 	var bay := "%s/%s.tscn" % [dir, "CollectorBay"]
 	if not _has_collector_arena(bay):
 		print("PENDING: CollectorBay has no Collector arena yet")
-		get_tree().quit()
+		_quit()
 		return
 	SceneRouter.goto_room(bay, &"from_lift")
 	var room := SceneRouter.current_room as Room
@@ -247,7 +307,7 @@ func _undercity_tour() -> void:
 	_input.move_x = 0
 	await _frames(150)
 	await _shot("uc_collector_fight")
-	get_tree().quit()
+	_quit()
 
 
 func _has_collector_arena(path: String) -> bool:
@@ -322,7 +382,7 @@ func _ui_tour() -> void:
 	DirAccess.remove_absolute(Playtest.session_path)
 	await _map_shots(menus)
 	await _dev_shots(menus)
-	get_tree().quit()
+	_quit()
 
 
 ## M6 dev tools: hitbox view + perf graph over a live fight, then the console.
