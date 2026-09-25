@@ -62,10 +62,9 @@ func test_menus_open_and_close() -> void:
 
 func test_slice_totals_count_content() -> void:
 	var t := SliceStats.totals()
-	# M7 rooms add fragments in any order (MaintenanceShaft, SecurityStation),
-	# so this is a range plus integrity until the district lands (then == 5).
+	# Every M7 room has landed: mf_lowlight_01..04 and mf_undercity_01.
 	var fragments := int(t["fragments"])
-	check(fragments >= 3, "expected >= 3 memory fragments in the slice, found %d" % fragments)
+	check(fragments == 5, "expected exactly 5 memory fragments in Act I, found %d" % fragments)
 	var lore_files := 0
 	for f in DirAccess.get_files_at("res://data/lore"):
 		if f.begins_with("mf_") and f.ends_with(".tres"):

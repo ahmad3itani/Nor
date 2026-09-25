@@ -26,3 +26,17 @@ func test_flag_lint_catches_dangling_and_bad_conditions() -> void:
 	check(Array(v.errors).any(func(e: String) -> bool: return e.contains("never_set_anywhere")), "dangling flag not reported")
 	check(Array(v.errors).any(func(e: String) -> bool: return e.contains("unknown condition")), "bad condition not reported")
 	check(Array(v.warnings).any(func(w: String) -> bool: return w.contains("set_but_unread")), "unused flag not warned")
+
+
+## D6: every stub FlagDeclaration the world skeleton (D0) planted for a flag
+## whose producer had not landed yet (got_pulse_blade, collector_drone_defeated,
+## lowlight_power_rerouted, chase_rainline_done, shortcut_smuggler_route) is
+## gone, replaced by the real producer in its room.
+func test_no_stub_declarations_left() -> void:
+	var v := ContentValidator.new().run()
+	var stubs := Array(v.warnings).filter(func(w: String) -> bool: return w.contains("stub flag declaration"))
+	check(stubs.is_empty(), "stub flag declarations left: %s" % str(stubs))
+	for path in SliceStats.room_paths():
+		var inst := (load(path) as PackedScene).instantiate()
+		check(inst.find_children("*", "FlagDeclaration", true, false).is_empty(), "%s still holds a FlagDeclaration" % path.get_file())
+		inst.free()
