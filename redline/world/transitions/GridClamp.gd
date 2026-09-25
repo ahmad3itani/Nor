@@ -302,7 +302,8 @@ func _hit_player() -> void:
 	if not _side_free(p, side, r):
 		side = -side
 	p.global_position.x = _out_x(side, half)
-	if not p.combat.dead and p.combat.hurt_invuln_timer <= 0.0:
+	# A scene that locks Rook never hurts him (he cannot move); he is only shoved.
+	if not p.combat.dead and not p.cinematic_lock and p.combat.hurt_invuln_timer <= 0.0:
 		var kb := Vector2(side * p.combat.config.hurt_knockback.x, p.combat.config.hurt_knockback.y)
 		p.combat.take_damage(1, kb, attack.hitstop if attack else 0.08, true, "clamp")
 	else:
