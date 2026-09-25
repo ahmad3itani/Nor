@@ -110,6 +110,7 @@ position = Vector2(660, 0)
 script = ExtResource("npc")
 profile = ExtResource("npc_mara")
 facing = -1
+present_when = PackedStringArray("!flag:act1_complete")
 
 [node name="OneWay1" type="StaticBody2D" parent="Geometry"]
 position = Vector2(700, -40)
@@ -616,7 +617,7 @@ position = Vector2(628, -18)
 script = ExtResource("decor")
 kind = 1
 size = Vector2(4, 20)
-color = Color(0.3, 0.24, 0.2, 1)
+color = Color(0.32, 0.24, 0.2, 1)
 accent = Color(1, 0.72, 0.4, 1)
 
 [node name="VellSignDry" type="Node2D" parent="Props"]
@@ -673,3 +674,10 @@ kind = 5
 size = Vector2(12, 10)
 color = Color(0.32, 0.24, 0.2, 1)
 accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="NPC_mara_door" type="Area2D" parent="Interactables"]
+position = Vector2(930, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_mara")
+facing = 1
+present_when = PackedStringArray("flag:act1_complete")

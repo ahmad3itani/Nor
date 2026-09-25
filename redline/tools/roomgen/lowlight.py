@@ -29,7 +29,9 @@ r.spawn("from_alley", 960, 0, -1)
 r.spawn("from_lift", 16, 0, 1)
 r.anchor("relay", 470, 0)
 r.npc("orr", 220, 0, 1)
-r.npc("mara", 660, 0, -1)
+# At her workbench through Act I; after the Act I close she watches the alley
+# door instead (NPC_mara_door below): one Mara, never two (present_when).
+r.npc("mara", 660, 0, -1, present_when=["!flag:act1_complete"])
 r.oneway(700, -40, 70)
 r.oneway(760, -80, 150)
 r.npc("vell", 850, -80, -1)
@@ -134,7 +136,7 @@ r.decor("lamp", 986, -2, 6, 60, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=watch)
 # NPC arcs shown in the world (§18 consequences through people, no meter):
 # Mara works late on the Dash module after Krail;
 bench = r.switch("MaraBench", "flag:arc_mara_krail")
-r.decor("lamp", 628, -18, 4, 20, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=bench)
+r.decor("lamp", 628, -18, 4, 20, WARM, SODIUM_WARM, parent=bench)
 # Vell's supply is cut: her sign gutters (VellSignLive above goes dark);
 dry = r.switch("VellSignDry", "flag:arc_vell_krail")
 r.neon(850, -150, 26, 8, GREEN, 2, True, parent=dry)
@@ -150,6 +152,12 @@ r.neon(220, -110, 22, 8, AMBER, 3, False, parent=onair)
 # The radio board's speaker, always there, so the relay_board '[E] Listen'
 # prompt has a visible source (Orr's desk set stays the radio at 250).
 r.decor("radio", 290, 0, 12, 10, WARM, "0.35, 0.88, 0.91, 1")
+# R8 post: Mara watches the alley door after the Act I close ("Then the Spire
+# sends someone worse"). Her box 918..942 is clear of the 900 pillar
+# (893..907) and of the from_alley spawn (960). Sequences never use a post
+# as an actor (SequenceValidation), and act1_close sets act1_complete under
+# its fade, after her line.
+r.npc("mara", 930, 0, 1, present_when=["flag:act1_complete"], name="NPC_mara_door")
 r.write(OUT + "Relay.tscn")
 
 # ---------------------------------------------------------------- Flooded Alley
