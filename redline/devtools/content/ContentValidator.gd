@@ -17,16 +17,29 @@ const WORLD_ROOM_DIRS: PackedStringArray = ["res://world/rooms/lowlight", "res:/
 ## Menu ids MenuHost knows besides shop_<id>.
 const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map", "dev"]
 ## Flags set by code rather than data (kept here so the flag lint knows them).
-const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen", "core_hud_hidden"]
+## act1_complete: Game.load_game derives it for pre-M8 saves that passed the
+## Act I end (the act1_close sequence also sets it in data).
+const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen", "core_hud_hidden",
+	"act1_complete"]
 ## Flags only there for bookkeeping; never "unused".
-const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_"]
+## M8 story bookkeeping (seen sequences, memories viewed, endings seen, arc
+## stages/beats, threads) is read by code (trackers, journal, dev tools).
+const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_", "seen_seq_", "mem_seen_", "mem_detail_",
+	"ending_seen_", "arc_", "arcbeat_", "thread_"]
+## Metrics a `count:<metric>:<n>` condition may name (Game.count_metric).
+const COUNT_METRICS: PackedStringArray = ["fragments", "shards", "circuits", "secrets"]
 
 var errors: PackedStringArray = []
 var warnings: PackedStringArray = []
 ## room id -> [{id, kind}] for the collectible tracker.
 var collectibles: Dictionary = {}
-var produced: Dictionary = {}  # flag -> where
-var consumed: Dictionary = {}  # flag -> where
+var produced: Dictionary = {}  # flag -> file name of the first producer
+var consumed: Dictionary = {}  # flag -> file name of the first consumer
+## flag -> Array[String] of the full res:// paths of every producer / consumer,
+## in registration order (cross-area rules need the directory, not just the
+## first file name).
+var producers: Dictionary = {}
+var consumers: Dictionary = {}
 var stats: Dictionary = {"files": 0, "rooms": 0, "resources": 0}
 var _require_on_map: bool = true
 
@@ -57,6 +70,62 @@ func check_room(path: String, require_on_map: bool = true) -> ContentValidator:
 	room.free()
 	validate_flags()
 	return self
+
+
+## Test API: lint one data resource as validate_resources() would (validate(),
+## the typed branches, the resource content protocol). Tests pass an in-memory
+## resource with a made-up path, then call validate_flags() and read `errors`
+## and `warnings`; nothing is written under res://data.
+func check_resource(res: Resource, path: String) -> void:
+	if res.has_method("validate"):
+		for e: String in res.validate():
+			errors.append("%s: %s" % [path.get_file(), e])
+	if res is DialogueData:
+		_check_dialogue(res, path, _catalog())
+	elif res is NpcProfile:
+		for rule in (res as NpcProfile).rules:
+			_consume_list(rule.requires_flags, path)
+			_consume_list(rule.forbids_flags, path)
+			for c in rule.requires_conditions:
+				_consume_condition(c, path)
+			if rule.dialogue:
+				_check_dialogue(rule.dialogue, path, _catalog())
+		produced["talks_%s" % (res as NpcProfile).npc_id] = "NPC.interact"
+	elif res is QuestData:
+		var q := res as QuestData
+		_consume(q.start_flag, path)
+		for s in q.stages:
+			_consume_list(s.complete_flags, path)
+			if s.map_room != "" and Game.world_map.room(s.map_room) == null:
+				errors.append("%s: map note room '%s' is not on the world map" % [path.get_file(), s.map_room])
+		_produce(q.complete_flag, path)
+		for f in q.reward_flags:
+			_produce(f, path)
+		if q.reward_circuit != "" and _catalog().circuit(q.reward_circuit) == null:
+			errors.append("%s: reward circuit '%s' not in catalog" % [path.get_file(), q.reward_circuit])
+	elif res is ShopData:
+		for item in (res as ShopData).items:
+			_consume(item.requires_flag, path)
+			match item.kind:
+				ShopItem.Kind.CIRCUIT:
+					if _catalog().circuit(item.item_id) == null:
+						errors.append("%s: circuit '%s' not in catalog" % [path.get_file(), item.item_id])
+				ShopItem.Kind.WEAPON:
+					if _catalog().weapon(item.item_id) == null:
+						errors.append("%s: weapon '%s' not in catalog" % [path.get_file(), item.item_id])
+				_:
+					_produce(item.upgrade_flag, path)
+	# Resource content protocol (M8): a separate `if` after the typed
+	# branches, so any resource (sequences, arcs, endings, memory scenes,
+	# hub music) lints itself without a new branch here.
+	if res.has_method("content_flags"):
+		_register_flags(res.content_flags(), path)
+	if res.has_method("content_check"):
+		for e: String in res.content_check():
+			if e.begins_with("WARN: "):
+				warnings.append("%s: %s" % [path.get_file(), e.trim_prefix("WARN: ")])
+			else:
+				errors.append("%s: %s" % [path.get_file(), e])
 
 
 func ok() -> bool:
@@ -100,53 +169,24 @@ static func _exists(ref: String) -> bool:
 # --- Data resources ---------------------------------------------------------------
 
 func validate_resources() -> void:
-	var catalog: ItemCatalog = load("res://data/catalog.tres")
 	for path in _files("res://data", ["tres"]):
 		var res := load(path)
 		stats["resources"] += 1
 		if res == null:
 			errors.append("resource failed to load: %s" % path)
 			continue
-		if res.has_method("validate"):
-			for e: String in res.validate():
-				errors.append("%s: %s" % [path.get_file(), e])
-		if res is DialogueData:
-			_check_dialogue(res, path, catalog)
-		elif res is NpcProfile:
-			for rule in (res as NpcProfile).rules:
-				_consume_list(rule.requires_flags, path)
-				_consume_list(rule.forbids_flags, path)
-				for c in rule.requires_conditions:
-					_consume_condition(c, path)
-				if rule.dialogue:
-					_check_dialogue(rule.dialogue, path, catalog)
-			produced["talks_%s" % (res as NpcProfile).npc_id] = "NPC.interact"
-		elif res is QuestData:
-			var q := res as QuestData
-			_consume(q.start_flag, path)
-			for s in q.stages:
-				_consume_list(s.complete_flags, path)
-				if s.map_room != "" and Game.world_map.room(s.map_room) == null:
-					errors.append("%s: map note room '%s' is not on the world map" % [path.get_file(), s.map_room])
-			_produce(q.complete_flag, path)
-			for f in q.reward_flags:
-				_produce(f, path)
-			if q.reward_circuit != "" and catalog.circuit(q.reward_circuit) == null:
-				errors.append("%s: reward circuit '%s' not in catalog" % [path.get_file(), q.reward_circuit])
-		elif res is ShopData:
-			for item in (res as ShopData).items:
-				_consume(item.requires_flag, path)
-				match item.kind:
-					ShopItem.Kind.CIRCUIT:
-						if catalog.circuit(item.item_id) == null:
-							errors.append("%s: circuit '%s' not in catalog" % [path.get_file(), item.item_id])
-					ShopItem.Kind.WEAPON:
-						if catalog.weapon(item.item_id) == null:
-							errors.append("%s: weapon '%s' not in catalog" % [path.get_file(), item.item_id])
-					_:
-						_produce(item.upgrade_flag, path)
+		check_resource(res, path)
 	for d in Game.world_map.districts():
 		produced["map_charted_%s" % d] = "Game.map_reveal"
+
+
+var _catalog_cache: ItemCatalog = null
+
+
+func _catalog() -> ItemCatalog:
+	if _catalog_cache == null:
+		_catalog_cache = load("res://data/catalog.tres")
+	return _catalog_cache
 
 
 func _check_dialogue(d: DialogueData, where: String, catalog: ItemCatalog) -> void:
@@ -281,6 +321,13 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 ##     {produces: [...], consumes: [...], conditions: [...]}; must not depend
 ##     on _ready (rooms are validated without entering the tree).
 ## Messages are tagged "room <id>: <node>: <message>".
+##
+## The resource content protocol (M8, see check_resource). Binding signatures:
+##   func content_flags() -> Dictionary      same shape as the node protocol
+##   func content_check() -> PackedStringArray
+##     no room argument, so it never collides with a node's content_errors;
+##     "WARN: ..." entries become warnings, the rest errors.
+## Messages are tagged "<file name>: <message>".
 func _check_protocol(n: Node, room: Room, tag: String, path: String) -> void:
 	if n.has_method("content_errors"):
 		for e: String in n.content_errors(room):
@@ -289,13 +336,17 @@ func _check_protocol(n: Node, room: Room, tag: String, path: String) -> void:
 			else:
 				errors.append("%s: %s: %s" % [tag, n.name, e])
 	if n.has_method("content_flags"):
-		var d: Dictionary = n.content_flags()
-		for f in d.get("produces", []):
-			_produce(String(f), path)
-		for f in d.get("consumes", []):
-			_consume(String(f), path)
-		for c in d.get("conditions", []):
-			_consume_condition(String(c), path)
+		_register_flags(n.content_flags(), path)
+
+
+## Records a content_flags() dictionary {produces, consumes, conditions}.
+func _register_flags(d: Dictionary, path: String) -> void:
+	for f in d.get("produces", []):
+		_produce(String(f), path)
+	for f in d.get("consumes", []):
+		_consume(String(f), path)
+	for c in d.get("conditions", []):
+		_consume_condition(String(c), path)
 
 
 # --- Flags (quest/dialogue validator) ------------------------------------------
@@ -315,13 +366,25 @@ func validate_flags() -> void:
 
 
 func _produce(flag: String, where: String) -> void:
-	if flag != "" and not produced.has(flag):
+	if flag == "":
+		return
+	if not produced.has(flag):
 		produced[flag] = where.get_file()
+	if not producers.has(flag):
+		var paths: Array[String] = []
+		producers[flag] = paths
+	producers[flag].append(where)
 
 
 func _consume(flag: String, where: String) -> void:
-	if flag != "" and not consumed.has(flag):
+	if flag == "":
+		return
+	if not consumed.has(flag):
 		consumed[flag] = where.get_file()
+	if not consumers.has(flag):
+		var paths: Array[String] = []
+		consumers[flag] = paths
+	consumers[flag].append(where)
 
 
 func _consume_list(flags: PackedStringArray, where: String) -> void:
@@ -329,13 +392,31 @@ func _consume_list(flags: PackedStringArray, where: String) -> void:
 		_consume(f, where)
 
 
-## Conditions use flags via "flag:x" and "atleast:x:n" (see Game.check_condition).
+## Conditions use flags via "flag:x" and "atleast:x:n" (see Game.check_condition);
+## "count:<metric>:<n>" reads a progress count and consumes no flag.
 func _consume_condition(expr: String, where: String) -> void:
 	var e := expr.trim_prefix("!")
 	if e.begins_with("flag:") or e.begins_with("atleast:"):
 		_consume(e.get_slice(":", 1), where)
+	elif e.begins_with("count:"):
+		if not COUNT_METRICS.has(e.get_slice(":", 1)):
+			errors.append("%s: unknown count metric in condition '%s'" % [where.get_file(), expr])
 	elif e != "" and not (e.begins_with("ability:") or e.begins_with("collected:")):
 		errors.append("%s: unknown condition '%s'" % [where.get_file(), expr])
+
+
+## The same grammar as _consume_condition, for resources' content_check()
+## (one grammar, no AND/OR: D-119). "" is valid (always true).
+static func is_valid_condition(expr: String) -> bool:
+	var e := expr.trim_prefix("!")
+	if e == "":
+		return true
+	if e.begins_with("count:"):
+		return COUNT_METRICS.has(e.get_slice(":", 1)) and e.get_slice_count(":") == 3 and e.get_slice(":", 2).is_valid_int()
+	for kind in ["flag:", "atleast:", "ability:", "collected:"]:
+		if e.begins_with(kind):
+			return e.get_slice(":", 1) != ""
+	return false
 
 
 # --- Report ---------------------------------------------------------------------

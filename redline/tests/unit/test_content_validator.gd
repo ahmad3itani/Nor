@@ -40,3 +40,59 @@ func test_no_stub_declarations_left() -> void:
 		var inst := (load(path) as PackedScene).instantiate()
 		check(inst.find_children("*", "FlagDeclaration", true, false).is_empty(), "%s still holds a FlagDeclaration" % path.get_file())
 		inst.free()
+
+
+## M8 resource content protocol: a data resource declares its flags through
+## content_flags() and lints itself through content_check(); check_resource
+## is the per-resource test entry point (nothing written under res://data).
+class ProtocolRes extends Resource:
+	var produces: Array = ["proto_made"]
+	var consumes: Array = ["proto_needed"]
+	var conditions: Array = ["flag:proto_cond"]
+
+	func content_flags() -> Dictionary:
+		return {"produces": produces, "consumes": consumes, "conditions": conditions}
+
+	func content_check() -> PackedStringArray:
+		return PackedStringArray(["broken thing", "WARN: odd thing"])
+
+
+func test_resource_protocol_registers_flags() -> void:
+	var v := ContentValidator.new()
+	v.check_resource(ProtocolRes.new(), "res://data/test/x.tres")
+	v.validate_flags()
+	check(v.produced.get("proto_made") == "x.tres", "content_flags produces not registered: %s" % v.produced)
+	check(v.consumed.get("proto_needed") == "x.tres" and v.consumed.get("proto_cond") == "x.tres",
+		"content_flags consumes/conditions not registered: %s" % v.consumed)
+	check(v.errors.has("x.tres: broken thing"), "content_check error not routed: %s" % v.errors)
+	check(v.warnings.has("x.tres: odd thing"), "content_check WARN not routed: %s" % v.warnings)
+	check(not v.errors.has("x.tres: WARN: odd thing"), "a WARN line must not be an error")
+	check(Array(v.errors).any(func(e: String) -> bool: return e.contains("proto_needed") and e.contains("nothing sets it")),
+		"a consumed flag nobody sets must be a dangling-flag error: %s" % v.errors)
+
+
+func test_count_condition_lint() -> void:
+	var v := ContentValidator.new()
+	v._consume_condition("count:secrets:5", "res://data/test/x.tres")
+	v._consume_condition("!count:fragments:2", "res://data/test/x.tres")
+	check(v.errors.is_empty() and v.consumed.is_empty(), "count: conditions are valid and consume no flag: %s %s" % [v.errors, v.consumed])
+	v._consume_condition("count:bogus:1", "res://data/test/x.tres")
+	check(v.errors.size() == 1 and v.errors[0].contains("unknown count metric"), "count:bogus must be an error: %s" % v.errors)
+	check(ContentValidator.is_valid_condition("count:secrets:5") and ContentValidator.is_valid_condition("!flag:a")
+		and ContentValidator.is_valid_condition("") and ContentValidator.is_valid_condition("atleast:talks_orr:2"),
+		"is_valid_condition rejects valid expressions")
+	check(not ContentValidator.is_valid_condition("count:bogus:1") and not ContentValidator.is_valid_condition("flg:typo")
+		and not ContentValidator.is_valid_condition("count:shards:x") and not ContentValidator.is_valid_condition("flag:"),
+		"is_valid_condition accepts invalid expressions")
+
+
+func test_producers_multimap() -> void:
+	var v := ContentValidator.new()
+	v.check_resource(ProtocolRes.new(), "res://data/test/first.tres")
+	v.check_resource(ProtocolRes.new(), "res://data/other/second.tres")
+	check(v.produced.get("proto_made") == "first.tres", "produced keeps the first producer's file name: %s" % v.produced)
+	check(v.producers.get("proto_made") == ["res://data/test/first.tres", "res://data/other/second.tres"],
+		"producers must list every full path in order: %s" % v.producers)
+	check(v.consumed.get("proto_needed") == "first.tres", "consumed keeps the first consumer's file name")
+	check(v.consumers.get("proto_needed") == ["res://data/test/first.tres", "res://data/other/second.tres"],
+		"consumers must list every full path in order: %s" % v.consumers)
