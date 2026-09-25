@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="HubMusicLayers" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://audio/HubMusicLayer.gd" id="1_layer"]
+[ext_resource type="Script" path="res://audio/HubMusicLayers.gd" id="2_layers"]
+
+[sub_resource type="Resource" id="Layer_dead_air"]
+script = ExtResource("1_layer")
+condition = "flag:dead_air_complete"
+layer = &"arp"
+volume = 0.35
+
+[sub_resource type="Resource" id="Layer_krail"]
+script = ExtResource("1_layer")
+condition = "flag:warden_krail_defeated"
+layer = &"bass"
+volume = 0.45
+
+[sub_resource type="Resource" id="Layer_act1"]
+script = ExtResource("1_layer")
+condition = "flag:act1_complete"
+layer = &"lead"
+volume = 0.2
+
+[resource]
+script = ExtResource("2_layers")
+layers = Array[ExtResource("1_layer")]([SubResource("Layer_dead_air"), SubResource("Layer_krail"), SubResource("Layer_act1")])

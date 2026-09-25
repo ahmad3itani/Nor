@@ -22,6 +22,8 @@ func after_each() -> void:
 		for f in DirAccess.get_files_at(TEST_SAVE_DIR):
 			DirAccess.remove_absolute("%s/%s" % [TEST_SAVE_DIR, f])
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
+	MusicDirector.clear_override()
+	MusicDirector._memory_active = false
 	Game.new_game()
 
 
@@ -85,6 +87,50 @@ func test_set_flag_type_change_safe() -> void:
 	Game.set_flag("b", true)
 	Game.set_flag("b", 1)
 	check(_changes_for("b") == 2, "bool -> int is a type change and emits")
+
+
+func test_music_override_and_memory_state_hook() -> void:
+	check(MusicDirector.State.MEMORY == 7, "MEMORY must be appended last (7)")
+	check(MusicDirector.MIX[MusicDirector.State.MEMORY] == {&"pad": 0.35}, "MEMORY mix")
+	var root := Node2D.new()
+	add_child(root)
+	SceneRouter.register_world_root(root)
+	SceneRouter.goto_room("res://world/rooms/lowlight/Relay.tscn", &"start")
+	await physics_frames(3)
+	check(MusicDirector._pick_state() == MusicDirector.State.HUB, "Relay should pick HUB, got %d" % MusicDirector._pick_state())
+	MusicDirector.set_override(MusicDirector.State.SILENT)
+	check(MusicDirector._pick_state() == MusicDirector.State.SILENT, "override must win over HUB")
+	MusicDirector._memory_active = true
+	check(MusicDirector._pick_state() == MusicDirector.State.SILENT, "override must win over MEMORY too")
+	MusicDirector.clear_override()
+	check(MusicDirector._pick_state() == MusicDirector.State.MEMORY, "memory_active picks MEMORY")
+	MusicDirector._memory_active = false
+	check(MusicDirector._pick_state() == MusicDirector.State.HUB, "clear_override restores HUB")
+	SceneRouter.current_room = null
+	SceneRouter.world_root = null
+	root.queue_free()
+	await physics_frames(2)
+
+
+func test_hub_music_layers_data() -> void:
+	var hub := MusicDirector.State.HUB
+	check(MusicDirector._mix_for(hub) == {&"pad": 0.7}, "fresh hub: pad only, got %s" % MusicDirector._mix_for(hub))
+	Game.set_flag("dead_air_complete")
+	check(MusicDirector._mix_for(hub) == {&"pad": 0.7, &"arp": 0.35}, "dead air adds arp 0.35: %s" % MusicDirector._mix_for(hub))
+	Game.set_flag("warden_krail_defeated")
+	check(MusicDirector._mix_for(hub) == {&"pad": 0.7, &"arp": 0.35, &"bass": 0.45}, "krail adds bass 0.45: %s" % MusicDirector._mix_for(hub))
+	Game.set_flag("act1_complete")
+	check(MusicDirector._mix_for(hub) == {&"pad": 0.7, &"arp": 0.35, &"bass": 0.45, &"lead": 0.2},
+		"act1_complete adds lead 0.2: %s" % MusicDirector._mix_for(hub))
+	check(MusicDirector._mix_for(MusicDirector.State.EXPLORE) == MusicDirector.MIX[MusicDirector.State.EXPLORE], "only HUB grows")
+	var v := ContentValidator.new()
+	v.check_resource(load("res://data/audio/hub_music.tres"), "res://data/audio/hub_music.tres")
+	check(v.errors.is_empty() and v.consumed.has("act1_complete") and v.consumed.has("dead_air_complete"),
+		"hub_music.tres lints clean and consumes its flags: %s %s" % [v.errors, v.consumed])
+	var bad := HubMusicLayer.new()
+	bad.condition = "flg:x"
+	bad.layer = &"kazoo"
+	check(bad.content_check().size() == 2, "a bad condition and a bad stem are both reported")
 
 
 func test_data_dir_remap_names() -> void:

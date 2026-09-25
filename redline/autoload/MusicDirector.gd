@@ -4,7 +4,9 @@ extends Node
 ## bosses add everything, and a critical core ducks the mix under the
 ## heartbeat. Music never sits at full intensity for long.
 
-enum State { SILENT, TITLE, HUB, EXPLORE, FLOW, BOSS, AFTERMATH }
+## MEMORY stays last: sequences store states as ints, so existing values
+## never move.
+enum State { SILENT, TITLE, HUB, EXPLORE, FLOW, BOSS, AFTERMATH, MEMORY }
 
 const LAYERS: Array[StringName] = [&"pad", &"bass", &"drums", &"arp", &"lead"]
 const MIX := {
@@ -15,6 +17,8 @@ const MIX := {
 	State.FLOW: {&"pad": 0.5, &"bass": 0.8, &"drums": 0.7, &"arp": 0.45},
 	State.BOSS: {&"pad": 0.5, &"bass": 0.9, &"drums": 0.9, &"arp": 0.5, &"lead": 0.7},
 	State.AFTERMATH: {&"pad": 0.6},
+	# Memory scenes: the world drops away to a thin pad (bible §18/§28).
+	State.MEMORY: {&"pad": 0.35},
 }
 const FADE_TIME := 1.6
 const AFTERMATH_TIME := 18.0
@@ -26,11 +30,21 @@ var _ready_streams: bool = false
 var _boss_active: bool = false
 var _aftermath: float = 0.0
 var _district: String = ""
+## A scripted state a sequence forces (SeqMusic); -1 = none. Wins over
+## everything, so a cinematic can hold silence through a boss room.
+var _override: int = -1
+## True while a memory scene plays. Wired to the memory signals by the memory
+## player's task (T04); declared here so the state machine owns the rule.
+var _memory_active: bool = false
+## Relay growth table (D-125). Loaded in _ready, not preloaded (CLAUDE.md
+## typed-const pitfall).
+var _hub_layers: HubMusicLayers = null
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_ensure_bus()
+	_hub_layers = load("res://data/audio/hub_music.tres") as HubMusicLayers
 	EventBus.room_entered.connect(func(d: String, _r: String) -> void: _district = d)
 	EventBus.room_loaded.connect(func(_r: Node) -> void: _boss_active = false)
 	EventBus.boss_started.connect(func(_b: Node2D, _t: String) -> void: _boss_active = true)
@@ -72,7 +86,19 @@ func _process(delta: float) -> void:
 	_duck_for_critical()
 
 
+func set_override(s: int) -> void:
+	_override = s
+
+
+func clear_override() -> void:
+	_override = -1
+
+
 func _pick_state() -> State:
+	if _override >= 0:
+		return _override as State
+	if _memory_active:
+		return State.MEMORY
 	var room := SceneRouter.current_room
 	if room == null:
 		return State.SILENT
@@ -93,11 +119,8 @@ func _pick_state() -> State:
 ## The Relay's theme grows with the settlement (bible §13, §28).
 func _mix_for(s: State) -> Dictionary:
 	var mix: Dictionary = MIX[s].duplicate()
-	if s == State.HUB:
-		if Game.has_flag("dead_air_complete"):
-			mix[&"arp"] = 0.35
-		if Game.has_flag("warden_krail_defeated"):
-			mix[&"bass"] = 0.45
+	if s == State.HUB and _hub_layers != null:
+		mix.merge(_hub_layers.active_mix(), true)
 	return mix
 
 
