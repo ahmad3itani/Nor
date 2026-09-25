@@ -170,6 +170,42 @@ func test_shop_buying_rules() -> void:
 	menu.queue_free()
 
 
+## M7 D5a: Iko's black-market stock resolves through the catalog, and the
+## Bootleg Injector stacks with Mara's Spare Injector via its own flag.
+func test_iko_stock_registered() -> void:
+	var shop: ShopData = load("res://data/shops/shop_iko.tres")
+	check(shop.items.size() == 4, "Iko should stock 4 items, has %d" % shop.items.size())
+	for id in ["hot_wire", "live_current", "slipstream"]:
+		var c := Game.catalog.circuit(id) as CircuitData
+		check(c != null, "circuit %s not in catalog" % id)
+		if c:
+			check(c.validate().is_empty(), "%s: %s" % [id, ", ".join(c.validate())])
+			check(shop.items.any(func(i: ShopItem) -> bool: return i.kind == ShopItem.Kind.CIRCUIT and i.item_id == id), "Iko does not sell %s" % id)
+	check(Game.catalog.validate().is_empty(), "catalog: %s" % ", ".join(Game.catalog.validate()))
+	_own_and_equip("slipstream")
+	check(is_equal_approx(Game.circuit_mult(&"iframe_time"), 1.2), "slipstream iframe_time")
+	check(is_equal_approx(Game.circuit_value(&"runners_debt"), 0.25), "slipstream runners_debt")
+
+	var menu: MenuScreen = load("res://ui/menus/ShopMenu.gd").new()
+	add_child(menu)
+	var bootleg: ShopItem = shop.items[0]
+	check(bootleg.kind == ShopItem.Kind.UPGRADE and bootleg.upgrade_flag == "injector_upgrades_bootleg", "item 0 should be the Bootleg Injector")
+	check(menu.item_price(bootleg) == 260, "bootleg price")
+	var cap := player.combat.injector_capacity()
+	check(not menu.is_owned(bootleg), "bootleg owned before purchase")
+	Game.state.scrap_banked = 1000
+	check(menu.buy(bootleg), "bootleg purchase failed")
+	check(player.combat.injector_capacity() == cap + 1, "bootleg did not raise injector capacity")
+	check(menu.is_owned(bootleg), "bootleg should show as owned")
+	check(not menu.buy(bootleg), "bought the bootleg twice")
+	# Mara's Spare Injector is a separate item on a separate flag: it stacks.
+	var spare: ShopItem = (load("res://data/shops/shop_mara.tres") as ShopData).items[2]
+	check(not menu.is_owned(spare), "bootleg must not mark Mara's injector owned")
+	check(menu.buy(spare), "spare injector purchase failed")
+	check(player.combat.injector_capacity() == cap + 2, "injector upgrades should stack")
+	menu.queue_free()
+
+
 func test_menus_open_and_close_without_errors() -> void:
 	Game.grant_circuit("scavenger")
 	var loadout: MenuScreen = load("res://ui/menus/LoadoutMenu.gd").new()
