@@ -132,7 +132,7 @@ script = ExtResource("block")
 size = Vector2(464, 96)
 
 [node name="Floodgate" type="StaticBody2D" parent="Geometry"]
-position = Vector2(740, -420)
+position = Vector2(692, -420)
 script = ExtResource("block")
 size = Vector2(48, 396)
 
@@ -155,23 +155,24 @@ size = Vector2(56, 8)
 one_way = true
 
 [node name="OneWay5" type="StaticBody2D" parent="Geometry"]
-position = Vector2(1032, -192)
+position = Vector2(1064, -192)
 script = ExtResource("block")
-size = Vector2(24, 8)
+size = Vector2(40, 8)
 one_way = true
 
-[node name="DashLedge" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1060, -240)
 script = ExtResource("block")
-size = Vector2(44, 16)
+size = Vector2(44, 8)
+one_way = true
 
 [node name="Shrine" type="StaticBody2D" parent="Geometry"]
-position = Vector2(788, -240)
+position = Vector2(740, -176)
 script = ExtResource("block")
 size = Vector2(38, 16)
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
-position = Vector2(807, -240)
+position = Vector2(759, -176)
 script = ExtResource("collect")
 persist_id = "cs_smuggler_dash"
 kind = 2
@@ -180,7 +181,7 @@ kind = 2
 position = Vector2(950, -280)
 script = ExtResource("marker")
 kind = 0
-label = "Too wide to jump"
+label = "Too wide to jump (mostly)"
 resolved_when = "ability:dash"
 
 [node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
@@ -191,13 +192,13 @@ position = Vector2(-48, 0)
 script = ExtResource("block")
 size = Vector2(688, 96)
 
-[node name="OneWay6" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
 position = Vector2(320, -48)
 script = ExtResource("block")
 size = Vector2(56, 8)
 one_way = true
 
-[node name="OneWay7" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay8" type="StaticBody2D" parent="Geometry"]
 position = Vector2(264, -96)
 script = ExtResource("block")
 size = Vector2(48, 8)
@@ -275,7 +276,7 @@ facing = 1
 [node name="Flow1" type="Area2D" parent="Zones"]
 position = Vector2(300, -300)
 script = ExtResource("flow")
-size = Vector2(440, 300)
+size = Vector2(392, 300)
 
 [node name="Neon1" type="Node2D" parent="Props"]
 position = Vector2(2300, -150)
@@ -285,7 +286,7 @@ color = Color(0.7, 0.45, 1, 1)
 strokes = 3
 
 [node name="Neon2" type="Node2D" parent="Props"]
-position = Vector2(780, -460)
+position = Vector2(716, -460)
 script = ExtResource("neon")
 size = Vector2(20, 10)
 color = Color(0.7, 0.45, 1, 1)

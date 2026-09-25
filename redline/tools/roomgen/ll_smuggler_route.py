@@ -12,16 +12,18 @@ to the Apartment Stack ground floor (west). First run is east to west:
   Floodway    W1 run-jump, the 24 px pipe slot, W2 slide-jump over the
               culvert catch (a miss costs nothing and climbs out to P2's
               east end), W3 run-jump (a miss is a pit: 1 pip, back on P3).
-  Floodgate   the landmark; its 24 px slot is the way on. Above it, the
-              Dash shrine: a 234 px gap from DashLedge, inside the 237 px
-              dash-jump and outside a dodge-jump + air dodge (tested).
+  Floodgate   the landmark; its 24 px slot is the way on. On its face, the
+              Dash shrine 64 px below the DashLedge across 282 px: a
+              dash-jump lands with ~13 px to spare; a dodge-jump plus an air
+              dodge on any airborne frame falls ~13 px short (swept frame by
+              frame; only a whole-coyote-window take-off can still make it).
   Den         candle-warm safe house: Anchor, Iko (first meeting, then she
               moves to the Relay), the heavy-wall cache on the loft, and
               the lever that unbolts the hatch to the Stack. The Flow Zone
               covers only the den raid (x >= 300).
 
 Level metrics: data/level/traversal_default.tres (run-jump 103, slide-jump
-118, dodge-jump 149, dash-jump 237; steps <= 48 px). Tests:
+118, dodge-jump 149, dash-jump 237, all on the flat; steps <= 48 px). Tests:
 tests/unit/test_lowlight_m7_routes.gd (the test_smuggler_* functions).
 """
 import os, sys
@@ -60,23 +62,30 @@ s.block(1200, 0, 152, 16, "P3")
 
 # ---------------------------------------------------------------- Floodgate (landmark)
 s.block(640, 0, 464, 96, "Sill")
-s.block(740, -420, 48, 396, "Floodgate")  # 24 px slot under it, 48 px long
-# Steps up to the DashLedge. The ledge hangs 80 px over the -144 step (less
-# than Rook plus a jump), so that step is left from its west end. The top
-# step (x 1032..1056) sits just west of the ledge and as far from the shrine
-# as it can: at x 1000..1040 (the first layout) a dodge-jump + air dodge
-# from it collected the shard (the negative sweep, 165 px, 48 px up).
-for x, y, w in [(1048, -48, 56), (1000, -96, 40), (1048, -144, 56), (1032, -192, 24)]:
+s.block(692, -420, 48, 396, "Floodgate")  # 24 px slot under it, 48 px long
+# Dash gate. Distance alone cannot separate Dash from dodge at one height: a
+# dodge-jump plus an air dodge after the apex hang reaches ~229 px on the flat
+# against the dash-jump's 242 (the old 234 px shrine at the ledge's height
+# leaked). A drop widens the split, because the dash keeps its speed while
+# falling and an air dodge only buys 13 flat frames: 64 px down, the
+# dash-jump reaches ~289 px and the best dodge ~258. So the shrine sits 64 px
+# below the ledge across 282 px (margins ~13 px each way, swept frame by
+# frame in test_smuggler_dash_shard_negative_sweep, at the lip and 8 px
+# past it). Taking off at the very end of the coyote window (16-20 px past
+# the lip) plus a frame-exact air dodge can still land: a mastery trick the
+# map marker owns up to ("(mostly)", K-48).
+# Steps up to the DashLedge. The ledge and the top step are one-ways stacked
+# over the -144 step (jumped up through), so every take-off at or above the
+# shrine's height is at least 282 px from it; the -144 step is 32 px below
+# the shrine and 270 px away, ~50 px out of a dodge's reach.
+for x, y, w in [(1048, -48, 56), (1000, -96, 40), (1048, -144, 56), (1064, -192, 40)]:
     s.oneway(x, y, w)
-s.block(1060, -240, 44, 16, "DashLedge")
-# Dash shrine on the floodgate's face: gap 826..1060 = 234 px, the widest
-# inside the 237 px dash-jump (plan fallback 1); 206 px from the top step.
-# Measured: the best dodge-jump + air dodge stops about 13 px short of the
-# shard from either take-off (test_smuggler_dash_shard_negative_sweep).
-# A miss drops harmlessly onto the Sill.
-s.block(788, -240, 38, 16, "Shrine")
-s.collectible(2, "cs_smuggler_dash", 807, -240)
-s.mapmarker(950, -280, "Too wide to jump", "ability:dash")
+s.oneway(1060, -240, 44)  # DashLedge
+# Dash shrine on the floodgate's face, 740..778 at -176. A miss drops
+# harmlessly onto the Sill.
+s.block(740, -176, 38, 16, "Shrine")
+s.collectible(2, "cs_smuggler_dash", 759, -176)
+s.mapmarker(950, -280, "Too wide to jump (mostly)", "ability:dash")
 s.enemy("ScoutDrone", 900, -150)
 
 # ---------------------------------------------------------------- Den (safe house)
@@ -97,11 +106,11 @@ s.npc("iko", 150, 0, 1, present_when=["!flag:met_iko"])
 s.enemy("Needle", 380, -2, 1)
 s.enemy("Shield", 520, -2, 1)  # the den raid
 # The raid only; the Anchor / Iko / lever side (x < 300) is safe.
-s.flow(300, -300, 440, 300)
+s.flow(300, -300, 392, 300)
 
 # ---------------------------------------------------------------- Dressing
 # Violet chalk eyes mark both ends of the route (and the floodgate).
-for x, y in [(2300, -150), (780, -460), (-20, -130)]:
+for x, y in [(2300, -150), (716, -460), (-20, -130)]:
     s.neon(x, y, 20, 10, VIOLET, 3)
 # Candle-warm den: low amber lamps, crates of contraband, a bench.
 WARM = "0.32, 0.24, 0.2, 1"
