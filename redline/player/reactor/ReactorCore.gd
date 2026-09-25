@@ -101,6 +101,9 @@ func _physics_process(delta: float) -> void:
 	_prune_zones()
 	if player.combat.dead or player.hitstop_timer > 0.0:
 		return
+	# A scripted sequence holds Rook: the Core never drains under a lock.
+	if Cinematics.locks_input():
+		return
 	if not in_flow():
 		_burnout_timer = 0.0
 		return

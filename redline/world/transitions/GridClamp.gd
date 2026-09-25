@@ -189,7 +189,9 @@ func _physics_process(delta: float) -> void:
 	if state != State.READY or rearm_left > 0.0:
 		queue_redraw()
 	state_time += delta
-	_armed_time += delta
+	# The teaching line counts from the fight start, not from under the intro.
+	if not Cinematics.locks_input():
+		_armed_time += delta
 	rearm_left = maxf(rearm_left - delta, 0.0)
 	if boss != null and not is_instance_valid(boss):
 		boss = null
