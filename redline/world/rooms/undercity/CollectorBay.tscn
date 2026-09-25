@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://interactables/BreakableWall.gd" id="wall"]
 [ext_resource type="Script" path="res://interactables/Collectible.gd" id="collect"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
@@ -12,7 +13,6 @@
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/ServicePistolDrop.tscn" id="scene_ServicePistolDrop"]
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
-[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
 
@@ -95,7 +95,7 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/undercity/EscapeTunnel.tscn"
 target_entry = &"from_bay"
-requires_flag = "collector_drone_defeated"
+requires_flag = "got_service_pistol"
 
 [node name="ArenaGateLeft" type="StaticBody2D" parent="Geometry"]
 position = Vector2(40, -92)
@@ -107,7 +107,7 @@ position = Vector2(448, -96)
 script = ExtResource("gate")
 size = Vector2(16, 96)
 closed = true
-open_flag = "collector_drone_defeated"
+open_flag = "got_service_pistol"
 
 [node name="OneWay1" type="StaticBody2D" parent="Geometry"]
 position = Vector2(96, -40)
@@ -127,11 +127,24 @@ script = ExtResource("block")
 size = Vector2(64, 8)
 one_way = true
 
-[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+[node name="VentFloor" type="StaticBody2D" parent="Geometry"]
 position = Vector2(16, -92)
 script = ExtResource("block")
-size = Vector2(56, 8)
+size = Vector2(40, 8)
+
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(56, -92)
+script = ExtResource("block")
+size = Vector2(16, 8)
 one_way = true
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(30, -120)
+script = ExtResource("neon")
+size = Vector2(4, 20)
+color = Color(0.62, 0.8, 0.72, 1)
+strokes = 1
+broken = true
 
 [node name="Breakable1" type="StaticBody2D" parent="Geometry"]
 position = Vector2(56, -136)
@@ -216,14 +229,14 @@ boss_subtitle = "Civic Recovery Unit C-00"
 intro_time = 2.6
 reward_position = Vector2(252, 0)
 boss_path = NodePath("../../Enemies/CollectorDrone1")
-gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
+gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]
 reward_scene = ExtResource("scene_ServicePistolDrop")
 
 [node name="BayLit" type="Node2D" parent="Props"]
 script = ExtResource("switch")
 visible_when = "flag:collector_drone_defeated"
 
-[node name="Neon1" type="Node2D" parent="Props/BayLit"]
+[node name="Neon2" type="Node2D" parent="Props/BayLit"]
 position = Vector2(120, -210)
 script = ExtResource("neon")
 size = Vector2(20, 6)
@@ -231,7 +244,7 @@ color = Color(0.85, 0.58, 0.3, 1)
 strokes = 3
 flicker = false
 
-[node name="Neon2" type="Node2D" parent="Props/BayLit"]
+[node name="Neon3" type="Node2D" parent="Props/BayLit"]
 position = Vector2(376, -210)
 script = ExtResource("neon")
 size = Vector2(20, 6)

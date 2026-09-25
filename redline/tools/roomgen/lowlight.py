@@ -376,9 +376,12 @@ w.block(-48, -300, 512, 30, "Ceiling")
 w.block(-48, 0, 512, BIG, "Floor")
 w.spawn("from_bell", 16, 0, 1, default=True)
 w.exit(-64, -96, 16, 96, "BellTower", "from_warden")
-w.exit(464, -96, 16, 96, "Relay", "from_lift", flag="warden_krail_defeated")
+# The way out keys on the reward (unlocked_dash), not the win: the Dash module
+# lands death_time + 0.2 s after the defeat flag, and a Rook standing east of
+# it must not reach the Relay (whose end card names the Dash) without it.
+w.exit(464, -96, 16, 96, "Relay", "from_lift", flag="unlocked_dash")
 w.gate(-32, -96, 16, 96, name="ArenaGateLeft")
-w.gate(448, -96, 16, 96, closed=True, open_flag="warden_krail_defeated", name="ExitGate")
+w.gate(448, -96, 16, 96, closed=True, open_flag="unlocked_dash", name="ExitGate")
 # Krail's boss test (D-071): the tower's own grid. Two high breakers (box
 # tops -96, reached by jump + air light or any gun straight up) drop a clamp
 # over the arena's centre. The west box (36..52, hurtbox 32..56) is clear of
@@ -407,7 +410,7 @@ for x in [0, 416]:
 boss = w.enemy("WardenKrail", 330, -2)
 w.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(40, -250)', 'script = %s' % w._script("arena"),
       'size = Vector2(400, 250)', 'reward_position = Vector2(208, 0)', 'boss_path = NodePath("../../Enemies/%s")' % boss,
-      'gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]',
+      'gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]',
       'reward_scene = %s' % w._res("scene_DashModule", "PackedScene", "res://interactables/DashModule.tscn")])
 w.write(OUT + "WardenTower.tscn")
 

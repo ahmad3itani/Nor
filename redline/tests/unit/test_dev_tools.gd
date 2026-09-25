@@ -59,6 +59,7 @@ func test_unlock_all_profile() -> void:
 
 func test_quick_boss_restart_rearms_krail() -> void:
 	Game.set_flag("warden_krail_defeated")
+	Game.set_flag("unlocked_dash")
 	Game.state.health = 1
 	SceneRouter.goto_room("res://world/rooms/lowlight/Relay.tscn", &"start")
 	await physics_frames(3)
@@ -69,6 +70,12 @@ func test_quick_boss_restart_rearms_krail() -> void:
 	check(is_instance_valid(arena.boss), "boss should be present again")
 	var p := (SceneRouter.current_room as Room).player
 	check(p.combat.health == p.combat.config.max_health, "full health for the retry")
+	# The way out keys on the Dash (owned here): the re-armed fight still
+	# seals it (BossArena lists ExitGate, D-100).
+	var exit_gate := SceneRouter.current_room.get_node_or_null("Geometry/ExitGate") as Gate
+	arena._on_body_entered(p)
+	await physics_frames(2)
+	check(exit_gate != null and exit_gate.closed, "a re-armed fight seals ExitGate even with the reward owned")
 
 
 func test_quick_boss_restart_rearms_collector() -> void:

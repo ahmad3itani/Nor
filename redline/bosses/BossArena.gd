@@ -102,8 +102,29 @@ func _spawn_reward(fallback: Vector2) -> void:
 	parent.add_child(reward)
 
 
+## Closing seals every listed gate. Opening skips a Gate whose own open_flag
+## is not set yet: an exit gate that keys on the reward (D-100) is listed so a
+## re-armed fight (DevActions.quick_boss_restart with the reward owned) seals
+## it too, but the win alone must not open it.
 func _set_gates(closed: bool) -> void:
 	for p in gate_paths:
 		var g := get_node_or_null(p)
-		if g and g.has_method("set_closed"):
-			g.set_closed(closed)
+		if g == null or not g.has_method("set_closed"):
+			continue
+		if not closed and g is Gate and (g as Gate).open_flag != "" and not Game.has_flag((g as Gate).open_flag):
+			continue
+		g.set_closed(closed)
+
+
+## ContentValidator protocol: the reward's pickup flag is produced here (the
+## reward is spawned at runtime, so no room node carries it). Doors may key
+## on it: Collector Bay and Warden Tower open their way out on the reward,
+## not on the win, so nobody leaves before it lands (D-100).
+func content_flags() -> Dictionary:
+	var out: Array = []
+	if reward_scene != null:
+		var r := reward_scene.instantiate()
+		if r.has_method("content_flags"):
+			out.append_array(r.content_flags().get("produces", []))
+		r.free()
+	return {"produces": out}

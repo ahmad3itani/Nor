@@ -776,16 +776,18 @@ func test_collector_bay_post_win_route() -> void:
 	var drones := room.find_children("*", "Enemy", true, false).filter(
 			func(e: Node) -> bool: return is_instance_valid(e) and not e.is_queued_for_deletion() and (e as Enemy).data and (e as Enemy).data.id == &"collector_drone")
 	check(drones.is_empty(), "a defeated Collector must not come back")
+	# The way out keys on the reward: shut until the pistol is taken.
 	var exit_gate := _collector_bay_gate("ExitGate")
-	check(exit_gate != null and not exit_gate.closed, "ExitGate should be open after the win")
+	check(exit_gate != null and exit_gate.closed, "ExitGate should stay shut until the pistol is taken")
 	var drops := room.find_children("*", "WeaponPickup", true, false)
 	check(drops.size() == 1 and (drops[0] as WeaponPickup).weapon_id == "service_pistol", "the ServicePistolDrop should wait in the bay")
 	if drops.size() == 1:
 		check((drops[0] as Node2D).global_position - room.global_position == Vector2(252, 0), "the pistol lands at (252, 0) under the hatch")
-	_assert_exit(1, UC + "EscapeTunnel.tscn", &"from_bay", "collector_drone_defeated")
+	_assert_exit(1, UC + "EscapeTunnel.tscn", &"from_bay", "got_service_pistol")
 	if not await _run([["run", 440]]):
 		return
 	check(Game.has_flag("got_service_pistol") and Game.state.owned_weapons.has("service_pistol"), "walking the floor should take the pistol")
+	check(exit_gate != null and not exit_gate.closed, "ExitGate should open once the pistol is taken")
 	if await _run([["exit", 1]]):
 		check(SceneRouter.current_room.name == "EscapeTunnel" and Game.state.last_entry_id == "from_bay", "the right door leads to EscapeTunnel from_bay")
 
@@ -816,6 +818,49 @@ func test_collector_bay_vent() -> void:
 	await _run([["run", 110], ["jump", 110], ["run", 100], ["jump", 68], ["attack", 4], ["run", 32], ["wait", 10]])
 	check(Game.is_collected("uc_collector_vent"), "the vent panel should break")
 	check(Game.is_collected("sb_uc_bay_vent"), "the Scrap behind the vent should be taken")
+
+
+## The reward race: the defeat flag is set at the kill, the pistol lands
+## death_time + 0.2 s (1.8 s) later. A Rook standing by the east door when the
+## Collector dies must not leave before the pistol exists, or without it: the
+## door and ExitGate key on got_service_pistol, not the win.
+func test_collector_bay_exit_waits_for_pistol() -> void:
+	_campaign(true, false, true)
+	Game.set_flag("collector_drone_intro_seen")
+	await _enter(COLLECTOR_BAY, &"from_tunnel")
+	var room := SceneRouter.current_room as Room
+	var arena := _collector_bay_arena()
+	var exit2 := room.find_child("Exit2", true, false) as RoomExit
+	var gate := _collector_bay_gate("ExitGate")
+	if arena == null or exit2 == null or gate == null or arena.boss == null:
+		check(false, "CollectorBay needs its BossArena, boss, Exit2 and ExitGate")
+		return
+	var p := room.player
+	p.invulnerable = true
+	p.teleport(room.global_position + Vector2(441, 0))
+	var boss := arena.boss
+	var kill := HitInfo.create(p, boss.data.attacks[0].duplicate(), Vector2.ZERO, Vector2.RIGHT)
+	kill.attack.damage = 99999.0
+	boss.receive_hit(kill)
+	check(Game.has_flag("collector_drone_defeated"), "the kill should set the defeat flag")
+	bot.input.move_x = 1
+	for f in 150:
+		await physics_frames(1)
+		if SceneRouter.current_room != room:
+			break
+		p.invulnerable = true
+	bot.input.move_x = 0
+	check(SceneRouter.current_room == room, "Rook must not leave the bay before taking the pistol")
+	if SceneRouter.current_room != room:
+		return
+	check(not Game.has_flag("got_service_pistol") and gate.closed and not exit2.is_open(), "door and ExitGate stay shut while the pistol lies on the floor")
+	check(room.find_children("*", "WeaponPickup", true, false).size() == 1, "the pistol should have landed by now")
+	if not await _run([["run", 252], ["wait", 4]]):
+		return
+	check(Game.has_flag("got_service_pistol") and Game.state.ranged_weapon == "service_pistol", "walking back to the drop takes the pistol")
+	check(not gate.closed and exit2.is_open(), "the pistol opens ExitGate and the east door")
+	if await _run([["run", 440], ["exit", 1]]):
+		check(SceneRouter.current_room.name == "EscapeTunnel", "the east door leads to EscapeTunnel")
 
 
 ## The arena is wired to the real Collector, the gate shuts behind Rook on
@@ -1082,7 +1127,7 @@ func _full_walk_leg(room_name: String, owned: Array, steps: Array, next_path: St
 	_full_walk_expect(room_name, owned)
 	if not steps.is_empty() and not await _run(steps):
 		return false
-	if not _assert_exit(1, next_path, next_entry, "collector_drone_defeated" if room_name == "CollectorBay" else ""):
+	if not _assert_exit(1, next_path, next_entry, "got_service_pistol" if room_name == "CollectorBay" else ""):
 		return false
 	if not await _run([["exit", 1]]):
 		return false

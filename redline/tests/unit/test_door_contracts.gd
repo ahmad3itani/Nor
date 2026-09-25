@@ -8,7 +8,8 @@ extends RedlineTestCase
 ## requires_flag is asserted exactly, empty included: a main-path door must
 ## stay open (D-092). The flagged doors, each set by the room that produces
 ## its flag:
-##   CollectorBay -> EscapeTunnel      collector_drone_defeated
+##   CollectorBay -> EscapeTunnel      got_service_pistol (the boss reward, not the win)
+##   WardenTower -> Relay              unlocked_dash (the boss reward, not the win)
 ##   PowerBlock -> SecurityStation     lowlight_power_rerouted
 ##   SmugglerRoute -> ApartmentStack   shortcut_smuggler_route
 ##   ApartmentStack -> SmugglerRoute   shortcut_smuggler_route
@@ -57,7 +58,7 @@ const DOORS := [
 	["undercity/BrokenLift", Rect2(-64, -96, 16, 96), "undercity/FirstPursuit", &"from_lift", "", &"from_pursuit", Vector2(-20, 0), 1],
 	["undercity/BrokenLift", Rect2(624, -672, 16, 96), "undercity/CollectorBay", &"from_lift", "", &"from_bay", Vector2(596, -576), -1],
 	["undercity/CollectorBay", Rect2(0, -96, 16, 96), "undercity/BrokenLift", &"from_bay", "", &"from_lift", Vector2(28, 0), 1],
-	["undercity/CollectorBay", Rect2(464, -96, 16, 96), "undercity/EscapeTunnel", &"from_bay", "collector_drone_defeated", &"from_tunnel", Vector2(436, 0), -1],
+	["undercity/CollectorBay", Rect2(464, -96, 16, 96), "undercity/EscapeTunnel", &"from_bay", "got_service_pistol", &"from_tunnel", Vector2(436, 0), -1],
 	["undercity/EscapeTunnel", Rect2(-64, -96, 16, 96), "undercity/CollectorBay", &"from_tunnel", "", &"from_bay", Vector2(-20, 0), 1],
 	["undercity/EscapeTunnel", Rect2(1984, -336, 16, 96), "lowlight/Relay", &"from_undercity", "", &"from_relay", Vector2(1956, -240), -1],
 	["lowlight/Relay", Rect2(-48, -240, 16, 96), "undercity/EscapeTunnel", &"from_relay", "", &"from_undercity", Vector2(0, -144), 1],
@@ -83,7 +84,7 @@ const DOORS := [
 	["lowlight/BellTower", Rect2(-64, -1056, 16, 96), "lowlight/Relay", &"from_lift", "shortcut_bell_lift", &"from_lift", Vector2(20, -960), 1],
 	["lowlight/WardenTower", Rect2(-64, -96, 16, 96), "lowlight/BellTower", &"from_warden", "", &"from_bell", Vector2(16, 0), 1],
 	# The Krail reward exit drops Rook at the Relay lift; nothing comes back.
-	["lowlight/WardenTower", Rect2(464, -96, 16, 96), "lowlight/Relay", &"from_lift", "warden_krail_defeated", &"", Vector2.ZERO, 0],
+	["lowlight/WardenTower", Rect2(464, -96, 16, 96), "lowlight/Relay", &"from_lift", "unlocked_dash", &"", Vector2.ZERO, 0],
 ]
 
 

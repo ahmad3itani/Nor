@@ -16,21 +16,26 @@ Layout (x 0 is the left edge, the floor is y 0):
   and the banner read before ArenaGateLeft shuts behind Rook.
 - Catwalks: left x 96..160 and right x 344..408 at 40 px, centre x 200..304
   at 80 px (every rise is at most 48 px, every gap 40 px: plain jumps).
-- Secret: the vent-panel alcove over the vestibule. Its lip (y -92) is 92 px
-  above the vestibule floor, so it is reached only by a leftward jump from
-  the left catwalk's edge (feet -40, a 52 px rise) onto the lip strip x 64..72
-  in front of the panel. It is visible for the whole fight.
+- Secret: the vent-panel alcove over the vestibule, cued by a broken SEA
+  tube inside it. Its floor (y -92) is 92 px above the vestibule floor, so it
+  is reached only by a leftward jump from the left catwalk's edge (feet -40,
+  a 52 px rise) onto the lip strip x 56..72 in front of the panel. The floor
+  over the vestibule and ArenaGateLeft (x 16..56) is solid, so dropping out
+  of the alcove lands in the arena, never outside the sealed gate. It is
+  visible for the whole fight.
 - Reward: the ServicePistolDrop lands at (252, 0) under the hatch spotlight.
   Its 24x150 trigger spans the centre catwalk and a jump from it, so every
-  route between the doors takes it; BossArena respawns it on a revisit until
-  it is picked up.
-- ExitGate (right) opens with collector_drone_defeated; the right exit also
-  requires it. After the win the BayLit sodium lamps come on.
+  route from the left door to the right one takes it; BossArena respawns it
+  on a revisit until it is picked up.
+- ExitGate (right) opens with got_service_pistol, and the right exit also
+  requires it: a Rook standing east of the drop when the Collector dies (the
+  pistol lands 1.8 s after the defeat flag) has to walk back for it before
+  the pistol lesson. After the win the BayLit sodium lamps come on.
 """
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from roomgen import RoomGen, finish
-from undercity_style import BIG, OUT, SODIUM, CRATE, CRATE_ACCENT
+from undercity_style import BIG, OUT, SEA, SODIUM, CRATE, CRATE_ACCENT
 
 c = RoomGen("CollectorBay", (0, -240, 480, 270), "undercity", "Undercity", "Collector Bay", max_attackers=1)
 
@@ -46,9 +51,12 @@ c.spawn("from_lift", 28, 0, 1, default=True)       # vestibule x 16..40, outside
 # Inside the arena: an old save walking down from the Relay starts the fight from the right.
 c.spawn("from_tunnel", 436, 0, -1)
 c.exit(0, -96, 16, 96, "undercity/BrokenLift", "from_bay")
-c.exit(464, -96, 16, 96, "undercity/EscapeTunnel", "from_bay", flag="collector_drone_defeated")
+# The right door keys on the reward, not the win: the pistol spawns 1.8 s
+# after the defeat flag (death_time + 0.2), and a Rook standing east of the
+# drop would otherwise leave for the pistol lesson without the pistol.
+c.exit(464, -96, 16, 96, "undercity/EscapeTunnel", "from_bay", flag="got_service_pistol")
 c.gate(40, -92, 16, 92, name="ArenaGateLeft")      # open until the BossArena closes it
-c.gate(448, -96, 16, 96, closed=True, open_flag="collector_drone_defeated", name="ExitGate")
+c.gate(448, -96, 16, 96, closed=True, open_flag="got_service_pistol", name="ExitGate")
 
 # --- Fight space: three low catwalks over a flat floor ---
 c.oneway(96, -40, 64)                              # left catwalk x 96..160 (40 rise, 40 gap)
@@ -56,7 +64,12 @@ c.oneway(200, -80, 104)                            # centre catwalk x 200..304
 c.oneway(344, -40, 64)                             # right catwalk x 344..408
 
 # --- Secret: the vent alcove (hook visible during the fight) ---
-c.oneway(16, -92, 56)                              # vent lip x 16..72
+# The alcove floor is solid over the vestibule and ArenaGateLeft (x 16..56):
+# only the lip in front of the panel (x 56..72) drops through, into the
+# arena, so the secret never lets Rook out of a sealed fight.
+c.block(16, -92, 40, 8, "VentFloor")               # alcove floor x 16..56
+c.oneway(56, -92, 16)                              # vent lip x 56..72
+c.neon(30, -120, 4, 20, SEA, 1, True, broken=True) # the secret cue, inside the alcove
 c.wall("uc_collector_vent", 56, -136, 8, 44, 30)   # vent panel (any attack, not heavy-only)
 c.collectible(0, "sb_uc_bay_vent", 32, -92, scrap=40)
 
@@ -78,7 +91,7 @@ c.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(72, -224)', 'scrip
       'size = Vector2(376, 224)', 'boss_id = "collector_drone"', 'boss_title = "COLLECTOR DRONE"',
       'boss_subtitle = "Civic Recovery Unit C-00"', 'intro_time = 2.6', 'reward_position = Vector2(252, 0)',
       'boss_path = NodePath("../../Enemies/%s")' % boss,
-      'gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]',
+      'gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]',
       'reward_scene = %s' % c._res("scene_ServicePistolDrop", "PackedScene", "res://interactables/ServicePistolDrop.tscn")])
 
 # --- Breathing space after the win: the sodium lamps come on ---

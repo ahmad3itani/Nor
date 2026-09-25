@@ -26,6 +26,11 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 
+## ContentValidator protocol (a BossArena reward reports it too).
+func content_flags() -> Dictionary:
+	return {"produces": [flag_id]}
+
+
 func _process(delta: float) -> void:
 	_t += delta
 	queue_redraw()

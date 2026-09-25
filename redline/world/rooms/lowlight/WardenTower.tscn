@@ -84,7 +84,7 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/Relay.tscn"
 target_entry = &"from_lift"
-requires_flag = "warden_krail_defeated"
+requires_flag = "unlocked_dash"
 
 [node name="ArenaGateLeft" type="StaticBody2D" parent="Geometry"]
 position = Vector2(-32, -96)
@@ -96,7 +96,7 @@ position = Vector2(448, -96)
 script = ExtResource("gate")
 size = Vector2(16, 96)
 closed = true
-open_flag = "warden_krail_defeated"
+open_flag = "unlocked_dash"
 
 [node name="OneWay1" type="StaticBody2D" parent="Geometry"]
 position = Vector2(120, -72)
@@ -207,5 +207,5 @@ script = ExtResource("arena")
 size = Vector2(400, 250)
 reward_position = Vector2(208, 0)
 boss_path = NodePath("../../Enemies/WardenKrail1")
-gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
+gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]
 reward_scene = ExtResource("scene_DashModule")

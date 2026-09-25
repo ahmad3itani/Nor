@@ -1127,6 +1127,46 @@ const RELAY := "res://world/rooms/lowlight/Relay.tscn"
 const WT_CLAMP_HINT := "Breakers live. Drop the clamp on him."
 
 
+## The reward race (as in Collector Bay): the Dash module lands
+## death_time + 0.2 s after the defeat flag. A Rook holding right at the
+## east door when Krail dies must not reach the Relay (whose end card names
+## the Dash) without it: the door and ExitGate key on unlocked_dash.
+func test_warden_tower_exit_waits_for_dash() -> void:
+	Game.set_flag("warden_krail_intro_seen")
+	await _enter(WARDEN_TOWER, &"from_bell")
+	var room := SceneRouter.current_room as Room
+	var arena := room.find_child("BossArena", true, false) as BossArena
+	var exit2 := room.find_child("Exit2", true, false) as RoomExit
+	var gate := room.get_node_or_null("Geometry/ExitGate") as Gate
+	if arena == null or exit2 == null or gate == null or arena.boss == null:
+		check(false, "WardenTower needs its BossArena, boss, Exit2 and ExitGate")
+		return
+	var p := room.player
+	p.invulnerable = true
+	p.teleport(room.global_position + Vector2(436, 0))
+	await physics_frames(2)
+	var boss := arena.boss
+	var kill := HitInfo.create(p, boss.data.attacks[0].duplicate(), Vector2.ZERO, Vector2.RIGHT)
+	kill.attack.damage = 99999.0
+	boss.receive_hit(kill)
+	check(Game.has_flag("warden_krail_defeated"), "the kill should set the defeat flag")
+	bot.input.move_x = 1
+	for f in 150:
+		await physics_frames(1)
+		if SceneRouter.current_room != room:
+			break
+		p.invulnerable = true
+	bot.input.move_x = 0
+	check(SceneRouter.current_room == room, "Rook must not leave the tower before taking the Dash module")
+	if SceneRouter.current_room != room:
+		return
+	check(not Game.has_flag("unlocked_dash") and gate.closed and not exit2.is_open(), "door and ExitGate stay shut while the module lies on the floor")
+	if not await _run([["run", 200], ["wait", 4]]):
+		return
+	check(Game.has_flag("unlocked_dash") and Game.abilities.dash, "walking back to the drop takes the Dash module")
+	check(not gate.closed and exit2.is_open(), "the Dash module opens ExitGate and the east door")
+
+
 ## Krail's boss test in the real Warden Tower: a retry (intro_seen), Krail
 ## held under the clamp, and Rook trips the west breaker the way a player
 ## does, jump + air light from under the box (36..52, top -96). The clamp
