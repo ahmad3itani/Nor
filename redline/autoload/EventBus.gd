@@ -106,3 +106,37 @@ signal item_purchased(shop_id: StringName, item_id: String, price: int)
 signal settings_changed
 ## Tuning panel asks to discard live edits and reload the active preset from disk.
 signal movement_config_reload_requested
+
+## --- Narrative (M8) ---
+# Declared in M8 T01 ahead of their emitters (sequences, memory scenes, arcs,
+# endings); every emitter and listener lives in its own system. Each is also a
+# Playtest hook (local telemetry only).
+## A scripted sequence took over (first_view = never finished before this view).
+signal sequence_started(sequence_id: String, first_view: bool)
+## A sequence ended. skipped = the player skipped it; seconds = real time it ran;
+## step_index = the step it ended on (-1 = aborted: room left, quit, teardown);
+## step_count = its number of steps; nominal_seconds = its authored length for
+## the view that played. Carried here so listeners never read the player's
+## current sequence, which is already cleared when this fires.
+signal sequence_finished(sequence_id: String, skipped: bool, seconds: float, step_index: int, step_count: int, nominal_seconds: float)
+## Play one or more memory vignettes in order. source: &"anchor" | &"journal" |
+## &"journal_first" | &"dev".
+signal memory_playback_requested(scene_ids: PackedStringArray, source: StringName)
+## One memory vignette began playing.
+signal memory_scene_started(scene_id: String, source: StringName)
+## One memory vignette ended. beats_seen = beats the player reached;
+## detail_found = its hidden detail was found; first_view = never finished before.
+signal memory_scene_finished(scene_id: String, source: StringName, skipped: bool, seconds: float, beats_seen: int, detail_found: bool, first_view: bool)
+## A whole memory playback request (all its scenes) is over; control returns.
+signal memory_playback_finished(source: StringName)
+## An NPC arc entered a stage. on_load = restored from a save, not a new event.
+signal arc_stage_entered(npc_id: String, stage_id: String, on_load: bool)
+## The player picked a dialogue choice.
+signal dialogue_choice_made(dialogue_id: String, choice_id: String)
+## An ending sequence began. theatre = replayed from the dev Ending theatre.
+signal ending_started(ending_id: String, theatre: bool)
+## An ending sequence ended (skipped = the player skipped it).
+signal ending_finished(ending_id: String, theatre: bool, skipped: bool)
+## Any Collectible was taken (kind = Collectible.Kind as int). Emitted after the
+## pickup updated GameState, so count conditions re-evaluate on the pickup frame.
+signal collectible_taken(persist_id: String, kind: int)
