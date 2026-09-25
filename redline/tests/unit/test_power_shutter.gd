@@ -450,6 +450,34 @@ func test_validator_breaker_too_high_is_error() -> void:
 	stub.free()
 
 
+## A high breaker beside (not above) a one-way at -72 still warns when Rook,
+## standing at the one-way's end, reaches it with a grounded light swing
+## (D2b: Warden Tower's first one-ways at 60..124 / 300..364 did).
+func test_validator_breaker_beside_oneway_warns() -> void:
+	var reach_x := Breaker.grounded_reach_x()
+	check(reach_x > 30.0, "grounded reach past a platform end includes hitbox, lunge and half width (%.1f)" % reach_x)
+	for case in [[60.0, true], [120.0, false]]:
+		var room := Node2D.new()
+		var floor_block := GrayboxBlock.new()
+		floor_block.size = Vector2(512, 64)
+		floor_block.position = Vector2(-48, 0)
+		room.add_child(floor_block)
+		var ow := GrayboxBlock.new()
+		ow.name = "OneWay1"
+		ow.one_way = true
+		ow.size = Vector2(52, 8)
+		ow.position = Vector2(case[0], -72)
+		room.add_child(ow)
+		var b := Breaker.new()
+		b.breaker_id = "v_side"
+		b.circuit = &"v_side"
+		b.position = Vector2(36, -96)
+		room.add_child(b)
+		var warned := "\n".join(b.content_errors(room)).contains("grounded-attack reach of one-way OneWay1")
+		check(warned == case[1], "breaker at 36..52 vs one-way from x %d: warn %s expected %s" % [case[0], warned, case[1]])
+		room.free()
+
+
 ## The grid fixtures still match tools/roomgen/fixtures_grid.py (-B: no
 ## tracked __pycache__ churn). Skipped with a warning where python3 is
 ## absent; the gate also runs the script itself.

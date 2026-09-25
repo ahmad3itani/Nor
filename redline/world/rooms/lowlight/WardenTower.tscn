@@ -99,15 +99,15 @@ closed = true
 open_flag = "warden_krail_defeated"
 
 [node name="OneWay1" type="StaticBody2D" parent="Geometry"]
-position = Vector2(60, -72)
+position = Vector2(120, -72)
 script = ExtResource("block")
-size = Vector2(64, 8)
+size = Vector2(52, 8)
 one_way = true
 
 [node name="OneWay2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(300, -72)
+position = Vector2(244, -72)
 script = ExtResource("block")
-size = Vector2(64, 8)
+size = Vector2(52, 8)
 one_way = true
 
 [node name="Breaker_wt_grid_w" type="Area2D" parent="Interactables"]

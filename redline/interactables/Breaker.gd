@@ -28,6 +28,13 @@ const HIGHEST_TOP := -96.0
 const REACH_WEAPON := "res://data/weapons/pulse_blade.tres"
 ## Fallback if that weapon cannot be read (blade_light_1's hitbox today).
 const GROUNDED_REACH := Vector2(-30.0, -8.0)
+## Half of Rook's standing collider (12 px wide): he can stand with his
+## centre this far past a platform's end.
+const PLAYER_HALF_WIDTH := 6.0
+## Fallback horizontal reach past a platform's end: blade_light_1's hitbox
+## end (28) + its lunge over startup + active (70 px/s * 0.11 s) + the half
+## width.
+const GROUNDED_REACH_X := 41.7
 
 @export var breaker_id: String = ""
 @export var circuit: StringName = &""
@@ -193,7 +200,8 @@ func content_flags() -> Dictionary:
 ## Placement standard, measured against the first solid block under the box
 ## (one-way platforms are ignored for the floor, but a breaker a grounded
 ## attack from a one-way could reach defeats the "reach it from the floor"
-## read, so it warns).
+## read, so it warns). The one-way's span is widened by the attack's
+## horizontal reach: Rook can stand at its very end and swing outwards.
 func content_errors(room: Node) -> PackedStringArray:
 	var out := PackedStringArray()
 	if circuit == &"":
@@ -210,6 +218,7 @@ func content_errors(room: Node) -> PackedStringArray:
 		out.append("breaker %s box top is at floor %d, higher than the floor %d limit (not every weapon reaches it)" % [breaker_id, int(top), int(HIGHEST_TOP)])
 	var hb := Rect2(pos, size).grow(hurtbox_margin)
 	var reach := grounded_reach()
+	var reach_x := grounded_reach_x()
 	for n in room.find_children("*", "GrayboxBlock", true, false):
 		var b := n as GrayboxBlock
 		if not b.one_way:
@@ -217,7 +226,7 @@ func content_errors(room: Node) -> PackedStringArray:
 		var p := room_position(b, room)
 		var band_top := p.y + reach.x
 		var band_bottom := p.y + reach.y
-		if hb.position.x < p.x + b.size.x and hb.end.x > p.x and hb.position.y < band_bottom and hb.end.y > band_top:
+		if hb.position.x < p.x + b.size.x + reach_x and hb.end.x > p.x - reach_x and hb.position.y < band_bottom and hb.end.y > band_top:
 			out.append("WARN: breaker %s is in grounded-attack reach of one-way %s" % [breaker_id, b.name])
 	return out
 
@@ -230,6 +239,17 @@ static func grounded_reach() -> Vector2:
 		return GROUNDED_REACH
 	var box: Rect2 = w.light_chain[0].hitbox
 	return Vector2(box.position.y, box.end.y)
+
+
+## How far past a standing surface's end a grounded light attack reaches:
+## the hitbox's far edge, the lunge it travels until its active frames end,
+## and Rook's half width (read from the same AttackData as grounded_reach).
+static func grounded_reach_x() -> float:
+	var w := load(REACH_WEAPON) as WeaponData
+	if w == null or w.light_chain.is_empty() or w.light_chain[0] == null:
+		return GROUNDED_REACH_X
+	var a: AttackData = w.light_chain[0]
+	return a.hitbox.end.x + a.lunge_speed * (a.startup + a.active) + PLAYER_HALF_WIDTH
 
 
 ## Position of `n` in `room` space, summing Node2D offsets. The validator

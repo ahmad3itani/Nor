@@ -374,13 +374,15 @@ w.exit(-64, -96, 16, 96, "BellTower", "from_warden")
 w.exit(464, -96, 16, 96, "Relay", "from_lift", flag="warden_krail_defeated")
 w.gate(-32, -96, 16, 96, name="ArenaGateLeft")
 w.gate(448, -96, 16, 96, closed=True, open_flag="warden_krail_defeated", name="ExitGate")
-w.oneway(60, -72, 64)
-w.oneway(300, -72, 64)
 # Krail's boss test (D-071): the tower's own grid. Two high breakers (box
 # tops -96, reached by jump + air light or any gun straight up) drop a clamp
-# over the arena's centre. The west box (36..52) is clear of ArenaGateLeft
-# (-32..-16) and of the one-way at 60..124, so it cannot be struck from
-# standing on that one-way; the east box (396..412) is clear of 300..364.
+# over the arena's centre. The west box (36..52, hurtbox 32..56) is clear of
+# ArenaGateLeft (-32..-16). The arena one-ways sit next to the clamp column
+# (120..172 and 244..296), so no grounded swing from standing on one (light
+# chain, heavy or launcher, from its nearest end) reaches either box: from
+# the old 60..124 / 300..364 a light swing did.
+w.oneway(120, -72, 52)
+w.oneway(244, -72, 52)
 w.breaker("wt_grid_w", "wt_clamp", 36, -96)
 w.breaker("wt_grid_e", "wt_clamp", 396, -96)
 # Each box hangs on a cable from the ceiling (-270); the sag ends on its top.

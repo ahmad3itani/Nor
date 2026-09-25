@@ -1165,8 +1165,55 @@ func test_warden_tower_clamp_in_room() -> void:
 			if k.ai == Enemy.AI.STAGGER and staggered_at.is_empty():
 				staggered_at.append(Engine.get_physics_frames())
 	pin.call()
-	await physics_frames(2)
+	# Idle for 1.5 s with Krail under the footprint: nothing drops on its own.
+	for f in 90:
+		await physics_frames(1)
+		pin.call()
 	check(drops.is_empty() and c.state == GridClamp.State.READY, "the clamp stays idle until a breaker is hit (%s)" % c.state_name())
+	# D2b: the boxes are high breakers (jump + air light). No grounded swing
+	# made from either arena one-way's nearest standing point reaches one.
+	var be := room.find_child("Breaker_wt_grid_e", true, false) as Breaker
+	var ways: Array = []
+	for n in room.find_children("OneWay*", "GrayboxBlock", true, false):
+		ways.append(n)
+	check(be != null and ways.size() == 2, "WardenTower needs Breaker_wt_grid_e and two arena one-ways")
+	if be != null and ways.size() == 2:
+		for w in ways:
+			var ow := w as GrayboxBlock
+			var west := ow.global_position.x < 208.0
+			var stand_x := ow.global_position.x - 5.0 if west else ow.global_position.x + ow.size.x + 5.0
+			for kind in ["light", "heavy", "launcher"]:
+				var before: int = bw.trips + be.trips
+				p.teleport(Vector2(stand_x, ow.global_position.y - 1.0))
+				await physics_frames(4)
+				pin.call()
+				p.facing = -1 if west else 1
+				check(p.is_on_floor() and absf(p.global_position.y - ow.global_position.y) < 1.5,
+					"Rook stands on %s at x %.0f (at %s)" % [ow.name, stand_x, p.global_position])
+				input.up_held = kind == "launcher"
+				for swing in (3 if kind == "light" else 1):
+					if kind == "light":
+						input.press_light()
+					else:
+						input.press_heavy()
+					for f in 18:
+						await physics_frames(1)
+						pin.call()
+				for f in 30:
+					await physics_frames(1)
+					pin.call()
+				input.up_held = false
+				check(bw.trips + be.trips == before,
+					"a grounded %s from %s (x %.0f) must not reach a breaker (w %d, e %d)" % [kind, ow.name, stand_x, bw.trips, be.trips])
+		p.teleport(Vector2(44, 0))
+		p.facing = 1
+		await physics_frames(20)
+		pin.call()
+	check(drops.is_empty() and c.state == GridClamp.State.READY, "still idle after the one-way swings (%s)" % c.state_name())
+	# The Dash module lands on the floor under the clamp, not where Krail dies.
+	var arena := room.find_child("BossArena", true, false)
+	check(arena != null and arena.get("reward_position") == Vector2(208, 0),
+		"WardenTower BossArena reward_position is (208, 0): %s" % (arena.get("reward_position") if arena != null else "missing"))
 	input.press_jump()
 	for f in 40:
 		await physics_frames(1)
