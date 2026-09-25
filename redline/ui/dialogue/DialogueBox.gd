@@ -4,7 +4,6 @@ extends CanvasLayer
 ## Pressing during typing completes the line first (never skips unread text).
 
 const CHARS_PER_SECOND := 70.0
-const FONT_SIZE := 7
 const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", &"attack_light"]
 
 var dialogue: DialogueData
@@ -83,18 +82,45 @@ func _close() -> void:
 	EventBus.dialogue_finished.emit(finished)
 
 
+## Wrapped rows the current line needs at the current subtitle size (tests).
+func line_count() -> int:
+	if dialogue == null:
+		return 0
+	return SubtitleStyle.line_count(dialogue.lines[line_index].text, _box_width() - SubtitleStyle.PAD_X * 2)
+
+
+## The box rect for the current line: sized from the full line (so it never
+## grows while typing), bottom edge fixed at view.y - 16 like M7.
+func box_rect() -> Rect2:
+	var view := _root.size
+	var h := SubtitleStyle.box_height(dialogue.lines[line_index].text, _box_width())
+	return Rect2(24, view.y - 16 - h, _box_width(), h)
+
+
+func _box_width() -> float:
+	return _root.size.x - 48
+
+
+## Look comes from SubtitleStyle (bible §24 subtitle size/background/speaker
+## labels). Default settings draw exactly the M7 box.
 func _draw_box() -> void:
 	if dialogue == null:
 		return
-	var font := ThemeDB.fallback_font
-	var view := _root.size
-	var box := Rect2(24, view.y - 78, view.x - 48, 62)
-	_root.draw_rect(box, Color(0.04, 0.03, 0.07, 0.92))
-	_root.draw_rect(Rect2(box.position, Vector2(box.size.x, 1)), Color("e8283c"))
+	var font := SubtitleStyle.font()
+	var fs := SubtitleStyle.font_size()
+	var box := box_rect()
+	var alpha := SubtitleStyle.box_alpha()
+	if alpha > 0.0:
+		_root.draw_rect(box, Color(SubtitleStyle.BG, alpha))
+		_root.draw_rect(Rect2(box.position, Vector2(box.size.x, 1)), SubtitleStyle.ACCENT)
 	var line := dialogue.lines[line_index]
-	var speaker := line.speaker if line.speaker != "" else _npc_name
-	_root.draw_string(font, box.position + Vector2(8, 12), speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("e8283c"))
+	if SubtitleStyle.show_label():
+		var speaker := line.speaker if line.speaker != "" else _npc_name
+		var lpos := box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.label_y())
+		if SubtitleStyle.outline():
+			_root.draw_string_outline(font, lpos, speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
+		_root.draw_string(font, lpos, speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT)
 	var text := line.text.substr(0, int(shown_chars))
-	_root.draw_multiline_string(font, box.position + Vector2(8, 25), text, HORIZONTAL_ALIGNMENT_LEFT, box.size.x - 16, FONT_SIZE, -1, Color.WHITE)
+	SubtitleStyle.draw_text(_root, font, box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.text_y()), text, box.size.x - SubtitleStyle.PAD_X * 2, fs, Color.WHITE)
 	if shown_chars >= line.text.length() and int(Time.get_ticks_msec() / 400) % 2 == 0:
-		_root.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color(1, 1, 1, 0.7))
+		_root.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))

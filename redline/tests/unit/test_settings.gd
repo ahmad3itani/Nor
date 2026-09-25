@@ -78,6 +78,7 @@ func test_subtitle_size_arg() -> void:
 	Settings.subtitle_size = 0
 	Settings._subtitle_size_override = 2
 	check(Settings.effective_subtitle_size() == 2, "override not effective")
+	check(SubtitleStyle.font_size() == 11, "SubtitleStyle must read the override")
 	check(Settings.save_settings() == OK, "save failed")
 	var cfg := ConfigFile.new()
 	cfg.load(M8_PATH)

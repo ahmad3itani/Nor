@@ -278,6 +278,74 @@ func test_press_action_helper_timing() -> void:
 	probe.queue_free()
 
 
+# --- SubtitleStyle / DialogueBox ---
+
+## DialogueBox has no class_name, so the box is handled untyped here.
+func _open_box(text: String) -> Variant:
+	var box = load("res://ui/dialogue/DialogueBox.gd").new()
+	add_child(box)
+	var line := DialogueLine.new()
+	line.speaker = "Orr"
+	line.text = text
+	var d := DialogueData.new()
+	d.id = "test_m8_geometry"
+	d.lines = [line]
+	box.open(d, "Orr")
+	return box
+
+
+func _close_box(box: Variant) -> void:
+	box.dialogue = null
+	box.visible = false
+	get_tree().paused = false
+	box.queue_free()
+
+
+func test_dialogue_box_geometry() -> void:
+	var box = _open_box("Keep your head down in the Relay.")
+	await get_tree().process_frame
+	var view: Vector2 = box._root.size
+	check(view == Vector2(480, 270), "dialogue root is %s, expected the 480x270 canvas" % str(view))
+	check(SubtitleStyle.font_size() == 7, "default font must be 7 (got %d)" % SubtitleStyle.font_size())
+	check(SubtitleStyle.label_y() == 12, "default label offset must be 12 (got %d)" % SubtitleStyle.label_y())
+	check(SubtitleStyle.text_y() == 25, "default text offset must be 25 (got %d)" % SubtitleStyle.text_y())
+	var r: Rect2 = box.box_rect()
+	check(box.line_count() == 1, "short line should be one row (got %d)" % box.line_count())
+	check(r == Rect2(24, view.y - 78, view.x - 48, 62), "default box must be the M7 rect, got %s" % str(r))
+	# Largest size: a 200-character line fits inside its taller box, same bottom.
+	var long_text := "The lift cables hum all night, and every hum is someone climbing out of the Undercity with nothing but a wrench, a name and a debt to the Relay that nobody ever finishes paying back."
+	while long_text.length() < 200:
+		long_text += " Again."
+	_close_box(box)
+	Settings.subtitle_size = 2
+	box = _open_box(long_text.substr(0, 200))
+	await get_tree().process_frame
+	r = box.box_rect()
+	var lines: int = box.line_count()
+	check(SubtitleStyle.font_size() == 11, "size 2 must be 11 px")
+	check(lines >= 2, "a 200-char line at 11 px should wrap (got %d rows)" % lines)
+	check(SubtitleStyle.text_y() + lines * 13 + 6 <= r.size.y, "200-char line overflows: %d rows in a %.0f px box" % [lines, r.size.y])
+	check(SubtitleStyle.text_y() + lines * SubtitleStyle.line_spacing() + 6 <= r.size.y, "rows at the real spacing overflow the box")
+	check(is_equal_approx(r.end.y, view.y - 16), "the box bottom must stay at view.y - 16")
+	check(r.position.y >= 0.0, "the box must stay on screen")
+	# Speaker labels off: text moves up to the label row.
+	Settings.speaker_labels = false
+	check(SubtitleStyle.text_y() == SubtitleStyle.label_y(), "without labels text starts at the label row")
+	_close_box(box)
+
+
+func test_background_three_looks() -> void:
+	var expected_box := [0.0, 0.92, 1.0]
+	var expected_sub := [0.0, 0.6, 0.92]
+	for i in 3:
+		Settings.subtitle_background = i
+		check(is_equal_approx(SubtitleStyle.box_alpha(), expected_box[i]), "box_alpha(%d) = %.2f" % [i, SubtitleStyle.box_alpha()])
+		check(is_equal_approx(SubtitleStyle.subtitle_alpha(), expected_sub[i]), "subtitle_alpha(%d) = %.2f" % [i, SubtitleStyle.subtitle_alpha()])
+		check(SubtitleStyle.outline() == (i == 0), "outline must be on only for setting 0")
+	Settings.subtitle_speed = 2
+	check(is_equal_approx(SubtitleStyle.time_scale(), 2.0), "Slower must scale line time by 2")
+
+
 class _InputProbe extends Node:
 	var just_frames := 0
 	var held_frames := 0
