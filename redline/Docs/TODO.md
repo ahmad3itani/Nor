@@ -1,9 +1,27 @@
 # REDLINE TODO
 
 ## Now: humans
-- [ ] The M4 playtest (`PLAYTEST_KIT.md`) is still the gate before M7 district production (bible §44). Export playtest builds as **release** so the dev console is off (D-059).
+- [ ] The M4 playtest (`PLAYTEST_KIT.md`) is still the gate before M7 batch 2 (Ironworks and later, bible §44). Export playtest builds as **release** so the dev console is off (D-059).
+- [ ] **Decide which build the playtest uses (D-068):** the Act I campaign (New Game from the Undercity, about 20–37 min before the Relay) or the old slice (Relay start, debug builds only, K-58).
+- [ ] Confirm or overrule the M7 flags: D-061 (M7 before §44), D-062 (Undercity opening, unarmed start), D-063 (pre-Anchor entry respawn), D-068, D-072 (scanners respect i-frames), D-073 (one chase system), D-074 (Rainline G3 slide-jump), D-075 (Smuggler Route order), D-076 (Iko moves to the Relay), D-079 (Collector = first mini-boss), D-082 (shards/secrets/fragments), D-083 (pacing), D-085 (Challenge FZ3), D-087/D-090 (no schema bump), D-093 (air swings hang only on hit).
 - [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
+
+## M7 batch 1 follow-ups (Undercity + Lowlight)
+- [ ] Playtest checks: the Undercity timeline against §42 (K-45); whether the Collector eye still threatens (K-54); the Collector's fight length (K-56); Rainline G3 catches (K-44); air juggling after D-093; heads bumping under Power Block's shaft lips (D-098).
+- [ ] If the median Relay arrival is under ~25 min: deepen Medical Ruin and First Pursuit (D-083).
+- [ ] Widen `test_tunnel_dash_shard_negative_sweep` like the Smuggler/alley sweeps (every air-dodge frame, late take-offs); lower the ledge if it leaks (K-48).
+- [ ] `PowerShutter`: report low passes against the slot clock, so S4b stops reading as a close call (K-52, D-099).
+- [ ] `test_pb_b3_reach` could add a Hot Wire case now that the circuit exists (D5a landed after Power Block).
+- [ ] `DevActions` grant-kit sets `injector_upgrades` but not `injector_upgrades_bootleg`, so the debug kit lacks Iko's charge.
+- [ ] RouteBot: a stationary diagonal aim for multi-shot volleys (K-57).
+- [ ] **Boss Assist** (M9): an Assist-mode option for bosses (slower telegraphs or more pips), announced, never silent (§23).
+- [ ] **`timing_assist` setting** (not built, D-073): an announced option that scales pursuer speed and shutter clocks. §23 forbids silent difficulty changes.
+- [ ] **Rising-flood pursuer** (deferred): a second `PursuerData` style for a later district.
+- [ ] Deferred mechanics, build them when a room needs one (D-078): PowerJunction, LaserGrid, SecurityCamera, AlarmSystem, MovingPlatform, CollapsingPlatform (also CoreConduit, RadioTerminal, the OnboardingValidator, the Shaft Sentinel mini-boss, RouteBot `await`).
+- [ ] Final art: banner lettering, the chest-clamp chairs, a bracket for Orr's Escape Tunnel radio (K-53); check the Undercity sea-green against healing green (K-46) and the seepage rain (K-47).
+- [ ] Sinks before enemies: the next district needs new stock before any new respawning enemy (K-49).
+- [x] Iko's shop stock (D5a), the Undercity intros and The Way Up (D4), the economy audit (D5b), the full Undercity and Lowlight walks (D6), final chart thresholds (D8b).
 
 ## M6 follow-ups
 - [ ] More modules as enemies need them (patrol, dive, group spacing, retreat: bible §32).
@@ -87,4 +105,4 @@
 - [ ] `AccessibilityConfig` resource once a menu exists.
 
 ## Do NOT start until the slice passes §44
-- M4 Validation changes, M5 World Framework (map, fast travel, more NPCs), M6 content pipeline, and district production. Bible §44: "If these fail, fix the core instead of producing more content."
+- M7 batch 2+ (Ironworks and later districts). Bible §44: "If these fail, fix the core instead of producing more content." M5, M6 and M7 batch 1 were built on request before the playtest (D-044, D-053, D-061).
