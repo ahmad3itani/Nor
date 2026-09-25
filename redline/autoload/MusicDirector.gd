@@ -33,8 +33,8 @@ var _district: String = ""
 ## A scripted state a sequence forces (SeqMusic); -1 = none. Wins over
 ## everything, so a cinematic can hold silence through a boss room.
 var _override: int = -1
-## True while a memory scene plays. Wired to the memory signals by the memory
-## player's task (T04); declared here so the state machine owns the rule.
+## True while a memory playback runs (memory_scene_started ..
+## memory_playback_finished, wired in _ready).
 var _memory_active: bool = false
 ## Relay growth table (D-125). Loaded in _ready, not preloaded (CLAUDE.md
 ## typed-const pitfall).
@@ -51,6 +51,10 @@ func _ready() -> void:
 	EventBus.boss_defeated.connect(func(_id: String) -> void:
 		_boss_active = false
 		_aftermath = AFTERMATH_TIME)
+	# Memory vignettes (T04): MEMORY from the first scene until the whole
+	# request is over (a queue of scenes never dips back to the room's mix).
+	EventBus.memory_scene_started.connect(func(_id: String, _s: StringName) -> void: _memory_active = true)
+	EventBus.memory_playback_finished.connect(func(_s: StringName) -> void: _memory_active = false)
 	# No audio device in headless runs (tests, probes): track state, skip synthesis.
 	if DisplayServer.get_name() != "headless":
 		WorkerThreadPool.add_task(_render_all)

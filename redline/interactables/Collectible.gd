@@ -53,6 +53,8 @@ func _on_body_entered(body: Node2D) -> void:
 		Kind.CORE_SHARD:
 			Game.state.core_shards += 1
 			EventBus.hint_requested.emit("CORE SHARD  —  Core Capacity +1", 3.0)
+	# After the counts change, so listeners (arcs, telemetry) read the new totals.
+	EventBus.collectible_taken.emit(persist_id, kind)
 	AudioManager.play_sfx(&"collect")
 	HitSpark.spawn(get_parent(), global_position + Vector2(0, -9), Vector2.UP, _color(), 14, 90.0)
 	queue_free()

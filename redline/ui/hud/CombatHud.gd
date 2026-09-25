@@ -82,8 +82,11 @@ func _ready() -> void:
 	EventBus.memory_fragment_found.connect(func(f: Resource) -> void:
 		var frag := f as MemoryFragmentData
 		if frag:
+			# M8 (D-112): the card names the memory and where it surfaces; the
+			# vignette is the reveal, so the full text no longer shows here.
+			var cfg := MemoryLibrary.config()
 			_lore_title = "MEMORY FRAGMENT  —  " + frag.title
-			_lore_text = frag.text
+			_lore_text = cfg.card_body_anchor if Settings.memories_at_anchors else cfg.card_body_journal
 			_lore_time = LORE_SECONDS)
 	EventBus.flag_changed.connect(_on_flag_changed)
 	EventBus.game_state_reset.connect(_sync_core_hidden)
