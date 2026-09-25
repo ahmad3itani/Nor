@@ -117,3 +117,129 @@ func test_orr_radio_rules() -> void:
 	Game.apply_dialogue(d)
 	check(Game.has_flag("met_orr_radio"), "fallback should set met_orr_radio")
 	check(radio.pick_dialogue().id == "orr_radio_waiting", "fallback should lead to the reminder")
+
+
+## M7/D4: talks to an NPC once and returns the id of the dialogue that played.
+func _talk(p: NpcProfile) -> String:
+	var d := p.pick_dialogue()
+	Game.apply_dialogue(d)
+	return d.id
+
+
+func _way_up() -> QuestData:
+	for q in Game.quests.quests:
+		if q.id == "way_up":
+			return q
+	return null
+
+
+## Fresh campaign: the radio starts "The Way Up", the Collector finishes stage
+## 1, and at the Relay Orr and Mara both open with their Undercity intros.
+## Meeting Orr completes the quest and pays its 30 Scrap exactly once.
+func test_campaign_path_undercity_intros() -> void:
+	var radio: NpcProfile = load("res://data/npcs/orr_radio.tres")
+	var mara: NpcProfile = load("res://data/npcs/mara.tres")
+	var q := _way_up()
+	check(q != null, "way_up.tres should be discovered from data/quests")
+	if q == null:
+		return
+	Game.start_campaign()
+	Game.set_flag("got_pulse_blade")
+	check(not q.is_started(), "way_up should not start before a radio")
+	check(_talk(radio) == "orr_radio_shaft", "the first radio should be the lift-shaft call")
+	check(q.is_started() and q.current_stage() == 0, "the radio should start way_up on stage 1")
+	check(Game.quests.active_quests().has(q), "way_up should be active in the journal")
+	Game.set_flag("collector_drone_defeated")
+	check(q.current_stage() == 1, "killing the Collector should finish stage 1")
+	check(_talk(radio) == "orr_radio_after", "the EscapeTunnel radio should congratulate")
+	var scrap_before := Game.state.total_scrap()
+	check(_talk(ORR) == "orr_intro_undercity", "the campaign Relay should open with orr_intro_undercity")
+	check(Game.has_flag("met_orr") and Game.has_flag("quest_dead_air_started"), "the Undercity intro should set met_orr and start Dead Air")
+	check(Game.has_flag(q.complete_flag), "meeting Orr should complete way_up")
+	check(Game.state.total_scrap() == scrap_before + 30, "way_up should pay 30 Scrap")
+	Game.quests.evaluate()
+	check(Game.state.total_scrap() == scrap_before + 30, "way_up paid twice")
+	check(Game.quests.completed_quests().has(q), "way_up should be listed as done")
+	check(ORR.pick_dialogue().id == "orr_waiting", "after the Undercity intro Orr should wait on the repeaters")
+	var menus: Array[StringName] = []
+	var on_menu := func(id: StringName) -> void: menus.append(id)
+	EventBus.menu_requested.connect(on_menu)
+	check(_talk(mara) == "mara_intro_undercity", "Mara should open with mara_intro_undercity")
+	EventBus.menu_requested.disconnect(on_menu)
+	check(Game.has_flag("met_mara") and Game.state.owned_weapons.has("scattergun"), "Mara's Undercity intro should give the Scattergun")
+	check(menus.has(&"shop_mara"), "Mara's Undercity intro should open her shop")
+	check(mara.pick_dialogue().id == "mara_shop", "after the intro Mara just sells")
+
+
+## Both radios skipped: the Relay intros key on collector_drone_defeated, so
+## they still fire; way_up simply never starts.
+func test_radio_skipped_still_gets_intros() -> void:
+	var mara: NpcProfile = load("res://data/npcs/mara.tres")
+	Game.start_campaign()
+	Game.set_flag("got_pulse_blade")
+	Game.set_flag("collector_drone_defeated")
+	check(_talk(ORR) == "orr_intro_undercity", "Orr should still give the Undercity intro")
+	check(_talk(mara) == "mara_intro_undercity", "Mara should still give the Undercity intro")
+	var q := _way_up()
+	check(q != null and not q.is_started(), "way_up should never start without a radio")
+	check(q != null and not Game.quests.active_quests().has(q) and not Game.quests.completed_quests().has(q), "way_up should not be in the journal")
+
+
+## Orr skipped until after the reroute and Krail, with all three repeaters
+## done: the first line is always an introduction, never orr_report; then the
+## Iko news, the Rainline line and the report, in that order.
+func test_orr_skipped_until_after_reroute() -> void:
+	for campaign in [true, false]:
+		Game.new_game()
+		if campaign:
+			Game.set_flag("collector_drone_defeated")
+		for f in ["lowlight_power_rerouted", "warden_krail_defeated", "repeater_market", "repeater_stack", "repeater_bell"]:
+			Game.set_flag(f)
+		var expected := ["orr_intro_undercity" if campaign else "orr_intro", "orr_iko", "orr_rainline", "orr_report", "orr_after"]
+		var got: Array[String] = []
+		for i in expected.size():
+			got.append(_talk(ORR))
+		check(got == expected, "%s save: expected %s, got %s" % ["campaign" if campaign else "legacy", str(expected), str(got)])
+		check(Game.has_flag("met_iko") and Game.has_flag("orr_rainline_line"), "orr_iko/orr_rainline should set their flags")
+
+
+## orr_report requires met_orr even with every repeater aligned.
+func test_orr_report_needs_met_orr() -> void:
+	for f in ["repeater_market", "repeater_stack", "repeater_bell"]:
+		Game.set_flag(f)
+	check(ORR.pick_dialogue().id == "orr_intro", "a stranger with three repeaters still gets the intro first")
+	Game.set_flag("met_orr")
+	check(ORR.pick_dialogue().id == "orr_report", "once met, the repeaters unlock the report")
+
+
+## Legacy save (met_orr already set): the Undercity radio gives the crew-band
+## line, and the Relay rules are unchanged (no Undercity intro, Mara's old
+## intro, and the old Orr order).
+func test_legacy_save_rules_unchanged() -> void:
+	var radio: NpcProfile = load("res://data/npcs/orr_radio.tres")
+	var mara: NpcProfile = load("res://data/npcs/mara.tres")
+	Game.set_flag("met_orr")
+	Game.set_flag("quest_dead_air_started")
+	check(radio.pick_dialogue().id == "orr_radio_legacy", "legacy radio should be the crew-band line")
+	check(ORR.pick_dialogue().id == "orr_waiting", "legacy Orr should wait on the repeaters")
+	check(mara.pick_dialogue().id == "mara_intro", "legacy Mara should give the original intro")
+	Game.set_flag("warden_krail_defeated")
+	check(ORR.pick_dialogue().id == "orr_iko", "after Krail Orr should mention Iko once")
+	Game.set_flag("collector_drone_defeated")
+	Game.set_flag("met_iko")
+	check(ORR.pick_dialogue().id == "orr_waiting", "met_orr blocks the Undercity intro")
+
+
+## The journal lists an active way_up with its current stage.
+func test_journal_lists_way_up() -> void:
+	Game.set_flag("met_orr_radio")
+	var m: MenuScreen = load("res://ui/menus/JournalMenu.gd").new()
+	add_child(m)
+	m.open_menu()
+	var found := false
+	for l in m.find_children("*", "Label", true, false):
+		if (l as Label).text.contains("The Way Up") and (l as Label).text.contains("Collector's bay"):
+			found = true
+	check(found, "the journal should list The Way Up on its first stage")
+	m.close_menu()
+	m.queue_free()
