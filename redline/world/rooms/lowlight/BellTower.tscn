@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -22,6 +22,8 @@
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
+[ext_resource type="Resource" path="res://data/sequences/bark_bell_lift.tres" id="seq_bark_bell_lift"]
+[ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -451,3 +453,10 @@ kind = 2
 label = "Orr: crates go up here every night"
 resolved_when = "flag:warden_krail_defeated"
 shown_when = "flag:dead_air_complete"
+
+[node name="BarkBellLift" type="Area2D" parent="Triggers"]
+position = Vector2(-48, -1056)
+script = ExtResource("sequence")
+size = Vector2(200, 96)
+sequence = ExtResource("seq_bark_bell_lift")
+play_when = PackedStringArray("flag:dead_air_complete", "!flag:warden_krail_defeated")

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="3_line"]
+
+[sub_resource type="Resource" id="line_0"]
+script = ExtResource("3_line")
+speaker_id = "band"
+text = "...patrol eight, Market Run. Scanning for a core signature. No name on file."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[resource]
+script = ExtResource("1_seq")
+id = "bark_market_patrol"
+room = "res://world/rooms/lowlight/MarketRun.tscn"
+preview_entry = &"from_alley"
+steps = Array[ExtResource("2_step")]([SubResource("line_0")])
+seen_flag = ""
+lock_input = false
+repeat_locks_input = false
+hide_hud = false
+letterbox = false
+budget_seconds = 20.0
+repeat_budget_seconds = 1.5
+theatre_only = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -16,6 +16,8 @@
 [ext_resource type="Script" path="res://world/map/MapMarker.gd" id="marker"]
 [ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Resource" path="res://data/sequences/bark_tunnel_orr.tres" id="seq_bark_tunnel_orr"]
+[ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
 
@@ -318,3 +320,10 @@ script = ExtResource("exit")
 size = Vector2(16, 96)
 target_room = "res://world/rooms/lowlight/Relay.tscn"
 target_entry = &"from_undercity"
+
+[node name="BarkTunnelOrr" type="Area2D" parent="Triggers"]
+position = Vector2(1400, -336)
+script = ExtResource("sequence")
+size = Vector2(200, 96)
+sequence = ExtResource("seq_bark_tunnel_orr")
+play_when = PackedStringArray("flag:act1_complete")

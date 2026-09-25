@@ -290,6 +290,10 @@ for x in [360, 620, 880]:
 s = m.switch("MarketLate", "flag:warden_krail_defeated")
 for x in [300, 700, 1880]:
     m.decor("lamp", x, -2, 6, 56, "0.2, 0.2, 0.26, 1", AMBER, parent=s)
+# M8 radio bark (non-locking, plays once): a Recovery patrol on the stall
+# radios. In the entry's safe zone, before the first Flow Zone (580) and the
+# first enemy (720), so a subtitle never competes with a fight.
+m.sequence_trigger("BarkMarketPatrol", "bark_market_patrol", 100, -96, 160, 96, play_when=["flag:dead_air_complete"])
 m.write(OUT + "MarketRun.tscn")
 
 # ---------------------------------------------------------------- Apartment Stack (vertical)
@@ -490,6 +494,10 @@ b.decor("crates", 300, -960, 30, 26, "0.3, 0.22, 0.16, 1", "1, 0.81, 0.35, 1", p
 # lift door on floor 4, from Dead Air until the Warden falls. Main path only.
 b.mapmarker(40, -1000, "Orr: crates go up here every night", "flag:warden_krail_defeated", kind=2,
             shown_when="flag:dead_air_complete")
+# M8 radio bark on floor 4 (above the Flow, by the Anchor and the lever): the
+# lift crew's orders, only while the Warden still signs for the load.
+b.sequence_trigger("BarkBellLift", "bark_bell_lift", -48, -1056, 200, 96,
+                   play_when=["flag:dead_air_complete", "!flag:warden_krail_defeated"])
 b.write(OUT + "BellTower.tscn")
 
 # ---------------------------------------------------------------- Warden Tower (boss)

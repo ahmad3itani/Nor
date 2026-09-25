@@ -93,6 +93,10 @@ t.spawn("from_bay", -20, 0, 1, default=True)
 t.spawn("from_relay", 1956, -240, -1)
 t.exit(-64, -96, 16, 96, "undercity/CollectorBay", "from_tunnel")
 t.exit(1984, -336, 16, 96, "lowlight/Relay", "from_undercity")
+# M8 radio bark (non-locking, plays once): Orr on the band when Rook walks
+# back down after the Act I close. On the top floor beside his radio, outside
+# FZ3 (690..1340).
+t.sequence_trigger("BarkTunnelOrr", "bark_tunnel_orr", 1400, -336, 200, 96, play_when=["flag:act1_complete"])
 t.write(OUT + "EscapeTunnel.tscn")
 
 finish()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -15,6 +15,8 @@
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
+[ext_resource type="Resource" path="res://data/sequences/bark_market_patrol.tres" id="seq_bark_market_patrol"]
+[ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -384,3 +386,10 @@ kind = 1
 size = Vector2(6, 56)
 color = Color(0.2, 0.2, 0.26, 1)
 accent = Color(1, 0.81, 0.35, 1)
+
+[node name="BarkMarketPatrol" type="Area2D" parent="Triggers"]
+position = Vector2(100, -96)
+script = ExtResource("sequence")
+size = Vector2(160, 96)
+sequence = ExtResource("seq_bark_market_patrol")
+play_when = PackedStringArray("flag:dead_air_complete")
