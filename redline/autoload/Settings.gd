@@ -4,6 +4,10 @@ extends Node
 ## M0 skeleton: only values the Movement Lab already consumes (shake, hitstop,
 ## flash) plus audio levels. Full accessibility menu arrives with M9, but the
 ## values live here from day one so systems read them instead of hardcoding.
+## M8 adds the subtitle and scene values (bible §24: subtitle size, background,
+## speaker labels, cinematic skip) plus reading speed and memories-at-Anchors;
+## their "Subtitles & scenes" menu rows land in M8 (D-110, FLAG), the rest of
+## the settings menu stays M9 work.
 
 const SETTINGS_PATH := "user://settings.cfg"
 
@@ -33,12 +37,48 @@ var playtest_variant: String = ""
 ## Redline Core difficulty (bible §6): 0 Normal, 1 Story/Assist, 2 Redline Challenge.
 var reactor_mode: int = 0:
 	set(v): reactor_mode = clampi(v, 0, 2)
+## --- Subtitles & scenes (M8) ---
+## 0 Small / 1 Medium / 2 Large (SubtitleStyle.SIZES). Read through
+## effective_subtitle_size(), which honours the --subtitle-size= capture arg.
+var subtitle_size: int = 0:
+	set(v): subtitle_size = clampi(v, 0, 2)
+## 0 Outline (no box) / 1 Box / 2 Solid (SubtitleStyle.box_alpha/subtitle_alpha).
+var subtitle_background: int = 1:
+	set(v): subtitle_background = clampi(v, 0, 2)
+var speaker_labels: bool = true
+## Reading speed of timed scene lines: 0 Normal x1.0 / 1 Slow x1.5 / 2 Slower x2.0
+## (SubtitleStyle.time_scale()).
+var subtitle_speed: int = 0:
+	set(v): subtitle_speed = clampi(v, 0, 2)
+## true = hold to skip scenes; false = "Press twice" (SkipGate).
+var cinematic_skip_hold: bool = true
+## Memory vignettes play when resting at an Anchor (off = journal only).
+var memories_at_anchors: bool = true
 
 var _path: String = SETTINGS_PATH
+## Session-only subtitle size from `--subtitle-size=N` (captures, -1 = none).
+## Never saved, so SettingsMenu.close_menu cannot persist a CLI value.
+var _subtitle_size_override: int = -1
 
 
 func _ready() -> void:
 	load_settings()
+	var arg := parse_subtitle_size_arg(OS.get_cmdline_user_args())
+	if arg >= 0:
+		_subtitle_size_override = arg
+
+
+## `--subtitle-size=N` from user args, clamped 0..2; -1 when absent.
+static func parse_subtitle_size_arg(args: PackedStringArray) -> int:
+	for a in args:
+		if a.begins_with("--subtitle-size="):
+			return clampi(a.trim_prefix("--subtitle-size=").to_int(), 0, 2)
+	return -1
+
+
+## The size subtitles render at: the session override when set, else the stored one.
+func effective_subtitle_size() -> int:
+	return _subtitle_size_override if _subtitle_size_override >= 0 else subtitle_size
 
 
 func load_settings(path: String = SETTINGS_PATH) -> void:
@@ -58,6 +98,12 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	currency_loss = cfg.get_value("accessibility", "currency_loss", currency_loss)
 	playtest_recording = cfg.get_value("playtest", "recording", playtest_recording)
 	playtest_variant = cfg.get_value("playtest", "variant", playtest_variant)
+	subtitle_size = cfg.get_value("accessibility", "subtitle_size", subtitle_size)
+	subtitle_background = cfg.get_value("accessibility", "subtitle_background", subtitle_background)
+	speaker_labels = cfg.get_value("accessibility", "speaker_labels", speaker_labels)
+	subtitle_speed = cfg.get_value("accessibility", "subtitle_speed", subtitle_speed)
+	cinematic_skip_hold = cfg.get_value("accessibility", "cinematic_skip_hold", cinematic_skip_hold)
+	memories_at_anchors = cfg.get_value("accessibility", "memories_at_anchors", memories_at_anchors)
 
 
 func save_settings() -> Error:
@@ -74,4 +120,10 @@ func save_settings() -> Error:
 	cfg.set_value("accessibility", "currency_loss", currency_loss)
 	cfg.set_value("playtest", "recording", playtest_recording)
 	cfg.set_value("playtest", "variant", playtest_variant)
+	cfg.set_value("accessibility", "subtitle_size", subtitle_size)
+	cfg.set_value("accessibility", "subtitle_background", subtitle_background)
+	cfg.set_value("accessibility", "speaker_labels", speaker_labels)
+	cfg.set_value("accessibility", "subtitle_speed", subtitle_speed)
+	cfg.set_value("accessibility", "cinematic_skip_hold", cinematic_skip_hold)
+	cfg.set_value("accessibility", "memories_at_anchors", memories_at_anchors)
 	return cfg.save(_path)
