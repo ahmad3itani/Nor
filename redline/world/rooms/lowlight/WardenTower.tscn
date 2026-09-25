@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://bosses/WardenKrail.tscn" id="scene_WardenKrail"]
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/DashModule.tscn" id="scene_DashModule"]
+[ext_resource type="Resource" path="res://data/sequences/ll_krail_intro.tres" id="seq_intro"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -209,3 +210,4 @@ reward_position = Vector2(208, 0)
 boss_path = NodePath("../../Enemies/WardenKrail1")
 gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]
 reward_scene = ExtResource("scene_DashModule")
+intro_sequence = ExtResource("seq_intro")

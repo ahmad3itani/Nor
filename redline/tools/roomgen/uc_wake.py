@@ -75,5 +75,11 @@ w.neon(120, -200, 30, 6, SEA, 3, True)            # flickering service tubes (am
 w.neon(480, -200, 30, 6, SEA, 3, True)
 w.neon(1220, -120, 14, 6, SODIUM, 2, False)       # steady sodium lamp over the exit (route only)
 
+# --- M8: the opening (data/sequences/uc_opening.tres) ---
+# Plays on arrival at "start" only (the campaign New Game): walk-ins from
+# MedicalRuin never see it. Once finished or skipped it never plays again;
+# a quit mid-scene replays it. Appended last so no numbered name shifts.
+w.sequence_trigger("SeqOpening", "uc_opening", -48, -140, 150, 140, autoplay=True, require_spawn="start")
+
 w.write(OUT + "Wake.tscn")
 finish()

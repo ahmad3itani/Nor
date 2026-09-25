@@ -92,7 +92,9 @@ c.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(72, -224)', 'scrip
       'boss_subtitle = "Civic Recovery Unit C-00"', 'intro_time = 2.6', 'reward_position = Vector2(252, 0)',
       'boss_path = NodePath("../../Enemies/%s")' % boss,
       'gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]',
-      'reward_scene = %s' % c._res("scene_ServicePistolDrop", "PackedScene", "res://interactables/ServicePistolDrop.tscn")])
+      'reward_scene = %s' % c._res("scene_ServicePistolDrop", "PackedScene", "res://interactables/ServicePistolDrop.tscn"),
+      # M8: the scripted intro (first attempt locks; retries are an overlay).
+      'intro_sequence = %s' % c._res("seq_intro", "Resource", "res://data/sequences/uc_collector_intro.tres")])
 
 # --- Breathing space after the win: the sodium lamps come on ---
 lit = c.switch("BayLit", "flag:collector_drone_defeated")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://bosses/CollectorDrone.tscn" id="scene_CollectorDrone"]
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/ServicePistolDrop.tscn" id="scene_ServicePistolDrop"]
+[ext_resource type="Resource" path="res://data/sequences/uc_collector_intro.tres" id="seq_intro"]
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/undercity.tres" id="theme"]
@@ -231,6 +232,7 @@ reward_position = Vector2(252, 0)
 boss_path = NodePath("../../Enemies/CollectorDrone1")
 gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]
 reward_scene = ExtResource("scene_ServicePistolDrop")
+intro_sequence = ExtResource("seq_intro")
 
 [node name="BayLit" type="Node2D" parent="Props"]
 script = ExtResource("switch")

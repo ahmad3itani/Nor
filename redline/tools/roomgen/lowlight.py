@@ -73,8 +73,11 @@ r.decor("bench", 400, 0, 30, 12, WARM)
 r.decor("bench", 540, 0, 30, 12, WARM)
 r.decor("banner", 330, -170, 26, 40, "0.35, 0.1, 0.13, 1", "1, 0.8, 0.7, 1")
 r.decor("planter", 820, -80, 30, 16, WARM, "0.49, 0.8, 0.5, 1")
-r.raw("Triggers", "SliceEnd", "Area2D", ['position = Vector2(380, -120)', 'script = ExtResource("slice_end")', 'size = Vector2(240, 120)'])
+# M8: the Act I close (data/sequences/act1_close.tres) plays before the card.
+r.raw("Triggers", "SliceEnd", "Area2D", ['position = Vector2(380, -120)', 'script = ExtResource("slice_end")', 'size = Vector2(240, 120)',
+      'sequence = ExtResource("seq_act1_close")'])
 r.ext["slice_end"] = ("Script", "res://world/props/SliceEndTrigger.gd")
+r.ext["seq_act1_close"] = ("Resource", "res://data/sequences/act1_close.tres")
 # The Relay evolves (bible §13): world-state switches keyed off progress.
 radio = r.switch("RadioRestored", "flag:dead_air_complete")
 r.neon(250, -140, 30, 10, CYAN, 6, False, parent=radio)
@@ -86,6 +89,12 @@ r.decor("banner", 470, -200, 30, 50, "0.45, 0.08, 0.12, 1", "1, 0.81, 0.35, 1", 
 r.neon(470, -225, 44, 8, RED, 4, False, parent=trophy)
 charted = r.switch("NixCityMap", "flag:chart_lowlight_complete")
 r.decor("banner", 360, -150, 60, 44, "0.16, 0.26, 0.24, 1", "0.49, 1, 0.6, 1", parent=charted)
+# M8: the first arrival from the Undercity gallery (relay_arrival.tres).
+# Only after the Collector and before Orr's intro: an M7 save that already
+# met Orr never gets a "first arrival" out of order, and Relay-start saves
+# spawn at "start". Appended last so no numbered name shifts.
+r.sequence_trigger("SeqArrival", "relay_arrival", -48, -240, 112, 96, autoplay=True, require_spawn="from_undercity",
+                   play_when=["flag:collector_drone_defeated", "!flag:met_orr"])
 r.write(OUT + "Relay.tscn")
 
 # ---------------------------------------------------------------- Flooded Alley
@@ -411,7 +420,9 @@ boss = w.enemy("WardenKrail", 330, -2)
 w.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(40, -250)', 'script = %s' % w._script("arena"),
       'size = Vector2(400, 250)', 'reward_position = Vector2(208, 0)', 'boss_path = NodePath("../../Enemies/%s")' % boss,
       'gate_paths = [NodePath("../../Geometry/ArenaGateLeft"), NodePath("../../Geometry/ExitGate")]',
-      'reward_scene = %s' % w._res("scene_DashModule", "PackedScene", "res://interactables/DashModule.tscn")])
+      'reward_scene = %s' % w._res("scene_DashModule", "PackedScene", "res://interactables/DashModule.tscn"),
+      # M8: the scripted intro (first attempt locks; retries are an overlay).
+      'intro_sequence = %s' % w._res("seq_intro", "Resource", "res://data/sequences/ll_krail_intro.tres")])
 w.write(OUT + "WardenTower.tscn")
 
 finish()

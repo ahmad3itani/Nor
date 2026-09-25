@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -16,7 +16,10 @@
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/props/SliceEndTrigger.gd" id="slice_end"]
+[ext_resource type="Resource" path="res://data/sequences/act1_close.tres" id="seq_act1_close"]
 [ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
+[ext_resource type="Resource" path="res://data/sequences/relay_arrival.tres" id="seq_relay_arrival"]
+[ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/relay.tres" id="theme"]
 
@@ -381,6 +384,7 @@ accent = Color(0.49, 0.8, 0.5, 1)
 position = Vector2(380, -120)
 script = ExtResource("slice_end")
 size = Vector2(240, 120)
+sequence = ExtResource("seq_act1_close")
 
 [node name="RadioRestored" type="Node2D" parent="Props"]
 script = ExtResource("switch")
@@ -457,3 +461,12 @@ kind = 9
 size = Vector2(60, 44)
 color = Color(0.16, 0.26, 0.24, 1)
 accent = Color(0.49, 1, 0.6, 1)
+
+[node name="SeqArrival" type="Area2D" parent="Triggers"]
+position = Vector2(-48, -240)
+script = ExtResource("sequence")
+size = Vector2(112, 96)
+sequence = ExtResource("seq_relay_arrival")
+play_when = PackedStringArray("flag:collector_drone_defeated", "!flag:met_orr")
+autoplay = true
+require_spawn = &"from_undercity"
