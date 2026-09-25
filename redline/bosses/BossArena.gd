@@ -90,7 +90,11 @@ func _start_fight(seen: bool) -> void:
 	# The context carries the view: the seen flag was just set above.
 	var ctx := SequenceContext.for_arena(self, not seen)
 	if CinematicMode.current() == CinematicMode.Mode.INSTANT:
-		# Headless: the play resolves in this call; keep the M7 timing.
+		# Headless: the play resolves in this call; keep the M7 timing. It
+		# shows nothing, so it leaves the camera alone too: the restore
+		# contract's snap would reset the look-ahead of a Rook walking in
+		# and shift every later frame (CaptureTour s_boss_fight).
+		ctx.camera = null
 		await Cinematics.play(intro_sequence, ctx)
 		await _legacy_intro(seen)
 		_release_boss()
