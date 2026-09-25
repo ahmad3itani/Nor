@@ -2,7 +2,7 @@
 class_name SliceEndTrigger
 extends Area2D
 ## Shown once when the player returns to the Relay after beating Warden
-## Krail: marks the end of the M3 vertical slice and points at the Dash gate.
+## Krail: marks the end of Act I's Lowlight arc and points at the Dash gates.
 
 @export var size: Vector2 = Vector2(200, 100)
 

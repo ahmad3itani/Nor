@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_cfg")
-enforce = false
-campaign_start_room = "res://world/rooms/lowlight/Relay.tscn"
+enforce = true
+campaign_start_room = "res://world/rooms/undercity/Wake.tscn"
 campaign_start_entry = &"start"
 start_owned_weapons = PackedStringArray()
 start_melee = ""
@@ -13,4 +13,4 @@ start_ranged = ""
 start_flags = {
 "core_hud_hidden": true
 }
-title_subtitle = "vertical slice  —  Lowlight"
+title_subtitle = "Act I  —  Undercity to Lowlight"

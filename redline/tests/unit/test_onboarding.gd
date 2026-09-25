@@ -145,8 +145,20 @@ func test_start_campaign_state() -> void:
 	check(Game.campaign_start_room() == ROOM_A and Game.campaign_start_entry() == &"start", "campaign start room/entry")
 
 
+## The shipped config is the campaign (D6); a config with enforce off is the
+## legacy slice start, and start_campaign() is then plain new_game().
+func test_shipped_config_starts_in_wake() -> void:
+	var shipped := Game.ONBOARDING as OnboardingConfig
+	check(shipped.enforce, "the shipped config enforces the campaign start")
+	check(shipped.campaign_start_room == "res://world/rooms/undercity/Wake.tscn" and shipped.campaign_start_entry == &"start", "the campaign starts in Wake at 'start'")
+	check(shipped.title_subtitle == "Act I  —  Undercity to Lowlight", "subtitle: %s" % shipped.title_subtitle)
+	check(shipped.start_owned_weapons.is_empty() and bool(shipped.start_flags.get("core_hud_hidden", false)), "unarmed, Core readout hidden")
+
+
 func test_start_campaign_noop_when_not_enforced() -> void:
-	check(not (Game.ONBOARDING as OnboardingConfig).enforce, "the shipped config stays off until the Undercity lands")
+	var off := (Game.ONBOARDING as OnboardingConfig).duplicate() as OnboardingConfig
+	off.enforce = false
+	Game.onboarding = off
 	Game.state.scrap_banked = 77
 	Game.start_campaign()
 	check(Game.state.to_dict() == GameState.new().to_dict(), "start_campaign without enforce must equal new_game()")
