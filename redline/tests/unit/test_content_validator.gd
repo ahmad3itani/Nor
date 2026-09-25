@@ -98,6 +98,18 @@ func test_producers_multimap() -> void:
 		"consumers must list every full path in order: %s" % v.consumers)
 
 
+## M8: a WorldStateSwitch is visual only; hiding it must not leave a wall,
+## pickup or talker in play. Fixture: tools/roomgen/fixtures_scaffold.py.
+func test_switch_children_visual_only() -> void:
+	var v := ContentValidator.new().check_room("res://tests/fixtures/scaffold_m8_switch_bad.tscn", false)
+	check(v.errors == PackedStringArray(["room scaffold_m8_switch_bad: BadSwitch: SolidCrate under a WorldStateSwitch (visual only)"]),
+		"expected exactly the GrayboxBlock error: %s" % v.errors)
+	for path in SliceStats.room_paths():
+		var shipped := ContentValidator.new().check_room(path)
+		var bad := Array(shipped.errors).filter(func(e: String) -> bool: return e.contains("under a WorldStateSwitch"))
+		check(bad.is_empty(), "%s: %s" % [path.get_file(), bad])
+
+
 ## M8: a NOTE map marker never points at a secret (bible §20).
 func test_note_marker_secret_guard() -> void:
 	var v := ContentValidator.new().check_room("res://tests/fixtures/scaffold_m8_note_bad.tscn", false)
