@@ -1056,6 +1056,10 @@ func test_full_undercity_walk() -> void:
 	for f in ["uc_ward_shutter", "got_pulse_blade", "met_orr_radio", "got_service_pistol", "collector_drone_defeated"]:
 		check(Game.has_flag(f), "the walk should leave %s set" % f)
 	check(Game.state.last_anchor_room == "", "the main path needs no Anchor rest")
+	# D8b: the plain critical path through all seven rooms charts the Undercity.
+	var ratio := MapProgress.district_ratio(Game.state, Game.world_map, "undercity")
+	print("  [D8b] full walk undercity ratio %.3f (threshold %.2f)" % [ratio, Game.world_map.threshold_for("undercity")])
+	check(Game.has_flag("map_charted_undercity"), "the full walk should chart the Undercity (ratio %.3f)" % ratio)
 
 
 ## Asserts the walk is in `room_name` with exactly the weapons `owned` and
