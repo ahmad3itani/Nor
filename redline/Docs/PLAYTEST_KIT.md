@@ -92,6 +92,7 @@ This writes `REPORT.md` plus `heatmaps/<Room>.png`. The report contains:
 | No memorable enemy | The enemy roster and roles; the survey's enemy choices |
 | Not curious about Veyra/Rook | Lore fragments, dialogue (`data/npcs`, `data/lore`) |
 | Secrets not noticed | Secret placement (the heatmaps show where players never went) |
+| Chart Lowlight never completes (or completes by accident) | `data/world/world_map.tres` `district_thresholds` (M7 D8b: lowlight 0.5 of standable 0.630, undercity 0.4 of standable 0.618; keep each within [0.6, 0.85] × standable, which `test_thresholds_match_standable_coverage` prints) |
 | Build system unclear | Circuit descriptions, loadout onboarding at the first Anchor |
 | Boss unfair | `enemies/warden_krail.tres`: telegraphs, phase-2 scale, attempts and death causes in the Warden Tower |
 | No wish to continue | This is the big one: look at everything above together |

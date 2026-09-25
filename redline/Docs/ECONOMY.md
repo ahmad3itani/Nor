@@ -17,6 +17,8 @@ Audited in M7 (D5b) with all eleven new rooms merged: Undercity and the full Low
 | Scrap stashes in secret spots (16) | 560 |
 | **Total** | **1,772** |
 
+Chart Lowlight pays when `map_charted_lowlight` is set, which happens at 50% of Lowlight's map cells (`world_map.tres` `district_thresholds`, M7 D8b). Standing on every surface of every Lowlight room reveals 63.0%, so the chart asks for about 0.79 of everything a player can see. The Undercity charts at 40% (standable 61.8%). The plain critical path reveals 44% of it, so walking it charts the district. No quest pays for that chart. `test_world_map::test_thresholds_match_standable_coverage` keeps each value within [0.6, 0.85] × standable coverage.
+
 Scavenger (+50% Scrap) raises everything that drops as pickups.
 
 ### By district (`by_district` in the audit)
