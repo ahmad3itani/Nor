@@ -1,0 +1,85 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCamera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFace.gd" id="4_actorface"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="5_line"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqSfx.gd" id="6_sfx"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqShake.gd" id="7_shake"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="8_mark"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqTitleCard.gd" id="9_titlecard"]
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_00"]
+script = ExtResource("3_camera")
+target = "@boss"
+zoom = 1.25
+seconds = 0.9
+label = "frame Krail"
+views = 1
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_01"]
+script = ExtResource("4_actorface")
+actor = "@boss"
+facing = -1
+label = "faces Rook"
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_02"]
+script = ExtResource("5_line")
+speaker_id = "krail"
+text = "Fourteen. You were meant to come up in a crate."
+label = "krail crate"
+views = 1
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_03"]
+script = ExtResource("5_line")
+speaker_id = "krail"
+text = "Everything from the Spire passes my desk. You're still on my ledger."
+label = "krail ledger"
+views = 1
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_04"]
+script = ExtResource("6_sfx")
+id = &"boss_slam"
+label = "slam"
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_05"]
+script = ExtResource("7_shake")
+trauma = 0.3
+label = "slam"
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_06"]
+script = ExtResource("8_mark")
+mark = "krail_title"
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_07"]
+script = ExtResource("9_titlecard")
+use_arena_title = true
+seconds = 1.6
+label = "title"
+views = 1
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_08"]
+script = ExtResource("9_titlecard")
+use_arena_title = true
+seconds = 0.8
+label = "title"
+views = 2
+
+[sub_resource type="Resource" id="Resource_ll_krail_intro_09"]
+script = ExtResource("3_camera")
+release = true
+seconds = 0.6
+label = "release"
+views = 1
+
+[resource]
+script = ExtResource("1_seq")
+id = "ll_krail_intro"
+room = "res://world/rooms/lowlight/WardenTower.tscn"
+preview_entry = &"from_bell"
+steps = Array[ExtResource("2_step")]([SubResource("Resource_ll_krail_intro_00"), SubResource("Resource_ll_krail_intro_01"), SubResource("Resource_ll_krail_intro_02"), SubResource("Resource_ll_krail_intro_03"), SubResource("Resource_ll_krail_intro_04"), SubResource("Resource_ll_krail_intro_05"), SubResource("Resource_ll_krail_intro_06"), SubResource("Resource_ll_krail_intro_07"), SubResource("Resource_ll_krail_intro_08"), SubResource("Resource_ll_krail_intro_09")])
+seen_flag = "warden_krail_intro_seen"
+repeat_locks_input = false
+budget_seconds = 14.0
+repeat_budget_seconds = 1.0

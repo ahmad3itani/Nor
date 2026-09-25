@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCamera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="4_mark"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="5_wait"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFace.gd" id="6_actorface"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="7_line"]
+
+[sub_resource type="Resource" id="Resource_relay_arrival_00"]
+script = ExtResource("3_camera")
+point = Vector2(176, -150)
+seconds = 0.0
+label = "gallery"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_01"]
+script = ExtResource("3_camera")
+point = Vector2(520, -120)
+seconds = 2.0
+label = "pan the hub"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_02"]
+script = ExtResource("4_mark")
+mark = "relay_pan"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_03"]
+script = ExtResource("5_wait")
+seconds = 0.5
+
+[sub_resource type="Resource" id="Resource_relay_arrival_04"]
+script = ExtResource("6_actorface")
+actor = "Interactables/NPC_orr"
+facing = -1
+label = "Orr looks up"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_05"]
+script = ExtResource("3_camera")
+point = Vector2(230, -120)
+seconds = 1.2
+label = "Orr"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_06"]
+script = ExtResource("7_line")
+speaker_id = "orr"
+text = "Top gallery. Told you I'd leave it open."
+label = "orr gallery"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_07"]
+script = ExtResource("7_line")
+speaker_id = "orr"
+text = "Come on down. We're friendly. Mostly."
+label = "orr friendly"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_08"]
+script = ExtResource("3_camera")
+release = true
+seconds = 1.0
+label = "release"
+
+[resource]
+script = ExtResource("1_seq")
+id = "relay_arrival"
+room = "res://world/rooms/lowlight/Relay.tscn"
+preview_entry = &"from_undercity"
+steps = Array[ExtResource("2_step")]([SubResource("Resource_relay_arrival_00"), SubResource("Resource_relay_arrival_01"), SubResource("Resource_relay_arrival_02"), SubResource("Resource_relay_arrival_03"), SubResource("Resource_relay_arrival_04"), SubResource("Resource_relay_arrival_05"), SubResource("Resource_relay_arrival_06"), SubResource("Resource_relay_arrival_07"), SubResource("Resource_relay_arrival_08")])
+budget_seconds = 13.0

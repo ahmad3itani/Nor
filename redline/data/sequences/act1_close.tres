@@ -1,0 +1,120 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=29 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCamera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="4_mark"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="5_wait"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="6_line"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFace.gd" id="7_actorface"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqSfx.gd" id="8_sfx"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFlash.gd" id="9_actorflash"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqFade.gd" id="10_fade"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqFlag.gd" id="11_flag"]
+
+[sub_resource type="Resource" id="Resource_act1_close_00"]
+script = ExtResource("3_camera")
+point = Vector2(470, -150)
+seconds = 1.6
+label = "the trophy"
+
+[sub_resource type="Resource" id="Resource_act1_close_01"]
+script = ExtResource("4_mark")
+mark = "act1_trophy"
+
+[sub_resource type="Resource" id="Resource_act1_close_02"]
+script = ExtResource("5_wait")
+seconds = 0.6
+
+[sub_resource type="Resource" id="Resource_act1_close_03"]
+script = ExtResource("6_line")
+speaker_id = "orr"
+text = "Every band in Lowlight is saying it. Krail's tower went dark."
+label = "orr on air"
+only_when = "flag:dead_air_complete"
+
+[sub_resource type="Resource" id="Resource_act1_close_04"]
+script = ExtResource("6_line")
+speaker_id = "orr"
+text = "Half my board's deaf and I can still hear it. Krail's tower went dark."
+label = "orr deaf board"
+only_when = "!flag:dead_air_complete"
+
+[sub_resource type="Resource" id="Resource_act1_close_05"]
+script = ExtResource("6_line")
+speaker_id = "mara"
+text = "Then the Spire sends someone worse. It always does."
+label = "mara"
+
+[sub_resource type="Resource" id="Resource_act1_close_06"]
+script = ExtResource("7_actorface")
+actor = "Interactables/NPC_iko"
+facing = -1
+label = "Iko turns"
+only_when = "flag:met_iko"
+
+[sub_resource type="Resource" id="Resource_act1_close_07"]
+script = ExtResource("6_line")
+speaker_id = "iko"
+text = "Worse pays better. Just saying."
+label = "iko"
+only_when = "flag:met_iko"
+
+[sub_resource type="Resource" id="Resource_act1_close_08"]
+script = ExtResource("8_sfx")
+id = &"radio_static"
+label = "static"
+
+[sub_resource type="Resource" id="Resource_act1_close_09"]
+script = ExtResource("6_line")
+speaker_id = "band"
+text = "...all Recovery units. Priority unchanged. Signature still active."
+label = "band"
+
+[sub_resource type="Resource" id="Resource_act1_close_10"]
+script = ExtResource("8_sfx")
+id = &"heartbeat"
+label = "heartbeat"
+
+[sub_resource type="Resource" id="Resource_act1_close_11"]
+script = ExtResource("9_actorflash")
+actor = "@rook"
+color = Color(0.9, 0.95, 1, 1)
+seconds = 0.8
+pulses = 2
+label = "core answers"
+
+[sub_resource type="Resource" id="Resource_act1_close_12"]
+script = ExtResource("10_fade")
+to_alpha = 1.0
+seconds = 1.2
+label = "to black"
+
+[sub_resource type="Resource" id="Resource_act1_close_13"]
+script = ExtResource("11_flag")
+flags = PackedStringArray("act1_complete")
+label = "act one complete"
+
+[sub_resource type="Resource" id="Resource_act1_close_14"]
+script = ExtResource("4_mark")
+mark = "act1_card"
+
+[sub_resource type="Resource" id="Resource_act1_close_15"]
+script = ExtResource("3_camera")
+release = true
+seconds = 0.0
+label = "release under the black"
+
+[sub_resource type="Resource" id="Resource_act1_close_16"]
+script = ExtResource("10_fade")
+to_alpha = 0.0
+seconds = 0.8
+label = "fade in"
+
+[resource]
+script = ExtResource("1_seq")
+id = "act1_close"
+room = "res://world/rooms/lowlight/Relay.tscn"
+preview_entry = &"start"
+steps = Array[ExtResource("2_step")]([SubResource("Resource_act1_close_00"), SubResource("Resource_act1_close_01"), SubResource("Resource_act1_close_02"), SubResource("Resource_act1_close_03"), SubResource("Resource_act1_close_04"), SubResource("Resource_act1_close_05"), SubResource("Resource_act1_close_06"), SubResource("Resource_act1_close_07"), SubResource("Resource_act1_close_08"), SubResource("Resource_act1_close_09"), SubResource("Resource_act1_close_10"), SubResource("Resource_act1_close_11"), SubResource("Resource_act1_close_12"), SubResource("Resource_act1_close_13"), SubResource("Resource_act1_close_14"), SubResource("Resource_act1_close_15"), SubResource("Resource_act1_close_16")])
+budget_seconds = 26.0

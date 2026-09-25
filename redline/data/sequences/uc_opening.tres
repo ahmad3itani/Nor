@@ -1,0 +1,122 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=30 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqFade.gd" id="3_fade"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqRookPose.gd" id="4_rookpose"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCamera.gd" id="5_camera"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqSfx.gd" id="6_sfx"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="7_wait"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="8_line"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFlash.gd" id="9_actorflash"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="10_mark"]
+
+[sub_resource type="Resource" id="Resource_uc_opening_00"]
+script = ExtResource("3_fade")
+to_alpha = 1.0
+seconds = 0.0
+label = "black"
+
+[sub_resource type="Resource" id="Resource_uc_opening_01"]
+script = ExtResource("4_rookpose")
+pose = 1
+label = "crouch on slab 14"
+
+[sub_resource type="Resource" id="Resource_uc_opening_02"]
+script = ExtResource("5_camera")
+point = Vector2(176, -60)
+seconds = 0.0
+label = "frame the slab"
+
+[sub_resource type="Resource" id="Resource_uc_opening_03"]
+script = ExtResource("6_sfx")
+id = &"heartbeat"
+label = "heartbeat"
+
+[sub_resource type="Resource" id="Resource_uc_opening_04"]
+script = ExtResource("7_wait")
+seconds = 0.7
+
+[sub_resource type="Resource" id="Resource_uc_opening_05"]
+script = ExtResource("6_sfx")
+id = &"heartbeat"
+label = "heartbeat"
+
+[sub_resource type="Resource" id="Resource_uc_opening_06"]
+script = ExtResource("7_wait")
+seconds = 0.5
+
+[sub_resource type="Resource" id="Resource_uc_opening_07"]
+script = ExtResource("8_line")
+speaker_id = "pa"
+text = "Ward fourteen. Fourteen of fourteen processed."
+label = "pa ward"
+
+[sub_resource type="Resource" id="Resource_uc_opening_08"]
+script = ExtResource("3_fade")
+to_alpha = 0.0
+seconds = 1.5
+label = "fade in"
+blocking = false
+
+[sub_resource type="Resource" id="Resource_uc_opening_09"]
+script = ExtResource("8_line")
+speaker_id = "pa"
+text = "Hold for collection."
+label = "pa hold"
+
+[sub_resource type="Resource" id="Resource_uc_opening_10"]
+script = ExtResource("6_sfx")
+id = &"heartbeat"
+label = "core stirs"
+
+[sub_resource type="Resource" id="Resource_uc_opening_11"]
+script = ExtResource("9_actorflash")
+actor = "@rook"
+color = Color(0.9, 0.95, 1, 1)
+seconds = 0.6
+pulses = 2
+label = "core stirs"
+
+[sub_resource type="Resource" id="Resource_uc_opening_12"]
+script = ExtResource("5_camera")
+point = Vector2(1040, -150)
+seconds = 2.6
+label = "the eye behind the grate"
+
+[sub_resource type="Resource" id="Resource_uc_opening_13"]
+script = ExtResource("10_mark")
+mark = "opening_eye"
+
+[sub_resource type="Resource" id="Resource_uc_opening_14"]
+script = ExtResource("7_wait")
+seconds = 1.0
+
+[sub_resource type="Resource" id="Resource_uc_opening_15"]
+script = ExtResource("8_line")
+speaker_id = "pa"
+text = "Collection delayed. Remain on your slab."
+label = "pa delayed"
+
+[sub_resource type="Resource" id="Resource_uc_opening_16"]
+script = ExtResource("5_camera")
+release = true
+seconds = 1.4
+label = "release"
+
+[sub_resource type="Resource" id="Resource_uc_opening_17"]
+script = ExtResource("4_rookpose")
+pose = 0
+label = "stand"
+
+[sub_resource type="Resource" id="Resource_uc_opening_18"]
+script = ExtResource("7_wait")
+seconds = 0.3
+
+[resource]
+script = ExtResource("1_seq")
+id = "uc_opening"
+room = "res://world/rooms/undercity/Wake.tscn"
+preview_entry = &"start"
+steps = Array[ExtResource("2_step")]([SubResource("Resource_uc_opening_00"), SubResource("Resource_uc_opening_01"), SubResource("Resource_uc_opening_02"), SubResource("Resource_uc_opening_03"), SubResource("Resource_uc_opening_04"), SubResource("Resource_uc_opening_05"), SubResource("Resource_uc_opening_06"), SubResource("Resource_uc_opening_07"), SubResource("Resource_uc_opening_08"), SubResource("Resource_uc_opening_09"), SubResource("Resource_uc_opening_10"), SubResource("Resource_uc_opening_11"), SubResource("Resource_uc_opening_12"), SubResource("Resource_uc_opening_13"), SubResource("Resource_uc_opening_14"), SubResource("Resource_uc_opening_15"), SubResource("Resource_uc_opening_16"), SubResource("Resource_uc_opening_17"), SubResource("Resource_uc_opening_18")])
+budget_seconds = 18.0
