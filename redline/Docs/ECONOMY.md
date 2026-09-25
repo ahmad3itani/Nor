@@ -25,11 +25,13 @@ Scavenger (+50% Scrap) raises everything that drops as pickups.
 
 | District | Stashes | Walls | Enemies (first clear = one re-clear) | Boss | One-time |
 |---|---|---|---|---|---|
-| Undercity (6 rooms) | 180 | 50 | 71 | 80 | 381 |
+| Undercity (7 rooms) | 180 | 50 | 71 | 80 | 381 |
 | Lowlight (10 rooms) | 380 | 350 | 261 | 150 | 1,141 |
 | Relay | 0 | 0 | 0 | 0 | 0 |
 
 The Undercity pays mostly through exploration, as an onboarding district should: stashes on the Wake sill (10) and walkway (15), the Medical Ruin shelf (20), the Maintenance Shaft closet (30) and crew locker (20), the First Pursuit cache (30 + a 20 wall), the Broken Lift car roof (15), the Collector Bay vent (40) and the Escape Tunnel panel (a 30 wall). Its enemies: Medical Ruin 15, Maintenance Shaft 22, First Pursuit 15, Broken Lift 5, Escape Tunnel 14.
+
+**Enemy data variants and Scrap:** `needle_dormant.tres` (the Medical Ruin practice Needle) drops **0**, so a re-clear of the first armed room pays nothing for it. `needle_ledge.tres` (Broken Lift) changes only the aggro range (D-097) and keeps the Needle's 5. A new variant that changes `scrap_drop` changes the re-clear total, so run `--filter=economy`.
 
 ## Scrap: sinks (all shop stock at list price)
 
