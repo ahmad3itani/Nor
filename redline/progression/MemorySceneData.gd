@@ -79,7 +79,7 @@ func max_view_x() -> float:
 ## Per-scene rules (A2 §8 as amended by the M8 plan); the validator calls it
 ## for every data/memories scene.
 func validate() -> PackedStringArray:
-	return validate_with(40.0)
+	return validate_with(MemoryLibrary.config().detail_radius)
 
 
 func validate_with(radius: float) -> PackedStringArray:

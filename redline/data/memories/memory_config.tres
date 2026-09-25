@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="MemoryConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/MemoryConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+max_per_rest = 1
+title_seconds = 1.0
+tear_seconds = 0.6
+chars_per_second = 70.0
+auto_advance_base = 2.5
+auto_advance_per_char = 0.05
+letterbox_px = 24
+pan_speed = 90.0
+pan_ease = 6.0
+detail_radius = 40.0
+detail_dwell = 0.8
+detail_show_seconds = 4.0
+title_label = "MEMORY"
+card_body_anchor = "Rest at an Anchor to remember."
+card_body_journal = "Open the Journal to remember."
+more_waiting_hint = "Another memory is waiting."
+remembered_line = "Fragments remembered %d / %d"
+gallery_button = "Memories…"
+empty_text = "No memories recovered."
+gallery_title = "MEMORIES  —  ACT %s"
+act_names = PackedStringArray("I", "II", "III", "IV", "V")
+pending_hint = "— rest at an Anchor to remember"
+detail_line = "Detail: %s"
+detail_unfound_text = "Something else was there."
+back_label = "Back"
+glyph_seen = "◆"
+glyph_pending = "◇"
+glyph_locked = "·"
+glyph_gap = "?"
+pause_title = "PAUSED"
+pause_resume = "Resume"
+pause_skip = "Skip memory"
+pause_size = "Subtitle size: %s"
+size_names = PackedStringArray("Small", "Medium", "Large")

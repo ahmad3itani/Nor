@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="MemorySceneData" load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://progression/MemorySceneData.gd" id="1_scene"]
+[ext_resource type="Script" path="res://progression/MemoryBeat.gd" id="2_beat"]
+[ext_resource type="Script" path="res://progression/MemoryShape.gd" id="3_shape"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_02.tres" id="4_frag"]
+
+[sub_resource type="Resource" id="Shape_0"]
+script = ExtResource("3_shape")
+kind = 5
+pos = Vector2(280.0, 60.0)
+size = Vector2(560.0, 36.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_1"]
+script = ExtResource("3_shape")
+pos = Vector2(280.0, 64.0)
+size = Vector2(560.0, 4.0)
+
+[sub_resource type="Resource" id="Shape_2"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(180.0, 118.0)
+size = Vector2(6.0, 50.0)
+tone = 2
+
+[sub_resource type="Resource" id="Shape_3"]
+script = ExtResource("3_shape")
+pos = Vector2(200.0, 180.0)
+size = Vector2(110.0, 8.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_4"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(200.0, 172.0)
+size = Vector2(56.0, 10.0)
+pose = 1
+
+[sub_resource type="Resource" id="Shape_5"]
+script = ExtResource("3_shape")
+kind = 3
+pos = Vector2(206.0, 160.0)
+size = Vector2(10.0, 12.0)
+tone = 2
+from_beat = 1
+
+[sub_resource type="Resource" id="Shape_6"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(262.0, 190.0)
+size = Vector2(12.0, 30.0)
+pose = 0
+facing = -1
+tone = 0
+
+[sub_resource type="Resource" id="Shape_7"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 176.0)
+size = Vector2(26.0, 5.0)
+
+[sub_resource type="Resource" id="Shape_8"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 171.0)
+size = Vector2(8.0, 4.0)
+tone = 2
+
+[sub_resource type="Resource" id="Beat_0"]
+script = ExtResource("2_beat")
+text = "Rain on a tin roof. A lamp with a green shade."
+burn = 0.05
+
+[sub_resource type="Resource" id="Beat_1"]
+script = ExtResource("2_beat")
+text = "A hand on your chest, where the scar is now."
+burn = 0.15
+
+[sub_resource type="Resource" id="Beat_2"]
+script = ExtResource("2_beat")
+speaker = "VOICE"
+text = "It runs on something it shouldn't."
+burn = 0.3
+
+[sub_resource type="Resource" id="Beat_3"]
+script = ExtResource("2_beat")
+speaker = "VOICE"
+text = "Every time it spikes, you'll lose a little more of whatever it's eating."
+burn = 0.6
+
+[resource]
+script = ExtResource("1_scene")
+id = "mf_lowlight_02"
+fragment = ExtResource("4_frag")
+timeline_slot = 200
+tableau_width = 560
+shapes = Array[ExtResource("3_shape")]([SubResource("Shape_0"), SubResource("Shape_1"), SubResource("Shape_2"), SubResource("Shape_3"), SubResource("Shape_4"), SubResource("Shape_5"), SubResource("Shape_6"), SubResource("Shape_7"), SubResource("Shape_8")])
+beats = Array[ExtResource("2_beat")]([SubResource("Beat_0"), SubResource("Beat_1"), SubResource("Beat_2"), SubResource("Beat_3")])
+detail_text = "On the tray, a second dressing the shape of your scar. Already used."
+detail_x = 350.0
+burn_seed = 201

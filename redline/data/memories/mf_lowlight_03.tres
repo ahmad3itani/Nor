@@ -1,0 +1,95 @@
+[gd_resource type="Resource" script_class="MemorySceneData" load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://progression/MemorySceneData.gd" id="1_scene"]
+[ext_resource type="Script" path="res://progression/MemoryBeat.gd" id="2_beat"]
+[ext_resource type="Script" path="res://progression/MemoryShape.gd" id="3_shape"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_03.tres" id="4_frag"]
+
+[sub_resource type="Resource" id="Shape_0"]
+script = ExtResource("3_shape")
+pos = Vector2(220.0, 120.0)
+size = Vector2(150.0, 10.0)
+
+[sub_resource type="Resource" id="Shape_1"]
+script = ExtResource("3_shape")
+pos = Vector2(158.0, 190.0)
+size = Vector2(6.0, 70.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_2"]
+script = ExtResource("3_shape")
+pos = Vector2(282.0, 190.0)
+size = Vector2(6.0, 70.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_3"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(256.0, 110.0)
+size = Vector2(6.0, 30.0)
+tone = 2
+
+[sub_resource type="Resource" id="Shape_4"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(196.0, 110.0)
+size = Vector2(16.0, 34.0)
+pose = 2
+facing = -1
+tone = 0
+
+[sub_resource type="Resource" id="Shape_5"]
+script = ExtResource("3_shape")
+kind = 7
+pos = Vector2(226.0, 112.0)
+size = Vector2(30.0, 4.0)
+tone = 2
+from_beat = 1
+
+[sub_resource type="Resource" id="Shape_6"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 186.0)
+size = Vector2(30.0, 12.0)
+
+[sub_resource type="Resource" id="Shape_7"]
+script = ExtResource("3_shape")
+kind = 7
+pos = Vector2(350.0, 182.0)
+size = Vector2(22.0, 6.0)
+tone = 2
+from_beat = 1
+
+[sub_resource type="Resource" id="Beat_0"]
+script = ExtResource("2_beat")
+text = "Lamplight on a steel desk. You see it from the floor."
+burn = 0.1
+
+[sub_resource type="Resource" id="Beat_1"]
+script = ExtResource("2_beat")
+text = "Krail's handwriting, neat as a verdict:"
+burn = 0.15
+
+[sub_resource type="Resource" id="Beat_2"]
+script = ExtResource("2_beat")
+speaker = "LEDGER"
+text = "Everything pulled from the Spire passes through my tower. Everything."
+burn = 0.3
+
+[sub_resource type="Resource" id="Beat_3"]
+script = ExtResource("2_beat")
+speaker = "LEDGER"
+text = "That includes the ones they call REDLINE."
+burn = 0.55
+
+[resource]
+script = ExtResource("1_scene")
+id = "mf_lowlight_03"
+fragment = ExtResource("4_frag")
+timeline_slot = 400
+tableau_width = 560
+shapes = Array[ExtResource("3_shape")]([SubResource("Shape_0"), SubResource("Shape_1"), SubResource("Shape_2"), SubResource("Shape_3"), SubResource("Shape_4"), SubResource("Shape_5"), SubResource("Shape_6"), SubResource("Shape_7")])
+beats = Array[ExtResource("2_beat")]([SubResource("Beat_0"), SubResource("Beat_1"), SubResource("Beat_2"), SubResource("Beat_3")])
+detail_text = "Your line in the ledger has no name. Only SPIRE, and a date the rain has smeared."
+detail_x = 350.0
+detail_from_beat = 1
+burn_seed = 401

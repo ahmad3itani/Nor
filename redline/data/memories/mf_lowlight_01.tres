@@ -1,0 +1,103 @@
+[gd_resource type="Resource" script_class="MemorySceneData" load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://progression/MemorySceneData.gd" id="1_scene"]
+[ext_resource type="Script" path="res://progression/MemoryBeat.gd" id="2_beat"]
+[ext_resource type="Script" path="res://progression/MemoryShape.gd" id="3_shape"]
+[ext_resource type="Resource" path="res://data/lore/mf_lowlight_01.tres" id="4_frag"]
+
+[sub_resource type="Resource" id="Shape_0"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(240.0, 90.0)
+size = Vector2(4.0, 20.0)
+tone = 2
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_1"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(240.0, 90.0)
+size = Vector2(4.0, 20.0)
+tone = 0
+from_beat = 3
+
+[sub_resource type="Resource" id="Shape_2"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(180.0, 190.0)
+size = Vector2(12.0, 20.0)
+pose = 2
+tone = 0
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_3"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(290.0, 190.0)
+size = Vector2(12.0, 32.0)
+pose = 0
+facing = -1
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_4"]
+script = ExtResource("3_shape")
+pos = Vector2(282.0, 160.0)
+size = Vector2(8.0, 10.0)
+tone = 2
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_5"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 160.0)
+size = Vector2(30.0, 40.0)
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_6"]
+script = ExtResource("3_shape")
+kind = 7
+pos = Vector2(350.0, 150.0)
+size = Vector2(24.0, 10.0)
+to_beat = 2
+
+[sub_resource type="Resource" id="Shape_7"]
+script = ExtResource("3_shape")
+kind = 7
+pos = Vector2(350.0, 134.0)
+size = Vector2(20.0, 6.0)
+tone = 2
+to_beat = 2
+redacted = true
+
+[sub_resource type="Resource" id="Beat_0"]
+script = ExtResource("2_beat")
+text = "A voice reading numbers. Yours, you think."
+burn = 0.1
+
+[sub_resource type="Resource" id="Beat_1"]
+script = ExtResource("2_beat")
+speaker = "READER"
+text = "Subject non-viable."
+burn = 0.2
+
+[sub_resource type="Resource" id="Beat_2"]
+script = ExtResource("2_beat")
+speaker = "READER"
+text = "Recover the core. Discard the rest."
+burn = 0.35
+
+[sub_resource type="Resource" id="Beat_3"]
+script = ExtResource("2_beat")
+text = "The lights go out. Someone laughs."
+burn = 0.7
+
+[resource]
+script = ExtResource("1_scene")
+id = "mf_lowlight_01"
+fragment = ExtResource("4_frag")
+timeline_slot = 500
+tableau_width = 560
+shapes = Array[ExtResource("3_shape")]([SubResource("Shape_0"), SubResource("Shape_1"), SubResource("Shape_2"), SubResource("Shape_3"), SubResource("Shape_4"), SubResource("Shape_5"), SubResource("Shape_6"), SubResource("Shape_7")])
+beats = Array[ExtResource("2_beat")]([SubResource("Beat_0"), SubResource("Beat_1"), SubResource("Beat_2"), SubResource("Beat_3")])
+detail_text = "The order is signed. The signature is red static. It won't come into focus."
+detail_x = 350.0
+burn_seed = 501

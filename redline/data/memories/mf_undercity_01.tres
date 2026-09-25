@@ -1,0 +1,97 @@
+[gd_resource type="Resource" script_class="MemorySceneData" load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://progression/MemorySceneData.gd" id="1_scene"]
+[ext_resource type="Script" path="res://progression/MemoryBeat.gd" id="2_beat"]
+[ext_resource type="Script" path="res://progression/MemoryShape.gd" id="3_shape"]
+[ext_resource type="Resource" path="res://data/lore/mf_undercity_01.tres" id="4_frag"]
+
+[sub_resource type="Resource" id="Shape_0"]
+script = ExtResource("3_shape")
+pos = Vector2(200.0, 182.0)
+size = Vector2(120.0, 8.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_1"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(200.0, 174.0)
+size = Vector2(60.0, 10.0)
+pose = 1
+
+[sub_resource type="Resource" id="Shape_2"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(200.0, 100.0)
+size = Vector2(6.0, 40.0)
+tone = 2
+
+[sub_resource type="Resource" id="Shape_3"]
+script = ExtResource("3_shape")
+kind = 3
+pos = Vector2(186.0, 162.0)
+size = Vector2(10.0, 14.0)
+tone = 2
+from_beat = 1
+
+[sub_resource type="Resource" id="Shape_4"]
+script = ExtResource("3_shape")
+kind = 3
+pos = Vector2(216.0, 162.0)
+size = Vector2(10.0, 14.0)
+tone = 2
+from_beat = 1
+
+[sub_resource type="Resource" id="Shape_5"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(476.0, 190.0)
+size = Vector2(12.0, 32.0)
+pose = 0
+facing = -1
+tone = 0
+
+[sub_resource type="Resource" id="Shape_6"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 182.0)
+size = Vector2(28.0, 6.0)
+
+[sub_resource type="Resource" id="Shape_7"]
+script = ExtResource("3_shape")
+kind = 7
+pos = Vector2(350.0, 176.0)
+size = Vector2(10.0, 5.0)
+tone = 2
+
+[sub_resource type="Resource" id="Beat_0"]
+script = ExtResource("2_beat")
+text = "Cold steel under your back. A lamp swinging overhead."
+burn = 0.15
+
+[sub_resource type="Resource" id="Beat_1"]
+script = ExtResource("2_beat")
+text = "Gloved hands on your chest, pulling. Something inside pulls back harder."
+burn = 0.35
+
+[sub_resource type="Resource" id="Beat_2"]
+script = ExtResource("2_beat")
+speaker = "CREW"
+text = "It won't come out."
+burn = 0.4
+
+[sub_resource type="Resource" id="Beat_3"]
+script = ExtResource("2_beat")
+speaker = "SUPERVISOR"
+text = "Then leave it in him. The Collector can take both."
+burn = 0.6
+
+[resource]
+script = ExtResource("1_scene")
+id = "mf_undercity_01"
+fragment = ExtResource("4_frag")
+timeline_slot = 600
+tableau_width = 560
+shapes = Array[ExtResource("3_shape")]([SubResource("Shape_0"), SubResource("Shape_1"), SubResource("Shape_2"), SubResource("Shape_3"), SubResource("Shape_4"), SubResource("Shape_5"), SubResource("Shape_6"), SubResource("Shape_7")])
+beats = Array[ExtResource("2_beat")]([SubResource("Beat_0"), SubResource("Beat_1"), SubResource("Beat_2"), SubResource("Beat_3")])
+detail_text = "A tag on the tray: UNIT 14. CYCLE 4471. The name field is blank."
+detail_x = 350.0
+burn_seed = 601

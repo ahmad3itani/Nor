@@ -1,0 +1,139 @@
+[gd_resource type="Resource" script_class="MemorySceneData" load_steps=23 format=3]
+
+[ext_resource type="Script" path="res://progression/MemorySceneData.gd" id="1_scene"]
+[ext_resource type="Script" path="res://progression/MemoryBeat.gd" id="2_beat"]
+[ext_resource type="Script" path="res://progression/MemoryShape.gd" id="3_shape"]
+
+[sub_resource type="Resource" id="Shape_0"]
+script = ExtResource("3_shape")
+kind = 5
+pos = Vector2(320.0, 176.0)
+size = Vector2(640.0, 150.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_1"]
+script = ExtResource("3_shape")
+kind = 4
+pos = Vector2(96.0, 176.0)
+size = Vector2(4.0, 90.0)
+tone = 2
+flicker = true
+
+[sub_resource type="Resource" id="Shape_2"]
+script = ExtResource("3_shape")
+pos = Vector2(150.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_3"]
+script = ExtResource("3_shape")
+pos = Vector2(200.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_4"]
+script = ExtResource("3_shape")
+pos = Vector2(250.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_5"]
+script = ExtResource("3_shape")
+pos = Vector2(300.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_6"]
+script = ExtResource("3_shape")
+pos = Vector2(350.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_7"]
+script = ExtResource("3_shape")
+pos = Vector2(390.0, 168.0)
+size = Vector2(34.0, 12.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_8"]
+script = ExtResource("3_shape")
+pos = Vector2(430.0, 168.0)
+size = Vector2(34.0, 12.0)
+
+[sub_resource type="Resource" id="Shape_9"]
+script = ExtResource("3_shape")
+pos = Vector2(430.0, 162.0)
+size = Vector2(30.0, 2.0)
+tone = 2
+
+[sub_resource type="Resource" id="Shape_10"]
+script = ExtResource("3_shape")
+pos = Vector2(320.0, 172.0)
+size = Vector2(640.0, 4.0)
+tone = 0
+
+[sub_resource type="Resource" id="Shape_11"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(180.0, 190.0)
+size = Vector2(10.0, 28.0)
+pose = 0
+tone = 2
+
+[sub_resource type="Resource" id="Shape_12"]
+script = ExtResource("3_shape")
+kind = 2
+pos = Vector2(206.0, 190.0)
+size = Vector2(10.0, 28.0)
+pose = 0
+facing = -1
+
+[sub_resource type="Resource" id="Shape_13"]
+script = ExtResource("3_shape")
+pos = Vector2(206.0, 170.0)
+size = Vector2(8.0, 8.0)
+from_beat = 3
+redacted = true
+
+[sub_resource type="Resource" id="Shape_14"]
+script = ExtResource("3_shape")
+kind = 8
+pos = Vector2(320.0, 192.0)
+size = Vector2(640.0, 16.0)
+
+[sub_resource type="Resource" id="Beat_0"]
+script = ExtResource("2_beat")
+text = "Night. A bridge over the rail yards. Wind in the railings."
+view_x = 240.0
+burn = 0.05
+
+[sub_resource type="Resource" id="Beat_1"]
+script = ExtResource("2_beat")
+text = "Someone beside you counts the cars under their breath."
+view_x = 320.0
+burn = 0.1
+
+[sub_resource type="Resource" id="Beat_2"]
+script = ExtResource("2_beat")
+speaker = "VOICE"
+text = "Always count the last one twice."
+burn = 0.2
+
+[sub_resource type="Resource" id="Beat_3"]
+script = ExtResource("2_beat")
+text = "You turn to ask why. Where their face should be, there's only static."
+burn = 0.5
+
+[resource]
+script = ExtResource("1_scene")
+id = "mem_first_rest"
+source = 1
+title = "Count the Last One"
+timeline_slot = 100
+queue_priority = 10
+tableau_width = 640
+shapes = Array[ExtResource("3_shape")]([SubResource("Shape_0"), SubResource("Shape_1"), SubResource("Shape_2"), SubResource("Shape_3"), SubResource("Shape_4"), SubResource("Shape_5"), SubResource("Shape_6"), SubResource("Shape_7"), SubResource("Shape_8"), SubResource("Shape_9"), SubResource("Shape_10"), SubResource("Shape_11"), SubResource("Shape_12"), SubResource("Shape_13"), SubResource("Shape_14")])
+beats = Array[ExtResource("2_beat")]([SubResource("Beat_0"), SubResource("Beat_1"), SubResource("Beat_2"), SubResource("Beat_3")])
+detail_text = "The last car has no markings. Its doors are welded shut."
+detail_x = 430.0
+burn_seed = 101
