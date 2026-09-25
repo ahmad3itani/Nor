@@ -1,0 +1,150 @@
+[gd_resource type="Resource" script_class="NpcArc" load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcArc.gd" id="arc"]
+[ext_resource type="Script" path="res://dialogue/NpcArcStage.gd" id="stage"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Script" path="res://dialogue/DialogueChoice.gd" id="choice"]
+
+[sub_resource type="Resource" id="iko_relay_den_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Told you I'd move in. The Relay has a roof and fewer Wardens. Mostly I came for the roof."
+
+[sub_resource type="Resource" id="iko_relay_den"]
+script = ExtResource("dialogue")
+id = "iko_relay_den"
+lines = Array[ExtResource("line")]([SubResource("iko_relay_den_l0")])
+set_flags = PackedStringArray("arcbeat_iko_met")
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="iko_relay_word_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Orr talks. Saves me the speech. Iko. I move what the Wardens don't want moved."
+
+[sub_resource type="Resource" id="iko_relay_word"]
+script = ExtResource("dialogue")
+id = "iko_relay_word"
+lines = Array[ExtResource("line")]([SubResource("iko_relay_word_l0")])
+set_flags = PackedStringArray("arcbeat_iko_met")
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="s_met_beat_den"]
+script = ExtResource("rule")
+requires_conditions = PackedStringArray("atleast:talks_iko:2")
+dialogue = SubResource("iko_relay_den")
+
+[sub_resource type="Resource" id="s_met_beat_word"]
+script = ExtResource("rule")
+dialogue = SubResource("iko_relay_word")
+
+[sub_resource type="Resource" id="iko_idle_rent_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Rent's paid. Browse."
+
+[sub_resource type="Resource" id="iko_idle_rent"]
+script = ExtResource("dialogue")
+id = "iko_idle_rent"
+lines = Array[ExtResource("line")]([SubResource("iko_idle_rent_l0")])
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="s_met_idle_rent"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_iko_rent")
+dialogue = SubResource("iko_idle_rent")
+
+[sub_resource type="Resource" id="stage_met"]
+script = ExtResource("stage")
+id = "met"
+enter_all = PackedStringArray("flag:met_iko")
+beat_rules = Array[ExtResource("rule")]([SubResource("s_met_beat_den"), SubResource("s_met_beat_word")])
+idle_rules = Array[ExtResource("rule")]([SubResource("s_met_idle_rent")])
+journal_note = "Smuggler. Set up at the Relay. Everything fell off a truck."
+
+[sub_resource type="Resource" id="iko_spire_crates_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Krail's gone, so his trucks are mine now. Most of the crates, anyway."
+
+[sub_resource type="Resource" id="iko_spire_crates_l1"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "The ones tagged SPIRE stay shut. Rule of the trade: the Spire always comes to collect."
+
+[sub_resource type="Resource" id="iko_spire_crates"]
+script = ExtResource("dialogue")
+id = "iko_spire_crates"
+lines = Array[ExtResource("line")]([SubResource("iko_spire_crates_l0"), SubResource("iko_spire_crates_l1")])
+set_flags = PackedStringArray("arcbeat_iko_krail", "thread_iko_spire")
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="s_krail_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("iko_spire_crates")
+
+[sub_resource type="Resource" id="iko_idle_crates_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Spire crates stay shut. Everything else is for sale."
+
+[sub_resource type="Resource" id="iko_idle_crates"]
+script = ExtResource("dialogue")
+id = "iko_idle_crates"
+lines = Array[ExtResource("line")]([SubResource("iko_idle_crates_l0")])
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="s_krail_idle_rent"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_iko_rent")
+dialogue = SubResource("iko_idle_rent")
+
+[sub_resource type="Resource" id="s_krail_idle_crates"]
+script = ExtResource("rule")
+dialogue = SubResource("iko_idle_crates")
+
+[sub_resource type="Resource" id="stage_krail"]
+script = ExtResource("stage")
+id = "krail"
+enter_all = PackedStringArray("flag:warden_krail_defeated", "flag:arcbeat_iko_met")
+beat_rules = Array[ExtResource("rule")]([SubResource("s_krail_beat")])
+idle_rules = Array[ExtResource("rule")]([SubResource("s_krail_idle_rent"), SubResource("s_krail_idle_crates")])
+journal_note = "Has Krail's trucks now. Won't open the crates tagged SPIRE."
+
+[sub_resource type="Resource" id="iko_rent_l0"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Somebody cracked the back wall of my den. Heavy hands."
+
+[sub_resource type="Resource" id="iko_rent_l1"]
+script = ExtResource("line")
+speaker = "Iko"
+text = "Keep what you found. Call it rent on the Relay."
+
+[sub_resource type="Resource" id="iko_rent"]
+script = ExtResource("dialogue")
+id = "iko_rent"
+lines = Array[ExtResource("line")]([SubResource("iko_rent_l0"), SubResource("iko_rent_l1")])
+set_flags = PackedStringArray("arcbeat_iko_rent", "bond_iko_rent")
+open_menu = &"shop_iko"
+
+[sub_resource type="Resource" id="r_rent_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("iko_rent")
+
+[sub_resource type="Resource" id="reaction_rent"]
+script = ExtResource("stage")
+id = "rent"
+enter_all = PackedStringArray("collected:sr_den_cache", "flag:arcbeat_iko_met")
+min_stage = 1
+beat_rules = Array[ExtResource("rule")]([SubResource("r_rent_beat")])
+optional = true
+
+[resource]
+script = ExtResource("arc")
+npc_id = "iko"
+stages = Array[ExtResource("stage")]([SubResource("stage_met"), SubResource("stage_krail")])
+reactions = Array[ExtResource("stage")]([SubResource("reaction_rent")])
+threads = PackedStringArray("thread_iko_spire")

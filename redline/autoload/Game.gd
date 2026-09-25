@@ -19,12 +19,25 @@ var world_map: WorldMapData = WORLD_MAP
 ## Overridable so tests can run a campaign start without touching data.
 var onboarding: OnboardingConfig = ONBOARDING
 var quests: QuestTracker
+## M8 character arcs (D-117): enters arc stages from flags, sibling of quests.
+var arcs: ArcTracker
 
 
 func _ready() -> void:
 	quests = QuestTracker.new()
 	quests.name = "Quests"
 	add_child(quests)
+	arcs = ArcTracker.new()
+	arcs.name = "Arcs"
+	add_child(arcs)
+	# count:secrets (arcs, journal) needs SliceStats.totals(), which
+	# instantiates every district room once per session: pay that at boot
+	# (the title), never on the first pickup or talk that reads it.
+	_warm_slice_stats.call_deferred()
+
+
+func _warm_slice_stats() -> void:
+	SliceStats.totals()
 
 
 func _process(delta: float) -> void:

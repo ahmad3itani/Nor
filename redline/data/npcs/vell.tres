@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arcs/arc_vell.tres" id="arc_vell"]
 
 [sub_resource type="Resource" id="vell_intro_l0"]
 script = ExtResource("line")
@@ -55,3 +56,4 @@ display_name = "Vell"
 map_label = "Circuit broker"
 color = Color(0.5, 0.72, 0.6, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])
+arc = ExtResource("arc_vell")

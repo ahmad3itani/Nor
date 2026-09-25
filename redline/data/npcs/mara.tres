@@ -1,30 +1,10 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=21 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
-
-[sub_resource type="Resource" id="mara_after_boss_l0"]
-script = ExtResource("line")
-speaker = "Mara"
-text = "Krail's dead and you're not. I'll take those odds every day."
-
-[sub_resource type="Resource" id="mara_after_boss_l1"]
-script = ExtResource("line")
-speaker = "Mara"
-text = "That dash module you pulled off him - don't let it pull you. What do you need?"
-
-[sub_resource type="Resource" id="mara_after_boss"]
-script = ExtResource("dialogue")
-id = "mara_after_boss"
-lines = Array[ExtResource("line")]([SubResource("mara_after_boss_l0"), SubResource("mara_after_boss_l1")])
-open_menu = &"shop_mara"
-
-[sub_resource type="Resource" id="rule_0"]
-script = ExtResource("rule")
-requires_flags = PackedStringArray("warden_krail_defeated")
-dialogue = SubResource("mara_after_boss")
+[ext_resource type="Resource" path="res://data/arcs/arc_mara.tres" id="arc_mara"]
 
 [sub_resource type="Resource" id="mara_intro_undercity_l0"]
 script = ExtResource("line")
@@ -99,4 +79,5 @@ npc_id = "mara"
 display_name = "Mara"
 map_label = "Mechanic"
 color = Color(0.78, 0.5, 0.38, 1)
-rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_intro_undercity"), SubResource("rule_1"), SubResource("rule_2")])
+rules = Array[ExtResource("rule")]([SubResource("rule_intro_undercity"), SubResource("rule_1"), SubResource("rule_2")])
+arc = ExtResource("arc_mara")

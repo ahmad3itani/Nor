@@ -35,6 +35,8 @@ func pick_dialogue() -> DialogueData:
 			return r.dialogue
 	if arc == null or rules.is_empty():
 		return null
+	# collected: and count: changes emit no flag_changed; catch up first.
+	Game.arcs.evaluate()
 	var d := arc.pending_beat()
 	if d == null:
 		d = arc.idle()

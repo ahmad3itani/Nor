@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arcs/arc_iko.tres" id="arc_iko"]
 
 [sub_resource type="Resource" id="iko_intro_l0"]
 script = ExtResource("line")
@@ -49,3 +50,4 @@ display_name = "Iko"
 map_label = "Black Market"
 color = Color(0.66, 0.5, 0.82, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1")])
+arc = ExtResource("arc_iko")

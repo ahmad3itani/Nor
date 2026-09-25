@@ -1,0 +1,177 @@
+[gd_resource type="Resource" script_class="NpcArc" load_steps=36 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcArc.gd" id="arc"]
+[ext_resource type="Script" path="res://dialogue/NpcArcStage.gd" id="stage"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Script" path="res://dialogue/DialogueChoice.gd" id="choice"]
+
+[sub_resource type="Resource" id="nix_idle_charted_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "My map's better than the Wardens' now. Don't tell them."
+
+[sub_resource type="Resource" id="nix_idle_charted"]
+script = ExtResource("dialogue")
+id = "nix_idle_charted"
+lines = Array[ExtResource("line")]([SubResource("nix_idle_charted_l0")])
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="nix_idle_scout_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Found me another room? Tell me where. I'll pretend I knew."
+
+[sub_resource type="Resource" id="nix_idle_scout"]
+script = ExtResource("dialogue")
+id = "nix_idle_scout"
+lines = Array[ExtResource("line")]([SubResource("nix_idle_scout_l0")])
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="nix_regular_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Back again. You're the only one here who looks at the map before they get lost."
+
+[sub_resource type="Resource" id="nix_regular"]
+script = ExtResource("dialogue")
+id = "nix_regular"
+lines = Array[ExtResource("line")]([SubResource("nix_regular_l0")])
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="s_met_idle_charted"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("chart_lowlight_complete")
+dialogue = SubResource("nix_idle_charted")
+
+[sub_resource type="Resource" id="s_met_idle_scout"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_nix_scout")
+dialogue = SubResource("nix_idle_scout")
+
+[sub_resource type="Resource" id="s_met_idle_regular"]
+script = ExtResource("rule")
+requires_conditions = PackedStringArray("atleast:talks_nix:4")
+dialogue = SubResource("nix_regular")
+
+[sub_resource type="Resource" id="stage_met"]
+script = ExtResource("stage")
+id = "met"
+enter_all = PackedStringArray("flag:met_nix")
+idle_rules = Array[ExtResource("rule")]([SubResource("s_met_idle_charted"), SubResource("s_met_idle_scout"), SubResource("s_met_idle_regular")])
+journal_note = "Cartographer. The city keeps moving. Nix keeps up."
+
+[sub_resource type="Resource" id="nix_tower_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Warden Tower is on every map I own. Official ones too. Nothing else in Lowlight holds still."
+
+[sub_resource type="Resource" id="nix_tower_l1"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Someone upstairs wants it found. I'd like to know who draws their maps."
+
+[sub_resource type="Resource" id="nix_tower"]
+script = ExtResource("dialogue")
+id = "nix_tower"
+lines = Array[ExtResource("line")]([SubResource("nix_tower_l0"), SubResource("nix_tower_l1")])
+set_flags = PackedStringArray("arcbeat_nix_krail", "thread_nix_maps")
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="s_krail_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("nix_tower")
+
+[sub_resource type="Resource" id="nix_idle_tower_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Still thinking about that tower. Maps, lenses, tickets?"
+
+[sub_resource type="Resource" id="nix_idle_tower"]
+script = ExtResource("dialogue")
+id = "nix_idle_tower"
+lines = Array[ExtResource("line")]([SubResource("nix_idle_tower_l0")])
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="s_krail_idle_scout"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_nix_scout")
+dialogue = SubResource("nix_idle_scout")
+
+[sub_resource type="Resource" id="s_krail_idle_tower"]
+script = ExtResource("rule")
+dialogue = SubResource("nix_idle_tower")
+
+[sub_resource type="Resource" id="stage_krail"]
+script = ExtResource("stage")
+id = "krail"
+enter_all = PackedStringArray("flag:warden_krail_defeated")
+beat_rules = Array[ExtResource("rule")]([SubResource("s_krail_beat")])
+idle_rules = Array[ExtResource("rule")]([SubResource("s_krail_idle_scout"), SubResource("s_krail_idle_tower")])
+journal_note = "Warden Tower is on every map. Nix wants to know who draws them."
+
+[sub_resource type="Resource" id="nix_scout_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "You keep finding rooms I never drew. That's either a gift or a bad habit."
+
+[sub_resource type="Resource" id="nix_scout_l1"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Tell me where they are. I'll pretend I knew."
+
+[sub_resource type="Resource" id="nix_scout"]
+script = ExtResource("dialogue")
+id = "nix_scout"
+lines = Array[ExtResource("line")]([SubResource("nix_scout_l0"), SubResource("nix_scout_l1")])
+set_flags = PackedStringArray("arcbeat_nix_scout", "bond_nix_scout")
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="r_scout_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("nix_scout")
+
+[sub_resource type="Resource" id="reaction_scout"]
+script = ExtResource("stage")
+id = "scout"
+enter_all = PackedStringArray("count:secrets:5")
+min_stage = 1
+beat_rules = Array[ExtResource("rule")]([SubResource("r_scout_beat")])
+optional = true
+
+[sub_resource type="Resource" id="nix_ledger_l0"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Heard Krail kept books. Books mean someone reads them."
+
+[sub_resource type="Resource" id="nix_ledger_l1"]
+script = ExtResource("line")
+speaker = "Nix"
+text = "Maps and ledgers. Somewhere upstairs, they end up on the same desk."
+
+[sub_resource type="Resource" id="nix_ledger"]
+script = ExtResource("dialogue")
+id = "nix_ledger"
+lines = Array[ExtResource("line")]([SubResource("nix_ledger_l0"), SubResource("nix_ledger_l1")])
+set_flags = PackedStringArray("arcbeat_nix_ledger", "thread_nix_desk")
+open_menu = &"shop_nix"
+
+[sub_resource type="Resource" id="r_ledger_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("nix_ledger")
+
+[sub_resource type="Resource" id="reaction_ledger"]
+script = ExtResource("stage")
+id = "ledger"
+enter_all = PackedStringArray("flag:mem_seen_mf_lowlight_03")
+min_stage = 2
+beat_rules = Array[ExtResource("rule")]([SubResource("r_ledger_beat")])
+optional = true
+
+[resource]
+script = ExtResource("arc")
+npc_id = "nix"
+stages = Array[ExtResource("stage")]([SubResource("stage_met"), SubResource("stage_krail")])
+reactions = Array[ExtResource("stage")]([SubResource("reaction_scout"), SubResource("reaction_ledger")])
+threads = PackedStringArray("thread_nix_maps", "thread_nix_desk")

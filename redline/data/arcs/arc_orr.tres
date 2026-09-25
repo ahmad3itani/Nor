@@ -1,0 +1,173 @@
+[gd_resource type="Resource" script_class="NpcArc" load_steps=36 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcArc.gd" id="arc"]
+[ext_resource type="Script" path="res://dialogue/NpcArcStage.gd" id="stage"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Script" path="res://dialogue/DialogueChoice.gd" id="choice"]
+
+[sub_resource type="Resource" id="orr_after_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Hear that? Lowlight's talking again. Rumors, patrol chatter, somebody singing badly on a rooftop."
+
+[sub_resource type="Resource" id="orr_after_l1"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Every voice out there is a direction. You bring me more antennas, I'll bring you more city."
+
+[sub_resource type="Resource" id="orr_after"]
+script = ExtResource("dialogue")
+id = "orr_after"
+lines = Array[ExtResource("line")]([SubResource("orr_after_l0"), SubResource("orr_after_l1")])
+
+[sub_resource type="Resource" id="orr_waiting_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Three repeaters. One on the Market roofs, one inside the Apartment Stack, one on the Bell Tower."
+
+[sub_resource type="Resource" id="orr_waiting_l1"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "They're old. Hit them with your shoulder if you have to. Hit them gently."
+
+[sub_resource type="Resource" id="orr_waiting"]
+script = ExtResource("dialogue")
+id = "orr_waiting"
+lines = Array[ExtResource("line")]([SubResource("orr_waiting_l0"), SubResource("orr_waiting_l1")])
+
+[sub_resource type="Resource" id="s_met_idle_after"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("dead_air_complete")
+dialogue = SubResource("orr_after")
+
+[sub_resource type="Resource" id="s_met_idle_waiting"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("quest_dead_air_started")
+dialogue = SubResource("orr_waiting")
+
+[sub_resource type="Resource" id="stage_met"]
+script = ExtResource("stage")
+id = "met"
+enter_all = PackedStringArray("flag:met_orr")
+idle_rules = Array[ExtResource("rule")]([SubResource("s_met_idle_after"), SubResource("s_met_idle_waiting")])
+journal_note = "Radio. Hears everything in Lowlight, repeats most of it."
+
+[sub_resource type="Resource" id="orr_on_air_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Krail's patrol band is still dead. Lowlight's already guessing who."
+
+[sub_resource type="Resource" id="orr_on_air_l1"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "I can tell Lowlight it was you. Or I let them keep guessing. Your call."
+
+[sub_resource type="Resource" id="orr_on_air_named_r0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Then Lowlight knows it was you. So do the Wardens."
+
+[sub_resource type="Resource" id="orr_on_air_named"]
+script = ExtResource("choice")
+id = "named"
+label = "Put it on the air."
+set_flags = PackedStringArray("orr_air_named")
+reply = Array[ExtResource("line")]([SubResource("orr_on_air_named_r0")])
+
+[sub_resource type="Resource" id="orr_on_air_ghost_r0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "A ghost, then. Ghosts get rumors, not posters."
+
+[sub_resource type="Resource" id="orr_on_air_ghost"]
+script = ExtResource("choice")
+id = "ghost"
+label = "Let them guess."
+set_flags = PackedStringArray("orr_air_ghost")
+reply = Array[ExtResource("line")]([SubResource("orr_on_air_ghost_r0")])
+
+[sub_resource type="Resource" id="orr_on_air"]
+script = ExtResource("dialogue")
+id = "orr_on_air"
+lines = Array[ExtResource("line")]([SubResource("orr_on_air_l0"), SubResource("orr_on_air_l1")])
+set_flags = PackedStringArray("arcbeat_orr_on_air", "thread_orr_air")
+choices = Array[ExtResource("choice")]([SubResource("orr_on_air_named"), SubResource("orr_on_air_ghost")])
+
+[sub_resource type="Resource" id="s_on_air_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("orr_on_air")
+
+[sub_resource type="Resource" id="orr_idle_named_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Every Warden band has your description now. Keep moving."
+
+[sub_resource type="Resource" id="orr_idle_named"]
+script = ExtResource("dialogue")
+id = "orr_idle_named"
+lines = Array[ExtResource("line")]([SubResource("orr_idle_named_l0")])
+
+[sub_resource type="Resource" id="orr_idle_ghost_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Latest rumor: Krail slipped off his own tower. Nobody believes it."
+
+[sub_resource type="Resource" id="orr_idle_ghost"]
+script = ExtResource("dialogue")
+id = "orr_idle_ghost"
+lines = Array[ExtResource("line")]([SubResource("orr_idle_ghost_l0")])
+
+[sub_resource type="Resource" id="s_on_air_idle_named"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("orr_air_named")
+dialogue = SubResource("orr_idle_named")
+
+[sub_resource type="Resource" id="s_on_air_idle_ghost"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("orr_air_ghost")
+dialogue = SubResource("orr_idle_ghost")
+
+[sub_resource type="Resource" id="stage_on_air"]
+script = ExtResource("stage")
+id = "on_air"
+enter_all = PackedStringArray("flag:act1_complete")
+beat_rules = Array[ExtResource("rule")]([SubResource("s_on_air_beat")])
+idle_rules = Array[ExtResource("rule")]([SubResource("s_on_air_idle_named"), SubResource("s_on_air_idle_ghost")])
+journal_note = "Krail's dead. Orr asked what Lowlight should hear."
+
+[sub_resource type="Resource" id="orr_tap_code_l0"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Board picked up tapping on an old pipe line. Three short, three long."
+
+[sub_resource type="Resource" id="orr_tap_code_l1"]
+script = ExtResource("line")
+speaker = "Orr"
+text = "Old crew call sign. Means 'still here'. Haven't heard it in years."
+
+[sub_resource type="Resource" id="orr_tap_code"]
+script = ExtResource("dialogue")
+id = "orr_tap_code"
+lines = Array[ExtResource("line")]([SubResource("orr_tap_code_l0"), SubResource("orr_tap_code_l1")])
+set_flags = PackedStringArray("arcbeat_orr_tap_code", "thread_orr_tapcode")
+
+[sub_resource type="Resource" id="r_tap_code_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("orr_tap_code")
+
+[sub_resource type="Resource" id="reaction_tap_code"]
+script = ExtResource("stage")
+id = "tap_code"
+enter_all = PackedStringArray("flag:mem_seen_mf_lowlight_04")
+min_stage = 1
+beat_rules = Array[ExtResource("rule")]([SubResource("r_tap_code_beat")])
+optional = true
+
+[resource]
+script = ExtResource("arc")
+npc_id = "orr"
+stages = Array[ExtResource("stage")]([SubResource("stage_met"), SubResource("stage_on_air")])
+reactions = Array[ExtResource("stage")]([SubResource("reaction_tap_code")])
+threads = PackedStringArray("thread_orr_air", "thread_orr_tapcode")

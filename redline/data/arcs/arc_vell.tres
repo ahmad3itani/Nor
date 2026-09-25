@@ -1,0 +1,169 @@
+[gd_resource type="Resource" script_class="NpcArc" load_steps=34 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcArc.gd" id="arc"]
+[ext_resource type="Script" path="res://dialogue/NpcArcStage.gd" id="stage"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Script" path="res://dialogue/DialogueChoice.gd" id="choice"]
+
+[sub_resource type="Resource" id="vell_idle_regular_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "My best customer. I'm still not asking what you are."
+
+[sub_resource type="Resource" id="vell_idle_regular"]
+script = ExtResource("dialogue")
+id = "vell_idle_regular"
+lines = Array[ExtResource("line")]([SubResource("vell_idle_regular_l0")])
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="s_met_idle_regular"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_vell_regular")
+dialogue = SubResource("vell_idle_regular")
+
+[sub_resource type="Resource" id="stage_met"]
+script = ExtResource("stage")
+id = "met"
+enter_all = PackedStringArray("flag:met_vell")
+idle_rules = Array[ExtResource("rule")]([SubResource("s_met_idle_regular")])
+journal_note = "Circuit broker. Sells lies to the Core, at a markup."
+
+[sub_resource type="Resource" id="vell_supply_cut_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Krail's dead, so my supply line is too. His tower moved everything the Spire threw away."
+
+[sub_resource type="Resource" id="vell_supply_cut_l1"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Circuits come from somewhere. I never asked where. Don't you start."
+
+[sub_resource type="Resource" id="vell_supply_cut"]
+script = ExtResource("dialogue")
+id = "vell_supply_cut"
+lines = Array[ExtResource("line")]([SubResource("vell_supply_cut_l0"), SubResource("vell_supply_cut_l1")])
+set_flags = PackedStringArray("arcbeat_vell_krail", "thread_vell_source")
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="s_krail_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_supply_cut")
+
+[sub_resource type="Resource" id="vell_idle_dry_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Stock's thin since Krail. Capacity's still the only real currency."
+
+[sub_resource type="Resource" id="vell_idle_dry"]
+script = ExtResource("dialogue")
+id = "vell_idle_dry"
+lines = Array[ExtResource("line")]([SubResource("vell_idle_dry_l0")])
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="s_krail_idle_regular"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("bond_vell_regular")
+dialogue = SubResource("vell_idle_regular")
+
+[sub_resource type="Resource" id="s_krail_idle_dry"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_idle_dry")
+
+[sub_resource type="Resource" id="stage_krail"]
+script = ExtResource("stage")
+id = "krail"
+enter_all = PackedStringArray("flag:warden_krail_defeated")
+beat_rules = Array[ExtResource("rule")]([SubResource("s_krail_beat")])
+idle_rules = Array[ExtResource("rule")]([SubResource("s_krail_idle_regular"), SubResource("s_krail_idle_dry")])
+journal_note = "Krail's supply line is dead. Vell isn't sorry, just short."
+
+[sub_resource type="Resource" id="vell_customer_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Your Core keeps making room. Most rigs cap out and start smoking."
+
+[sub_resource type="Resource" id="vell_customer_l1"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "I'm not asking what you are. I'm writing it down."
+
+[sub_resource type="Resource" id="vell_customer"]
+script = ExtResource("dialogue")
+id = "vell_customer"
+lines = Array[ExtResource("line")]([SubResource("vell_customer_l0"), SubResource("vell_customer_l1")])
+set_flags = PackedStringArray("arcbeat_vell_customer", "bond_vell_regular")
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="r_customer_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_customer")
+
+[sub_resource type="Resource" id="reaction_customer"]
+script = ExtResource("stage")
+id = "customer"
+enter_any = PackedStringArray("count:circuits:3", "count:shards:2")
+min_stage = 1
+beat_rules = Array[ExtResource("rule")]([SubResource("r_customer_beat")])
+optional = true
+
+[sub_resource type="Resource" id="vell_radio_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Orr's radio is back. Radios mean customers. I've put out the good stock."
+
+[sub_resource type="Resource" id="vell_radio"]
+script = ExtResource("dialogue")
+id = "vell_radio"
+lines = Array[ExtResource("line")]([SubResource("vell_radio_l0")])
+set_flags = PackedStringArray("arcbeat_vell_radio")
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="r_radio_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_radio")
+
+[sub_resource type="Resource" id="reaction_radio"]
+script = ExtResource("stage")
+id = "radio"
+enter_all = PackedStringArray("flag:dead_air_complete")
+min_stage = 1
+beat_rules = Array[ExtResource("rule")]([SubResource("r_radio_beat")])
+optional = true
+
+[sub_resource type="Resource" id="vell_asked_l0"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "Krail's people asked me once about a Core that never caps out. Was I holding one."
+
+[sub_resource type="Resource" id="vell_asked_l1"]
+script = ExtResource("line")
+speaker = "Vell"
+text = "I said no. I say no a lot."
+
+[sub_resource type="Resource" id="vell_asked"]
+script = ExtResource("dialogue")
+id = "vell_asked"
+lines = Array[ExtResource("line")]([SubResource("vell_asked_l0"), SubResource("vell_asked_l1")])
+set_flags = PackedStringArray("arcbeat_vell_asked")
+open_menu = &"shop_vell"
+
+[sub_resource type="Resource" id="r_asked_beat"]
+script = ExtResource("rule")
+dialogue = SubResource("vell_asked")
+
+[sub_resource type="Resource" id="reaction_asked"]
+script = ExtResource("stage")
+id = "asked"
+enter_all = PackedStringArray("flag:bond_vell_regular", "flag:arcbeat_vell_krail")
+min_stage = 2
+beat_rules = Array[ExtResource("rule")]([SubResource("r_asked_beat")])
+optional = true
+
+[resource]
+script = ExtResource("arc")
+npc_id = "vell"
+stages = Array[ExtResource("stage")]([SubResource("stage_met"), SubResource("stage_krail")])
+reactions = Array[ExtResource("stage")]([SubResource("reaction_customer"), SubResource("reaction_radio"), SubResource("reaction_asked")])
+threads = PackedStringArray("thread_vell_source")

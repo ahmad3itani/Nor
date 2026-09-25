@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=20 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arcs/arc_nix.tres" id="arc_nix"]
 
 [sub_resource type="Resource" id="nix_report_l0"]
 script = ExtResource("line")
@@ -55,22 +56,6 @@ script = ExtResource("rule")
 forbids_flags = PackedStringArray("met_nix")
 dialogue = SubResource("nix_intro")
 
-[sub_resource type="Resource" id="nix_regular_l0"]
-script = ExtResource("line")
-speaker = "Nix"
-text = "Back again. You're the only one here who looks at the map before they get lost."
-
-[sub_resource type="Resource" id="nix_regular"]
-script = ExtResource("dialogue")
-id = "nix_regular"
-lines = Array[ExtResource("line")]([SubResource("nix_regular_l0")])
-open_menu = &"shop_nix"
-
-[sub_resource type="Resource" id="rule_2"]
-script = ExtResource("rule")
-requires_conditions = PackedStringArray("atleast:talks_nix:4")
-dialogue = SubResource("nix_regular")
-
 [sub_resource type="Resource" id="nix_shop_l0"]
 script = ExtResource("line")
 speaker = "Nix"
@@ -92,4 +77,5 @@ npc_id = "nix"
 display_name = "Nix"
 color = Color(0.45, 0.72, 0.62, 1)
 map_label = "Cartographer"
-rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_2"), SubResource("rule_3")])
+rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_3")])
+arc = ExtResource("arc_nix")
