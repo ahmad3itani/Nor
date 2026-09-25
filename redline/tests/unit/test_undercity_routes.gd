@@ -184,14 +184,44 @@ func test_wake_route() -> void:
 	_assert_exit(1, UC + "MedicalRuin.tscn", &"from_wake")
 
 
-## The variable-jump reward: the sill 52 px above the ward floor takes a
-## full held jump (56 px peak). From the start entry the cabinet hop comes
-## first (the same two steps as the route).
+## The variable-jump reward: the solid sill 52 px above the ward floor takes a
+## full held jump (56 px peak) from beside it. From the start entry the
+## cabinet hop comes first (the same two steps as the route).
 func test_wake_sill() -> void:
 	_campaign()
 	await _enter(WAKE, &"start")
-	if await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 560], ["jump", 560], ["wait", 30]]):
+	if await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 515], ["jump", 570], ["wait", 30]]):
 		check(Game.is_collected("sb_uc_wake_sill"), "a full held jump should land the sill Scrap")
+
+
+## The other half of the variable-jump lesson: a short tap is not enough.
+## Under the sill a tap bumps its solid underside and leaves the Scrap, and a
+## tap at the ward step's foot does not get Rook up onto WardFloor.
+func test_wake_tap_is_not_enough() -> void:
+	_campaign()
+	await _enter(WAKE, &"start")
+	if not await _run([["run", 205], ["jump", 300], ["run", 372], ["jump", 430], ["run", 570], ["wait", 10]]):
+		return
+	await _wake_tap()
+	check(not Game.is_collected("sb_uc_wake_sill"), "a tap under the sill must not collect its Scrap")
+	if not await _run([["run", 380], ["wait", 10]]):
+		return
+	bot.input.move_x = 1
+	await _wake_tap()
+	bot.input.move_x = 0
+	check(bot.player.global_position.y > -24.0, "a tap at the ward step should not reach WardFloor (y %.0f)" % bot.player.global_position.y)
+
+
+## Wake-only helper: a 3-frame jump press, then waits until Rook lands.
+func _wake_tap() -> void:
+	bot.input.press_jump()
+	await physics_frames(3)
+	bot.input.release_jump()
+	for f in 90:
+		await physics_frames(1)
+		if bot.player.is_on_floor():
+			break
+	await physics_frames(4)
 
 
 ## Walking in from the Medical Ruin (backtrack, legacy saves): the east lever
@@ -205,7 +235,7 @@ func test_wake_from_east() -> void:
 	check(Game.has_flag("uc_ward_shutter"), "the east lever should set uc_ward_shutter")
 	var shutter := SceneRouter.current_room.find_child("WardShutter", true, false) as Gate
 	check(shutter != null and not shutter.closed, "the WardShutter should be open")
-	if await _run([["run", 660], ["jump", 600], ["run", 560], ["jump", 560], ["wait", 30]]):
+	if await _run([["run", 660], ["jump", 615], ["run", 615], ["jump", 570], ["wait", 30]]):
 		check(Game.is_collected("sb_uc_wake_sill"), "the sill should be reachable from the east")
 
 
