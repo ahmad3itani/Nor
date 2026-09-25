@@ -120,11 +120,12 @@ for name, flag, x in [("PipMarket", "repeater_market", 242), ("PipStack", "repea
 grid = r.switch("TrainWindowsLit", "flag:lowlight_power_rerouted")
 for x in [380, 440, 500, 560]:
     r.neon(x, -150, 30, 8, AMBER, 2, False, parent=grid)
-# R5: Iko's stall at her post (580): an awning over her box (568..592, clear
-# of the 600 pillar) and the smugglers' violet chalk eye. No floor crate:
-# decor is bottom-centred and one would sit on Mara's workbench.
+# R5: Iko's stall at her post (580): an awning over her head (570..590, clear
+# of the 600 pillar and of Mara's workbench from 590) and the smugglers'
+# violet chalk eye. No floor crate: decor is bottom-centred and one would sit
+# on Mara's workbench.
 stall = r.switch("IkoStall", "flag:met_iko")
-r.decor("banner", 580, -52, 24, 8, "0.22, 0.12, 0.3, 1", "0.7, 0.45, 1, 1", parent=stall)
+r.decor("banner", 580, -52, 20, 8, "0.22, 0.12, 0.3, 1", "0.7, 0.45, 1, 1", parent=stall)
 r.neon(580, -64, 10, 6, VIOLET, 2, False, parent=stall)
 # R8: after the Act I close the Relay keeps watch on the street: a crate
 # against the exit wall, cloth over the door and one more lamp. The band
