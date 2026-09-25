@@ -5,16 +5,29 @@ extends RefCounted
 ## - one_time: secret bundles, wall stashes, quest and dialogue rewards,
 ##   the boss, and every placed enemy once;
 ## - per_clear: what a full re-clear of the respawning enemies pays;
-## - sinks: every shop item at list price.
+## - sinks: every shop item at list price;
+## - by_district: the placed Scrap (bundles, walls, enemies, boss, one_time,
+##   per_clear) of each map district, so ECONOMY.md can show where the
+##   income comes from. Quests, dialogue and sinks are not per-district.
 
 
 static func compute() -> Dictionary:
-	var r := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0, "quests": 0, "dialogue": 0, "sinks": 0, "sink_items": {}}
+	var r := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0, "quests": 0, "dialogue": 0, "sinks": 0, "sink_items": {}, "by_district": {}}
 	for room in Game.world_map.rooms:
 		var inst := (load(room.room_path) as PackedScene).instantiate()
 		RoomTemplate.expand_all(inst)
-		tally(inst, r)
+		var placed := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0}
+		tally(inst, placed)
 		inst.free()
+		var district := String(room.district)
+		if not r["by_district"].has(district):
+			r["by_district"][district] = {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0}
+		for k in placed:
+			r[k] += placed[k]
+			r["by_district"][district][k] += placed[k]
+	for d in r["by_district"].values():
+		d["one_time"] = d["bundles"] + d["walls"] + d["enemies_first_clear"] + d["boss"]
+		d["per_clear"] = d["enemies_first_clear"]
 	for f in DirAccess.get_files_at("res://data/quests"):
 		if f.ends_with(".tres"):
 			r["quests"] += (load("res://data/quests/" + f) as QuestData).reward_scrap
