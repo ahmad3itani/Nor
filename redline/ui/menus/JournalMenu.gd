@@ -8,11 +8,19 @@ extends MenuScreen
 ## The journal hides itself while a memory plays (the tree stays paused:
 ## the player sees it was already paused) and comes back on
 ## memory_playback_finished with focus restored.
+##
+## M8 T05: a "People…" button (once any character arc has a reached stage)
+## switches to a PEOPLE mode, one line per arc: the person and the note of
+## their latest stage (§18: consequences through people, never a score). A
+## sub-mode keeps the main page inside the 270 px canvas (MenuScreen has no
+## scroll); Back/ui_cancel returns to the main page with focus on the row.
 
 var _mode: StringName = &"main"
 var _card: Label
 var _detail: Label
 var _resume_focus: int = 0
+## Main-page row to refocus when PEOPLE closes (-1 = none).
+var _people_return_focus: int = -1
 
 
 func open_menu() -> void:
@@ -28,6 +36,9 @@ func rebuild() -> void:
 	if _mode == &"memories":
 		_build_gallery()
 		return
+	if _mode == &"people":
+		_build_people()
+		return
 	add_label("JOURNAL", UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
 	add_label("QUESTS", UiTheme.ACCENT)
 	var active := Game.quests.active_quests()
@@ -41,7 +52,8 @@ func rebuild() -> void:
 		add_label("• %s  —  %s%s" % [q.title, q.stages[i].description, tail])
 	for q in done:
 		add_label("✓ %s" % q.title, UiTheme.MUTED)
-	# --- PEOPLE (T05) ---
+	if not _people_arcs().is_empty():
+		add_button("People…", show_people)
 	_build_memories_section()
 	var t := SliceStats.totals()
 	add_label("Secrets %d/%d    Core Shards %d    Scrap %d    Time %s    Deaths %d" % [
@@ -86,6 +98,43 @@ func show_gallery() -> void:
 func show_main() -> void:
 	_mode = &"main"
 	rebuild()
+	if _people_return_focus >= 0:
+		focus_index(_people_return_focus)
+		_people_return_focus = -1
+
+
+func show_people() -> void:
+	_people_return_focus = focused_index()
+	_mode = &"people"
+	rebuild()
+
+
+## Arcs with a reached spine stage, in tracker order.
+func _people_arcs() -> Array[NpcArc]:
+	var out: Array[NpcArc] = []
+	if Game.arcs == null:
+		return out
+	for a in Game.arcs.arcs:
+		if a.has_reached_any() and a.journal_note() != "":
+			out.append(a)
+	return out
+
+
+func _build_people() -> void:
+	add_label("PEOPLE", UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
+	for a in _people_arcs():
+		add_label("%s — %s" % [_display_name(a.npc_id), a.journal_note()], UiTheme.MUTED)
+	add_button("Back", show_main)
+	focus_index(0)
+
+
+## The owning profile's display name (data/npcs/<npc_id>.tres).
+func _display_name(npc_id: String) -> String:
+	var path := "%s/%s.tres" % [NpcArc.NPC_DIR, npc_id]
+	var p: NpcProfile = null
+	if ResourceLoader.exists(path):
+		p = load(path) as NpcProfile
+	return p.display_name if p else npc_id.capitalize()
 
 
 func _build_gallery() -> void:
@@ -176,8 +225,9 @@ func _on_memory_done(_source: StringName) -> void:
 
 
 func _process(delta: float) -> void:
-	# In the gallery, cancel steps back to the main page instead of closing.
-	if visible and _mode == &"memories" and Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed("ui_cancel"):
+	# In the gallery or PEOPLE, cancel steps back to the main page instead of
+	# closing.
+	if visible and (_mode == &"memories" or _mode == &"people") and Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed("ui_cancel"):
 		show_main()
 		return
 	super._process(delta)
