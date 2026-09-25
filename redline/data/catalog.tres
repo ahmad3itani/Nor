@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemCatalog" load_steps=20 format=3]
+[gd_resource type="Resource" script_class="ItemCatalog" load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://progression/ItemCatalog.gd" id="1"]
 [ext_resource type="Script" path="res://weapons/WeaponData.gd" id="2"]
@@ -19,8 +19,11 @@
 [ext_resource type="Resource" path="res://data/circuits/rebound.tres" id="c9"]
 [ext_resource type="Resource" path="res://data/circuits/runners_debt.tres" id="c10"]
 [ext_resource type="Resource" path="res://data/circuits/scavenger.tres" id="c11"]
+[ext_resource type="Resource" path="res://data/circuits/hot_wire.tres" id="c12"]
+[ext_resource type="Resource" path="res://data/circuits/live_current.tres" id="c13"]
+[ext_resource type="Resource" path="res://data/circuits/slipstream.tres" id="c14"]
 
 [resource]
 script = ExtResource("1")
 weapons = Array[ExtResource("2")]([ExtResource("w0"), ExtResource("w1"), ExtResource("w2"), ExtResource("w3"), ExtResource("w4")])
-circuits = [ExtResource("c0"), ExtResource("c1"), ExtResource("c2"), ExtResource("c3"), ExtResource("c4"), ExtResource("c5"), ExtResource("c6"), ExtResource("c7"), ExtResource("c8"), ExtResource("c9"), ExtResource("c10"), ExtResource("c11")]
+circuits = [ExtResource("c0"), ExtResource("c1"), ExtResource("c2"), ExtResource("c3"), ExtResource("c4"), ExtResource("c5"), ExtResource("c6"), ExtResource("c7"), ExtResource("c8"), ExtResource("c9"), ExtResource("c10"), ExtResource("c11"), ExtResource("c12"), ExtResource("c13"), ExtResource("c14")]

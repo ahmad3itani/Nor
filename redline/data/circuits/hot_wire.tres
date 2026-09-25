@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "hot_wire"
+display_name = "Hot Wire"
+description = "Overclocked rounds. Hit harder, reach less."
+cost = 2
+price = 150
+multipliers = {
+&"ranged_damage": 1.5,
+&"ranged_range": 0.7
+}
+values = {}

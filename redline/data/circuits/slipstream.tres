@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CircuitData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://circuits/CircuitData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "slipstream"
+display_name = "Slipstream"
+description = "Slip the scanners. The Core bills you for it."
+cost = 1
+price = 130
+multipliers = {
+&"iframe_time": 1.2
+}
+values = {
+&"runners_debt": 0.25
+}
