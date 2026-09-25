@@ -916,8 +916,124 @@ func test_rainline_old_save_via_bell_lift() -> void:
 		check(room.player.global_position.distance_to(Vector2(1200, -384)) < 40.0, "arrives at from_rainline, at %s" % room.player.global_position)
 
 
+# --- Smuggler Route (optional loop, D-075): Power Block basement -> den -> Stack.
+const SR := "res://world/rooms/lowlight/SmugglerRoute.tscn"
+## East entry to P2's east end: breaker (shoot up), shutter run, W1, pipe slot.
+const SR_TO_P2 := [["run", 2200], ["shoot", 1, "up"], ["run", 1826], ["runjump", 1822, 1700], ["run", 1656], ["slide", 1570]]
+## P2 to the Sill: W2 slide-jump over the culvert, W3 run-jump.
+const SR_TO_SILL := [["slidejump", 1464, 1340], ["runjump", 1202, 1090]]
+## Sill up the floodgate steps to the DashLedge (the -144 step jumps from its
+## west end: the ledge hangs 80 px over it, less than Rook plus a jump).
+const SR_TO_LEDGE := [["run", 1076], ["jump", 1076], ["jump", 1020], ["jump", 1076], ["run", 1052], ["jump", 1046], ["jump", 1082]]
+
+
+## East to west, pacified: the high breaker opens the shutter, which latches
+## once crossed; the floodway, the floodgate slot, then the den lever unbolts
+## the hatch and the west door leads to the Stack.
 func test_smuggler_route() -> void:
-	print("PENDING: SmugglerRoute")
+	await _enter(SR, &"from_power")
+	var steps := SR_TO_P2 + SR_TO_SILL + [["run", 814], ["slide", 720], ["run", 40], ["interact"], ["run", -20]]
+	if not await _run(steps):
+		return
+	check(Game.has_flag("sr_shutter_latched"), "crossing the open shutter should latch it")
+	check(Game.has_flag("shortcut_smuggler_route"), "the den lever should unbolt the hatch")
+	var hatch := SceneRouter.current_room.find_child("Hatch", true, false) as Gate
+	check(hatch != null and not hatch.closed, "the Hatch should be open")
+	_assert_exit(1, LL + "PowerBlock.tscn", &"from_smuggler")
+	_assert_exit(-1, LL + "ApartmentStack.tscn", &"from_smuggler", "shortcut_smuggler_route")
+	if await _run([["exit", -1]]):
+		check(SceneRouter.current_room.name == "ApartmentStack", "the hatch should lead to the Stack (in %s)" % SceneRouter.current_room.name)
+
+
+## The shrine is Dash-only: with Dash, a dash-jump from the DashLedge
+## (reached by the floodgate steps) collects the shard.
+func test_smuggler_dash_shard() -> void:
+	Game.set_ability(&"dash", true)
+	await _enter(SR, &"from_power")
+	if await _run(SR_TO_P2 + SR_TO_SILL + SR_TO_LEDGE + [["dashjump", 1060, 807]]):
+		check(Game.is_collected("cs_smuggler_dash"), "a dash-jump from the ledge should reach the shard")
+
+
+## Negative sweep (plan risk "Dash-gate integrity"): without Dash, a
+## dodge-jump plus an air dodge on any airborne frame 0..27 must not reach a
+## Dash shard. Starts at `edge_start` (on the take-off surface) each time.
+func _smuggler_sweep(room_path: String, entry: StringName, edge_start: Vector2, edge: float, target: float, shard: String) -> void:
+	await _enter(room_path, entry)
+	check(not Game.abilities.dash, "the sweep runs without Dash")
+	var air: Array = []
+	var on_state := func(_from: StringName, to: StringName) -> void:
+		if to == &"dodge" and not bot.player.is_on_floor():
+			air.append(true)
+	EventBus.player_state_changed.connect(on_state)
+	for d in 28:
+		bot.player.respawn(edge_start, int(signf(target - edge_start.x)))
+		await physics_frames(6)
+		air.clear()
+		await bot.run([["dodgejump_airdodge", edge, target, d]])
+		await physics_frames(30)
+		if Game.is_collected(shard):
+			check(false, "%s: a dodge-jump + air dodge at frame %d from %s collected %s" % [room_path.get_file(), d, edge_start, shard])
+			break
+		if d > 0:
+			check(not air.is_empty(), "frame %d from %s: no air dodge fired, the sweep proves nothing" % [d, edge_start])
+	EventBus.player_state_changed.disconnect(on_state)
+
+
+func test_smuggler_dash_shard_negative_sweep() -> void:
+	# From the DashLedge (1060..1104 at -240) and the top step (1000..1040 at -192).
+	await _smuggler_sweep(SR, &"from_power", Vector2(1100, -240), 1060, 807, "cs_smuggler_dash")
+	await _smuggler_sweep(SR, &"from_power", Vector2(1052, -192), 1032, 807, "cs_smuggler_dash")
+
+
+## The same sweep on the Flooded Alley's Dash shard (220 px, 160..380).
+func test_smuggler_alley_dash_negative_sweep() -> void:
+	await _smuggler_sweep(LL + "FloodedAlley.tscn", &"from_relay", Vector2(125, -96), 158, 415, "cs_alley_dash")
+
+
+## The loft cache takes heavy attacks only: light swings bounce off, two
+## heavies break it, and the bundle behind it is reachable.
+func test_smuggler_den_cache() -> void:
+	await _enter(SR, &"from_stack")
+	if not await _run([["run", 348], ["jump", 348], ["jump", 288], ["jump", 200], ["run", 128], ["attack", 3]]):
+		return
+	check(not Game.is_collected("sr_den_cache"), "light attacks must not break the heavy wall")
+	if await _run([["heavy", 2], ["wait", 20], ["run", 60]]):
+		check(Game.is_collected("sr_den_cache"), "two heavy attacks should break the cache wall")
+		check(Game.is_collected("sb_sr_cache"), "the cache bundle should be reachable")
+
+
+## A W2 miss drops onto the culvert: no pip, no climbing straight back to P3
+## or P2, and the only way out is the one-way under P2's east end.
+func test_smuggler_culvert_catch() -> void:
+	await _enter(SR, &"from_power")
+	if not await _run(SR_TO_P2 + [["run", 1470], ["run", 1420], ["wait", 40]]):
+		return
+	var p := bot.player
+	var hp := p.combat.health
+	check(p.is_on_floor() and absf(p.global_position.y - 72.0) < 2.0, "a W2 miss should land on the culvert (at %s)" % p.global_position)
+	await bot.run([["run", 1400], ["jump", 1400], ["wait", 20]])
+	check(p.global_position.y > 60.0, "the culvert must not climb straight back out (at %s)" % p.global_position)
+	if await _run([["run", 1742], ["jump", 1742], ["jump", 1700]]):
+		check(p.global_position.y < 1.0 and p.global_position.x > 1464.0 and p.global_position.x < 1724.0, "the culvert should lead back up to P2's east end (at %s)" % p.global_position)
+	check(p.combat.health == hp and bot.player == p, "the culvert catch must not cost a pip")
+
+
+## Iko's first meeting in the den: talking sets met_iko and opens her shop,
+## then the den Iko is gone (she moves to the Relay, NPC.present_when).
+func test_smuggler_iko_intro_and_hide() -> void:
+	await _enter(SR, &"from_stack")
+	var iko := SceneRouter.current_room.find_child("NPC_iko", true, false) as NPC
+	check(iko != null and iko.is_present(), "Iko should be in the den before the first meeting")
+	var menus: Array = []
+	var on_menu := func(id: StringName) -> void:
+		menus.append(id)
+	EventBus.menu_requested.connect(on_menu)
+	if await _run([["run", 150], ["interact"]]):
+		await _close_dialogue()
+	EventBus.menu_requested.disconnect(on_menu)
+	check(Game.has_flag("met_iko"), "the first talk should set met_iko")
+	check(menus.has(&"shop_iko"), "the first talk should open Iko's shop (menus %s)" % str(menus))
+	check(iko != null and not iko.is_present() and not iko.visible, "the den Iko should hide after the meeting")
 
 
 func test_warden_tower_clamp_in_room() -> void:
