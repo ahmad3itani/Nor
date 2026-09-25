@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -410,3 +411,15 @@ script = ExtResource("hint")
 size = Vector2(44, 100)
 hint_id = "alley_gap"
 text = "Too far to jump. Maybe later."
+
+[node name="DenMovedOn" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:met_iko"
+
+[node name="Neon5" type="Node2D" parent="Props/DenMovedOn"]
+position = Vector2(150, -60)
+script = ExtResource("neon")
+size = Vector2(10, 6)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 2
+flicker = false

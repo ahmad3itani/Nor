@@ -131,6 +131,10 @@ s.exit(2420, -96, 16, 96, "PowerBlock", "from_smuggler")
 s.exit(-64, -96, 16, 96, "ApartmentStack", "from_smuggler", flag="shortcut_smuggler_route")
 s.hint("sr_eye", 2240, -96, 100, 96, "A chalk eye. Someone uses this route.")
 s.hint("alley_gap", 1060, -340, 44, 100, "Too far to jump. Maybe later.")  # reused id (D-066): same lesson, same text
+# M8 world state (visual only): where Iko stood, a chalk eye pointing at the
+# hatch once she has moved to the Relay ("gone to the Relay").
+s_moved = s.switch("DenMovedOn", "flag:met_iko")
+s.neon(150, -60, 10, 6, VIOLET, 2, False, parent=s_moved)
 s.write(OUT + "SmugglerRoute.tscn")
 
 finish()
