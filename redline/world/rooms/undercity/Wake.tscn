@@ -72,11 +72,10 @@ position = Vector2(400, -48)
 script = ExtResource("block")
 size = Vector2(224, 48)
 
-[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+[node name="Sill" type="StaticBody2D" parent="Geometry"]
 position = Vector2(540, -100)
 script = ExtResource("block")
 size = Vector2(60, 8)
-one_way = true
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
 position = Vector2(570, -100)
@@ -92,13 +91,13 @@ size = Vector2(16, 260)
 closed = true
 open_flag = "uc_ward_shutter"
 
-[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
 position = Vector2(856, -48)
 script = ExtResource("block")
 size = Vector2(64, 8)
 one_way = true
 
-[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
 position = Vector2(936, -96)
 script = ExtResource("block")
 size = Vector2(64, 8)
@@ -213,7 +212,7 @@ color = Color(0.3, 0.08, 0.12, 1)
 accent = Color(0.8, 0.8, 0.75, 1)
 
 [node name="Decor6" type="Node2D" parent="Props"]
-position = Vector2(1080, -230)
+position = Vector2(1080, -244)
 script = ExtResource("decor")
 kind = 7
 size = Vector2(120, 10)
@@ -221,7 +220,7 @@ color = Color(0.2, 0.24, 0.24, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
 [node name="Neon1" type="Node2D" parent="Props"]
-position = Vector2(1080, -236)
+position = Vector2(1080, -250)
 script = ExtResource("neon")
 size = Vector2(36, 8)
 color = Color(0.91, 0.16, 0.24, 1)

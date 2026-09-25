@@ -14,7 +14,8 @@ flickering behind an unreachable grate: danger shown at a safe distance.
 
 Metrics (data/level/traversal_default.tres): every main-path rise is
 <= 48 px; the optional sill sits 52 px above the ward floor, so only a
-full held jump (56 px peak) lands it (the variable-jump reward). The
+full held jump (56 px peak) from beside it lands it (the variable-jump
+reward). The sill is solid, so a tap from underneath cannot reach its Scrap. The
 walkway drop is 144 px onto flat floor: no damage.
 Doors must match the M7 door contracts (tests/unit/test_door_contracts.gd).
 """
@@ -34,7 +35,11 @@ w.block(1264, -300, 16, 204, "WallRightUpper")    # door y -96..0
 # --- Movement lessons, left to right ---
 w.block(236, -24, 40, 24, "Cabinet")              # 24 px hop: a tap is enough
 w.block(400, -48, 224, 48, "WardFloor")           # 48 px step, x 400..624: needs a held jump
-w.oneway(540, -100, 60)                           # optional sill, 52 above WardFloor: a full 56 px jump only
+# Optional sill, 52 above WardFloor: a full 56 px jump only. Solid, not a
+# one-way: its pickup would otherwise poke through from below and a 20 px tap
+# under it would grab the Scrap. The underside bumps Rook's head, so the
+# Scrap is only touched from on top, which takes a held jump from the side.
+w.block(540, -100, 60, 8, "Sill")
 w.collectible(0, "sb_uc_wake_sill", 570, -100, scrap=10)
 # The shutter closes the ward until Rook uses a lever (the interact lesson).
 w.gate(760, -260, 16, 260, closed=True, open_flag="uc_ward_shutter", name="WardShutter")
@@ -61,10 +66,11 @@ w.hint("uc_interact", 660, -96, 80, 96, "[{action}] use", "interact")
 for x, y in [(40, 0), (120, 0), (480, -48), (560, -48)]:
     w.decor("bench", x, y, 60, 14, CONCRETE)      # the empty slabs (13 empty; Rook's is at 40)
 w.decor("banner", 300, -140, 30, 50, "0.3, 0.08, 0.12, 1", "0.8, 0.8, 0.75, 1")   # "HOLD FOR COLLECTION"
-# The grate: decor only, above the walkway's jump headroom, so it is unreachable.
-w.decor("pipes", 1080, -230, 120, 10, STEEL)
+# The grate: decor only (no collision), set above the head of a full jump from
+# the walkway (about -234) so Rook's sprite never overlaps it.
+w.decor("pipes", 1080, -244, 120, 10, STEEL)
 # The Collector's eye flickering behind the grate: the first red; it never attacks.
-w.neon(1080, -236, 36, 8, RED, 2)
+w.neon(1080, -250, 36, 8, RED, 2)
 w.neon(120, -200, 30, 6, SEA, 3, True)            # flickering service tubes (ambience)
 w.neon(480, -200, 30, 6, SEA, 3, True)
 w.neon(1220, -120, 14, 6, SODIUM, 2, False)       # steady sodium lamp over the exit (route only)
