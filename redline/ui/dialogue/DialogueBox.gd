@@ -2,9 +2,27 @@ extends CanvasLayer
 ## Conversation box (bible §19, §24 "pause during dialogue"). Pauses the game
 ## while open, types text out, and advances on interact/confirm/jump/attack.
 ## Pressing during typing completes the line first (never skips unread text).
+##
+## M8 choice mode (bible §19 "meaningful choice", §24): a dialogue with
+## `choices` lists them under its last line and waits; there is no timeout and
+## no auto-pick (text auto-advance is cut, D-110). Selection moves on
+## move_up/move_down/ui_up/ui_down; confirm is ui_accept, jump, or keyboard
+## interact (E, the key the box's "[E]" cue taught). Pad D-pad Up is bound to
+## both interact and move_up (project.godot button 11), so interact only
+## confirms while the keyboard is the active device. A confirm counts only
+## after CHOICE_ARM_SECONDS real time (the tree is paused) and after every
+## advance action has been seen released since the options appeared, so a
+## held or mashed press carried over from the last line never picks. The
+## picked answer's reply plays with the normal advance rules, then the box
+## closes and Game.apply_dialogue(d, choice) applies everything at once.
 
 const CHARS_PER_SECOND := 70.0
 const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", &"attack_light"]
+## Choice mode input (never attack_light: a combat button must not answer).
+const CHOICE_UP_ACTIONS: Array[StringName] = [&"move_up", &"ui_up"]
+const CHOICE_DOWN_ACTIONS: Array[StringName] = [&"move_down", &"ui_down"]
+const CHOICE_CONFIRM_ACTIONS: Array[StringName] = [&"ui_accept", &"jump"]
+const CHOICE_ARM_SECONDS := 0.4
 
 var dialogue: DialogueData
 var line_index: int = 0
@@ -12,6 +30,15 @@ var shown_chars: float = 0.0
 var _npc_name: String = ""
 var _opened_frame: int = -1
 var _root: Control
+## Lines on screen: the dialogue's own, then the picked choice's reply.
+var _lines: Array[DialogueLine] = []
+var _choosing: bool = false
+var _selected: int = 0
+## Index of the picked DialogueChoice (-1 = none yet).
+var _choice: int = -1
+var _choice_shown_ms: int = 0
+## Advance actions seen released since the options appeared.
+var _released: Dictionary = {}
 
 
 func _ready() -> void:
@@ -36,6 +63,11 @@ func open(d: Resource, npc_name: String = "") -> void:
 		dialogue = null
 		return
 	_npc_name = npc_name
+	_lines = dialogue.lines
+	_choosing = false
+	_selected = 0
+	_choice = -1
+	_released.clear()
 	line_index = 0
 	shown_chars = 0.0
 	_opened_frame = Engine.get_process_frames()
@@ -47,7 +79,13 @@ func open(d: Resource, npc_name: String = "") -> void:
 func _process(delta: float) -> void:
 	if dialogue == null:
 		return
-	var line := dialogue.lines[line_index]
+	# Choice mode first: the generic advance path below would confirm on the
+	# D-pad Up (interact) a pad player uses to move the cursor.
+	if _choosing:
+		_process_choice()
+		_root.queue_redraw()
+		return
+	var line := _current_line()
 	shown_chars = minf(shown_chars + CHARS_PER_SECOND * delta, line.text.length())
 	# Ignore the press that opened the box.
 	if Engine.get_process_frames() != _opened_frame and _advance_pressed():
@@ -65,20 +103,119 @@ func _advance_pressed() -> bool:
 	return false
 
 
+## Next line, or the choices after the last one, or close. While choosing
+## it picks the selected option (test/automation helper: an advance()-only
+## loop always terminates, with choice 0 unless the cursor moved).
 func advance() -> void:
+	if dialogue == null:
+		return
+	if _choosing:
+		choose(_selected)
+		return
+	AudioManager.play_sfx(&"ui_tick")
+	if line_index + 1 >= _lines.size() and _choice < 0 and not dialogue.choices.is_empty():
+		_enter_choice_mode()
+		return
 	line_index += 1
 	shown_chars = 0.0
-	AudioManager.play_sfx(&"ui_tick")
-	if line_index >= dialogue.lines.size():
+	if line_index >= _lines.size():
 		_close()
+
+
+func is_choosing() -> bool:
+	return _choosing
+
+
+## Options appear under the last line (kept on screen, fully typed).
+func _enter_choice_mode() -> void:
+	_choosing = true
+	_selected = 0
+	_choice_shown_ms = Time.get_ticks_msec()
+	_released.clear()
+	shown_chars = _current_line().text.length()
+
+
+## True once a fresh confirm press may pick: the arm time has passed (real
+## ms, the tree is paused) and every advance action was seen released since
+## the options appeared.
+func confirm_armed() -> bool:
+	if not _choosing or Time.get_ticks_msec() - _choice_shown_ms < int(CHOICE_ARM_SECONDS * 1000.0):
+		return false
+	for a in ADVANCE_ACTIONS:
+		if not _released.has(a):
+			return false
+	return true
+
+
+func _process_choice() -> void:
+	for a in ADVANCE_ACTIONS:
+		if not Input.is_action_pressed(a):
+			_released[a] = true
+	var n := dialogue.choices.size()
+	var moved := false
+	if _any_just_pressed(CHOICE_UP_ACTIONS):
+		_selected = (_selected - 1 + n) % n
+		moved = true
+	if _any_just_pressed(CHOICE_DOWN_ACTIONS):
+		_selected = (_selected + 1) % n
+		moved = true
+	if moved:
+		AudioManager.play_sfx(&"ui_tick")
+		return
+	if _confirm_pressed() and confirm_armed():
+		choose(_selected)
+
+
+func _confirm_pressed() -> bool:
+	if _any_just_pressed(CHOICE_CONFIRM_ACTIONS):
+		return true
+	return not InputGlyphs.using_pad and Input.is_action_just_pressed(&"interact")
+
+
+func _any_just_pressed(actions: Array[StringName]) -> bool:
+	for a in actions:
+		if Input.is_action_just_pressed(a):
+			return true
+	return false
+
+
+## Records the answer and plays its reply (or closes). The flags apply on
+## close, like every other dialogue effect.
+func choose(i: int) -> void:
+	if dialogue == null or not _choosing or i < 0 or i >= dialogue.choices.size():
+		return
+	_choosing = false
+	_choice = i
+	var c := dialogue.choices[i]
+	EventBus.dialogue_choice_made.emit(dialogue.id, c.id)
+	AudioManager.play_sfx(&"ui_tick")
+	if c.reply.is_empty():
+		_close()
+		return
+	_lines = c.reply
+	line_index = 0
+	shown_chars = 0.0
+
+
+## Footer under the options: the button that confirms on the active device
+## (the same E / A the conversation used to advance).
+func choice_footer() -> String:
+	var glyph := InputGlyphs.label(&"jump") if InputGlyphs.using_pad else InputGlyphs.label(&"interact")
+	return "[%s] choose" % glyph
+
+
+func _current_line() -> DialogueLine:
+	return _lines[mini(line_index, _lines.size() - 1)]
 
 
 func _close() -> void:
 	var finished := dialogue
+	var picked := _choice
 	dialogue = null
+	_choosing = false
 	visible = false
 	get_tree().paused = false
-	Game.apply_dialogue(finished)
+	Game.apply_dialogue(finished, picked)
 	EventBus.dialogue_finished.emit(finished)
 
 
@@ -86,14 +223,17 @@ func _close() -> void:
 func line_count() -> int:
 	if dialogue == null:
 		return 0
-	return SubtitleStyle.line_count(dialogue.lines[line_index].text, _box_width() - SubtitleStyle.PAD_X * 2)
+	return SubtitleStyle.line_count(_current_line().text, _box_width() - SubtitleStyle.PAD_X * 2)
 
 
 ## The box rect for the current line: sized from the full line (so it never
-## grows while typing), bottom edge fixed at view.y - 16 like M7.
+## grows while typing), bottom edge fixed at view.y - 16 like M7. Choice mode
+## adds one row per option under the text.
 func box_rect() -> Rect2:
 	var view := _root.size
-	var h := SubtitleStyle.box_height(dialogue.lines[line_index].text, _box_width())
+	var h := SubtitleStyle.box_height(_current_line().text, _box_width())
+	if _choosing:
+		h += dialogue.choices.size() * SubtitleStyle.line_spacing()
 	return Rect2(24, view.y - 16 - h, _box_width(), h)
 
 
@@ -113,7 +253,7 @@ func _draw_box() -> void:
 	if alpha > 0.0:
 		_root.draw_rect(box, Color(SubtitleStyle.BG, alpha))
 		_root.draw_rect(Rect2(box.position, Vector2(box.size.x, 1)), SubtitleStyle.ACCENT)
-	var line := dialogue.lines[line_index]
+	var line := _current_line()
 	if SubtitleStyle.show_label():
 		var speaker := line.speaker if line.speaker != "" else _npc_name
 		var lpos := box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.label_y())
@@ -122,5 +262,26 @@ func _draw_box() -> void:
 		_root.draw_string(font, lpos, speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT)
 	var text := line.text.substr(0, int(shown_chars))
 	SubtitleStyle.draw_text(_root, font, box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.text_y()), text, box.size.x - SubtitleStyle.PAD_X * 2, fs, Color.WHITE)
+	if _choosing:
+		_draw_choices(box, font, fs)
+		return
 	if shown_chars >= line.text.length() and int(Time.get_ticks_msec() / 400) % 2 == 0:
 		_root.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))
+
+
+## Options under the text rows: "> " marker plus the accent colour on the
+## selected one (not colour alone, §24), then the confirm footer.
+func _draw_choices(box: Rect2, font: Font, fs: int) -> void:
+	var rows := line_count()
+	var spacing := SubtitleStyle.line_spacing()
+	for i in dialogue.choices.size():
+		var selected := i == _selected
+		var y := box.position.y + SubtitleStyle.text_y() + (rows + i) * spacing
+		var text := ("> " if selected else "  ") + dialogue.choices[i].label
+		var pos := Vector2(box.position.x + SubtitleStyle.PAD_X, y)
+		if SubtitleStyle.outline():
+			_root.draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
+		_root.draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT if selected else Color.WHITE)
+	var footer := choice_footer()
+	var w := font.get_string_size(footer, HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1).x
+	_root.draw_string(font, box.end - Vector2(w + SubtitleStyle.PAD_X, 6), footer, HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))
