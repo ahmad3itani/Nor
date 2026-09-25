@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -9,6 +9,7 @@
 [ext_resource type="Resource" path="res://data/npcs/mara.tres" id="npc_mara"]
 [ext_resource type="Resource" path="res://data/npcs/vell.tres" id="npc_vell"]
 [ext_resource type="Resource" path="res://data/npcs/nix.tres" id="npc_nix"]
+[ext_resource type="Resource" path="res://data/npcs/iko.tres" id="npc_iko"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
@@ -130,6 +131,13 @@ position = Vector2(330, 0)
 script = ExtResource("npc")
 profile = ExtResource("npc_nix")
 facing = 1
+
+[node name="NPC_iko" type="Area2D" parent="Interactables"]
+position = Vector2(760, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_iko")
+facing = -1
+present_when = PackedStringArray("flag:met_iko")
 
 [node name="Exit1" type="Area2D" parent="Triggers"]
 position = Vector2(1024, -96)

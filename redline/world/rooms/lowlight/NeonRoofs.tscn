@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/lowlight.tres" id="theme"]
 
@@ -331,4 +332,15 @@ position = Vector2(2250, -130)
 script = ExtResource("neon")
 size = Vector2(36, 12)
 color = Color(0.7, 0.45, 1, 1)
+strokes = 5
+
+[node name="RainlineLive" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:lowlight_power_rerouted"
+
+[node name="Neon7" type="Node2D" parent="Props/RainlineLive"]
+position = Vector2(2300, -260)
+script = ExtResource("neon")
+size = Vector2(30, 10)
+color = Color(0.35, 0.88, 0.91, 1)
 strokes = 5

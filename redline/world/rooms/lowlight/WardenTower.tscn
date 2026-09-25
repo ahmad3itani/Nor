@@ -1,12 +1,16 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
 [ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
-[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://interactables/Breaker.gd" id="breaker"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/transitions/GridClamp.gd" id="clamp"]
+[ext_resource type="Resource" path="res://data/level/clamp_krail.tres" id="level_clamp_krail"]
+[ext_resource type="Resource" path="res://data/combat/grid_clamp_attack.tres" id="clamp_attack"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
 [ext_resource type="PackedScene" path="res://bosses/WardenKrail.tscn" id="scene_WardenKrail"]
 [ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
 [ext_resource type="PackedScene" path="res://interactables/DashModule.tscn" id="scene_DashModule"]
@@ -106,15 +110,63 @@ script = ExtResource("block")
 size = Vector2(64, 8)
 one_way = true
 
+[node name="Breaker_wt_grid_w" type="Area2D" parent="Interactables"]
+position = Vector2(36, -96)
+script = ExtResource("breaker")
+breaker_id = "wt_grid_w"
+circuit = &"wt_clamp"
+
+[node name="Breaker_wt_grid_e" type="Area2D" parent="Interactables"]
+position = Vector2(396, -96)
+script = ExtResource("breaker")
+breaker_id = "wt_grid_e"
+circuit = &"wt_clamp"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(44, -22)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(6, 248)
+color = Color(0.2, 0.18, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(404, -22)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(6, 248)
+color = Color(0.2, 0.18, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Clamp_wt_clamp" type="StaticBody2D" parent="Geometry"]
+position = Vector2(176, -270)
+script = ExtResource("clamp")
+clamp_id = "wt_clamp"
+width = 64
+raised_bottom = -120
+timing = ExtResource("level_clamp_krail")
+circuits = Array[StringName]([&"wt_clamp"])
+attack = ExtResource("clamp_attack")
+arm_hint_id = "wt_clamp"
+arm_hint = "Breakers live. Drop the clamp on him."
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(208, -2)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(64, 2)
+color = Color(1, 0.81, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
 [node name="Neon1" type="Node2D" parent="Props"]
-position = Vector2(208, -200)
+position = Vector2(208, -250)
 script = ExtResource("neon")
 size = Vector2(60, 14)
 color = Color(0.91, 0.16, 0.24, 1)
 strokes = 6
 flicker = false
 
-[node name="Decor1" type="Node2D" parent="Props"]
+[node name="Decor4" type="Node2D" parent="Props"]
 position = Vector2(90, -150)
 script = ExtResource("decor")
 kind = 9
@@ -122,7 +174,7 @@ size = Vector2(28, 60)
 color = Color(0.3, 0.08, 0.12, 1)
 accent = Color(1, 0.8, 0.7, 1)
 
-[node name="Decor2" type="Node2D" parent="Props"]
+[node name="Decor5" type="Node2D" parent="Props"]
 position = Vector2(330, -150)
 script = ExtResource("decor")
 kind = 9
@@ -130,7 +182,7 @@ size = Vector2(28, 60)
 color = Color(0.3, 0.08, 0.12, 1)
 accent = Color(1, 0.8, 0.7, 1)
 
-[node name="Decor3" type="Node2D" parent="Props"]
+[node name="Decor6" type="Node2D" parent="Props"]
 position = Vector2(0, 0)
 script = ExtResource("decor")
 kind = 0
@@ -138,15 +190,7 @@ size = Vector2(12, 270)
 color = Color(0.16, 0.15, 0.2, 1)
 accent = Color(1, 0.81, 0.35, 1)
 
-[node name="Decor4" type="Node2D" parent="Props"]
-position = Vector2(208, 0)
-script = ExtResource("decor")
-kind = 0
-size = Vector2(12, 270)
-color = Color(0.16, 0.15, 0.2, 1)
-accent = Color(1, 0.81, 0.35, 1)
-
-[node name="Decor5" type="Node2D" parent="Props"]
+[node name="Decor7" type="Node2D" parent="Props"]
 position = Vector2(416, 0)
 script = ExtResource("decor")
 kind = 0
@@ -161,6 +205,7 @@ position = Vector2(330, -2)
 position = Vector2(40, -250)
 script = ExtResource("arena")
 size = Vector2(400, 250)
+reward_position = Vector2(208, 0)
 boss_path = NodePath("../../Enemies/WardenKrail1")
 gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]
 reward_scene = ExtResource("scene_DashModule")

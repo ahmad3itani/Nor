@@ -33,6 +33,11 @@ r.oneway(700, -40, 70)
 r.oneway(760, -80, 150)
 r.npc("vell", 850, -80, -1)
 r.npc("nix", 330, 0, 1)
+# Iko sets up her stall here after the first meeting in the Smuggler Route
+# den (D-076). Her 24 px interact box (748..772) is clear of Mara (648..672);
+# Rook standing on Vell's first step (-40) is above it, so the steps never
+# pick her prompt.
+r.npc("iko", 760, 0, -1, present_when=["flag:met_iko"])
 r.exit(1024, -96, 16, 96, "FloodedAlley", "from_relay")
 r.gate(-32, -96, 16, 96, closed=True, open_flag="shortcut_bell_lift", name="LiftGate")
 r.exit(-48, -96, 16, 96, "BellTower", "from_lift", flag="shortcut_bell_lift")
@@ -177,8 +182,9 @@ m.write(OUT + "MarketRun.tscn")
 s = RoomGen("ApartmentStack", (-64, -960, 704, 1056), "lowlight", "Lowlight", "Apartment Stack")
 s.block(-64, -960, 16, 864, "WallLeft")
 s.block(624, -960, 16, 96, "WallRightTop")
-# Ground-floor hatch to the Smuggler Route (M7 optional loop). The flag,
-# gate and hint arrive with the SmugglerRoute den lever that sets it (D2b).
+# Ground-floor hatch to the Smuggler Route (M7 optional loop): bolted from
+# the tunnel side until the den lever there sets shortcut_smuggler_route, so
+# the loop is only ever opened from the Smuggler Route (D2b).
 s.block(624, -768, 16, 672, "WallRight")
 s.block(-48, 0, 672, BIG, "Floor0")
 s.spawn("from_market", 20, 0, 1, default=True)
@@ -186,7 +192,11 @@ s.spawn("from_roofs", 580, -768, -1)
 s.spawn("from_smuggler", 580, 0, -1)
 s.exit(-64, -96, 16, 96, "MarketRun", "from_stack")
 s.exit(624, -864, 16, 96, "NeonRoofs", "from_stack")
-s.exit(624, -96, 16, 96, "SmugglerRoute", "from_stack")
+s.exit(624, -96, 16, 96, "SmugglerRoute", "from_stack", flag="shortcut_smuggler_route")
+s.gate(608, -96, 16, 96, closed=True, open_flag="shortcut_smuggler_route", name="HatchGate")
+s.hint("stack_hatch", 540, -96, 60, 96, "Bolted from the other side.")
+s.mapmarker(600, -60, "Hatch: bolted from the tunnel side", "flag:shortcut_smuggler_route")
+s.neon(600, -130, 20, 8, VIOLET)  # the smugglers' chalk eye
 s.hint("stack_heal", 60, -96, 80, 96, "Hurt? Stand still and hold on: [{action}] uses an injector", "heal")
 def climb_right(room, y0):
     for x, dy in [(430, 48), (510, 96), (430, 144)]:
@@ -276,6 +286,10 @@ n.decor("planter", 300, -100, 34, 16, "0.24, 0.2, 0.22, 1", "0.49, 0.8, 0.5, 1")
 n.decor("cables", 900, -260, 700, 50, "0.18, 0.18, 0.24, 1")
 for x, y, c in [(200, -140, RED), (560, -150, CYAN), (980, -170, AMBER), (1320, -120, GREEN), (1900, -150, RED), (2250, -130, VIOLET)]:
     n.neon(x, y, 36, 12, c, 5)
+# Once the Power Block grid is rerouted, the Rainline's signal lamp past the
+# east door comes back on (bible §13: the world answers progress).
+live = n.switch("RainlineLive", "flag:lowlight_power_rerouted")
+n.neon(2300, -260, 30, 10, CYAN, 5, parent=live)
 n.write(OUT + "NeonRoofs.tscn")
 
 # ---------------------------------------------------------------- Bell Tower (vertical)
@@ -353,14 +367,30 @@ w.gate(-32, -96, 16, 96, name="ArenaGateLeft")
 w.gate(448, -96, 16, 96, closed=True, open_flag="warden_krail_defeated", name="ExitGate")
 w.oneway(60, -72, 64)
 w.oneway(300, -72, 64)
-w.neon(208, -200, 60, 14, "0.91, 0.16, 0.24, 1", 6, False)
+# Krail's boss test (D-071): the tower's own grid. Two high breakers (box
+# tops -96, reached by jump + air light or any gun straight up) drop a clamp
+# over the arena's centre. The west box (36..52) is clear of ArenaGateLeft
+# (-32..-16) and of the one-way at 60..124, so it cannot be struck from
+# standing on that one-way; the east box (396..412) is clear of 300..364.
+w.breaker("wt_grid_w", "wt_clamp", 36, -96)
+w.breaker("wt_grid_e", "wt_clamp", 396, -96)
+# Each box hangs on a cable from the ceiling (-270); the sag ends on its top.
+CABLE = "0.2, 0.18, 0.24, 1"
+for x in [44, 404]:
+    w.decor("cables", x, -22, 6, 248, CABLE)
+w.clamp("wt_clamp", 176, -270, 64, -120, "clamp_krail", ["wt_clamp"], hint_id="wt_clamp",
+        hint="Breakers live. Drop the clamp on him.")
+w.decor("pipes", 208, -2, 64, 2, AMBER)  # floor stripe under the footprint
+w.neon(208, -250, 60, 14, "0.91, 0.16, 0.24, 1", 6, False)
 w.decor("banner", 90, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1")
 w.decor("banner", 330, -150, 28, 60, "0.3, 0.08, 0.12, 1", "1, 0.8, 0.7, 1")
-for x in [0, 208, 416]:
+# No centre pillar: the clamp column (176..240) is there, and decor draws
+# over geometry, so a pillar would hide the slab and its countdown lamps.
+for x in [0, 416]:
     w.decor("pillar", x, 0, 12, 270, "0.16, 0.15, 0.2, 1")
 boss = w.enemy("WardenKrail", 330, -2)
 w.raw("Triggers", "BossArena", "Area2D", ['position = Vector2(40, -250)', 'script = %s' % w._script("arena"),
-      'size = Vector2(400, 250)', 'boss_path = NodePath("../../Enemies/%s")' % boss,
+      'size = Vector2(400, 250)', 'reward_position = Vector2(208, 0)', 'boss_path = NodePath("../../Enemies/%s")' % boss,
       'gate_paths = [NodePath("../../Geometry/ArenaGateLeft")]',
       'reward_scene = %s' % w._res("scene_DashModule", "PackedScene", "res://interactables/DashModule.tscn")])
 w.write(OUT + "WardenTower.tscn")
