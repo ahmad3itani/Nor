@@ -133,6 +133,11 @@ func test_hub_music_layers_data() -> void:
 	check(bad.content_check().size() == 2, "a bad condition and a bad stem are both reported")
 
 
+func test_new_sfx_ids_exist() -> void:
+	for id in [&"radio_static", &"memory_open", &"memory_beat", &"memory_tear", &"memory_detail"]:
+		check(AudioManager.has_sfx(id), "missing sfx %s" % id)
+
+
 func test_data_dir_remap_names() -> void:
 	check(DataDir.load_name("a.tres") == "a.tres", "plain tres")
 	check(DataDir.load_name("a.tres.remap") == "a.tres", "remapped tres")
