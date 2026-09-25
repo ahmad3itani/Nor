@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from roomgen import RoomGen, finish
 OUT = "world/rooms/lowlight/"
 RED, CYAN, AMBER, GREEN, VIOLET = "0.91, 0.16, 0.24, 1", "0.35, 0.88, 0.91, 1", "1, 0.81, 0.35, 1", "0.49, 1, 0.6, 1", "0.7, 0.45, 1, 1"
+SODIUM_WARM = "1, 0.72, 0.4, 1"   # the Relay's warm lamp light (M8 world state reuses it)
 BIG = 96  # floor thickness
 
 # ---------------------------------------------------------------- Relay (hub)
@@ -54,7 +55,11 @@ r.exit(-48, -240, 16, 96, "undercity/EscapeTunnel", "from_relay")
 r.neon(470, -110, 40, 10, RED, 5, False)
 r.neon(220, -80, 18, 8, CYAN)
 r.neon(660, -90, 24, 8, AMBER)
-r.neon(850, -150, 26, 8, GREEN)
+# Vell's green sign: live through Act I, dry (a guttering tube) once her
+# supply is cut after Krail (arc_vell krail). Wrapped in place so every
+# numbered name keeps its number.
+vell_live = r.switch("VellSignLive", "!flag:arc_vell_krail")
+r.neon(850, -150, 26, 8, GREEN, parent=vell_live)
 r.neon(10, -262, 20, 8, VIOLET)  # signs the gallery door
 r.hint("relay_talk", 100, -80, 80, 80, "Talk to Orr  [{action}]", "interact")
 r.hint("relay_anchor", 420, -80, 100, 80, "Anchors save, heal and refill. Rest to change your loadout.")
@@ -95,6 +100,56 @@ r.decor("banner", 360, -150, 60, 44, "0.16, 0.26, 0.24, 1", "0.49, 1, 0.6, 1", p
 # spawn at "start". Appended last so no numbered name shifts.
 r.sequence_trigger("SeqArrival", "relay_arrival", -48, -240, 112, 96, autoplay=True, require_spawn="from_undercity",
                    play_when=["flag:collector_drone_defeated", "!flag:met_orr"])
+# --- M8 world state: the Relay evolves through Act I (bible §13) --------------
+# Visual only (WorldStateSwitch lint): no collision, pickups or interactables.
+# Appended after every existing line, so no numbered Decor/Neon name shifts.
+# Floor props keep clear of the spawns (start 140, from_alley 960, from_lift
+# 16, from_undercity 0), the pillars (80/340/600/900, 14 wide) and Mara's
+# workbench (590..630) (test_world_state).
+# R1: Orr left the gallery door open (orr_radio.tres). Balcony top is -144.
+door = r.switch("GalleryDoorLit", "flag:met_orr_radio")
+r.decor("lamp", 40, -144, 6, 40, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=door)
+# R2: one cyan pip per realigned repeater on Orr's radio (radio 250, top -14):
+# Dead Air's progress shows in the hub (§19 environmental clues).
+for name, flag, x in [("PipMarket", "repeater_market", 242), ("PipStack", "repeater_stack", 250), ("PipBell", "repeater_bell", 258)]:
+    pip = r.switch(name, "flag:" + flag)
+    r.neon(x, -18, 4, 4, CYAN, 1, False, parent=pip)
+# R4: the grid is back, so the dead train car's windows glow.
+grid = r.switch("TrainWindowsLit", "flag:lowlight_power_rerouted")
+for x in [380, 440, 500, 560]:
+    r.neon(x, -150, 30, 8, AMBER, 2, False, parent=grid)
+# R5: Iko's stall at her post (580): an awning over her box (568..592, clear
+# of the 600 pillar) and the smugglers' violet chalk eye. No floor crate:
+# decor is bottom-centred and one would sit on Mara's workbench.
+stall = r.switch("IkoStall", "flag:met_iko")
+r.decor("banner", 580, -52, 24, 8, "0.22, 0.12, 0.3, 1", "0.7, 0.45, 1, 1", parent=stall)
+r.neon(580, -64, 10, 6, VIOLET, 2, False, parent=stall)
+# R8: after the Act I close the Relay keeps watch on the street: a crate
+# against the exit wall, cloth over the door and one more lamp. The band
+# 944..976 stays empty (from_alley spawns at 960).
+watch = r.switch("DoorWatch", "flag:act1_complete")
+r.decor("crates", 1004, 0, 14, 12, "0.3, 0.22, 0.16, 1", AMBER, parent=watch)
+r.decor("banner", 1000, -100, 18, 34, "0.35, 0.1, 0.13, 1", "1, 0.8, 0.7, 1", parent=watch)
+r.decor("lamp", 986, -2, 6, 60, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=watch)
+# NPC arcs shown in the world (§18 consequences through people, no meter):
+# Mara works late on the Dash module after Krail;
+bench = r.switch("MaraBench", "flag:arc_mara_krail")
+r.decor("lamp", 628, -18, 4, 20, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=bench)
+# Vell's supply is cut: her sign gutters (VellSignLive above goes dark);
+dry = r.switch("VellSignDry", "flag:arc_vell_krail")
+r.neon(850, -150, 26, 8, GREEN, 2, True, parent=dry)
+# Nix pins a sheet for the Warden Tower on her city map;
+sheet = r.switch("NixTowerSheet", "flag:arc_nix_krail")
+r.decor("banner", 404, -150, 12, 18, "0.16, 0.26, 0.24, 1", "1, 0.81, 0.35, 1", parent=sheet)
+# Iko keeps Spire crates by her stall;
+spire = r.switch("IkoSpireCrates", "flag:arc_iko_krail")
+r.decor("crates", 563, 0, 14, 12, "0.3, 0.22, 0.16, 1", "0.66, 0.5, 0.82, 1", parent=spire)
+# Orr told Lowlight who did it (arc_orr on_air, named): the board is on air.
+onair = r.switch("OrrOnAir", "flag:orr_air_named")
+r.neon(220, -110, 22, 8, AMBER, 3, False, parent=onair)
+# The radio board's speaker, always there, so the relay_board '[E] Listen'
+# prompt has a visible source (Orr's desk set stays the radio at 250).
+r.decor("radio", 290, 0, 12, 10, WARM, "0.35, 0.88, 0.91, 1")
 r.write(OUT + "Relay.tscn")
 
 # ---------------------------------------------------------------- Flooded Alley

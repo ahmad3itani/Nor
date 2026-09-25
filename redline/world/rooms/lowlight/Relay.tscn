@@ -13,11 +13,11 @@
 [ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
 [ext_resource type="Script" path="res://world/transitions/Gate.gd" id="gate"]
 [ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="hint"]
 [ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
 [ext_resource type="Script" path="res://world/props/SliceEndTrigger.gd" id="slice_end"]
 [ext_resource type="Resource" path="res://data/sequences/act1_close.tres" id="seq_act1_close"]
-[ext_resource type="Script" path="res://world/props/WorldStateSwitch.gd" id="switch"]
 [ext_resource type="Resource" path="res://data/sequences/relay_arrival.tres" id="seq_relay_arrival"]
 [ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
@@ -215,7 +215,11 @@ size = Vector2(24, 8)
 color = Color(1, 0.81, 0.35, 1)
 strokes = 3
 
-[node name="Neon4" type="Node2D" parent="Props"]
+[node name="VellSignLive" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "!flag:arc_vell_krail"
+
+[node name="Neon4" type="Node2D" parent="Props/VellSignLive"]
 position = Vector2(850, -150)
 script = ExtResource("neon")
 size = Vector2(26, 8)
@@ -470,3 +474,202 @@ sequence = ExtResource("seq_relay_arrival")
 play_when = PackedStringArray("flag:collector_drone_defeated", "!flag:met_orr")
 autoplay = true
 require_spawn = &"from_undercity"
+
+[node name="GalleryDoorLit" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:met_orr_radio"
+
+[node name="Decor24" type="Node2D" parent="Props/GalleryDoorLit"]
+position = Vector2(40, -144)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 40)
+color = Color(0.3, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="PipMarket" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:repeater_market"
+
+[node name="Neon8" type="Node2D" parent="Props/PipMarket"]
+position = Vector2(242, -18)
+script = ExtResource("neon")
+size = Vector2(4, 4)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 1
+flicker = false
+
+[node name="PipStack" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:repeater_stack"
+
+[node name="Neon9" type="Node2D" parent="Props/PipStack"]
+position = Vector2(250, -18)
+script = ExtResource("neon")
+size = Vector2(4, 4)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 1
+flicker = false
+
+[node name="PipBell" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:repeater_bell"
+
+[node name="Neon10" type="Node2D" parent="Props/PipBell"]
+position = Vector2(258, -18)
+script = ExtResource("neon")
+size = Vector2(4, 4)
+color = Color(0.35, 0.88, 0.91, 1)
+strokes = 1
+flicker = false
+
+[node name="TrainWindowsLit" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:lowlight_power_rerouted"
+
+[node name="Neon11" type="Node2D" parent="Props/TrainWindowsLit"]
+position = Vector2(380, -150)
+script = ExtResource("neon")
+size = Vector2(30, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon12" type="Node2D" parent="Props/TrainWindowsLit"]
+position = Vector2(440, -150)
+script = ExtResource("neon")
+size = Vector2(30, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon13" type="Node2D" parent="Props/TrainWindowsLit"]
+position = Vector2(500, -150)
+script = ExtResource("neon")
+size = Vector2(30, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 2
+flicker = false
+
+[node name="Neon14" type="Node2D" parent="Props/TrainWindowsLit"]
+position = Vector2(560, -150)
+script = ExtResource("neon")
+size = Vector2(30, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 2
+flicker = false
+
+[node name="IkoStall" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:met_iko"
+
+[node name="Decor25" type="Node2D" parent="Props/IkoStall"]
+position = Vector2(580, -52)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(24, 8)
+color = Color(0.22, 0.12, 0.3, 1)
+accent = Color(0.7, 0.45, 1, 1)
+
+[node name="Neon15" type="Node2D" parent="Props/IkoStall"]
+position = Vector2(580, -64)
+script = ExtResource("neon")
+size = Vector2(10, 6)
+color = Color(0.7, 0.45, 1, 1)
+strokes = 2
+flicker = false
+
+[node name="DoorWatch" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:act1_complete"
+
+[node name="Decor26" type="Node2D" parent="Props/DoorWatch"]
+position = Vector2(1004, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(14, 12)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor27" type="Node2D" parent="Props/DoorWatch"]
+position = Vector2(1000, -100)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(18, 34)
+color = Color(0.35, 0.1, 0.13, 1)
+accent = Color(1, 0.8, 0.7, 1)
+
+[node name="Decor28" type="Node2D" parent="Props/DoorWatch"]
+position = Vector2(986, -2)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(6, 60)
+color = Color(0.3, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="MaraBench" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:arc_mara_krail"
+
+[node name="Decor29" type="Node2D" parent="Props/MaraBench"]
+position = Vector2(628, -18)
+script = ExtResource("decor")
+kind = 1
+size = Vector2(4, 20)
+color = Color(0.3, 0.24, 0.2, 1)
+accent = Color(1, 0.72, 0.4, 1)
+
+[node name="VellSignDry" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:arc_vell_krail"
+
+[node name="Neon16" type="Node2D" parent="Props/VellSignDry"]
+position = Vector2(850, -150)
+script = ExtResource("neon")
+size = Vector2(26, 8)
+color = Color(0.49, 1, 0.6, 1)
+strokes = 2
+
+[node name="NixTowerSheet" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:arc_nix_krail"
+
+[node name="Decor30" type="Node2D" parent="Props/NixTowerSheet"]
+position = Vector2(404, -150)
+script = ExtResource("decor")
+kind = 9
+size = Vector2(12, 18)
+color = Color(0.16, 0.26, 0.24, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="IkoSpireCrates" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:arc_iko_krail"
+
+[node name="Decor31" type="Node2D" parent="Props/IkoSpireCrates"]
+position = Vector2(563, 0)
+script = ExtResource("decor")
+kind = 2
+size = Vector2(14, 12)
+color = Color(0.3, 0.22, 0.16, 1)
+accent = Color(0.66, 0.5, 0.82, 1)
+
+[node name="OrrOnAir" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:orr_air_named"
+
+[node name="Neon17" type="Node2D" parent="Props/OrrOnAir"]
+position = Vector2(220, -110)
+script = ExtResource("neon")
+size = Vector2(22, 8)
+color = Color(1, 0.81, 0.35, 1)
+strokes = 3
+flicker = false
+
+[node name="Decor32" type="Node2D" parent="Props"]
+position = Vector2(290, 0)
+script = ExtResource("decor")
+kind = 5
+size = Vector2(12, 10)
+color = Color(0.32, 0.24, 0.2, 1)
+accent = Color(0.35, 0.88, 0.91, 1)
