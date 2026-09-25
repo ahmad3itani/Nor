@@ -1,5 +1,6 @@
 extends MenuScreen
-## Pause (bible §27): resume, journal, settings, save & quit to title.
+## Pause (bible §27): resume, journal, settings, save & quit to title. During
+## a scripted sequence it also offers "Skip scene" (§24, no hold needed).
 
 signal quit_to_title
 
@@ -11,6 +12,8 @@ func rebuild() -> void:
 	if room:
 		add_label("%s  —  %s" % [room.district_name, room.room_name], UiTheme.MUTED)
 	add_button("Resume", close_menu)
+	if Cinematics.can_skip():
+		add_button("Skip scene", _skip_scene)
 	if room and room.world_room:
 		add_button("Map", _open.bind(&"map"))
 		add_button("Journal", _open.bind(&"journal"))
@@ -27,7 +30,18 @@ func _open(menu: StringName) -> void:
 	EventBus.menu_requested.emit(menu)
 
 
+## Close first (unpauses), then request: the skip runs on the sequence's next
+## unpaused frame, so play() never resolves while this menu is still open.
+func _skip_scene() -> void:
+	close_menu()
+	Cinematics.request_skip()
+
+
 func _quit() -> void:
+	# Stop any scene before the save: an aborted scene runs none of its
+	# remaining effects and replays on Continue; left running, it could end
+	# during the title fade and open a menu over it.
+	CinematicMode.abort_all()
 	var room := SceneRouter.current_room as Room
 	if room and room.world_room and is_instance_valid(room.player):
 		Game.capture_from_player(room.player)

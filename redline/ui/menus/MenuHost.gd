@@ -25,13 +25,30 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	var in_world := SceneRouter.current_room is Room and not SceneRouter.transitioning and not get_tree().paused and not any_open()
-	if in_world and Input.is_action_just_pressed("pause"):
+	var paused := get_tree().paused
+	var menu_open := any_open()
+	if Input.is_action_just_pressed("pause") and can_open(&"pause", paused, menu_open):
 		open(&"pause")
-	elif in_world and Input.is_action_just_pressed("map") and (SceneRouter.current_room as Room).world_room:
+	elif Input.is_action_just_pressed("map") and can_open(&"map", paused, menu_open):
 		open(&"map")
-	elif in_world and Input.is_action_just_pressed("debug_console") and DevActions.available():
+	elif Input.is_action_just_pressed("debug_console") and can_open(&"debug_console", paused, menu_open):
 		open(&"dev")
+
+
+## Whether an input action may open its menu now: only in a room, never
+## mid-transition, under a pause or over another menu. While a scripted
+## sequence holds the lock the map and the dev console stay shut; pause still
+## opens (§24: every scene can be paused, and PauseMenu offers "Skip scene").
+static func can_open(action: StringName, tree_paused: bool, menu_open: bool) -> bool:
+	var room := SceneRouter.current_room as Room
+	if room == null or SceneRouter.transitioning or tree_paused or menu_open:
+		return false
+	match action:
+		&"map":
+			return room.world_room and not Cinematics.locks_input()
+		&"debug_console":
+			return DevActions.available() and not Cinematics.locks_input()
+	return true
 
 
 func any_open() -> bool:
