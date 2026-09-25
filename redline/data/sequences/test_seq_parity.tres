@@ -1,0 +1,114 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_2dkij"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_g1lxb"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMusic.gd" id="3_sarf3"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="4_hkigv"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqActorFace.gd" id="5_00m3s"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqFlag.gd" id="6_76u5p"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="7_ueiu2"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqMark.gd" id="8_brhuv"]
+
+[sub_resource type="Resource" id="Resource_nsxno"]
+script = ExtResource("3_sarf3")
+state = 0
+clear = false
+label = "hush"
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_hkcsc"]
+script = ExtResource("4_hkigv")
+seconds = 0.5
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_o78pn"]
+script = ExtResource("5_00m3s")
+actor = "@rook"
+facing = -1
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_4snwi"]
+script = ExtResource("6_76u5p")
+flags = PackedStringArray("test_seq_parity_a")
+value = true
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_k2kk6"]
+script = ExtResource("7_ueiu2")
+speaker_id = ""
+text = "The ward hums. Somewhere a pump coughs twice."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_2j0ne"]
+script = ExtResource("4_hkigv")
+seconds = 0.5
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_p1a3m"]
+script = ExtResource("6_76u5p")
+flags = PackedStringArray("test_seq_parity_b")
+value = 2
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_tp5n7"]
+script = ExtResource("3_sarf3")
+state = 0
+clear = true
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_vtg50"]
+script = ExtResource("4_hkigv")
+seconds = 0.3
+label = ""
+views = 0
+only_when = "flag:test_seq_parity_a"
+blocking = true
+
+[sub_resource type="Resource" id="Resource_4dvnk"]
+script = ExtResource("8_brhuv")
+mark = "test_parity_end"
+label = ""
+views = 0
+only_when = "atleast:test_seq_parity_b:2"
+blocking = true
+
+[resource]
+script = ExtResource("1_2dkij")
+id = "test_seq_parity"
+room = ""
+preview_entry = &""
+steps = Array[ExtResource("2_g1lxb")]([SubResource("Resource_nsxno"), SubResource("Resource_hkcsc"), SubResource("Resource_o78pn"), SubResource("Resource_4snwi"), SubResource("Resource_k2kk6"), SubResource("Resource_2j0ne"), SubResource("Resource_p1a3m"), SubResource("Resource_tp5n7"), SubResource("Resource_vtg50"), SubResource("Resource_4dvnk")])
+seen_flag = ""
+lock_input = true
+repeat_locks_input = true
+hide_hud = true
+letterbox = true
+budget_seconds = 20.0
+repeat_budget_seconds = 1.5
+theatre_only = true

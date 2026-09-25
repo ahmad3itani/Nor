@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_6ekfl"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_138ww"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqCamera.gd" id="3_khrb8"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="4_2117l"]
+
+[sub_resource type="Resource" id="Resource_plxey"]
+script = ExtResource("3_khrb8")
+target = ""
+point = Vector2(0, 0)
+offset = Vector2(0, 0)
+seconds = 0.5
+zoom = 1.0
+ease_type = 2
+release = false
+label = ""
+views = 1
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_hd3q4"]
+script = ExtResource("3_khrb8")
+target = ""
+point = Vector2(0, 0)
+offset = Vector2(0, 0)
+seconds = 0.2
+zoom = 1.0
+ease_type = 2
+release = true
+label = ""
+views = 1
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_ryg4l"]
+script = ExtResource("4_2117l")
+speaker_id = "band"
+text = "...patrol eight, holding. Repeat, holding."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[resource]
+script = ExtResource("1_6ekfl")
+id = "test_seq_repeat_bark"
+room = ""
+preview_entry = &""
+steps = Array[ExtResource("2_138ww")]([SubResource("Resource_plxey"), SubResource("Resource_hd3q4"), SubResource("Resource_ryg4l")])
+seen_flag = ""
+lock_input = true
+repeat_locks_input = false
+hide_hud = true
+letterbox = true
+budget_seconds = 20.0
+repeat_budget_seconds = 1.5
+theatre_only = true

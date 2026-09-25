@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_jgorx"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_3s5wf"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="3_yo2hb"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqWait.gd" id="4_gd6dd"]
+
+[sub_resource type="Resource" id="Resource_tiqp1"]
+script = ExtResource("3_yo2hb")
+speaker_id = "pa"
+text = "First view only: the ward speaks."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = "first line"
+views = 1
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_i3pyy"]
+script = ExtResource("4_gd6dd")
+seconds = 0.2
+label = "repeat beat"
+views = 2
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_is0du"]
+script = ExtResource("4_gd6dd")
+seconds = 3.0
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[resource]
+script = ExtResource("1_jgorx")
+id = "test_seq_view"
+room = ""
+preview_entry = &""
+steps = Array[ExtResource("2_3s5wf")]([SubResource("Resource_tiqp1"), SubResource("Resource_i3pyy"), SubResource("Resource_is0du")])
+seen_flag = ""
+lock_input = true
+repeat_locks_input = true
+hide_hud = true
+letterbox = true
+budget_seconds = 20.0
+repeat_budget_seconds = 1.5
+theatre_only = true

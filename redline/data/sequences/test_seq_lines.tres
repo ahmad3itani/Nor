@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="SequenceData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_tchms"]
+[ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_3fbj6"]
+[ext_resource type="Script" path="res://cinematics/steps/SeqLine.gd" id="3_jv651"]
+
+[sub_resource type="Resource" id="Resource_manh8"]
+script = ExtResource("3_jv651")
+speaker_id = "pa"
+text = "Line one. Ward fourteen, hold for collection."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_exy2u"]
+script = ExtResource("3_jv651")
+speaker_id = ""
+text = "Line two. The slab is cold under your hands."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[sub_resource type="Resource" id="Resource_eghrd"]
+script = ExtResource("3_jv651")
+speaker_id = "band"
+text = "...line three. Signature still on the band."
+seconds = 0.0
+hold_for_input = false
+blip = &""
+label = ""
+views = 0
+only_when = ""
+blocking = true
+
+[resource]
+script = ExtResource("1_tchms")
+id = "test_seq_lines"
+room = ""
+preview_entry = &""
+steps = Array[ExtResource("2_3fbj6")]([SubResource("Resource_manh8"), SubResource("Resource_exy2u"), SubResource("Resource_eghrd")])
+seen_flag = ""
+lock_input = true
+repeat_locks_input = true
+hide_hud = true
+letterbox = true
+budget_seconds = 20.0
+repeat_budget_seconds = 1.5
+theatre_only = true
