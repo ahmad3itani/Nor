@@ -199,10 +199,12 @@ func _draw_overlay() -> void:
 func _draw_title(view: Vector2) -> void:
 	var f := SubtitleStyle.font()
 	var y := view.y * 0.42
-	_canvas.draw_string_outline(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, TITLE_SIZE, 2, Color.BLACK)
-	_canvas.draw_string(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, TITLE_SIZE, Color.WHITE)
+	var fs := SubtitleStyle.font_size()
+	# The title grows with the Subtitle size setting (§24), 16 px at size 7.
+	var ts := roundi(TITLE_SIZE * fs / 7.0)
+	_canvas.draw_string_outline(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, 2, Color.BLACK)
+	_canvas.draw_string(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, Color.WHITE)
 	if subtitle_text != "":
-		var fs := SubtitleStyle.font_size()
 		_canvas.draw_string_outline(f, Vector2(0, y + fs + 8), subtitle_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, 1, Color.BLACK)
 		_canvas.draw_string(f, Vector2(0, y + fs + 8), subtitle_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, TITLE_SUB_COLOR)
 
@@ -222,11 +224,13 @@ func _draw_line(view: Vector2, bar: float) -> void:
 
 
 func _draw_prompt(view: Vector2) -> void:
+	# The skip prompt follows the Subtitle size setting like every line (§24).
 	var f := SubtitleStyle.font()
-	var w := f.get_string_size(prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-	var pos := Vector2(view.x - 8.0 - w, 12.0)
-	_canvas.draw_string_outline(f, pos, prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 1, Color.BLACK)
-	_canvas.draw_string(f, pos, prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color(0.85, 0.85, 0.9))
+	var fs := SubtitleStyle.font_size()
+	var w := f.get_string_size(prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var pos := Vector2(view.x - 8.0 - w, 5.0 + fs)
+	_canvas.draw_string_outline(f, pos, prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
+	_canvas.draw_string(f, pos, prompt_text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.85, 0.85, 0.9))
 	if prompt_ratio > 0.0:
 		_canvas.draw_rect(Rect2(pos.x, pos.y + 3.0, w, 2.0), Color(1, 1, 1, 0.2))
 		_canvas.draw_rect(Rect2(pos.x, pos.y + 3.0, w * prompt_ratio, 2.0), SubtitleStyle.ACCENT)
