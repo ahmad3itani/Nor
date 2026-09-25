@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="StoryPresets" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://devtools/StoryPreset.gd" id="1_preset"]
+[ext_resource type="Script" path="res://devtools/StoryPresets.gd" id="2_list"]
+
+[sub_resource type="Resource" id="Preset_fresh"]
+script = ExtResource("1_preset")
+id = "fresh"
+label = "Fresh profile"
+flags = PackedStringArray()
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_collector_down"]
+script = ExtResource("1_preset")
+id = "collector_down"
+label = "Collector Drone down"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_relay_met"]
+script = ExtResource("1_preset")
+id = "relay_met"
+label = "Relay: everyone met"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_repeaters_2"]
+script = ExtResource("1_preset")
+id = "repeaters_2"
+label = "Two repeaters lit"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_dead_air_done"]
+script = ExtResource("1_preset")
+id = "dead_air_done"
+label = "Dead Air done"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_grid_rerouted"]
+script = ExtResource("1_preset")
+id = "grid_rerouted"
+label = "Grid rerouted"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete", "lowlight_power_rerouted", "orr_rainline_line")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_charted"]
+script = ExtResource("1_preset")
+id = "charted"
+label = "Lowlight charted"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete", "lowlight_power_rerouted", "orr_rainline_line", "map_charted_lowlight", "chart_lowlight_reported", "chart_lowlight_complete")
+abilities = PackedStringArray()
+
+[sub_resource type="Resource" id="Preset_krail_down"]
+script = ExtResource("1_preset")
+id = "krail_down"
+label = "Warden Krail down"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete", "lowlight_power_rerouted", "orr_rainline_line", "map_charted_lowlight", "chart_lowlight_reported", "chart_lowlight_complete", "warden_krail_defeated", "unlocked_dash", "met_iko")
+abilities = PackedStringArray("dash")
+
+[sub_resource type="Resource" id="Preset_act1_complete"]
+script = ExtResource("1_preset")
+id = "act1_complete"
+label = "Act I complete"
+flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete", "lowlight_power_rerouted", "orr_rainline_line", "map_charted_lowlight", "chart_lowlight_reported", "chart_lowlight_complete", "warden_krail_defeated", "unlocked_dash", "met_iko", "slice_end_seen", "act1_complete")
+abilities = PackedStringArray("dash")
+
+[resource]
+script = ExtResource("2_list")
+presets = Array[ExtResource("1_preset")]([SubResource("Preset_fresh"), SubResource("Preset_collector_down"), SubResource("Preset_relay_met"), SubResource("Preset_repeaters_2"), SubResource("Preset_dead_air_done"), SubResource("Preset_grid_rerouted"), SubResource("Preset_charted"), SubResource("Preset_krail_down"), SubResource("Preset_act1_complete")])

@@ -151,6 +151,24 @@ func test_note_marker_active_rules() -> void:
 		"scanned markers carry kind and shown_when: %s" % [markers])
 
 
+func test_story_presets_cumulative() -> void:
+	var all := StoryPresets.all()
+	var ids: Array = all.map(func(p: StoryPreset) -> String: return p.id)
+	check(ids == ["fresh", "collector_down", "relay_met", "repeaters_2", "dead_air_done", "grid_rerouted", "charted", "krail_down", "act1_complete"],
+		"preset order: %s" % [ids])
+	for i in range(1, all.size()):
+		for f in all[i - 1].flags:
+			check(all[i].flags.has(f), "%s lacks %s from %s" % [all[i].id, f, all[i - 1].id])
+		for a in all[i - 1].abilities:
+			check(all[i].abilities.has(a), "%s lacks ability %s" % [all[i].id, a])
+	check(all[0].flags.is_empty(), "fresh sets nothing")
+	StoryPresets.apply("krail_down")
+	check(Game.has_flag("warden_krail_defeated") and Game.has_flag("dead_air_complete"), "krail_down applies itself and earlier presets")
+	check(Game.check_condition("ability:dash"), "krail_down grants dash")
+	check(not Game.has_flag("act1_complete"), "later presets must not apply")
+	check(_changes_for("warden_krail_defeated") == 1, "presets go through set_flag (flag_changed)")
+
+
 func test_new_sfx_ids_exist() -> void:
 	for id in [&"radio_static", &"memory_open", &"memory_beat", &"memory_tear", &"memory_detail"]:
 		check(AudioManager.has_sfx(id), "missing sfx %s" % id)
