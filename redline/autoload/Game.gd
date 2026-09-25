@@ -307,9 +307,14 @@ func grant_weapon(id: String) -> void:
 
 
 ## Applies a finished conversation's effects (flags, gifts, follow-up menu).
-func apply_dialogue(d: DialogueData) -> void:
+## `choice` is the index of the DialogueChoice picked in the box (-1 = none,
+## so every pre-M8 caller is unchanged); its flags apply with the rest.
+func apply_dialogue(d: DialogueData, choice: int = -1) -> void:
 	for f in d.set_flags:
 		set_flag(f)
+	if choice >= 0 and choice < d.choices.size():
+		for f in d.choices[choice].set_flags:
+			set_flag(f)
 	add_scrap(d.give_scrap)
 	grant_circuit(d.give_circuit)
 	grant_weapon(d.give_weapon)
