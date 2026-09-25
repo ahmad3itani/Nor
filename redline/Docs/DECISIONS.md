@@ -279,3 +279,168 @@ These are standard in the genre and support pillars §2.1 and §2.2. Each can be
 ## D-060: RouteBot holds jump through landing
 - It used to release at the apex and lost the apex-hang gravity (about 10 px), which under-measured what a real player does. All routes and the D-036 experiment still pass.
 
+
+---
+
+# M7: District Production, batch 1 (Undercity + Lowlight complete)
+
+Batch 1 builds bible §36 M7 for Act I: the new 00 Undercity district (the real opening, §42) and the remaining four Lowlight sequences. Ironworks and later districts are batch 2+ and not started. Each entry below says what was planned and, where it differs, what was built ("As built"). The district sheet is `DISTRICTS.md`; the report is `M7_DISTRICT_REPORT.md`.
+
+## D-061: M7 started before the §44 playtest (FLAG: process)
+- You asked for M7 ("START M7") while the M4 playtest is still pending. As with D-044 and D-053, it is logged instead of silently ignoring §44.
+- The §44 playtest is still the gate for batch 2+. D-068 asks which build it uses.
+
+## D-062: The Undercity is the New Game opening (FLAG)
+- New Game starts unarmed in Undercity/Wake. The switch is data: `data/world/onboarding.tres` (`OnboardingConfig`, `enforce = true`, start room Wake, entry `start`, no weapons, `core_hud_hidden` set). `Game.START_ROOM` stays the Relay for tests, fallbacks and the debug Relay start; `TitleMenu` calls `Game.start_campaign()` and `Game.campaign_start_room()/campaign_start_entry()`.
+- The Pulse Blade comes from a rack in Medical Ruin (`PulseBladeRack.tscn`, sets `got_pulse_blade`). The Service Pistol is the Collector Drone's reward (`ServicePistolDrop.tscn`). §5's "initial moveset" (the movement verbs) is kept; the weapons move to pickups, per §42.
+- This merges the Undercity doc's NewGameProfile with the mechanics doc's OnboardingConfig. `OnboardingConfig.validate()` also rejects an equipped start weapon that is not owned.
+
+## D-063: Pre-Anchor deaths respawn at the last room entry (FLAG, bible §42 vs §23)
+- Until an Anchor has been rested at, death and Continue go to the last room entry used (`GameState.last_entry_room` / `last_entry_id`, `Game.respawn_room()`). This applies in every district; the mechanics doc's gentle-rooms-only variant was rejected as unnecessary.
+- First Pursuit adds a mid-room checkpoint (D-088).
+
+## D-064: The Collector Drone
+- 400 HP, a card deck (Drop Press, Tag Volley, Claw Dive, Hook Sweep), absolute lanes, poise locked while down, ranged poise ×0.3 (`ranged_poise_scale`), telegraphs ×0.85 in phase 2, no summons (`bosses/CollectorDroneBehavior.gd`, `data/enemies/collector_drone.tres`). Subtitle "Civic Recovery Unit C-00". Its own arena, Collector Bay, sits between Broken Lift (Anchor `uc_lift`) and Escape Tunnel.
+- Superseded: the Undercity doc's 240 HP hover-72 sketch and its LiftWinch room; the boss doc's Collector Bay → Relay transit; the "Route 00 Manifest" fragment (its "Units collected: 41" contradicted the intake log's 14). The reward is the Service Pistol.
+- **As built:** the cruise lane is `arena_x = (84, 428)`, not (76, 428). Collector Bay's vent roof (x 16..64) blocks the 40 px body left of x 84, so dive setups in [76, 84) could never be reached and those cards timed out.
+- **As built:** the blade `BossBot` wins in about 26 s, close to the 25 s lower bound. HP is the first tuning knob if playtesters find it short.
+
+## D-065: Radios and terminals are bodiless NPCs
+- `NpcProfile.figure = false` plus a `verb` ("Listen", "Read"). The mechanics doc's RadioTerminal class is not built.
+- **As built (choices the plan left open):** Orr's radio speaks as "Radio" in the rules that can play before he has named himself and as "Orr" after; the intake terminal speaks as "Terminal" (cyan), the crew note as "Note". The Undercity timeline keys the first NPC on the "Radio" name.
+
+## D-066: Identical lessons share hint ids across districts
+- `alley_attack`, `alley_dodge`, `alley_slide`, `alley_gap`, `stack_heal`, `relay_anchor` and `market_shoot` are reused in the Undercity, so a lesson seen once is not repeated in Lowlight.
+
+## D-067: No hazards in the Undercity
+- Spikes and pits ignore i-frames (D-020), which contradicts "move through it". The Undercity uses catch wells only.
+
+## D-068: Which build the pending M4 playtest uses (FLAG: needs a human decision)
+- New Game now plays 20–37 min of Undercity before the Relay. A debug-only title entry, "Slice (Relay start)", starts the old slice (full kit, Relay) and records its sessions as `new_relay`, which the Undercity timeline excludes.
+- **Note:** the entry exists only in debug builds, and D-059 asks for release exports for playtests. To run the old slice on a release export, a human has to choose (for example, an export with `enforce = false`).
+
+## D-069: The Collector eye is an unkillable rail pursuer
+- `CeilingTracker` (`world/props/`, data `data/props/collector_eye.tres`) rides the ceiling, uses no attack token, and fires one slow bolt after 1.0 s of lock in its ±32 px cone. It delivers First Pursuit's "keep moving". The mechanics doc's ChaseDirector is not used in the Undercity.
+- **As built:** the lock builds only while Rook is nearly still (`still_speed` 20 px/s) and drains at `move_drain` 2 s/s while he moves in the cone; it still resets when he leaves it. With the spec's "reset only on leaving", a Rook centred under a 110 px/s eye needed about 0.8 s to run out of the cone, so the "short stops are free" promise and a fair warning could not both hold. The red fill grows from 0.5 s (not from 0), and LOCK is drawn at 70% alpha so Rook stays visible. Jumping in place still builds the lock; the playtest should say whether the eye still feels threatening.
+
+## D-070: Flow Zones can scale and floor their drain
+- `FlowZone.drain_scale` (the largest overlapping scale applies) and `FlowZone.drain_floor` (the highest overlapping floor applies). Only Broken Lift's FZ1 uses them (scale 0.5, floor 1.0), so the Core is "introduced safely" (§42) in every Core mode. See D-085.
+
+## D-071: The Lowlight thesis is "The Grid"
+- A `Breaker` (player hits only) drives a latching `PowerShutter` (countdown, 24 px slot, safety sensor), and Warden Krail's arena tests it with the `GridClamp`. The mechanics doc's PowerJunction and `Gate.open_when` are deferred (D-078).
+- The clamp is taught in the arena: on arming it shows "Breakers live. Drop the clamp on him." once, no earlier than `ClampTiming.hint_min` (1.0 s). `test_warden_tower_clamp_in_room` drops it on Krail in the real Warden Tower.
+- **As built:** a shutter whose panel sits over a floor gap extends down to the real floor, so no gap can let Rook under a closed panel. When both sides of the clamp are blocked, Rook is shoved to the nearer side (`ClampTiming.shove`).
+
+## D-072: Scanner beams respect dodge i-frames (FLAG vs D-020)
+- `ScannerBeam` ignores Rook during dodge i-frames and when he moves faster than `blur_speed` (300 px/s) horizontally, so Dash passes. Spikes still ignore i-frames. Scanners are a support hazard only: the Lockdown, the mechanics doc's LaserGrid, SecurityCamera and AlarmSystem are cut or deferred.
+- **As built:** measured windows differ slightly from the spec and are what the tests assert: a run-jump clears the LOW bar for take-offs from 87 to 19 px before the beam (spec 80..21), and the FULL static dodge window is 10..38 px (spec 5..33), because i-frames start on the third dodge frame. Calibration beams shove harder (200, -160) so the shove lands about 30 px back.
+- **Note:** on old saves walking west (D-075), the Security Station roof costs about 1 pip to the live searchlight, because its breaker is reachable only after passing the light from the east.
+
+## D-073: One chase system, with the Sweeper's rules (FLAG)
+- `ChaseDirector` + `Pursuer` + `ChaseCheckpoint`, data in `data/world/chase/rainline.tres`. Catches and pits during a chase are nonlethal (1 pip, clamped to leave 1, after circuit multipliers) and return Rook to the highest checkpoint passed. The chase arms only when Rook enters the start area moving along the path, or spawns inside it; walking in from the far end never arms it. `chase_rainline_done` is set on crossing x 3620 during the chase only.
+- The `timing_assist` setting and Assist-scaled pursuer speed are not built (§23 forbids silent changes); see TODO.
+- **As built:** `PursuerData.derail_x` (3560 in `rainline.tres`) is where the Sweeper derails at the end of the run, and `runout_speed` (160 px/s) its speed after the end area. Catches count only in CHASE, not during WARN. The warn and repeat hints show once per room load (no persistent flag).
+
+## D-074: Rainline keeps a 112 px slide-jump on the main path (FLAG, K-24/D-036)
+- G3 is a slide-jump because a no-pip LowRoad catch sits below it, under the pursuer. The mechanics doc's ≤ 90 px main-path cap is rejected. K-44 tracks the risk.
+
+## D-075: The Smuggler Route is an optional loop (FLAG)
+- Reached from the Power Block basement (the bible's 8th sequence played 5th), unbolted from the tunnel side by the den lever (`shortcut_smuggler_route`), with the den Anchor `smuggler_den` in transit (needs Nix's pass; the Anchor has its own pin).
+- Old saves with `shortcut_bell_lift` can reach the Power Block basement from the east through Security Station's unflagged left exit. That route is bounded by the unlatched shutters, keeps the Anchor, lever and Smuggler exit reachable, and is tested (`test_power_block_backward_from_security`, `test_security_station_backward`, `test_rainline_old_save_via_bell_lift`).
+
+## D-076: Iko is met in the den, then moves to the Relay (FLAG, §13)
+- `NPC.present_when` shows the den Iko until `met_iko`, then the Relay Iko. Orr's post-Krail rule guarantees the meeting. Iko's stock (Bootleg Injector 260, Hot Wire 150, Live Current 120, Slipstream 130; +660 sinks) keeps the economy rules passing. Map pins follow `present_when`.
+- **As built:** the Relay Iko stands at x 580 (the plan's fallback): at x 760 her body overlapped Vell's first step. Her `map_label` is "Black Market", so both Iko pins show; blank it if Iko should have no pin.
+
+## D-077: Boss rewards cannot be missed
+- `BossArena.reward_position` places the reward; the arena caches the death spot and spawns the reward in `_ready` when the boss is already defeated. Collector Bay drops the pistol at (252, 0); Warden Tower drops the Dash module at (208, 0), fixing its mid-air drop.
+
+## D-078: Mechanics deferred because no batch-1 room uses them
+- PowerJunction, LaserGrid, SecurityCamera, AlarmSystem, MovingPlatform, CollapsingPlatform, CoreConduit and a dormant Core, RadioTerminal, the OnboardingValidator, the "Shaft Sentinel" mini-boss and a RouteBot `await` step.
+- Kept from the systems doc: the content protocol (`content_errors` / `content_flags` on nodes), `debug_draw`, nonlethal damage, `pit_override`, and fixture generators (`tools/roomgen/fixtures_*.py`).
+
+## D-079: The Collector Drone is the §42 "first mini-boss" (FLAG: please confirm)
+- It is scaled as a confidence-building first boss rather than a §17 Major boss. In §44 terms Warden Krail stays the "first boss": the survey's `boss_fair` still names Krail and keeps its criterion, and a separate unscored `collector_fair` question covers the Collector.
+
+## D-080: Map offsets and per-district chart thresholds
+- Bell Tower moved (8604, -758) → (15228, -384) and Warden Tower (9308, -1814) → (15932, -1440) to make room for the four new Lowlight rooms. The Undercity sits at negative map x and positive map y.
+- `WorldMapData.district_thresholds` + `threshold_for()`; `Game.map_reveal` reads it.
+- **As built:** the interim Lowlight value (D0 to D8b) was 0.34 (0.7 × 1465 / 3012 cells, "as hard as before"), not the plan's 0.46, which miscounted the new rooms. The final values are **Undercity 0.40 and Lowlight 0.50**, not the planned 0.5 / 0.55. Measured standable coverage is 0.618 (Undercity) and 0.630 (Lowlight); 0.55 lay above 0.85 × 0.630, and 0.5 left the full Undercity walk (0.44) uncharted. `test_thresholds_match_standable_coverage` keeps each in [0.6, 0.85] × standable.
+
+## D-081: The Core HUD stays hidden until the first Flow Zone
+- The code flag `core_hud_hidden` hides the Core bar in campaign runs until the first Flow Zone entry clears it (through `Game.set_flag`, so `flag_changed` fires and the HUD updates). The Core itself stays active; it only drains in Flow. No dormant Core.
+
+## D-082: Core Shards 3 → 5, secrets 10 → 22, fragments 3 → 5 (FLAG: numbers)
+- New shards `cs_uc_tunnel_dash` and `cs_smuggler_dash`, so max Circuit capacity is 9. The budget is confirmed in `CIRCUITS.md` (D5b).
+- **As built:** secrets are 22, not the plan's 20 (the plan miscounted): 10 before M7, 6 in the Undercity (`uc_shaft_closet`, `mf_undercity_01`, `uc_pursuit_cache`, `uc_tunnel_panel`, `cs_uc_tunnel_dash`, `uc_collector_vent`) and 6 new in Lowlight (`pb_meter_cabinet`, `ss_cell4_bars`, `mf_lowlight_04`, `rc_signal_box`, `sr_den_cache`, `cs_smuggler_dash`). Fragments are exactly 5 (`test_slice_totals_count_content`).
+- **As built:** the Smuggler shard is 282 px away and 64 px below its ledge, not 225 px at one height (D-094).
+
+## D-083: Pacing against §42 (FLAG)
+- Estimated Relay arrival is 19.5 / 28.25 / 37 min (low / mid / high) against §42's 30–60, and Dash 43 / 59.5 / 76 against about 60–90. Every earlier §42 item is in band at the mid and high ends. At the low end the first NPC (13 min) and the safe Core introduction (14 min) land 1–2 min before the 15–30 band; this is accepted too.
+- These are estimates from the room specs, not measurements (K-45). If the playtest's median Relay arrival is under about 25 min, deepen Medical Ruin and First Pursuit first. The table is in `M7_DISTRICT_REPORT.md` §3.
+
+## D-084: World skeleton first
+- One D0 change landed stub scenes for all 11 rooms (final bounds, doors, spawns), the world map, the existing-room door plumbing and `test_door_contracts` before any room task, so every room change passed the validator and the full suite. `FlagDeclaration` nodes stood in for cross-room flag producers until their rooms merged; `test_no_stub_declarations_left` now asserts none remain.
+
+## D-085: FlowZone.drain_floor, and Challenge mode in Escape Tunnel (FLAG)
+- Broken Lift's FZ1 is floored at 1, so the Core's introduction never burns in any mode (measured: 30 s idle in Challenge ends at 1, no burnout).
+- Escape Tunnel's FZ3 has no floor: in Challenge, lingering about 11 s or more burns. That is the mode's contract (K-50).
+- **Measured** (`test_fz3_pace`): Normal from 70 reaches 0 at about 20.5 s with the two in-zone kills and no burnout; Assist from 90 keeps about 65; an 8 s Challenge pass from 100 keeps about 56. The Normal margin is nearly zero, so any change to drain, kill rewards or blade `reactor_gain` will fail this test (K-51).
+
+## D-086: Orr's and Mara's Undercity intros key on the Collector
+- `orr_intro_undercity` and `mara_intro_undercity` require `collector_drone_defeated`, not `met_orr_radio`, so skipping both optional radios cannot give a campaign player the legacy "first time we meet" lines. Every radio rule stands alone (the post-boss rule also sets `met_orr_radio`). `orr_iko`, `orr_rainline` and `orr_report` require `met_orr`. Legacy saves hear their own radio line.
+- The flag-derived quest **The Way Up** (`way_up`, 30 Scrap) starts on any radio call and completes on meeting Orr.
+
+## D-087: No save schema bump for the pre-Anchor respawn keys (FLAG vs CLAUDE.md)
+- `last_entry_room` / `last_entry_id` are new optional `GameState` keys. `GameState.from_dict` defaults them to "" like other optional keys, so `SaveManager.CURRENT_SCHEMA_VERSION` stays 3 and there is no migration.
+- This contradicts the old `CLAUDE.md` rule ("if you change a save field, bump the version and add a migration"); see D-090. A real pre-M7 v3 save is checked in (`tests/fixtures/save_v3_slice.json`, no `last_entry_*` keys) and `test_onboarding::test_v3_fixture_walks_to_undercity` loads it and walks into the Undercity.
+
+## D-088: EntryCheckpoint, a mid-room respawn point before the first Anchor
+- `interactables/EntryCheckpoint.gd` (roomgen `respawn_point()`). First Pursuit places one at x 1800 with spawn `pursuit_mid` at x 1820, so a death in the 4224 px room's section C does not replay the eye section. The Collector eye loads GONE for any spawn past its `lost_x`.
+
+## D-089: The first composition moved to the Maintenance Shaft
+- Needle + Scout Drone moved from First Pursuit section C to Maintenance Shaft Floor 2 (`max_attackers` 2), so it lands at about 7–12 min. The dormant Medical Ruin Needle uses `needle_dormant.tres` (drops 0 Scrap). The Service Pistol drop has a 24×150 trigger so the catwalks cannot skip it.
+
+## D-090: New optional save keys don't bump the schema (CLAUDE.md rule amended)
+- The rule now reads: bump `CURRENT_SCHEMA_VERSION` and add a migration when a save key changes meaning, is renamed or removed. A new optional key only needs a default in `GameState.from_dict` and a test that an old save loads (the v3 fixture). This records D-087 as a convention, so the next task doesn't "fix" it.
+
+## D-091: Room places the player at its spawn before adding it (engine pitfall)
+- `Room.gd` sets `player.position` to the active spawn *before* `add_child`. Otherwise the body enters the physics space at the room origin for one step, and an exit rect containing the origin fires. Collector Bay's west exit (0, -96, 16, 96) did exactly that: both spawns bounced straight to Broken Lift.
+- This is shared engine code outside the world-skeleton task's scope; it was the smallest sound fix (the alternative was changing the contracted bounds). Any room whose exit covers (0, 0) now works.
+
+## D-092: Door contracts are a test, and stricter than planned
+- `tests/unit/test_door_contracts.gd` holds one table for every M7 door (exit rect, target room/entry, own entry position and facing, `requires_flag`). It asserts `requires_flag` exactly, empty included, so main-path doors stay unflagged; it also asserts room bounds, default spawns and the non-door spawns (Wake `start`, Relay `start`) and forbids undeclared exits in the listed rooms. The side of an exit is judged by its centre against the bounds centre (Collector Bay's west exit sits at x 0).
+- **Correction to the plan:** the Apartment Stack hatch targets `SmugglerRoute/from_stack`, as the contract table says. The plan's D2a/D7b text ("from_smuggler") was wrong; `from_smuggler` is the Stack's own entry for the reverse direction.
+
+## D-093: Air swings hang only when they connect (FLAG: combat feel)
+- Found while closing the Flooded Alley Dash gate. Every air swing used to set the fall speed (three hangs per airtime), and a light pressed on the jump frame kept the grounded swing's 0.5 gravity scale (a 56 → 87 px "super jump"). Chained air lights, with or without an air dodge, outreached a dash-jump, so no gap could separate them from Dash.
+- Now an air swing takes its hang and gravity scale only on a hit (`AttackData.air_velocity_on_hit`); a whiff falls like a jump. The katar dive keeps its start-of-swing plunge. `test_combat::test_air_hang_only_on_hit` covers the rule. This changes how air combat feels everywhere; the playtest should check that juggling still feels good.
+
+## D-094: Dash gates drop 64 px, and every air-dodge frame is swept
+- A gap at one height cannot separate a dash-jump (~242 px flat) from a dodge-jump plus a late air dodge (~229 px, more with coyote take-offs). Gates now put the target below the take-off:
+  - **Smuggler Route:** shrine at x 740..778, y -176, 64 px below a one-way DashLedge (1060..1104 at -240), across 282 px. The floodgate moved 48 px west (692..740), the top step became `oneway(1064, -192, 40)`, and the Flow zone now spans x 300..692. A take-off at the very end of the coyote window plus a perfect air dodge can still land, so its marker says "Too wide to jump (mostly)".
+  - **Flooded Alley** (`cs_alley_dash`): a one-way take-off at -144 (x 100..160) and a DashShelf at x 450..506, y -80, 290 px away, shard at 468. A dash-jump reaches it from take-offs at x 154–174.
+  - **Escape Tunnel** (`cs_uc_tunnel_dash`): unchanged, a 230 px gap at x 1830 whose sweep covers delays 0..27 from the step edges only. It probably leaks the same way (K-48).
+- The Smuggler and alley sweeps try every air-dodge frame the cooldown allows, take off at the lip and 8, 16 and 20 px past it, and count any landing on the target as a leak.
+
+## D-095: Breakers are placed out of every grounded swing's reach
+- `Breaker.content_errors` measures the union of the light chain, heavy and launcher of every melee weapon in the catalog, with each lunge integrated under ground friction (the blade heavy reaches 38 + ~11 + 6 px), and widens the one-way band by that reach. The Warden Tower breakers moved beside the clamp column (x 120..172 and 244..296) because a grounded light from the arena one-ways tripped them.
+- `test_warden_tower_clamp_in_room` swings every grounded attack with both melee weapons from each one-way's nearest end.
+
+## D-096: HintTrigger.skip_when
+- A hint can be silenced by a `Game.check_condition` expression (reported to the validator through `content_flags`). The Apartment Stack's "Bolted from the other side." hint skips once `shortcut_smuggler_route` is set, because the `from_smuggler` spawn sits inside its box.
+
+## D-097: Enemy data variants for placement problems
+- `needle_dormant.tres` (drops 0, Medical Ruin practice target) and `needle_ledge.tres` (aggro range 160 instead of 200, Broken Lift FZ1). At 200 the ledge Needle woke while Rook walked the shaft floor 194 px below, tracked him to the ledge lip and lunged off it, which broke the "Needle in Flow" lesson. Any Needle placed on a ledge above a walkway may do the same.
+
+## D-098: Room layouts that differ from the plan
+Each was found by a route test and changed as little as possible:
+- **Wake:** the sill is a solid 60×8 block at (540, -100), not a one-way, so a tap from below can't grab its Scrap; it is reached from the side with a held jump (tested both ways). The grate and eye decor sit at y -244 and -250.
+- **Broken Lift:** the car roof moved from x 250..330 to 224..304 (Scrap at 264): walking off the climb only carries Rook about 30 px sideways.
+- **Rainline Chase:** a one-way coupler step at (2920, -48) east of Car C (its 96 px face made the line one-way westbound), a back wall `BoxBack` on the signal box (Car C's roof otherwise reached the stash around the breakable front), and the Sweeper wreck decor moved into the canal (3540, 196).
+- **Power Block:** the top steps of shafts B and D sit 32 px under the floor lip, so a player dropping down zigzags west first (traversable, tested; playtesters may bump their heads).
+- **Collector Bay:** the plan's catwalk RouteBot targets (190, 330) landed in the gaps; the tests use 210 and 360. The geometry is unchanged.
+- **Decor origins are bottom-centre.** The plan placed several props by their top (Security Station's Monitor Wall at y -300, First Pursuit's hatch housing, Broken Lift's cables, Power Block's B3 cable), which would have drawn them inside ceilings or floors; they were moved to fit. Decor banners carry no text, so "PULSE EXTRACTION" and "CIVIC RECOVERY → BELL TOWER LIFT" exist only as generator comments (K-53).
+
+## D-099: PowerShutter pass margins read the open clock
+- `shutter_passed` reports `open - t_open` while the panel is still up, so a low pass under a closing shutter reads as a small margin. Power Block's intended S4b low line reaches the slot about 3.37 s after its breaker and reports about 0.23 s, although its real margin against the slot (open + drop + slot - t_open) is about 1.08 s. The route test asserts the ≥ 0.5 s margin for S1–S4a and a low pass for S4b. The playtest report will list S4b as a close call (K-52).
