@@ -1,0 +1,116 @@
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
+[ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
+[ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
+[ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
+
+[sub_resource type="Resource" id="board_act1_l0"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "...Recovery, all units. The Lowlight lift is down. Freight reroutes."
+
+[sub_resource type="Resource" id="board_act1_l1"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "Priority unchanged."
+
+[sub_resource type="Resource" id="board_act1"]
+script = ExtResource("dialogue")
+id = "board_act1"
+lines = Array[ExtResource("line")]([SubResource("board_act1_l0"), SubResource("board_act1_l1")])
+
+[sub_resource type="Resource" id="rule_0"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("act1_complete")
+dialogue = SubResource("board_act1")
+
+[sub_resource type="Resource" id="board_krail_l0"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "Tower, respond. ...Tower?"
+
+[sub_resource type="Resource" id="board_krail_l1"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "Warden channel closed. Log it as equipment failure."
+
+[sub_resource type="Resource" id="board_krail"]
+script = ExtResource("dialogue")
+id = "board_krail"
+lines = Array[ExtResource("line")]([SubResource("board_krail_l0"), SubResource("board_krail_l1")])
+
+[sub_resource type="Resource" id="rule_1"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("warden_krail_defeated")
+dialogue = SubResource("board_krail")
+
+[sub_resource type="Resource" id="board_grid_l0"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "Grid priority reverted in Lowlight. Nobody signed for it."
+
+[sub_resource type="Resource" id="board_grid"]
+script = ExtResource("dialogue")
+id = "board_grid"
+lines = Array[ExtResource("line")]([SubResource("board_grid_l0")])
+
+[sub_resource type="Resource" id="rule_2"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("lowlight_power_rerouted")
+dialogue = SubResource("board_grid")
+
+[sub_resource type="Resource" id="board_codes_l0"]
+script = ExtResource("line")
+speaker = "BAND"
+text = "Lift run, twenty-two hundred. Same crates. Sign for them at the top."
+
+[sub_resource type="Resource" id="board_codes"]
+script = ExtResource("dialogue")
+id = "board_codes"
+lines = Array[ExtResource("line")]([SubResource("board_codes_l0")])
+
+[sub_resource type="Resource" id="rule_3"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("dead_air_complete")
+dialogue = SubResource("board_codes")
+
+[sub_resource type="Resource" id="board_counting_l0"]
+script = ExtResource("line")
+speaker = "STATIC"
+text = "Mostly static. Under it, someone is counting."
+
+[sub_resource type="Resource" id="board_counting"]
+script = ExtResource("dialogue")
+id = "board_counting"
+lines = Array[ExtResource("line")]([SubResource("board_counting_l0")])
+
+[sub_resource type="Resource" id="rule_4"]
+script = ExtResource("rule")
+requires_flags = PackedStringArray("quest_dead_air_started")
+dialogue = SubResource("board_counting")
+
+[sub_resource type="Resource" id="board_dead_l0"]
+script = ExtResource("line")
+speaker = "STATIC"
+text = "Static. Orr says it used to be a whole city in there."
+
+[sub_resource type="Resource" id="board_dead"]
+script = ExtResource("dialogue")
+id = "board_dead"
+lines = Array[ExtResource("line")]([SubResource("board_dead_l0")])
+
+[sub_resource type="Resource" id="rule_5"]
+script = ExtResource("rule")
+dialogue = SubResource("board_dead")
+
+[resource]
+script = ExtResource("profile")
+npc_id = "relay_board"
+display_name = "Radio board"
+map_label = "Radio chatter"
+color = Color(0.35, 0.88, 0.91, 1)
+figure = false
+verb = "Listen"
+rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_2"), SubResource("rule_3"), SubResource("rule_4"), SubResource("rule_5")])
+cue_new_lines = true

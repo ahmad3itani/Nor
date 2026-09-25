@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/sequences/act1_close.tres" id="seq_act1_close"]
 [ext_resource type="Resource" path="res://data/sequences/relay_arrival.tres" id="seq_relay_arrival"]
 [ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
+[ext_resource type="Resource" path="res://data/npcs/relay_board.tres" id="npc_relay_board"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/relay.tres" id="theme"]
 
@@ -674,6 +675,12 @@ kind = 5
 size = Vector2(12, 10)
 color = Color(0.32, 0.24, 0.2, 1)
 accent = Color(0.35, 0.88, 0.91, 1)
+
+[node name="NPC_relay_board" type="Area2D" parent="Interactables"]
+position = Vector2(290, 0)
+script = ExtResource("npc")
+profile = ExtResource("npc_relay_board")
+facing = 1
 
 [node name="NPC_mara_door" type="Area2D" parent="Interactables"]
 position = Vector2(930, 0)

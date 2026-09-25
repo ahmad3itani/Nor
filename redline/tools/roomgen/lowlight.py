@@ -152,6 +152,10 @@ r.neon(220, -110, 22, 8, AMBER, 3, False, parent=onair)
 # The radio board's speaker, always there, so the relay_board '[E] Listen'
 # prompt has a visible source (Orr's desk set stays the radio at 250).
 r.decor("radio", 290, 0, 12, 10, WARM, "0.35, 0.88, 0.91, 1")
+# Orr's board: a bodiless 'Listen' voice for the band's chatter (relay_board
+# .tres, first matching rule wins). Box 278..302, between Orr and Nix. Its
+# tick shows while the top eligible rule is unheard (cue_new_lines).
+r.npc("relay_board", 290, 0, 1)
 # R8 post: Mara watches the alley door after the Act I close ("Then the Spire
 # sends someone worse"). Her box 918..942 is clear of the 900 pillar
 # (893..907) and of the from_alley spawn (960). Sequences never use a post
