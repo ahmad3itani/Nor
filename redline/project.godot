@@ -6,8 +6,8 @@ config_version=5
 [application]
 
 config/name="REDLINE"
-config/description="High-speed 2D pixel-art action platformer. M3 vertical slice + M4 playtest tooling + M5 world framework + M6 content pipeline."
-config/version="0.6.0-m6"
+config/description="High-speed 2D pixel-art action platformer. M3 vertical slice + M4 playtest tooling + M5 world framework + M6 content pipeline + M7 batch 1 (Undercity, Lowlight complete)."
+config/version="0.7.0-m7"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
