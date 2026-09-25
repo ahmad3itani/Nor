@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EndingData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://story/EndingData.gd" id="1_ending"]
+[ext_resource type="Resource" path="res://data/sequences/ending_redline.tres" id="2_seq"]
+
+[resource]
+script = ExtResource("1_ending")
+id = "redline"
+title = "REDLINE"
+tagline = "Hidden: Project REDLINE and The Null."
+priority = 40
+hidden = true
+choice_condition = "flag:finale_choice_redline"
+requires = PackedStringArray("flag:act5_finale_reached", "flag:redline_archive_opened", "flag:null_depth_reached", "flag:read_uc_intake_log")
+requires_memories = "flag:mem_seen_mf_lowlight_03"
+requires_arcs = PackedStringArray()
+sequence = ExtResource("2_seq")

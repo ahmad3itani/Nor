@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EndingData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://story/EndingData.gd" id="1_ending"]
+[ext_resource type="Resource" path="res://data/sequences/ending_release.tres" id="2_seq"]
+
+[resource]
+script = ExtResource("1_ending")
+id = "release"
+title = "RELEASE"
+tagline = "Change the network; needs memories and people."
+priority = 30
+hidden = false
+choice_condition = "flag:finale_choice_release"
+requires = PackedStringArray("flag:act5_finale_reached")
+requires_memories = "atleast:memories_remembered:24"
+requires_arcs = PackedStringArray("atleast:arc_orr_stage:5", "atleast:arc_mara_stage:5", "flag:orr_arc_resolved", "flag:mara_arc_resolved")
+sequence = ExtResource("2_seq")

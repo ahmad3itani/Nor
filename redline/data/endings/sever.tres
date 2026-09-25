@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EndingData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://story/EndingData.gd" id="1_ending"]
+[ext_resource type="Resource" path="res://data/sequences/ending_sever.tres" id="2_seq"]
+
+[resource]
+script = ExtResource("1_ending")
+id = "sever"
+title = "SEVER"
+tagline = "Tear the network down."
+priority = 20
+hidden = false
+choice_condition = "flag:finale_choice_sever"
+requires = PackedStringArray("flag:act5_finale_reached")
+requires_memories = ""
+requires_arcs = PackedStringArray()
+sequence = ExtResource("2_seq")
