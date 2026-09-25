@@ -55,9 +55,12 @@ static func apply_act1_max_state() -> void:
 	if Game.arcs:
 		for a in Game.arcs.arcs:
 			Game.set_flag(a.index_flag(), a.stages.size())
+	# A quest reward can store `true` in a shop counter (chart_lowlight's
+	# reward_flags map_lens); counters end as ints >= 1 here.
 	for f in _upgrade_flags():
-		if Game.flag_int(f) < 1:
-			Game.set_flag(f, 1)
+		var cur: Variant = Game.state.flags.get(f)
+		if (typeof(cur) != TYPE_INT and typeof(cur) != TYPE_FLOAT) or Game.flag_int(f) < 1:
+			Game.set_flag(f, maxi(Game.flag_int(f), 1))
 
 
 ## Flags that hold numbers: memories_remembered, arc_<npc>_stage and every
