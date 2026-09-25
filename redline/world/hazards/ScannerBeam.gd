@@ -250,6 +250,10 @@ func _on_breaker_hit(c: StringName) -> void:
 		return
 	offline_left = offline_open
 	_tick_left = 1.0
+	# The breaker's lamp is driven by its consumers (Breaker.gd): a circuit
+	# that feeds only scanners still shows it live for the offline window.
+	for b in Breaker.on_circuit(get_tree(), circuit):
+		b.show_live(offline_open)
 
 
 ## Shutter-style ticks: 1 Hz while offline, 4 Hz in the warning.

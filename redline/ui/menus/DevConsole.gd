@@ -38,7 +38,10 @@ func rebuild() -> void:
 			add_button("Spawn enemy…", _go.bind(&"spawn"))
 			add_button("Quick boss restart (Warden Krail)", func() -> void:
 				close_menu()
-				DevActions.quick_boss_restart())
+				DevActions.quick_boss_restart("warden_krail"))
+			add_button("Quick boss restart (Collector Drone)", func() -> void:
+				close_menu()
+				DevActions.quick_boss_restart("collector_drone"))
 			add_button("Unlock-all debug profile", func() -> void:
 				DevActions.unlock_all()
 				EventBus.hint_requested.emit("DEV: everything unlocked", 1.5))

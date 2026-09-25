@@ -92,12 +92,12 @@ text = "That eye was a Collector. Civic Recovery. It doesn't want you. It wants 
 [sub_resource type="Resource" id="orr_radio_shaft_l2"]
 script = ExtResource("line")
 speaker = "Radio"
-text = "Up the shaft the Pulse runs thick and your Core will burn. Keep moving, keep hitting. It feeds on that."
+text = "Up the shaft the Pulse runs thick and your Core drains. Keep moving, keep hitting. It feeds on that."
 
 [sub_resource type="Resource" id="orr_radio_shaft_l3"]
 script = ExtResource("line")
 speaker = "Radio"
-text = "There's an Anchor at the top - our kit. Rest there and the burn stops. The only way on is through the bay. Its nest."
+text = "There's an Anchor at the top - our kit. Rest there and fill back up. The only way on is through the bay. Its nest."
 
 [sub_resource type="Resource" id="orr_radio_shaft_l4"]
 script = ExtResource("line")
@@ -145,7 +145,7 @@ script = ExtResource("profile")
 npc_id = "orr_radio"
 display_name = "Radio"
 map_label = "Radio"
-color = Color(0.55, 0.62, 0.78, 1)
+color = Color(0.35, 0.88, 0.91, 1)
 figure = false
 verb = "Listen"
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_2"), SubResource("rule_3"), SubResource("rule_4"), SubResource("rule_5")])
