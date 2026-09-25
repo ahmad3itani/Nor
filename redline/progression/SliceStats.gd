@@ -7,11 +7,15 @@ extends RefCounted
 ## and backdrops in res://world/rooms are not content).
 
 static var _totals: Dictionary = {}
+## How many times totals() actually scanned the rooms (the cache is per
+## session); tests read it to prove a warm-up happened once.
+static var build_count: int = 0
 
 
 static func totals() -> Dictionary:
 	if not _totals.is_empty():
 		return _totals
+	build_count += 1
 	var secrets: Array[String] = []
 	var fragments := 0
 	var shards := 0
@@ -35,15 +39,13 @@ static func totals() -> Dictionary:
 	return _totals
 
 
-## Every district room scene (.tscn only), sorted per folder.
+## Every district room scene, sorted per folder. DataDir also accepts the
+## ".tscn.remap" names an exported build lists (otherwise totals are empty
+## there and every secrets count reads 0).
 static func room_paths() -> PackedStringArray:
 	var out := PackedStringArray()
 	for dir in ContentValidator.WORLD_ROOM_DIRS:
-		var files := DirAccess.get_files_at(dir)
-		files.sort()
-		for f in files:
-			if f.ends_with(".tscn"):
-				out.append("%s/%s" % [dir, f])
+		out.append_array(DataDir.list_scenes(dir))
 	return out
 
 
