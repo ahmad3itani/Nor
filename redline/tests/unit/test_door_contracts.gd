@@ -6,13 +6,14 @@ extends RedlineTestCase
 ## (test_world_map) and its neighbours' routes. This test names the drift.
 ##
 ## requires_flag is asserted exactly, empty included: a main-path door must
-## stay open. Three doors get their flag later, from the task that adds the
-## flag's producer, and that task updates its row here in the same PR:
-##   CollectorBay -> EscapeTunnel      collector_drone_defeated  (CollectorBay)
-##   PowerBlock -> SecurityStation     lowlight_power_rerouted   (PowerBlock)
-##   SmugglerRoute -> ApartmentStack   shortcut_smuggler_route   (SmugglerRoute)
-##   ApartmentStack -> SmugglerRoute   shortcut_smuggler_route   (D2b/D7b)
-## A room may not add a door that is not listed here.
+## stay open (D-092). The flagged doors, each set by the room that produces
+## its flag:
+##   CollectorBay -> EscapeTunnel      collector_drone_defeated
+##   PowerBlock -> SecurityStation     lowlight_power_rerouted
+##   SmugglerRoute -> ApartmentStack   shortcut_smuggler_route
+##   ApartmentStack -> SmugglerRoute   shortcut_smuggler_route
+## A room may not add a door that is not listed here; a new door adds its row
+## in the same change.
 
 const ROOMS := "res://world/rooms/"
 
