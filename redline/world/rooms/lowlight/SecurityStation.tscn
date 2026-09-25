@@ -469,3 +469,55 @@ kind = 9
 size = Vector2(300, 130)
 color = Color(0.3, 0.3, 0.32, 1)
 accent = Color(0.6, 0.6, 0.6, 1)
+
+[node name="CellFourKnock" type="Node2D" parent="Props"]
+script = ExtResource("switch")
+visible_when = "flag:mem_seen_mf_lowlight_04"
+
+[node name="Decor8" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(700, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(2, 6)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor9" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(704, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(2, 6)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor10" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(708, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(2, 6)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor11" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(720, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 2)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor12" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(732, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 2)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor13" type="Node2D" parent="Props/CellFourKnock"]
+position = Vector2(744, 40)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(8, 2)
+color = Color(0.8, 0.8, 0.78, 1)
+accent = Color(1, 0.81, 0.35, 1)

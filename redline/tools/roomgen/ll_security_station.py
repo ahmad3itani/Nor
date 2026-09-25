@@ -136,6 +136,16 @@ s.hint("ss_searchlight", 380, -480, 60, 96, "The searchlight runs off that break
 # After the Rainline chase the monitors lose Rook: static on every screen.
 sl = s.switch("SignalLost", "flag:chase_rainline_done")
 s.decor("banner", 710, -230, 300, 130, "0.3, 0.3, 0.32, 1", "0.6, 0.6, 0.6, 1", parent=sl)
+# M8: chalk marks "III ---" (three short, three long) under the pipe, east of
+# the Cell Four bars. They are old marks, scratched there long ago by whoever
+# tapped from the next cell; the switch only shows them once Cell Four has
+# been remembered (mem_seen_mf_lowlight_04): now they are noticed. The
+# fragment and its persist_id are unchanged.
+knock = s.switch("CellFourKnock", "flag:mem_seen_mf_lowlight_04")
+for x in [700, 704, 708]:
+    s.decor("cables", x, 40, 2, 6, "0.8, 0.8, 0.78, 1", parent=knock)
+for x in [720, 732, 744]:
+    s.decor("cables", x, 40, 8, 2, "0.8, 0.8, 0.78, 1", parent=knock)
 
 s.write(OUT + "SecurityStation.tscn")
 finish()
