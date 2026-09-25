@@ -1035,23 +1035,23 @@ func test_smuggler_dash_shard_negative_sweep() -> void:
 			check(leaks.is_empty(), "the Smuggler Dash shrine leaks without Dash (take-off %d px past the lip): %s" % [late, ", ".join(leaks)])
 
 
-## The same sweep on the Flooded Alley's Dash shard (220 px, 160..380, both
-## tops at -96). KNOWN LEAK: late air dodges land on the far block (and the
-## plan's D2b fallback, 234 px at the same height, leaks the same way: the
-## Smuggler Route measured it). While FloodedAlley still has the pre-fix far
-## block at (380, -96) the leak is printed, not failed; any other layout is
-## held to the full sweep. The fix belongs to D2b (lowlight.py).
+## The same sweep on the Flooded Alley's Dash shard. The original 220 px gap
+## at one height leaked (an air dodge on airborne frame 29 landed on the far
+## block); D2b rebuilt it on the Smuggler Route's principle, a drop: a one-way
+## take-off (100..160 at -144) 290 px from the DashShelf (450..506), 64 px
+## below. The -96 block under the take-off (edge 160) is swept too, 16 px
+## above the shelf. Each take-off is swept at the lip and up to 20 px past it
+## (the whole coyote window): at 282 px a take-off 16 px late still landed on
+## the shelf's lip, at 290 px none does. A dash-jump from the lip crosses the
+## shelf's top at x ~455 (test_slice_routes::test_dash_shard_needs_dash).
 func test_smuggler_alley_dash_negative_sweep() -> void:
 	var alley := LL + "FloodedAlley.tscn"
-	var far := Rect2(380, -96, 70, 16)
-	var leaks := await _smuggler_sweep(alley, &"from_relay", Vector2(125, -96), 158, 415, "cs_alley_dash", far)
-	var known := false
-	for b in SceneRouter.current_room.find_children("*", "StaticBody2D", true, false):
-		known = known or (b as Node2D).position.is_equal_approx(far.position)
-	if known and not leaks.is_empty():
-		print("KNOWN LEAK (D2b): cs_alley_dash is reachable without Dash: %s" % ", ".join(leaks))
-	else:
-		check(leaks.is_empty(), "the Flooded Alley Dash gate leaks without Dash: %s" % ", ".join(leaks))
+	var shelf := Rect2(450, -80, 56, 16)
+	for from in [Vector2(135, -144), Vector2(125, -96)]:
+		for late in [0.0, 8.0, 16.0, 20.0]:
+			Game.new_game()  # a clean profile: no shard collected by an earlier attempt
+			var leaks := await _smuggler_sweep(alley, &"from_relay", from, 158.0 + late, 468, "cs_alley_dash", shelf)
+			check(leaks.is_empty(), "the Flooded Alley Dash gate leaks without Dash (from %s, %d px past the lip): %s" % [from, late, ", ".join(leaks)])
 
 
 ## The loft cache takes heavy attacks only: light swings bounce off, two

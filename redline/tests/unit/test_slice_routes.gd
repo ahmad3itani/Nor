@@ -137,7 +137,7 @@ func test_bell_tower_climb_lever_and_office() -> void:
 
 
 func test_dash_shard_needs_dash() -> void:
-	var steps := [["run", 65], ["jump", 65], ["jump", 125], ["dashjump", 158, 415]]
+	var steps := [["run", 65], ["jump", 65], ["jump", 125], ["jump", 140], ["dashjump", 158, 468]]
 	var bot := await _enter("FloodedAlley.tscn", &"from_relay")
 	await bot.run(steps)
 	check(not Game.is_collected("cs_alley_dash"), "dash shard reachable without Dash")

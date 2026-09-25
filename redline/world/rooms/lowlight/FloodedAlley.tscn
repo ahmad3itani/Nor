@@ -96,13 +96,19 @@ position = Vector2(90, -96)
 script = ExtResource("block")
 size = Vector2(70, 16)
 
-[node name="Block2" type="StaticBody2D" parent="Geometry"]
-position = Vector2(380, -96)
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(100, -144)
 script = ExtResource("block")
-size = Vector2(70, 16)
+size = Vector2(60, 8)
+one_way = true
+
+[node name="DashShelf" type="StaticBody2D" parent="Geometry"]
+position = Vector2(450, -80)
+script = ExtResource("block")
+size = Vector2(56, 16)
 
 [node name="Collectible1" type="Area2D" parent="Interactables"]
-position = Vector2(415, -96)
+position = Vector2(468, -80)
 script = ExtResource("collect")
 persist_id = "cs_alley_dash"
 kind = 2
@@ -161,19 +167,19 @@ position = Vector2(960, -2)
 [node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
 position = Vector2(1150, -2)
 
-[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
 position = Vector2(860, -56)
 script = ExtResource("block")
 size = Vector2(70, 8)
 one_way = true
 
-[node name="OneWay3" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1220, -48)
 script = ExtResource("block")
 size = Vector2(60, 8)
 one_way = true
 
-[node name="OneWay4" type="StaticBody2D" parent="Geometry"]
+[node name="OneWay5" type="StaticBody2D" parent="Geometry"]
 position = Vector2(1250, -96)
 script = ExtResource("block")
 size = Vector2(50, 8)

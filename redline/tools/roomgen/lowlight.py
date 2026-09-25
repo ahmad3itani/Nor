@@ -97,10 +97,17 @@ a.spawn("from_market", 1770, 0, -1)
 a.exit(-64, -96, 16, 96, "Relay", "from_alley")
 a.exit(1816, -96, 16, 96, "MarketRun", "from_alley")
 # Dash-gated Core Shard, visible from the start (bible §5 ability-gated revisiting).
+# A gap at one height cannot tell Dash from a late air dodge (the 220 px
+# original leaked, and so would 234): the shelf drops 64 px across 290 px
+# from a one-way take-off at -144, as in the Smuggler Route. A dash-jump from
+# the lip crosses the shelf top at x ~455; no dodge-jump + air dodge lands on
+# it, even taken off 20 px late (282 px still leaked at 16 px late). From the
+# -96 block under the take-off the same gap is only 16 px down.
 a.oneway(40, -48, 50)
 a.block(90, -96, 70, 16)
-a.block(380, -96, 70, 16)
-a.collectible(2, "cs_alley_dash", 415, -96)
+a.oneway(100, -144, 60)  # take-off, x 100..160 (jumped up through from the block)
+a.block(450, -80, 56, 16, "DashShelf")
+a.collectible(2, "cs_alley_dash", 468, -80)
 a.mapmarker(300, -120, "Too wide to jump", "ability:dash")
 a.hint("alley_gap", 60, -200, 100, 100, "Too far to jump. Maybe later.")
 # Slide under the fence.
