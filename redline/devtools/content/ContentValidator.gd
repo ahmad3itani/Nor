@@ -9,7 +9,7 @@ extends RefCounted
 const SCAN_DIRS: PackedStringArray = ["res://autoload", "res://bosses", "res://circuits", "res://combat",
 	"res://data", "res://devtools", "res://dialogue", "res://enemies", "res://interactables", "res://player",
 	"res://playtest", "res://progression", "res://quests", "res://ui", "res://vfx", "res://weapons", "res://world",
-	"res://audio"]
+	"res://audio", "res://cinematics", "res://story"]
 const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight", "res://world/rooms/undercity"]
 ## District room folders only (no labs/backdrops in res://world/rooms): what
 ## SliceStats, the playtest report and the world tests iterate.
@@ -28,6 +28,10 @@ const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_", "see
 	"ending_seen_", "arc_", "arcbeat_", "thread_"]
 ## Metrics a `count:<metric>:<n>` condition may name (Game.count_metric).
 const COUNT_METRICS: PackedStringArray = ["fragments", "shards", "circuits", "secrets"]
+## Bible §18: the four endings, exactly (D-126).
+const ENDING_IDS: PackedStringArray = ["crown", "redline", "release", "sever"]
+## Where future flags may be read: ending data (and their own declaration).
+const FUTURE_READERS_DIR := "res://data/endings/"
 
 var errors: PackedStringArray = []
 var warnings: PackedStringArray = []
@@ -41,6 +45,18 @@ var consumed: Dictionary = {}  # flag -> file name of the first consumer
 var producers: Dictionary = {}
 var consumers: Dictionary = {}
 var stats: Dictionary = {"files": 0, "rooms": 0, "resources": 0}
+## M8 story registry, filled by check_resource() and the room pass, read by
+## validate_story() and the report: kind -> {res:// path -> resource}. Tests
+## feed in-memory resources through check_resource with made-up paths.
+var story: Dictionary = {"fragments": {}, "scenes": {}, "sequences": {}, "endings": {}, "arcs": {}, "acts": {},
+	"future": {}, "lint": {}, "text": {}}
+## Sequence id -> ["<room>: <referrer kind>", ...] (SequenceTrigger, BossArena
+## intro, SliceEndTrigger, ActData close).
+var sequence_refs: Dictionary = {}
+## Fragment ids placed as Collectibles in rooms -> room id.
+var placed_fragments: Dictionary = {}
+## Room text shown in play: [path, what, text] (HintTrigger lines).
+var room_text: Array = []
 var _require_on_map: bool = true
 
 
@@ -48,6 +64,7 @@ func run() -> ContentValidator:
 	scan_references()
 	validate_resources()
 	validate_rooms()
+	validate_story()
 	validate_flags()
 	var art := ArtValidator.new().run()
 	errors.append_array(art.errors)
@@ -115,6 +132,7 @@ func check_resource(res: Resource, path: String) -> void:
 						errors.append("%s: weapon '%s' not in catalog" % [path.get_file(), item.item_id])
 				_:
 					_produce(item.upgrade_flag, path)
+	_register_story(res, path)
 	# Resource content protocol (M8): a separate `if` after the typed
 	# branches, so any resource (sequences, arcs, endings, memory scenes,
 	# hub music) lints itself without a new branch here.
@@ -303,6 +321,7 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 			var en := n as Enemy
 			if en.data == null:
 				errors.append("%s: enemy %s has no data" % [tag, en.name])
+		_note_story_node(n, id, path)
 		# Content protocol (M7): any node may lint itself and declare the flags
 		# it sets/reads. A separate `if`, not part of the chain above, so a
 		# subclass of a handled type (PowerShutter is a Gate) still reports.
@@ -347,6 +366,162 @@ func _register_flags(d: Dictionary, path: String) -> void:
 		_consume(String(f), path)
 	for c in d.get("conditions", []):
 		_consume_condition(String(c), path)
+
+
+# --- Story (M8, cross-area) --------------------------------------------------
+
+## Files check_resource saw, by kind, for the cross-area story rules.
+func _register_story(res: Resource, path: String) -> void:
+	var kind := ""
+	if res is MemoryFragmentData:
+		kind = "fragments"
+	elif res is MemorySceneData:
+		kind = "scenes"
+	elif res is SequenceData:
+		kind = "sequences"
+	elif res is EndingData:
+		kind = "endings"
+	elif res is NpcArc:
+		kind = "arcs"
+	elif res is ActData:
+		kind = "acts"
+	elif res is FutureFlagSet:
+		kind = "future"
+	elif res is KnowledgeLint:
+		kind = "lint"
+	elif res is NpcProfile or res is DialogueData or res is QuestData or res is MemoryConfig:
+		kind = "text"
+	if kind != "":
+		(story[kind] as Dictionary)[path] = res
+
+
+## Room nodes the story rules need: who plays which sequence, which
+## fragments are placed, and hint text shown in play.
+func _note_story_node(n: Node, room_id: String, path: String) -> void:
+	var seq: SequenceData = null
+	var what := ""
+	if n is SequenceTrigger:
+		seq = (n as SequenceTrigger).sequence
+		what = "SequenceTrigger"
+	elif n is BossArena:
+		seq = (n as BossArena).intro_sequence
+		what = "BossArena intro"
+	elif n is SliceEndTrigger:
+		seq = (n as SliceEndTrigger).sequence
+		what = "SliceEndTrigger"
+	elif n is Collectible and (n as Collectible).kind == Collectible.Kind.MEMORY_FRAGMENT and (n as Collectible).fragment:
+		placed_fragments[(n as Collectible).fragment.id] = room_id
+	elif n is HintTrigger and (n as HintTrigger).text != "":
+		room_text.append([path, "hint %s" % (n as HintTrigger).hint_id, (n as HintTrigger).text])
+	if seq != null and seq.id != "":
+		_push_ref(seq.id, "%s: %s" % [room_id, what])
+
+
+func _push_ref(seq_id: String, where: String) -> void:
+	if not sequence_refs.has(seq_id):
+		sequence_refs[seq_id] = []
+	if not (sequence_refs[seq_id] as Array).has(where):
+		(sequence_refs[seq_id] as Array).append(where)
+
+
+func _future_set() -> FutureFlagSet:
+	for path: String in story["future"]:
+		return story["future"][path] as FutureFlagSet
+	return FutureFlagSet.shared()
+
+
+## Cross-area story rules (M8 T10): future flags, orphan sequences, memory
+## cross-checks, the ending set, arc threads. Runs after resources and rooms
+## registered their flags, before validate_flags().
+func validate_story() -> void:
+	_check_future_flags()
+	_check_sequence_refs()
+	_check_memories()
+	_check_endings()
+	_check_arc_threads()
+
+
+## A5 §9.2: a future flag is produced only by its declaration and read only
+## by ending data. `producers` (not `produced`, which keeps the first file) is
+## what catches a second producer.
+func _check_future_flags() -> void:
+	var future := _future_set()
+	var flags := future.flags()
+	for f in flags:
+		for where: String in producers.get(f, []):
+			if where != FutureFlagSet.PATH:
+				errors.append("future flag '%s' (Act %d) is set by %s: remove it from future_flags.tres when that act lands" % [f, future.act_of(f), where])
+		for where: String in consumers.get(f, []):
+			if where != FutureFlagSet.PATH and not where.begins_with(FUTURE_READERS_DIR):
+				errors.append("future flag '%s' (Act %d) is read by %s: only data/endings may read it until that act lands" % [f, future.act_of(f), where])
+	if not flags.is_empty():
+		warnings.append("%d future flags declared (Acts II-V/M9): %s" % [flags.size(), ", ".join(flags)])
+
+
+## Every sequence a player can meet is played by something: a room trigger,
+## a boss arena, the slice end or an act close. theatre_only ones (endings,
+## test fixtures) are exempt.
+func _check_sequence_refs() -> void:
+	for path: String in story["acts"]:
+		var a := story["acts"][path] as ActData
+		if a.close_sequence and a.close_sequence.id != "":
+			_push_ref(a.close_sequence.id, "act %d close" % a.act)
+	for path: String in story["sequences"]:
+		var seq := story["sequences"][path] as SequenceData
+		if not seq.theatre_only and not sequence_refs.has(seq.id):
+			warnings.append("%s: sequence %s is played by nothing (no SequenceTrigger, BossArena intro, SliceEndTrigger or act close)" % [path.get_file(), seq.id])
+
+
+func _check_memories() -> void:
+	var scenes: Dictionary = story["scenes"]
+	var by_fragment := {}  # fragment id -> scene count
+	var scene_ids := {}
+	var slots := {}  # "act:slot" -> scene id
+	for path: String in scenes:
+		var sc := scenes[path] as MemorySceneData
+		scene_ids[sc.id] = true
+		if sc.source == MemorySceneData.Source.FRAGMENT and sc.fragment:
+			by_fragment[sc.fragment.id] = int(by_fragment.get(sc.fragment.id, 0)) + 1
+		var key := "%d:%d" % [sc.act, sc.timeline_slot]
+		if slots.has(key):
+			errors.append("memory %s: timeline_slot %d is already used by %s in act %d" % [sc.id, sc.timeline_slot, slots[key], sc.act])
+		else:
+			slots[key] = sc.id
+	for path: String in story["fragments"]:
+		var fr := story["fragments"][path] as MemoryFragmentData
+		var n := int(by_fragment.get(fr.id, 0))
+		if n != 1:
+			errors.append("%s: fragment %s has %d memory scenes (needs exactly one in data/memories)" % [path.get_file(), fr.id, n])
+	var ids: Array = placed_fragments.keys()
+	ids.sort()
+	for fid: String in ids:
+		if not by_fragment.has(fid):
+			errors.append("room %s: placed fragment %s has no memory scene" % [placed_fragments[fid], fid])
+	for where: String in producers.get("memories_remembered", []):
+		if not scenes.has(where):
+			errors.append("memories_remembered is set by %s: only memory scenes (MemoryLibrary) may count it" % where)
+	for f: String in consumers:
+		if f.begins_with("mem_seen_") and not scene_ids.has(f.trim_prefix("mem_seen_")):
+			errors.append("flag '%s' is read by %s but there is no memory scene '%s'" % [f, consumers[f][0], f.trim_prefix("mem_seen_")])
+
+
+func _check_endings() -> void:
+	var ids := PackedStringArray()
+	for path: String in story["endings"]:
+		ids.append((story["endings"][path] as EndingData).id)
+	ids.sort()
+	if ids != ENDING_IDS:
+		errors.append("endings must be exactly %s (bible §18), found %s" % [", ".join(ENDING_IDS), ", ".join(ids)])
+
+
+## Arc threads are the hooks later acts read: each must actually be set.
+## (One owning profile per arc is NpcArc.content_check.)
+func _check_arc_threads() -> void:
+	for path: String in story["arcs"]:
+		var a := story["arcs"][path] as NpcArc
+		for t in a.threads:
+			if not producers.has(t):
+				errors.append("%s: arc %s thread %s is never set" % [path.get_file(), a.npc_id, t])
 
 
 # --- Flags (quest/dialogue validator) ------------------------------------------
