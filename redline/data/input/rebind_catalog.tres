@@ -1,0 +1,227 @@
+[gd_resource type="Resource" script_class="RebindCatalog" load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://input/RebindCatalog.gd" id="1_cat"]
+[ext_resource type="Script" path="res://input/RebindActionData.gd" id="2_act"]
+
+[sub_resource type="Resource" id="Act_move_left"]
+script = ExtResource("2_act")
+action = &"move_left"
+label = "Move left"
+group = "Movement"
+key_slots = 2
+pad_slots = 1
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = true
+
+[sub_resource type="Resource" id="Act_move_right"]
+script = ExtResource("2_act")
+action = &"move_right"
+label = "Move right"
+group = "Movement"
+key_slots = 2
+pad_slots = 1
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = true
+
+[sub_resource type="Resource" id="Act_move_up"]
+script = ExtResource("2_act")
+action = &"move_up"
+label = "Move up"
+group = "Movement"
+key_slots = 2
+pad_slots = 1
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = true
+
+[sub_resource type="Resource" id="Act_move_down"]
+script = ExtResource("2_act")
+action = &"move_down"
+label = "Move down"
+group = "Movement"
+key_slots = 2
+pad_slots = 1
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = true
+
+[sub_resource type="Resource" id="Act_jump"]
+script = ExtResource("2_act")
+action = &"jump"
+label = "Jump"
+group = "Movement"
+key_slots = 3
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_dodge"]
+script = ExtResource("2_act")
+action = &"dodge"
+label = "Dodge / dash"
+group = "Movement"
+key_slots = 3
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_grapple"]
+script = ExtResource("2_act")
+action = &"grapple"
+label = "Grapple"
+group = "Movement"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_attack_light"]
+script = ExtResource("2_act")
+action = &"attack_light"
+label = "Light attack"
+group = "Combat"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_attack_heavy"]
+script = ExtResource("2_act")
+action = &"attack_heavy"
+label = "Heavy attack"
+group = "Combat"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_ranged"]
+script = ExtResource("2_act")
+action = &"ranged"
+label = "Ranged"
+group = "Combat"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_heal"]
+script = ExtResource("2_act")
+action = &"heal"
+label = "Heal"
+group = "Combat"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_interact"]
+script = ExtResource("2_act")
+action = &"interact"
+label = "Interact / talk"
+group = "World"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_map"]
+script = ExtResource("2_act")
+action = &"map"
+label = "Map"
+group = "World"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_pause"]
+script = ExtResource("2_act")
+action = &"pause"
+label = "Pause"
+group = "Menus"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay", "challenge")
+locked_keys = PackedInt32Array(4194305)
+locked_pad = PackedStringArray("b6")
+pad_stick_fixed = false
+
+[sub_resource type="Resource" id="Act_reset"]
+script = ExtResource("2_act")
+action = &"reset"
+label = "Restart challenge"
+group = "Menus"
+key_slots = 2
+pad_slots = 2
+contexts = PackedStringArray("gameplay", "challenge")
+locked_keys = PackedInt32Array()
+locked_pad = PackedStringArray()
+pad_stick_fixed = false
+
+[resource]
+script = ExtResource("1_cat")
+actions = Array[ExtResource("2_act")]([SubResource("Act_move_left"), SubResource("Act_move_right"), SubResource("Act_move_up"), SubResource("Act_move_down"), SubResource("Act_jump"), SubResource("Act_dodge"), SubResource("Act_grapple"), SubResource("Act_attack_light"), SubResource("Act_attack_heavy"), SubResource("Act_ranged"), SubResource("Act_heal"), SubResource("Act_interact"), SubResource("Act_map"), SubResource("Act_pause"), SubResource("Act_reset")])
+allowed_overlaps = Array[Dictionary]([{
+"a": "interact",
+"b": "move_up",
+"device": "pad",
+"event": "b11"
+}, {
+"a": "map",
+"b": "reset",
+"device": "any",
+"event": ""
+}])
+mirrors = Array[Dictionary]([{
+"fixed_keys": [4194309],
+"fixed_pad": ["b0"],
+"sources": ["jump"],
+"target": "cinematic_skip"
+}])
+reserved_keys = PackedInt32Array(4194305, 4194308)
+reserved_pad = PackedStringArray("b6")
+reserved_soft = Array[Dictionary]([{
+"event": "k4194309",
+"kind": "confirm"
+}, {
+"event": "k4194310",
+"kind": "confirm"
+}, {
+"event": "k32",
+"kind": "confirm"
+}, {
+"event": "b0",
+"kind": "confirm"
+}, {
+"event": "b1",
+"kind": "cancel"
+}])
+web_locked_keys = Array[Dictionary]([{
+"action": "pause",
+"keys": [80]
+}])

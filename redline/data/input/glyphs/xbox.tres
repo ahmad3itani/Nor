@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="GlyphSet" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://input/GlyphSet.gd" id="1_glyph"]
+
+[resource]
+script = ExtResource("1_glyph")
+id = &"xbox"
+display_name = "Xbox"
+buttons = {
+0: "A",
+1: "B",
+2: "X",
+3: "Y",
+4: "View",
+5: "Guide",
+6: "Menu",
+7: "L3",
+8: "R3",
+9: "LB",
+10: "RB",
+11: "D-Pad Up",
+12: "D-Pad Down",
+13: "D-Pad Left",
+14: "D-Pad Right"
+}
+axes = {
+"a0+": "Left stick",
+"a0-": "Left stick",
+"a1+": "Left stick",
+"a1-": "Left stick",
+"a2+": "Right stick",
+"a2-": "Right stick",
+"a3+": "Right stick",
+"a3-": "Right stick",
+"a4+": "LT",
+"a5+": "RT"
+}
