@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RankTable" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://challenges/RankTable.gd" id="1_rank"]
+
+[resource]
+script = ExtResource("1_rank")
+thresholds = PackedInt32Array(0, 450, 650, 820, 900)
+time_points = 500
+fail_mult = 2.0
+damage_points = 300
+per_hit = 75
+per_death = 150
+style_points = 200
+full_style_rank = 4
+run_redline_needs_all = true

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ChallengeKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeKit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+use_profile_loadout = true

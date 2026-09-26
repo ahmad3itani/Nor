@@ -6,4 +6,4 @@
 script = ExtResource("1_lint")
 act = 1
 forbidden = PackedStringArray("Project REDLINE", "Architect", "The Null", "neural", "harvest", "Redline disaster", "conscious", "Pulse is", "stores memor", "made of memor", "research", "Rook")
-exempt_dirs = PackedStringArray("res://data/endings")
+exempt_dirs = PackedStringArray("res://data/endings", "res://world/rooms/challenge")

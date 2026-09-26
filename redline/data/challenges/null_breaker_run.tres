@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_null.tres" id="2_kit"]
+[ext_resource type="Script" path="res://challenges/ChallengeStage.gd" id="3_stage"]
+[ext_resource type="Resource" path="res://data/challenges/null_ranks.tres" id="4_rank"]
+
+[sub_resource type="Resource" id="Stage_breaker_run"]
+script = ExtResource("3_stage")
+id = "breaker_run"
+title = "Breaker Run"
+room = "res://world/rooms/challenge/NullBreakerRun.tscn"
+entry = &"from_lane"
+par_s = 50.0
+redline_s = 36.0
+
+[resource]
+script = ExtResource("1_data")
+id = "null_breaker_run"
+group = 0
+title = "Breaker Run"
+description = "Breakers start the clocks. Make every shutter standing; the Dash is the line."
+locked_hint = "Finish the first act."
+unlock_when = "flag:null_open"
+requires = PackedStringArray("ability:dash")
+requires_text = "The rig needs the Dash module."
+sort_order = 2
+start_room = "res://world/rooms/challenge/NullBreakerRun.tscn"
+start_entry = &"from_lane"
+kit = ExtResource("2_kit")
+score_kind = 2
+start_on = 0
+end_on = 4
+on_death = 1
+stages = Array[ExtResource("3_stage")]([SubResource("Stage_breaker_run")])
+rank_table = ExtResource("4_rank")

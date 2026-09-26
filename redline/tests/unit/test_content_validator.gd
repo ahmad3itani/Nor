@@ -264,5 +264,6 @@ func test_story_report_section() -> void:
 		var rows := Array(md.split("\n")).filter(func(l: String) -> bool: return l.begins_with("| %s |" % id) and l.contains("reachable now: no"))
 		check(rows.size() == 1, "ending %s has one 'reachable now: no' row" % id)
 	check(md.contains("flag:finale_choice_sever (Act 5)"), "future flags tagged with their act")
-	check(md.contains("flag:null_depth_reached (M9 postgame)") and not md.contains("(Act 9)"), "act 9 reads as the M9 postgame")
-	check(md.contains("| null_depth_reached | M9 postgame |"), "future-flag table shows the M9 postgame")
+	check(md.contains("flag:act5_finale_reached (Act 5)") and not md.contains("(Act 9)"), "a future flag reads with its act")
+	check(md.contains("| act5_finale_reached | Act 5 |") and not md.contains("| null_depth_reached |"), "future-flag table shows act5_finale_reached, not null_depth_reached")
+	check(_shipped_run().produced.has("null_depth_reached"), "null_depth_reached is produced (the Deep Rig's on_finish_flags, D-154)")

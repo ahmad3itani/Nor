@@ -158,7 +158,10 @@ func test_four_endings_exist() -> void:
 
 func test_every_ending_needs_a_future_flag() -> void:
 	var future := FutureFlagSet.shared()
-	check(future.flags().size() == 9, "nine future flags declared (%d)" % future.flags().size())
+	# D-154: null_depth_reached is produced by the Deep Rig (data/challenges),
+	# so it left the future list; the redline ending still needs Act V.
+	check(future.flags().size() == 8, "eight future flags declared (%d)" % future.flags().size())
+	check(not future.has_flag("null_depth_reached"), "null_depth_reached is no longer a future flag")
 	check(future.validate().is_empty(), "future_flags.tres validates: %s" % future.validate())
 	for e in EndingResolver.all():
 		var hits := Array(e.all_conditions()).filter(func(c: String) -> bool: return future.is_future_condition(c))

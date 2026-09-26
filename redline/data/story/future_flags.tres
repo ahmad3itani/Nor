@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FutureFlagSet" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="FutureFlagSet" load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://story/FutureFlagSet.gd" id="1_set"]
 [ext_resource type="Script" path="res://story/FutureFlag.gd" id="2_flag"]
@@ -39,12 +39,6 @@ flag = "redline_archive_opened"
 act = 2
 note = "Project REDLINE's records found (Act II \"Hunt\")"
 
-[sub_resource type="Resource" id="Resource_ff_06"]
-script = ExtResource("2_flag")
-flag = "null_depth_reached"
-act = 9
-note = "The Null's floor reached (M9 postgame, bible §30)"
-
 [sub_resource type="Resource" id="Resource_ff_07"]
 script = ExtResource("2_flag")
 flag = "orr_arc_resolved"
@@ -59,7 +53,7 @@ note = "Mara's arc closes"
 
 [resource]
 script = ExtResource("1_set")
-entries = Array[ExtResource("2_flag")]([SubResource("Resource_ff_00"), SubResource("Resource_ff_01"), SubResource("Resource_ff_02"), SubResource("Resource_ff_03"), SubResource("Resource_ff_04"), SubResource("Resource_ff_05"), SubResource("Resource_ff_06"), SubResource("Resource_ff_07"), SubResource("Resource_ff_08")])
+entries = Array[ExtResource("2_flag")]([SubResource("Resource_ff_00"), SubResource("Resource_ff_01"), SubResource("Resource_ff_02"), SubResource("Resource_ff_03"), SubResource("Resource_ff_04"), SubResource("Resource_ff_05"), SubResource("Resource_ff_07"), SubResource("Resource_ff_08")])
 planned_memories = 24
 planned_arc_stages = {
 "arc_iko_stage": 5,

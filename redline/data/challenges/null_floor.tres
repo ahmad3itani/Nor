@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_null.tres" id="2_kit"]
+[ext_resource type="Script" path="res://challenges/ChallengeStage.gd" id="3_stage"]
+[ext_resource type="Resource" path="res://data/challenges/null_ranks.tres" id="4_rank"]
+
+[sub_resource type="Resource" id="Stage_floor"]
+script = ExtResource("3_stage")
+id = "floor"
+title = "The Floor"
+room = "res://world/rooms/challenge/NullFloor.tscn"
+entry = &"from_breaker"
+par_s = 100.0
+redline_s = 70.0
+boss_id = "null_krail"
+
+[resource]
+script = ExtResource("1_data")
+id = "null_floor"
+group = 0
+title = "The Floor"
+description = "The Warden at the rig's tier: faster calls, Hoppers and a quicker clamp."
+locked_hint = "Finish the first act."
+unlock_when = "flag:null_open"
+requires = PackedStringArray("ability:dash")
+requires_text = "The rig needs the Dash module."
+sort_order = 3
+start_room = "res://world/rooms/challenge/NullFloor.tscn"
+start_entry = &"from_breaker"
+kit = ExtResource("2_kit")
+score_kind = 2
+start_on = 0
+end_on = 4
+on_death = 1
+stages = Array[ExtResource("3_stage")]([SubResource("Stage_floor")])
+rank_table = ExtResource("4_rank")
+on_finish_flags = PackedStringArray("null_depth_reached")

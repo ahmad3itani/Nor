@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_pit.tres" id="2_kit"]
+[ext_resource type="Resource" path="res://data/challenges/waves/pit_style.tres" id="3_waves"]
+
+[resource]
+script = ExtResource("1_data")
+id = "pit_style"
+group = 4
+title = "Pulse Pit — Style"
+description = "Five fixed waves in 90 seconds. The score is your style: keep the meter up."
+locked_hint = "Finish the first act."
+unlock_when = "flag:act1_complete"
+sort_order = 0
+start_room = "res://world/rooms/challenge/PulsePit.tscn"
+start_entry = &"start"
+kit = ExtResource("2_kit")
+score_kind = 1
+start_on = 1
+end_on = 2
+on_death = 0
+time_limit_s = 90.0
+split_boss = false
+medal_thresholds = PackedInt32Array(1200, 2400, 4000, 6000)
+waves = ExtResource("3_waves")
