@@ -27,7 +27,7 @@
 - [ ] `test_group_notice_silent_on_load` should load `tests/fixtures/save_v3_slice.json` + act1_complete instead of a hand-made save (T04 review).
 - [ ] Crouch/slide hold-toggle and a dark-on-light high-contrast variant (D-157, D-161) after §44 / final art.
 - [ ] Record style-rank reachability evidence for style_s / style_redline (`AchievementRules.STYLE_EVIDENCE`, PL-6 warning).
-- [ ] Some existing suites leave empty temp folders in user:// (`test_zz_user_dir_clean` judges files only); clean them in their teardowns.
+- [ ] Some suites leave files or empty folders in their own `user://test_*` temp dirs (`test_challenge_rules`, `test_l10n_edge`, `test_world_framework`; reported by `test_zz_user_dir_clean`); clean them in their teardowns. Move the older capture tours into `TourSandbox` after re-taking the pixel baseline (K-M9-T4).
 
 ## M8 (narrative integration): humans
 - [ ] Confirm or overrule the M8 flags: D-105 (scope, and M8 before §44), D-108 (hold-to-skip; repeat intros never lock), D-109 (Rook's name), D-110 (six settings pulled forward from M9), D-113 (the surfaced first-rest memory), D-114 (memory timeline order), D-115 (memory blue / red on redacted shapes), D-118 (Rook's choice labels; the choice sits after the card), D-120 (pending tick), D-129 (ending thresholds and Act I links), D-130 (Redline needs The Null), D-131 (the Act I boundary and card), D-134 (arc canon), D-135 (pacing), D-136 (no pause menu over dialogue), D-137 (placeholder ending text), D-138 (gallery in the journal, not Sera), D-139 (the story needs the Undercity campaign start).
