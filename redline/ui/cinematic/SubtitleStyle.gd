@@ -122,3 +122,9 @@ static func _italic_font() -> Font:
 		# Placeholder slant until the art pass picks a real italic (D-026).
 		_italic.variation_transform = Transform2D(Vector2(1, 0), Vector2(0.2, 1), Vector2.ZERO)
 	return _italic
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_italic = null

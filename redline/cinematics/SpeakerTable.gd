@@ -70,3 +70,11 @@ func validate() -> PackedStringArray:
 		if i < labels.size() and labels[i].strip_edges() == "":
 			errors.append("speakers: '%s' has an empty label" % id)
 	return errors
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_shared = null
+	_npcs = {}
+	_npcs_loaded = false

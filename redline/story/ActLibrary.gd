@@ -62,3 +62,10 @@ static func standing_lines(a: ActData) -> PackedStringArray:
 	if has_fallback:
 		out.append(last.text)
 	return out
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_acts = {}
+	_loaded = false

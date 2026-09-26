@@ -77,3 +77,9 @@ static func local_pos(n: Node, root: Node) -> Vector2:
 			p += (cur as Node2D).position
 		cur = cur.get_parent()
 	return p
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_cache = {}

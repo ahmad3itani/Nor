@@ -90,3 +90,9 @@ func validate() -> PackedStringArray:
 ## so ending conditions that read them have a producer in the flag lint.
 func content_flags() -> Dictionary:
 	return {"produces": Array(flags()), "consumes": [], "conditions": []}
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_shared = null

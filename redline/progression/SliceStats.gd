@@ -60,3 +60,9 @@ static func secrets_found() -> int:
 static func format_time(seconds: float) -> String:
 	var s := int(seconds)
 	return "%d:%02d" % [s / 60, s % 60]
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_totals = {}

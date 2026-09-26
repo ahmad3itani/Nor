@@ -79,3 +79,10 @@ static func explain(e: EndingData) -> Array[Dictionary]:
 	for c in e.requires_arcs:
 		add.call("People", c)
 	return out
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_all = []
+	_loaded = false

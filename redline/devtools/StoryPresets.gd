@@ -10,10 +10,13 @@ const PATH := "res://data/dev/story_presets.tres"
 
 
 static func all() -> Array[StoryPreset]:
-	var list := load(PATH) as StoryPresets
+	# Untyped on purpose: `load(PATH) as StoryPresets` (the script naming its
+	# own class) kept ~160 resources alive at exit in 4.3 once the list held
+	# a StoryPreset (the M8 exit-leak audit).
+	var list: Resource = load(PATH)
 	var out: Array[StoryPreset] = []
 	if list != null:
-		out.assign(list.presets)
+		out.assign(list.get("presets"))
 	return out
 
 

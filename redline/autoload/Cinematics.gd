@@ -42,6 +42,22 @@ func _ready() -> void:
 	EventBus.room_leaving.connect(func(_room: Node) -> void: abort())
 
 
+## At exit: static caches hold Resources past shutdown, which the engine
+## reports as leaks ("resources still in use at exit"). Clear them here, the
+## last story-aware node to leave the tree.
+func _exit_tree() -> void:
+	CinematicMode._teardowns.clear()
+	MemoryScenePlayer.active_instance = null
+	MemoryLibrary.clear_cache()
+	FutureFlagSet.clear_cache()
+	ActLibrary.clear_cache()
+	EndingResolver.clear_cache()
+	SpeakerTable.clear_cache()
+	SubtitleStyle.clear_cache()
+	WorldMapIndex.clear_cache()
+	SliceStats.clear_cache()
+
+
 ## Plays `seq` and returns when control is back. In INSTANT mode the result is
 ## already resolved when this returns (no frame passes); callers still `await`
 ## it, which then resumes at once. Check result.refused / result.aborted()

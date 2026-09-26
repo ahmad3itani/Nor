@@ -167,3 +167,12 @@ static func dev_reset() -> void:
 		if f.begins_with("mem_seen_") or f.begins_with("mem_detail_") or f == REMEMBERED_FLAG:
 			Game.state.flags.erase(f)
 			EventBus.flag_changed.emit(f, false)
+
+
+## Drops the static cache (Cinematics clears every story cache at exit, so
+## no Resource outlives its script and the engine reports no leaks).
+static func clear_cache() -> void:
+	_scenes = {}
+	_sorted = []
+	_config = null
+	_scanned = false
