@@ -27,7 +27,7 @@ const STATES := [
 	[LL + "RainlineChase.tscn", "SweeperWreck", "flag:chase_rainline_done"],
 	[LL + "SecurityStation.tscn", "SignalLost", "flag:chase_rainline_done"],
 	# M8: the Relay
-	[LL + "Relay.tscn", "VellSignLive", "!flag:arc_vell_krail"],
+	[LL + "Relay.tscn", "VellSignLive", "!flag:warden_krail_defeated"],
 	[LL + "Relay.tscn", "GalleryDoorLit", "flag:met_orr_radio"],
 	[LL + "Relay.tscn", "PipMarket", "flag:repeater_market"],
 	[LL + "Relay.tscn", "PipStack", "flag:repeater_stack"],
@@ -36,7 +36,7 @@ const STATES := [
 	[LL + "Relay.tscn", "IkoStall", "flag:met_iko"],
 	[LL + "Relay.tscn", "DoorWatch", "flag:act1_complete"],
 	[LL + "Relay.tscn", "MaraBench", "flag:arc_mara_krail"],
-	[LL + "Relay.tscn", "VellSignDry", "flag:arc_vell_krail"],
+	[LL + "Relay.tscn", "VellSignDry", "flag:warden_krail_defeated"],
 	[LL + "Relay.tscn", "NixTowerSheet", "flag:arc_nix_krail"],
 	[LL + "Relay.tscn", "IkoSpireCrates", "flag:arc_iko_krail"],
 	[LL + "Relay.tscn", "OrrOnAir", "flag:orr_air_named"],
@@ -270,8 +270,12 @@ func test_relay_arc_props() -> void:
 	check((room.find_child("VellSignLive", true, false) as WorldStateSwitch).visible, "Vell's sign live before Krail")
 	for npc: String in ["mara", "vell", "nix", "iko"]:
 		Game.arcs.force_stage(npc, "krail")
-	for name: String in ["MaraBench", "VellSignDry", "NixTowerSheet", "IkoSpireCrates"]:
+	for name: String in ["MaraBench", "NixTowerSheet", "IkoSpireCrates"]:
 		check((room.find_child(name, true, false) as WorldStateSwitch).visible, "%s shows once its krail stage is reached" % name)
+	# Vell's supply line is a world fact: the kill cuts it, talked to or not.
+	check((room.find_child("VellSignLive", true, false) as WorldStateSwitch).visible, "the sign follows the kill, not Vell's stage")
+	Game.set_flag("warden_krail_defeated")
+	check((room.find_child("VellSignDry", true, false) as WorldStateSwitch).visible, "VellSignDry once Krail is down")
 	check(not (room.find_child("VellSignLive", true, false) as WorldStateSwitch).visible, "the live sign goes dark with the dry one")
 	Game.set_flag("orr_air_named")
 	check((room.find_child("OrrOnAir", true, false) as WorldStateSwitch).visible, "OrrOnAir after the named choice")

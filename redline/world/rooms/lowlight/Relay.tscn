@@ -219,7 +219,7 @@ strokes = 3
 
 [node name="VellSignLive" type="Node2D" parent="Props"]
 script = ExtResource("switch")
-visible_when = "!flag:arc_vell_krail"
+visible_when = "!flag:warden_krail_defeated"
 
 [node name="Neon4" type="Node2D" parent="Props/VellSignLive"]
 position = Vector2(850, -150)
@@ -623,7 +623,7 @@ accent = Color(1, 0.72, 0.4, 1)
 
 [node name="VellSignDry" type="Node2D" parent="Props"]
 script = ExtResource("switch")
-visible_when = "flag:arc_vell_krail"
+visible_when = "flag:warden_krail_defeated"
 
 [node name="Neon16" type="Node2D" parent="Props/VellSignDry"]
 position = Vector2(850, -150)

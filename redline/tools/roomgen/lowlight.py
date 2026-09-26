@@ -58,9 +58,11 @@ r.neon(470, -110, 40, 10, RED, 5, False)
 r.neon(220, -80, 18, 8, CYAN)
 r.neon(660, -90, 24, 8, AMBER)
 # Vell's green sign: live through Act I, dry (a guttering tube) once her
-# supply is cut after Krail (arc_vell krail). Wrapped in place so every
-# numbered name keeps its number.
-vell_live = r.switch("VellSignLive", "!flag:arc_vell_krail")
+# supply is cut after Krail. Keyed on the kill, not her arc stage: the cut
+# supply is a world fact, whether or not Rook has talked to her (the arc
+# props below show what Rook has heard). Wrapped in place so every numbered
+# name keeps its number.
+vell_live = r.switch("VellSignLive", "!flag:warden_krail_defeated")
 r.neon(850, -150, 26, 8, GREEN, parent=vell_live)
 r.neon(10, -262, 20, 8, VIOLET)  # signs the gallery door
 r.hint("relay_talk", 100, -80, 80, 80, "Talk to Orr  [{action}]", "interact")
@@ -134,12 +136,14 @@ watch = r.switch("DoorWatch", "flag:act1_complete")
 r.decor("crates", 1004, 0, 14, 12, "0.3, 0.22, 0.16, 1", AMBER, parent=watch)
 r.decor("banner", 1000, -100, 18, 34, "0.35, 0.1, 0.13, 1", "1, 0.8, 0.7, 1", parent=watch)
 r.decor("lamp", 986, -2, 6, 60, "0.3, 0.24, 0.2, 1", SODIUM_WARM, parent=watch)
-# NPC arcs shown in the world (§18 consequences through people, no meter):
-# Mara works late on the Dash module after Krail;
+# NPC arcs shown in the world (§18 consequences through people, no meter).
+# These follow the arc stages, so they show what Rook has heard from each
+# person (a stage needs her met beat first). Mara works late on the Dash
+# module after Krail (her lamp stays lit once she moves to the door post);
 bench = r.switch("MaraBench", "flag:arc_mara_krail")
 r.decor("lamp", 628, -18, 4, 20, WARM, SODIUM_WARM, parent=bench)
 # Vell's supply is cut: her sign gutters (VellSignLive above goes dark);
-dry = r.switch("VellSignDry", "flag:arc_vell_krail")
+dry = r.switch("VellSignDry", "flag:warden_krail_defeated")
 r.neon(850, -150, 26, 8, GREEN, 2, True, parent=dry)
 # Nix pins a sheet for the Warden Tower on her city map;
 sheet = r.switch("NixTowerSheet", "flag:arc_nix_krail")
