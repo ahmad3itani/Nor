@@ -28,6 +28,10 @@ func after_each() -> void:
 	Settings._path = _saved["settings"]
 	Playtest.dir = _saved["playtest"]
 	Settings.playtest_recording = _saved["recording"]
+	# load_demo_settings applies what it loaded to the live InputMap and
+	# locale; put the live Settings' own values back.
+	InputBindings.apply(Settings.bindings)
+	Loc.set_locale(Settings.effective_locale())
 
 
 func test_default_is_full_in_tests() -> void:
@@ -231,6 +235,39 @@ func test_demo_first_run_follows_demo_settings_file() -> void:
 	BuildInfo.load_demo_settings(s, path)
 	check(not bool(s.get("first_run")), "a saved demo settings file retires the row")
 	s.free()
+	AtomicJson.remove_tree(dir)
+
+
+## A redirected demo's saved rebinds and language take effect after a
+## reload: load_demo_settings applies them to the InputMap and the
+## TranslationServer, not only to the Settings fields (M9 audit).
+func test_demo_settings_apply_bindings_and_locale() -> void:
+	var dir := "user://test_build_info_apply"
+	var path := dir + "/settings.cfg"
+	AtomicJson.remove_tree(dir)
+	DirAccess.make_dir_recursive_absolute(dir)
+	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "version", Settings.VERSION)
+	cfg.set_value("input", "bindings", {"jump": {"key": ["k76"]}})
+	cfg.set_value("ui", "locale", "en_XA")
+	check(cfg.save(path) == OK, "demo settings file written")
+	var before := Settings.snapshot()
+	var path_before := Settings._path
+	BuildInfo.set_force_demo(1)
+	BuildInfo.load_demo_settings(Settings, path)
+	var codes: Array[String] = []
+	for ev in InputMap.action_get_events(&"jump"):
+		codes.append(InputBindings.encode(ev))
+	check(codes.has("k76"), "the demo's jump rebind is live in the InputMap (%s)" % [codes])
+	check(not codes.has("k32"), "the replaced default key is gone (%s)" % [codes])
+	if Loc.available_locales().has("en_XA"):
+		check(Loc.locale() == "en_XA", "the demo's language is live (%s)" % Loc.locale())
+		check(TranslationServer.get_locale() == "en_XA", "TranslationServer follows")
+	else:
+		check(Settings.locale == "en_XA", "the demo's language is loaded")
+	Settings.restore(before)
+	Settings._path = path_before
+	Loc.set_locale(Settings.effective_locale())
 	AtomicJson.remove_tree(dir)
 
 

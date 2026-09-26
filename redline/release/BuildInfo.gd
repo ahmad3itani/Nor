@@ -244,6 +244,14 @@ static func load_demo_settings(s: Node, path: String = DEMO_SETTINGS_PATH) -> vo
 	s.call("load_settings", path)
 	s.set("first_run", not FileAccess.file_exists(path))
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	# load_settings only assigns the fields; Settings._ready applied the full
+	# game's file before this ran and apply_defaults put the shipped layout
+	# back. Apply the demo's own bindings and language now, or its rebinds and
+	# locale look saved but never take effect (M9 audit).
+	s.set("bindings", InputBindings.apply(s.get("bindings")))
+	if s.has_method("effective_locale"):
+		Loc.set_locale(str(s.call("effective_locale")))
+	UiTheme.invalidate()
 
 
 ## Whether `path` is a settings file the player's choices persist to: the
