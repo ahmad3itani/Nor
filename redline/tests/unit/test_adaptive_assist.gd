@@ -227,6 +227,8 @@ func test_suppressed_when_off_challenge_theatre_lab() -> void:
 	Settings.assist_suggestions = true
 	Challenges.force_active = true
 	check(advisor.suppressed_reason() == "challenge", "a challenge run")
+	advisor._on_player_died()
+	check(advisor.deaths("room:%s" % MARKET) == 0, "a run's deaths are not logged")
 	Challenges.force_active = false
 	CinematicMode.theatre = true
 	check(advisor.suppressed_reason() == "theatre", "a dev theatre")

@@ -114,7 +114,8 @@ func _on_anchor_rested(_anchor: Node) -> void:
 
 func _on_player_died() -> void:
 	var room := SceneRouter.current_room as Room
-	if room == null or not room.world_room:
+	# A challenge run owns its deaths (fast resets are the point there).
+	if room == null or not room.world_room or Challenges.active():
 		return
 	var cause := "unknown"
 	if is_instance_valid(room.player):
