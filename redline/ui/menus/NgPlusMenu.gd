@@ -58,7 +58,9 @@ func _options_step() -> void:
 		_confirm = true
 		_opened_frame = Engine.get_process_frames()
 		rebuild()
-		focus_index(0))
+		# The one irreversible step starts on Back: a confirm repeated or
+		# mashed from the options step cannot replace the save (M9 audit).
+		focus_index(1))
 	add_button(Loc.t("Back"), close_menu)
 
 

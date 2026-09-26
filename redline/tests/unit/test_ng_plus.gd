@@ -325,6 +325,23 @@ func test_ng_plus_menu_fits_270_in_both_steps() -> void:
 	m.close_menu()
 
 
+## A double confirm on Begin cannot start NG+: the confirm step opens on
+## Back, so the second press answers Back (M9 audit).
+func test_double_press_on_begin_does_not_start_ngplus() -> void:
+	_save_cleared()
+	var host := h.make_host(true)
+	var m := _ng_menu(host)
+	var cycle := NewGamePlus.cycle()
+	_press(m, "Begin")
+	check(m.focused_index() == 1, "the confirm step focuses Back (%d)" % m.focused_index())
+	var focused: Button = m._body.get_children().filter(func(n: Node) -> bool: return n is Button and (n as Button).has_focus())[0]
+	check(focused.text == "Back", "focused row is Back (%s)" % focused.text)
+	focused.pressed.emit()  # the repeated confirm lands on the focused row
+	check(NewGamePlus.cycle() == cycle, "NG+ did not begin")
+	check(_button_texts(m)[2] == "Begin", "back on the options step: %s" % [_button_texts(m)])
+	m.close_menu()
+
+
 func test_ngplus_menu_copy_has_no_backup_promise() -> void:
 	_save_cleared()
 	var host := h.make_host(true)
