@@ -136,10 +136,21 @@ func pace_line(length: int, hold: float, wait_for_tap: bool) -> void:
 				return
 		if is_instance_valid(ov):
 			ov.set_visible_chars(shown)
+		# Text auto-advance (D-110, R09.9): a line waiting for a tap moves on by
+		# itself once it has been fully up for its reading time. Off (the
+		# default) keeps the M8 timing frame for frame.
+		if wait_for_tap and Settings.text_auto_advance == 1 and full_at >= 0.0 and _clock - full_at >= auto_advance_seconds(length):
+			return
 		# No SkipGate (a non-locking play) means no tap can arrive: never wait for one.
 		if not (wait_for_tap and gate != null and not is_auto()) and _clock - start >= hold:
 			return
 		await ticked
+
+
+## Reading time of a fully typed line before auto-advance releases it
+## (AccessibilityConfig data, scaled by the subtitle speed).
+static func auto_advance_seconds(length: int) -> float:
+	return Settings.config().auto_advance_seconds(length) * SubtitleStyle.time_scale()
 
 
 ## Consumes a TAP the SkipGate reported this play (SeqLine advance).
@@ -208,7 +219,10 @@ func run_timed() -> void:
 	_begin()
 	_last_frame = Engine.get_process_frames()
 	if locking:
-		gate = SkipGate.new(first_view)
+		# NG+ (D3 §2.4): a scene seen in an earlier cycle gets the short
+		# repeat hold. first_view itself is unchanged, so its first-view steps
+		# still run and set the story state exactly as in cycle 0.
+		gate = SkipGate.new(first_view and not NewGamePlus.knows_seen_flag(seq.effective_seen_flag()))
 		if seq.letterbox and is_instance_valid(overlay()):
 			adopt(overlay().letterbox(true, CinematicMode.config().letterbox_seconds))
 	for i in seq.steps.size():

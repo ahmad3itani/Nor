@@ -135,7 +135,8 @@ func _start(s: MemorySceneData) -> void:
 	_seconds = 0.0
 	_beats_seen = 0
 	_first_view = not MemoryLibrary.is_seen(s.id)
-	_gate = SkipGate.new(_first_view)
+	# NG+ (D3 §2.4): a scene seen in an earlier cycle skips on the short hold.
+	_gate = SkipGate.new(_first_view and not NewGamePlus.knows_seen_flag(MemoryLibrary.flag_seen(s.id)))
 	_panel_open = false
 	_tableau.setup(s, cfg)
 	_update_view()

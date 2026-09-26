@@ -15,6 +15,10 @@ enum Kind { SCRAP_BUNDLE, MEMORY_FRAGMENT, CORE_SHARD }
 @export var fragment: MemoryFragmentData
 
 var _t: float = 0.0
+## NG+ (R09.2): a Core Shard spot found in an earlier cycle draws a dim
+## "recovered" husk (no pickup, no sound) instead of vanishing, so the spot
+## still reads as found.
+var _husk: bool = false
 
 
 func _ready() -> void:
@@ -29,12 +33,19 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	if Game.is_collected(persist_id):
+		if kind == Kind.CORE_SHARD and NewGamePlus.cycle() >= 1:
+			_husk = true
+			collision_mask = 0
+			monitoring = false
+			return
 		queue_free()
 		return
 	body_entered.connect(_on_body_entered)
 
 
 func _process(delta: float) -> void:
+	if _husk:
+		return
 	_t += delta
 	queue_redraw()
 
@@ -45,7 +56,10 @@ func _on_body_entered(body: Node2D) -> void:
 	Game.mark_collected(persist_id)
 	match kind:
 		Kind.SCRAP_BUNDLE:
-			ScrapPickup.burst(get_parent(), global_position + Vector2(0, -8), scrap_amount)
+			# R09.2: a secret stash refilled by NG+ pays a share of its Scrap.
+			var amount := NewGamePlus.stash_payout(scrap_amount) if NewGamePlus.cycle() >= 1 and NewGamePlus.is_secret_bundle(self) else scrap_amount
+			if amount > 0:
+				ScrapPickup.burst(get_parent(), global_position + Vector2(0, -8), amount)
 		Kind.MEMORY_FRAGMENT:
 			if fragment and not Game.state.memory_fragments.has(fragment.id):
 				Game.state.memory_fragments.append(fragment.id)
@@ -72,6 +86,11 @@ func _color() -> Color:
 func _draw() -> void:
 	var bob := sin(_t * 2.5) * 2.0
 	var c := _color()
+	if _husk:
+		# The empty socket of a recovered shard: an outline, no glint, no bob.
+		c.a = 0.35
+		draw_rect(Rect2(-3, -14, 6, 8), c, false, 1.0)
+		return
 	match kind:
 		Kind.MEMORY_FRAGMENT:
 			var pts := PackedVector2Array([Vector2(0, -16 + bob), Vector2(5, -9 + bob), Vector2(0, -2 + bob), Vector2(-5, -9 + bob)])

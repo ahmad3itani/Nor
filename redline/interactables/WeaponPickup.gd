@@ -41,6 +41,12 @@ func _ready() -> void:
 		return
 	# A boss reward respawned on revisit, or a rack already emptied: gone.
 	if Game.has_flag(effective_flag()) or Game.state.owned_weapons.has(weapon_id):
+		# D-153: NG+ carries the kit but resets the story, so the rack or drop
+		# of a weapon already owned only records that it was reached (its
+		# flag gates CollectorBay's exit). No grant, no banner, no SFX. Cycle
+		# 0 is unchanged: an owned weapon there never sets the flag.
+		if NewGamePlus.cycle() >= 1 and not Game.has_flag(effective_flag()):
+			Game.set_flag(effective_flag())
 		queue_free()
 		return
 	body_entered.connect(_on_body_entered)
