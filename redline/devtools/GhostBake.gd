@@ -162,6 +162,13 @@ static func medal_line(m: PackedInt32Array) -> String:
 	return " · ".join(parts)
 
 
+## Whether SceneRouter has a live fade rect (a booted Main registers one; a
+## bake must run without, so a transition is the same fixed two frames as in
+## the test runner, R08.14).
+static func fade_live() -> bool:
+	return is_instance_valid(SceneRouter.get("_fade"))
+
+
 ## Every pinned setting's current value (restore_settings puts them back).
 static func pin_settings() -> Dictionary:
 	var saved := {}
@@ -185,7 +192,7 @@ static func restore_settings(saved: Dictionary) -> void:
 ## (the determinism proof: the same inputs must give the same run).
 static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false, replay: GhostData = null) -> Dictionary:
 	var r := {"ok": false, "frames": -1, "ghost": null, "failure": "", "outcome": -1,
-		"fade_null": SceneRouter.get("_fade") == null}
+		"fade_null": true}
 	var bot_kind := ch.dev_bot if ch else &"none"
 	if pacify and bot_kind == &"none" and not ch.dev_route.is_empty():
 		bot_kind = &"route"
@@ -198,8 +205,14 @@ static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false, repla
 		r["failure"] = "a run is live or no world root is registered"
 		return r
 	var saved := pin_settings()
+	# A fade (a booted Main's, or a stale one a test left behind) would add
+	# render-rate frames before the bot starts: it is unregistered for the
+	# bake and put back after (R08.14).
+	var fade: Variant = SceneRouter.get("_fade")
+	SceneRouter.register_fade(null)
 	_drop_room()
 	if not Challenges.start(ch, {}):
+		SceneRouter.set("_fade", fade)
 		restore_settings(saved)
 		r["failure"] = "Challenges.start refused"
 		return r
@@ -215,7 +228,7 @@ static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false, repla
 	else:
 		for i in LEAD_FRAMES:
 			await tree.physics_frame
-		r["fade_null"] = bool(r["fade_null"]) and SceneRouter.get("_fade") == null
+		r["fade_null"] = bool(r["fade_null"]) and not fade_live()
 		var room := SceneRouter.current_room as Room
 		if pacify:
 			_pacify(room)
@@ -247,6 +260,7 @@ static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false, repla
 	if Challenges.active():
 		Challenges.reset_for_tests()
 	_drop_room()
+	SceneRouter.set("_fade", fade)
 	restore_settings(saved)
 	return r
 

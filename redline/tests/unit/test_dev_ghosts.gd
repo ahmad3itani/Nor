@@ -69,7 +69,7 @@ func test_bake_pins_timing_settings() -> void:
 	Settings.jump_hold_mode = 1
 	var r: Dictionary = await GhostBake.bake(get_tree(), ch)
 	check(bool(r["ok"]), "the bake finishes: %s" % r["failure"])
-	check(bool(r["fade_null"]) and SceneRouter.get("_fade") == null, "no fade is registered during the bake (R08.14)")
+	check(bool(r["fade_null"]) and not GhostBake.fade_live(), "no fade is registered during the bake (R08.14)")
 	if shipped and bool(r["ok"]):
 		check(int(r["frames"]) == shipped.frames, "host hitstop 0.5: %d frames, shipped %d" % [r["frames"], shipped.frames])
 	check(is_equal_approx(Settings.hitstop_scale, 0.5) and Settings.aim_assist == 2 and Settings.jump_hold_mode == 1,
