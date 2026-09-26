@@ -575,7 +575,27 @@ func test_anchor_plays_then_opens_loadout() -> void:
 	check(done >= 0 and menu > done, "loadout requested only after playback finished: %s" % [events])
 	check(get_tree().paused and loadout.is_open(), "the loadout is open over a paused world")
 	check(MemoryLibrary.is_seen("mem_first_rest"), "the rest remembered the memory")
+	var saved: Dictionary = SaveManager.load_profile(Game.profile_id).get("flags", {})
+	check(saved.has(MemoryLibrary.flag_seen("mem_first_rest")), "the rest saved again after the memory: %s" % [saved.keys()])
 	loadout.close_menu()
+
+
+## An aborted rest playback leaves MEMORY music and drops the Anchor's
+## follow-up, so a later journal playback never opens the loadout.
+func test_anchor_abort_drops_follow_up() -> void:
+	var room := await _enter_room()
+	_player()
+	CinematicMode.set_mode(CinematicMode.Mode.PLAY)
+	var anchor := room.find_child("Anchor", true, false) as Anchor
+	anchor.interact(room.player)
+	await _frames(10)
+	check(_mp.is_playing(), "the rest memory plays")
+	CinematicMode.teardown()
+	await _frames(2)
+	check(MusicDirector.state != MusicDirector.State.MEMORY, "an abort leaves MEMORY music")
+	check(not EventBus.memory_playback_finished.is_connected(anchor._after_memories), "the Anchor follow-up is dropped")
+	check(not EventBus.memory_playback_aborted.is_connected(anchor._memories_aborted), "the abort handler is gone too")
+	check(_of("menu").is_empty(), "no loadout after an abort")
 
 
 func test_anchor_without_pending_or_setting_off() -> void:

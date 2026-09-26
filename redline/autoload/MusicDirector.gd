@@ -55,6 +55,7 @@ func _ready() -> void:
 	# request is over (a queue of scenes never dips back to the room's mix).
 	EventBus.memory_scene_started.connect(func(_id: String, _s: StringName) -> void: _memory_active = true)
 	EventBus.memory_playback_finished.connect(func(_s: StringName) -> void: _memory_active = false)
+	EventBus.memory_playback_aborted.connect(func(_s: StringName) -> void: _memory_active = false)
 	# No audio device in headless runs (tests, probes): track state, skip synthesis.
 	if DisplayServer.get_name() != "headless":
 		WorkerThreadPool.add_task(_render_all)

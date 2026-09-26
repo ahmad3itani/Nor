@@ -281,11 +281,14 @@ func _end_playback(report: bool) -> void:
 	CinematicMode.pop_hud_hide(HUD_OWNER)
 	if report:
 		EventBus.memory_playback_finished.emit(source)
+	else:
+		EventBus.memory_playback_aborted.emit(source)
 
 
 ## Test/teardown path (registered with CinematicMode.register_teardown): stops
 ## the current scene without remembering it, drops the queue, restores pause
-## and the HUD, and reports nothing (no Anchor listener opens a menu).
+## and the HUD, and emits memory_playback_aborted instead of _finished (music
+## leaves MEMORY; the Anchor drops its follow-up and opens no menu).
 static func abort_active() -> void:
 	if is_instance_valid(active_instance) and active_instance.is_playing():
 		active_instance._end_playback(false)

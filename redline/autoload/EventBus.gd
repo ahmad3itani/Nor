@@ -129,6 +129,9 @@ signal memory_scene_started(scene_id: String, source: StringName)
 signal memory_scene_finished(scene_id: String, source: StringName, skipped: bool, seconds: float, beats_seen: int, detail_found: bool, first_view: bool)
 ## A whole memory playback request (all its scenes) is over; control returns.
 signal memory_playback_finished(source: StringName)
+## A memory playback request was aborted (teardown, CinematicMode.abort_all):
+## nothing was remembered and control returns without a follow-up (no menu).
+signal memory_playback_aborted(source: StringName)
 ## An NPC arc entered a stage. on_load = restored from a save, not a new event.
 signal arc_stage_entered(npc_id: String, stage_id: String, on_load: bool)
 ## The player picked a dialogue choice.

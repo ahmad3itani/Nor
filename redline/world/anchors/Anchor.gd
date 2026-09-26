@@ -43,13 +43,26 @@ func interact(player: Player) -> void:
 		return
 	# Connected before the request: INSTANT playback finishes inside the emit.
 	EventBus.memory_playback_finished.connect(_after_memories, CONNECT_ONE_SHOT)
+	EventBus.memory_playback_aborted.connect(_memories_aborted, CONNECT_ONE_SHOT)
 	EventBus.memory_playback_requested.emit(ids, &"anchor")
 
 
 func _after_memories(_source: StringName) -> void:
+	if EventBus.memory_playback_aborted.is_connected(_memories_aborted):
+		EventBus.memory_playback_aborted.disconnect(_memories_aborted)
+	# rest_at_anchor saved before the vignettes ran: save again so the flags
+	# they set (mem_seen_*, details, arc stages they unlock) survive a quit.
+	Game.save_game()
 	if not MemoryLibrary.pending().is_empty():
 		EventBus.hint_requested.emit(MemoryLibrary.config().more_waiting_hint, 3.0)
 	EventBus.menu_requested.emit(&"loadout")
+
+
+## An aborted playback remembers nothing and opens nothing: drop the pending
+## follow-up so it never fires on a later, unrelated playback.
+func _memories_aborted(_source: StringName) -> void:
+	if EventBus.memory_playback_finished.is_connected(_after_memories):
+		EventBus.memory_playback_finished.disconnect(_after_memories)
 
 
 func _draw() -> void:
