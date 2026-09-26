@@ -12,7 +12,8 @@ Run from redline/ (-B: do not write __pycache__):
 Options: --godot PATH (else $GODOT, else `godot` on PATH), --targets
 windows,linux,macos,web, --kinds full,demo, --debug (export-debug: the dev
 console is ON in debug exports, K-42), --out DIR (default redline/build),
---no-import, --gzip-web, --smoke, --check.
+--no-import, --gzip-web, --smoke, --min-locales N (--smoke fails with fewer
+locales; pass 2 once the .po files ship), --check.
 
 Python 3 standard library only, like tools/roomgen. No network: this script
 and every tool under tools/ must not import a network module (rule PY-NET).
@@ -24,6 +25,7 @@ two in step. tests/unit/test_export_presets.gd checks that both files name
 the same rule ids.
 """
 import argparse
+import ast
 import gzip
 import hashlib
 import json
@@ -48,7 +50,40 @@ FORBIDDEN_EXCLUDES = ["devtools/*"]
 REQUIRED_INCLUDES = ["data/challenges/ghosts/*.ghost", "locale/*.po"]
 SECRET_KEY_RE = re.compile(r"password|keystore|identity|apple_id|team_id|api_?key|certificate|p12|provisioning", re.I)
 # PY-NET: no network module in any Python tool (D-141, the user's local-only rule).
-NET_IMPORT_RE = re.compile(r"^\s*(?:import|from)\s+(urllib|http|socket|requests|ftplib)\b", re.M)
+# Top-level module names; ast finds every name in "import os, socket", every
+# "from x.y import z", and __import__("x") / importlib.import_module("x") calls.
+NET_MODULES = {"urllib", "urllib2", "urllib3", "http", "socket", "socketserver", "ssl", "requests", "httpx",
+               "aiohttp", "ftplib", "smtplib", "poplib", "imaplib", "telnetlib", "xmlrpc", "asyncio", "websocket",
+               "websockets", "webbrowser"}
+
+
+def net_imports(source, filename="<tool>"):
+    """Banned top-level modules a Python source imports (PY-NET), in order."""
+    found = []
+    try:
+        tree = ast.parse(source, filename)
+    except SyntaxError as e:
+        return ["<unparsable: %s>" % e.msg]
+    for node in ast.walk(tree):
+        names = []
+        if isinstance(node, ast.Import):
+            names = [a.name for a in node.names]
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+            names = [node.module]
+        elif isinstance(node, ast.Call):
+            f = node.func
+            fname = f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else "")
+            if fname in ("__import__", "import_module") and node.args:
+                arg = node.args[0]
+                if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                    names = [arg.value]
+                else:
+                    names = ["<dynamic import>"]
+        for n in names:
+            top = n.split(".")[0]
+            if top in NET_MODULES or n == "<dynamic import>":
+                found.append(n)
+    return found
 USER_DIRS = {
     "full": ("%APPDATA%\\Godot\\app_userdata\\REDLINE", "~/Library/Application Support/Godot/app_userdata/REDLINE",
              "~/.local/share/godot/app_userdata/REDLINE"),
@@ -211,8 +246,8 @@ def check_no_network(tools_dir=TOOLS):
                 continue
             path = os.path.join(base, f)
             with open(path, encoding="utf-8") as fh:
-                for m in NET_IMPORT_RE.finditer(fh.read()):
-                    errs.append("[PY-NET] %s imports %s (tools stay offline)" % (os.path.relpath(path, ROOT), m.group(1)))
+                for mod in net_imports(fh.read(), path):
+                    errs.append("[PY-NET] %s imports %s (tools stay offline)" % (os.path.relpath(path, ROOT), mod))
     return errs
 
 
@@ -384,11 +419,16 @@ def parse_build_info(stdout):
     return None
 
 
-def smoke_problems(info, kind, debug):
+def smoke_problems(info, kind, debug, min_locales=1):
     """What --smoke asserts about one BUILD_INFO record (also unit-testable)."""
     errs = []
     if info is None:
         return ["no BUILD_INFO line"]
+    locales = info.get("locales") or []
+    if len(locales) < min_locales:
+        errs.append("%d locale(s) %s, expected at least %d (include_filter locale/*.po)" % (len(locales), locales, min_locales))
+    if "ghosts" not in (info.get("data") or {}):
+        errs.append("BUILD_INFO data has no ghosts count (include_filter data/challenges/ghosts/*.ghost)")
     if info.get("kind") != kind:
         errs.append("kind is %s, expected %s" % (info.get("kind"), kind))
     if not debug and info.get("dev_console"):
@@ -405,12 +445,12 @@ def smoke_problems(info, kind, debug):
     return errs
 
 
-def smoke(binary, kind, debug):
+def smoke(binary, kind, debug, min_locales=1):
     with tempfile.TemporaryDirectory() as home:
         env = dict(os.environ, HOME=home, XDG_DATA_HOME=os.path.join(home, ".local", "share"))
         r = run([binary, "--headless", "--", "--print-build-info"], capture_output=True, text=True, env=env, timeout=300)
         info = parse_build_info(r.stdout)
-        errs = smoke_problems(info, kind, debug)
+        errs = smoke_problems(info, kind, debug, min_locales)
         if r.returncode != 0:
             errs.append("exit code %d" % r.returncode)
         if info:
@@ -430,6 +470,8 @@ def main(argv=None):
     ap.add_argument("--gzip-web", action="store_true")
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--min-locales", type=int, default=1,
+                    help="--smoke fails when a build lists fewer locales (2 once the .po files ship)")
     a = ap.parse_args(argv)
     if a.check:
         return run_check()
@@ -475,7 +517,7 @@ def main(argv=None):
         if not linux_bins:
             print("WARN: --smoke runs the Linux exports; add linux to --targets")
         for k, binary in linux_bins.items():
-            probs = smoke(binary, k, a.debug)
+            probs = smoke(binary, k, a.debug, a.min_locales)
             for p in probs:
                 print("SMOKE FAIL (%s): %s" % (k, p))
             if probs:
