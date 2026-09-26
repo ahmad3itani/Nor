@@ -18,7 +18,8 @@ enum Mode { PARKED, WARN, CHASE, REGROUP, RUNOUT, DERAIL }
 const BODY := Color(0.16, 0.15, 0.2, 1.0)
 const TRIM := Color(0.3, 0.28, 0.36, 1.0)
 const RAIL := Color(0.3, 0.3, 0.36, 1.0)
-## Telegraph red (Art Bible reserved danger colour).
+## Telegraph red (Art Bible reserved danger colour): the default-palette value;
+## drawing reads Palette &"chase_danger" (T12, D4 §7.3).
 const RED := Color(1.0, 0.23, 0.31, 1.0)
 const LAMP_OFF := Color(0.25, 0.1, 0.12, 1.0)
 const BODY_W := 64.0
@@ -87,18 +88,18 @@ func _draw() -> void:
 		Mode.PARKED:
 			draw_circle(lamp, 3.0, LAMP_OFF)
 		Mode.WARN:
-			draw_circle(lamp, 3.0, RED)
+			draw_circle(lamp, 3.0, _red())
 			var on := Settings.flash_reduction or fmod(_time, 0.4) < 0.2
-			draw_circle(Vector2(0, top + 16), 3.0, RED if on else LAMP_OFF)
+			draw_circle(Vector2(0, top + 16), 3.0, _red() if on else LAMP_OFF)
 		Mode.CHASE:
-			draw_circle(lamp, 3.0, RED)
+			draw_circle(lamp, 3.0, _red())
 			_draw_headlight(lamp)
 		Mode.REGROUP:
 			draw_circle(lamp, 3.0, LAMP_OFF)
 			# Three lamps, one goes out per third of the grace.
 			var lit := ceili(regroup_left / maxf(regroup_total, 0.001) * 3.0)
 			for i in 3:
-				draw_circle(Vector2(-12 + i * 12, top + 24), 3.0, RED if i < lit else LAMP_OFF)
+				draw_circle(Vector2(-12 + i * 12, top + 24), 3.0, _red() if i < lit else LAMP_OFF)
 		_:
 			draw_circle(lamp, 3.0, LAMP_OFF)
 	draw_set_transform(Vector2.ZERO)
@@ -113,4 +114,8 @@ func _draw_headlight(from: Vector2) -> void:
 		a = 0.14 + 0.12 * (0.5 + 0.5 * sin(_time * TAU * HEADLIGHT_HZ))
 	var reach := 120.0
 	var cone := PackedVector2Array([from, Vector2(dir * reach, -2), Vector2(from.x, -2)])
-	draw_colored_polygon(cone, Color(RED, a))
+	draw_colored_polygon(cone, Color(_red(), a))
+
+
+func _red() -> Color:
+	return Palette.color(&"chase_danger")

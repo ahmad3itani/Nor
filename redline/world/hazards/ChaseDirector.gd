@@ -26,8 +26,14 @@ extends Node2D
 enum State { IDLE, WARN, CHASE, REGROUP, RUNOUT, DERAIL, DONE }
 const STATE_NAMES: PackedStringArray = ["IDLE", "WARN", "CHASE", "REGROUP", "RUNOUT", "DERAIL", "DONE"]
 
+## Default-palette values (authoring view and debug use them as-is); the
+## player-facing overlay reads Palette &"chase_warning" / &"chase_danger" (T12).
 const AMBER := Color(1.0, 0.83, 0.42, 1.0)
 const RED := Color(1.0, 0.23, 0.31, 1.0)
+## The distance bar's chevron count (always on, D4 §7.3): the danger level is
+## a count as well as a colour. 1 = lead in the far half, 2 = closing,
+## 3 = inside near_lead.
+const METER_CHEVRON := Vector2(3, 5)
 ## Off-screen chevron: 6x12, inset 8 px from the nearest view edge.
 const CHEVRON := Vector2(6, 12)
 const EDGE_INSET := 8.0
@@ -488,11 +494,12 @@ func _draw_overlay(canvas: Node2D) -> void:
 	if view.size == Vector2.ZERO:
 		return
 	var danger := lead < data.near_lead
-	var colour := AMBER
+	var red := Palette.color(&"chase_danger")
+	var colour := Palette.color(&"chase_warning")
 	if danger:
-		colour = RED
+		colour = red
 		if not Settings.flash_reduction and fmod(elapsed * CHEVRON_PULSE_HZ, 1.0) > 0.5:
-			colour = Color(RED, 0.35)
+			colour = Color(red, 0.35)
 	var body := pursuer_rect()
 	if not view.intersects(body):
 		# Chevron at the nearest view edge, pointing at the pursuer.
@@ -513,7 +520,31 @@ func _draw_overlay(canvas: Node2D) -> void:
 	var f := clampf(lead / maxf(data.far_lead, 1.0), 0.0, 1.0)
 	canvas.draw_rect(Rect2(bar.position, Vector2(w * f, bar.size.y)), colour)
 	var near_x := bar.position.x + w * clampf(data.near_lead / maxf(data.far_lead, 1.0), 0.0, 1.0)
-	canvas.draw_line(Vector2(near_x, bar.position.y - 1), Vector2(near_x, bar.end.y + 1), RED, 1.0)
+	canvas.draw_line(Vector2(near_x, bar.position.y - 1), Vector2(near_x, bar.end.y + 1), red, 1.0)
+	# Chevrons right of the bar, one per danger level, in the steady colour
+	# (the pulse above never hides the count).
+	var solid := red if danger else colour
+	for i in meter_level():
+		var x := bar.end.x + 4.0 + i * (METER_CHEVRON.x + 2.0)
+		var y := bar.get_center().y
+		canvas.draw_polyline(PackedVector2Array([Vector2(x, y - METER_CHEVRON.y * 0.5), Vector2(x + METER_CHEVRON.x, y),
+			Vector2(x, y + METER_CHEVRON.y * 0.5)]), solid, 1.0)
+
+
+## The meter's danger level as a chevron count: 3 inside near_lead, 2 in the
+## near half of the rest, 1 when the lead is comfortable.
+func meter_level() -> int:
+	if data == null:
+		return 1
+	return level_for(lead, data.near_lead, data.far_lead)
+
+
+static func level_for(p_lead: float, near_lead: float, far_lead: float) -> int:
+	if p_lead < near_lead:
+		return 3
+	if p_lead < (near_lead + far_lead) * 0.5:
+		return 2
+	return 1
 
 
 # --- Authoring view and debug ----------------------------------------------------

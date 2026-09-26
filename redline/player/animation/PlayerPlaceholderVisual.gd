@@ -2,6 +2,10 @@ extends Node2D
 ## Graybox stand-in for Rook's sprite (placeholder art is expected in M0-M2).
 ## It still sells feel: squash/stretch on jump and land, state tinting,
 ## a facing "visor", and afterimages during dodge/dash (bible §25 vocabulary).
+##
+## M9 (T12, D4 §7.1/7.2): the post-hit blink (10 Hz) holds a steady see-through
+## body under flash reduction (the 3 Hz rule), and high contrast outlines the
+## body in white instead of black.
 
 const STATE_COLORS := {
 	&"idle": Color("d8d4e0"),
@@ -75,8 +79,7 @@ func _update_actor() -> void:
 	elif state == &"melee" and player.combat.current_attack:
 		names = [player.combat.current_attack.id, &"attack", &"idle"]
 	actor.play_first(names)
-	var blink := player.combat.hurt_invuln_timer > 0.0 and int(player.combat.hurt_invuln_timer * 20.0) % 2 == 0
-	actor.self_modulate = Color(1, 1, 1, 0.35 if blink else 1.0)
+	actor.self_modulate = Color(1, 1, 1, hurt_alpha(player.combat.hurt_invuln_timer, Settings.flash_reduction))
 
 
 func _body_size() -> Vector2:
@@ -102,15 +105,30 @@ func _draw() -> void:
 	var body := Rect2(Vector2(-size.x * 0.5, -size.y), size).abs()
 	var body_color := _body_color()
 	# Blink while post-hit invulnerable so the grace period is readable.
-	if player.combat.hurt_invuln_timer > 0.0 and int(player.combat.hurt_invuln_timer * 20.0) % 2 == 0:
-		body_color.a = 0.35
+	var a := hurt_alpha(player.combat.hurt_invuln_timer, Settings.flash_reduction)
+	if a < 1.0:
+		body_color.a = a
 	if player.combat.dead:
 		body_color = body_color.darkened(0.5)
 	if actor:
 		return
 	draw_rect(body, body_color)
-	draw_rect(body, Color(0, 0, 0, 0.6), false, 1.0)
+	draw_rect(body, outline_color(UiTheme.high_contrast()), false, 1.0)
 	# Visor: a 4x2 slit near the head on the facing side reads direction at a glance.
 	var visor_y := body.position.y + minf(5.0, size.y * 0.25)
 	var visor_x := 1.0 if player.facing > 0 else -5.0
 	draw_rect(Rect2(Vector2(visor_x, visor_y), Vector2(4, 2)), VISOR_COLOR)
+
+
+## Body alpha during post-hit invulnerability: a 10 Hz blink between 0.35 and
+## 1, or a steady 0.55 under flash reduction (still reads as "can't be hit").
+static func hurt_alpha(invuln_timer: float, reduced: bool) -> float:
+	if invuln_timer <= 0.0:
+		return 1.0
+	if reduced:
+		return 0.55
+	return 0.35 if int(invuln_timer * 20.0) % 2 == 0 else 1.0
+
+
+static func outline_color(hc: bool) -> Color:
+	return Color.WHITE if hc else Color(0, 0, 0, 0.6)

@@ -16,6 +16,10 @@ extends Node2D
 ##   HIGH cyan ceiling curtain + a floor stripe marking the 24 px slot -> slide
 ##        or crawl under it.
 ##   FULL red full-height line with a pulsing core -> dodge through it.
+## M9 (T12, D4 §7.3, always on): the beam's line pattern names the mode too,
+## LOW dashed, HIGH dotted, FULL solid with a "!" lamp on the emitter, and the
+## colours come from Palette (warning / info / scanner_full; the COLOR_*
+## constants are the default-palette values).
 ##
 ## Clearance windows with the default movement preset at 60 fps
 ## (test_security measures them against the real player):
@@ -44,6 +48,8 @@ const COLOR_FULL := Color("e8293d")
 const COLOR_RAIL := Color(0.55, 0.55, 0.62, 0.8)
 const COLOR_LAMP_ON := Color("ffcf59")
 const COLOR_LAMP_OFF := Color(0.25, 0.22, 0.28, 1.0)
+## Line patterns along the beam (D4 §7.3): [on px, off px]; 0 off = solid.
+const PATTERNS := {&"dashed": Vector2(5, 3), &"dotted": Vector2(2, 2), &"solid": Vector2(1, 0)}
 const LAMPS := 5
 const TRIP_TEXT_TIME := 0.8
 const FLASH_TIME := 0.15
@@ -297,14 +303,41 @@ func content_errors(_room: Node) -> PackedStringArray:
 # --- Drawing -------------------------------------------------------------------
 
 func _color() -> Color:
-	if data == null:
-		return COLOR_FULL
-	match data.mode:
+	return color_for(data.mode if data else ScannerData.Mode.FULL)
+
+
+## The beam colour for a mode in the chosen palette.
+static func color_for(mode: ScannerData.Mode) -> Color:
+	match mode:
 		ScannerData.Mode.LOW:
-			return COLOR_LOW
+			return Palette.color(&"warning")
 		ScannerData.Mode.HIGH:
-			return COLOR_HIGH
-	return COLOR_FULL
+			return Palette.color(&"info")
+	return Palette.color(&"scanner_full")
+
+
+## The always-on shape cue: LOW dashed, HIGH dotted, FULL solid.
+static func pattern_for(mode: ScannerData.Mode) -> StringName:
+	match mode:
+		ScannerData.Mode.LOW:
+			return &"dashed"
+		ScannerData.Mode.HIGH:
+			return &"dotted"
+	return &"solid"
+
+
+## The beam rect cut into its pattern's lit pieces (along the height).
+static func pattern_rects(r: Rect2, pattern: StringName) -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	var step: Vector2 = PATTERNS.get(pattern, PATTERNS[&"solid"])
+	if step.y <= 0.0:
+		out.append(r)
+		return out
+	var y := r.position.y
+	while y < r.end.y:
+		out.append(Rect2(r.position.x, y, r.size.x, minf(step.x, r.end.y - y)))
+		y += step.x + step.y
+	return out
 
 
 func _flash_reduced() -> bool:
@@ -332,9 +365,11 @@ func _draw() -> void:
 		State.ON:
 			alpha = 0.6 if _flash_reduced() else 0.95
 	var c := Color(col, alpha)
+	var pieces := pattern_rects(r, pattern_for(data.mode))
 	match data.mode:
 		ScannerData.Mode.LOW:
-			draw_rect(r, c)
+			for piece in pieces:
+				draw_rect(piece, c)
 			# Upward chevrons along the bar: "go over".
 			var cx := r.get_center().x
 			var y := r.end.y - 4.0
@@ -342,7 +377,8 @@ func _draw() -> void:
 				draw_polyline(PackedVector2Array([Vector2(cx - 4, y + 3), Vector2(cx, y), Vector2(cx + 4, y + 3)]), c, 1.0)
 				y -= 6.0
 		ScannerData.Mode.HIGH:
-			draw_rect(r, c)
+			for piece in pieces:
+				draw_rect(piece, c)
 			# Curtain fringe and the floor stripe marking the open slot.
 			draw_rect(Rect2(r.position.x - 4.0, r.end.y - 2.0, r.size.x + 8.0, 2.0), c)
 			draw_rect(Rect2(r.position.x - 6.0, bottom_y + off.y - 2.0, r.size.x + 12.0, 2.0), Color(col, 0.7))
@@ -352,6 +388,13 @@ func _draw() -> void:
 			if st == State.ON:
 				var pulse := 0.5 if _flash_reduced() else 0.5 + 0.5 * sin(clock * 9.0)
 				draw_rect(Rect2(r.get_center().x - 0.5, r.position.y, 1.0, r.size.y), Color(1, 1, 1, 0.4 + 0.4 * pulse))
+			# The "!" lamp beside the emitter: FULL means dodge, whatever the
+			# colour. It stays readable while the beam is off, so the mode is
+			# known before the pulse comes back.
+			var lamp := Vector2(r.end.x + 4.0, top_y + off.y + 3.0)
+			var lc := Color(col, maxf(alpha, 0.6))
+			draw_rect(Rect2(lamp, Vector2(2, 4)), lc)
+			draw_rect(Rect2(lamp + Vector2(0, 5), Vector2(2, 1)), lc)
 	if st == State.OFFLINE:
 		_draw_lamps(r)
 	if _flash_left > 0.0:
@@ -372,7 +415,7 @@ func _draw_lamps(r: Rect2) -> void:
 	var y := top_y - position.y + 3.0
 	for i in LAMPS:
 		var on := i < lit and not blink
-		draw_rect(Rect2(x0 + i * 4.0, y, 3.0, 2.0), COLOR_LAMP_ON if on else COLOR_LAMP_OFF)
+		draw_rect(Rect2(x0 + i * 4.0, y, 3.0, 2.0), Palette.color(&"warning") if on else COLOR_LAMP_OFF)
 
 
 ## F1 overlay (HitboxView): the lethal rect, state, phase time and sweep x.

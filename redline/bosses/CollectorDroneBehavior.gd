@@ -21,8 +21,12 @@ const FAMILIES: Dictionary = {
 	&"collector_tag_volley": &"volley", &"collector_tag_volley_p2": &"volley",
 	&"collector_claw_dive": &"dive", &"collector_hook_sweep": &"sweep",
 }
+## Default-palette values; drawing reads Palette &"danger" and
+## &"collector_warning" (T12, D4 §7.3) so a colour-blind palette moves both.
 const RED := Color("ff3b4f")
 const AMBER := Color(1.0, 0.62, 0.2)
+## The volley-tell lamp blink (6 Hz): only without flash reduction.
+const LAMP_BLINK_HZ := 6.0
 
 @export_group("Lanes (room y)")
 @export var cruise_y: float = -144.0
@@ -576,11 +580,18 @@ func draw_extras(canvas: Node2D) -> void:
 	for i in 3:
 		canvas.draw_rect(Rect2(-8 + i * 6, 2, 4, 3), cell)
 	canvas.draw_rect(cage, Color(0.35, 0.33, 0.3), false, 1.0)
-	# Amber lamp; it flashes during the volley tell.
-	var lamp := AMBER
-	if enemy.ai == Enemy.AI.WINDUP and _active_family == &"volley" and int(enemy.ai_time * 12.0) % 2 == 0:
-		lamp = Color.WHITE
-	canvas.draw_rect(Rect2(enemy.facing * (size.x * 0.5 - 4) - 2, -size.y + 3, 4, 3), lamp)
+	# The eye lamp says the state by shape as well as colour (always on, bible
+	# §24): an amber ring while it watches, a filled red disc while an attack
+	# winds up. The volley tell also blinks it white (steady under flash
+	# reduction).
+	var lamp_at := Vector2(enemy.facing * (size.x * 0.5 - 4), -size.y + 4.5)
+	if lamp_locked():
+		var lamp := Palette.color(&"danger")
+		if _active_family == &"volley" and lamp_blink(enemy.ai_time, Settings.flash_reduction):
+			lamp = Color.WHITE
+		canvas.draw_circle(lamp_at, 2.5, lamp)
+	else:
+		canvas.draw_arc(lamp_at, 2.0, 0.0, TAU, 12, Palette.color(&"collector_warning"), 1.0)
 	if _look_host:
 		var cut := rotors_cut()
 		for look in looks.looks:
@@ -613,6 +624,18 @@ func draw_extras(canvas: Node2D) -> void:
 		canvas.draw_string(ThemeDB.fallback_font, Vector2(-size.x, -size.y - 14), debug_text(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 
 
+## The lamp's state: true (red disc) while an attack winds up, false (amber
+## ring) while the drone watches.
+func lamp_locked() -> bool:
+	return enemy.ai == Enemy.AI.WINDUP
+
+
+## Pure: whether the volley tell shows the lamp white at `ai_time` (never
+## under flash reduction).
+static func lamp_blink(ai_time: float, reduced: bool) -> bool:
+	return not reduced and int(ai_time * LAMP_BLINK_HZ * 2.0) % 2 == 0
+
+
 ## Stopped rotor: two short dim stubs instead of the full bar.
 func _draw_cut_rotor(canvas: Node2D, color: Color) -> void:
 	var size := enemy.data.body_size
@@ -626,7 +649,7 @@ func _draw_cut_rotor(canvas: Node2D, color: Color) -> void:
 func _draw_dive(canvas: Node2D, floor_y: float, progress: float) -> void:
 	var land := to_global(Vector2(_dive_x, 0)) - enemy.global_position
 	var from := Vector2(0, -enemy.data.body_size.y * 0.5)
-	var c := RED
+	var c := Palette.color(&"danger")
 	c.a = 0.35 + 0.5 * progress
 	for i in 12:
 		canvas.draw_rect(Rect2(from.lerp(land, float(i) / 12.0) - Vector2(1, 1), Vector2(2, 2)), c)
@@ -640,7 +663,7 @@ func _draw_dive(canvas: Node2D, floor_y: float, progress: float) -> void:
 func _draw_sweep(canvas: Node2D, floor_y: float, progress: float) -> void:
 	var start := to_global(Vector2(_sweep_x, 0)).x - enemy.global_position.x
 	var length := enemy.current_attack.lunge_speed * enemy.current_attack.active
-	var c := RED
+	var c := Palette.color(&"danger")
 	c.a = 0.35 + 0.5 * progress
 	var dashes := int(length / 12.0)
 	for i in dashes:
@@ -656,29 +679,29 @@ func _draw_spotlight(canvas: Node2D, floor_y: float, locked: bool) -> void:
 	var base := Rect2(-w * 0.5, floor_y - 3, w, 3)
 	if locked:
 		var progress := clampf(enemy.ai_time / maxf(scaled_startup(enemy.current_attack), 0.01), 0.0, 1.0)
-		var c := RED
+		var c := Palette.color(&"danger")
 		c.a = 0.55 + 0.4 * progress
 		canvas.draw_rect(base, c)
 		if phase == 2:
-			var ring := RED
+			var ring := Palette.color(&"danger")
 			ring.a = 0.35
 			var span := wave_ring.y - wave_ring.x
 			canvas.draw_rect(Rect2(-wave_ring.y, floor_y - 2, span, 2), ring)
 			canvas.draw_rect(Rect2(wave_ring.x, floor_y - 2, span, 2), ring)
 		return
-	var amber := AMBER
+	var amber := Palette.color(&"collector_warning")
 	amber.a = 0.12
 	canvas.draw_rect(base, amber)
 	var dx := absf(room_pos().x - _player_x())
 	var near := clampf(1.0 - (dx - press_lock_dx) / 96.0, 0.0, 1.0)
-	var fill := RED
+	var fill := Palette.color(&"danger")
 	fill.a = 0.5
 	canvas.draw_rect(Rect2(-w * 0.5 * near, floor_y - 3, w * near, 3), fill)
 
 
 ## Phase 2 press: the floor cracks and glows outward before the wave.
 func _draw_crack(canvas: Node2D, progress: float) -> void:
-	var c := AMBER
+	var c := Palette.color(&"collector_warning")
 	c.a = 0.4 + 0.5 * progress
 	var reach := 20.0 + 40.0 * progress
 	canvas.draw_line(Vector2(-reach, -1), Vector2(reach, -1), c, 2.0)

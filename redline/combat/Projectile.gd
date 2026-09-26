@@ -2,8 +2,15 @@ class_name Projectile
 extends Node2D
 ## Fast projectile moved by ray casts each tick so it can't tunnel through
 ## thin walls or small hurtboxes. Stops on the first world or hurtbox hit.
+##
+## M9 (T12, D4 §7.2/7.3): high contrast gives the tracer and head a 1 px dark
+## outline, and with a colour-blind palette on, shots aimed at Rook take the
+## palette's danger colour (the default palette keeps each weapon's colour).
 
 signal impacted(result: int)
+
+## High-contrast outline under the tracer and head.
+const OUTLINE_COLOR := Color(0.02, 0.02, 0.04, 1.0)
 
 var attack: AttackData
 var attacker: Node2D
@@ -92,5 +99,16 @@ func _draw() -> void:
 	var tail := (_trail_from - global_position)
 	if tail.length() > attack.projectile.tracer_length:
 		tail = tail.normalized() * attack.projectile.tracer_length
-	draw_line(tail, Vector2.ZERO, attack.projectile.color, 1.0)
+	if UiTheme.high_contrast():
+		draw_line(tail, Vector2.ZERO, OUTLINE_COLOR, 3.0)
+		draw_rect(Rect2(-2, -2, 4, 4), OUTLINE_COLOR)
+	draw_line(tail, Vector2.ZERO, shot_color(), 1.0)
 	draw_rect(Rect2(-1, -1, 2, 2), Color.WHITE)
+
+
+## The tracer colour: the weapon's own, or Palette danger for enemy shots when
+## a colour-blind palette is chosen.
+func shot_color() -> Color:
+	if Palette.mode() != 0 and (target_mask & CombatLayers.PLAYER_HURTBOX) != 0:
+		return Palette.color(&"danger")
+	return attack.projectile.color

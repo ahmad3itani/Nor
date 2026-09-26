@@ -3,6 +3,11 @@ extends CanvasLayer
 ## Screen-space sky + two parallax skyline layers + rain, driven by the room
 ## camera. Drawn procedurally from a seeded layout: cheap, deterministic, and
 ## replaceable by painted layers later without touching room scenes.
+##
+## Background dim (M9 T12, bible §24, D4 §7.2): Settings.background_dim darkens
+## the sky and skyline by AccessibilityConfig.background_dim[i], so the play
+## layer separates from the parallax. Rain stays: it sits in front of the
+## world. Independent of high contrast (neither forces the other).
 
 const VIEW := Vector2(480, 270)
 const PERIOD := 960.0
@@ -31,6 +36,8 @@ func _ready() -> void:
 	_sky = Node2D.new()
 	_sky.draw.connect(_draw_sky)
 	add_child(_sky)
+	apply_dim()
+	EventBus.settings_changed.connect(apply_dim)
 	# Rain sits in front of the world, behind the HUD.
 	var front_layer := CanvasLayer.new()
 	front_layer.layer = 5
@@ -40,6 +47,26 @@ func _ready() -> void:
 	front_layer.add_child(_front)
 	for i in theme.rain_drops if theme and theme.rain else 0:
 		_drops.append(Vector2(_rng.randf_range(0, VIEW.x), _rng.randf_range(0, VIEW.y)))
+
+
+## Sets the sky layer's modulate from the background-dim setting.
+func apply_dim() -> void:
+	if _sky:
+		_sky.modulate = dim_modulate(Settings.background_dim)
+
+
+## Pure: the modulate for a background_dim index (white at Off).
+static func dim_modulate(index: int) -> Color:
+	var cfg := Settings.config()
+	var d := 0.0
+	if cfg and not cfg.background_dim.is_empty():
+		d = cfg.background_dim[clampi(index, 0, cfg.background_dim.size() - 1)]
+	return Color(1.0 - d, 1.0 - d, 1.0 - d, 1.0)
+
+
+## The sky layer (tests read its modulate).
+func sky_layer() -> Node2D:
+	return _sky
 
 
 func _build_skyline(out: Array[Rect2], layer_idx: int, min_h: float, max_h: float, min_w: float, max_w: float) -> void:

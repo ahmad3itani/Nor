@@ -17,11 +17,21 @@ extends EnemyBehavior
 ## Seconds of roar (no attacks) when phase 2 starts.
 @export var phase_pause: float = 1.2
 
+## Phase-2 baton crackle: lit on CRACKLE_ON_FRAMES of every
+## CRACKLE_PERIOD_FRAMES physics frames (2.5 Hz at 60 fps), under the 3 Hz
+## flash rule (D4 §7.1) in both modes, and counted in physics frames rather
+## than wall-clock time so tours and tests see the same frames. Under flash
+## reduction the arc is drawn steady instead of blinking.
+const CRACKLE_PERIOD_FRAMES := 24
+const CRACKLE_ON_FRAMES := 2
+
 var phase: int = 1
 var _last_attack: StringName = &""
 var _pause: float = 0.0
 var _home: Vector2
 var _rng := RandomNumberGenerator.new()
+## Physics frames since setup (the crackle clock).
+var _frame: int = 0
 
 
 func setup(owner_enemy: Enemy) -> void:
@@ -38,6 +48,7 @@ func attack(id: StringName) -> AttackData:
 
 
 func tick(_delta: float) -> void:
+	_frame += 1
 	_check_phase()
 
 
@@ -99,5 +110,15 @@ func draw_extras(canvas: Node2D) -> void:
 	canvas.draw_rect(Rect2(x, -size.y + 12.0, 3, 20), Color("7fd7ff"))
 	# Warden's visor.
 	canvas.draw_rect(Rect2(-size.x * 0.5 + 3, -size.y + 5, size.x - 6, 3), Color("e8283c"))
-	if phase == 2 and int(Time.get_ticks_msec() / 60) % 3 == 0:
+	if crackle_visible():
 		canvas.draw_line(Vector2(x, -size.y + 12.0), Vector2(x + enemy.facing * 6, -size.y + 4.0), Color.WHITE, 1.0)
+
+
+## Whether the phase-2 crackle arc is drawn this frame.
+func crackle_visible() -> bool:
+	return phase == 2 and crackle_lit(_frame, Settings.flash_reduction)
+
+
+## Pure: the crackle at physics frame `frame` (steady when reduced).
+static func crackle_lit(frame: int, reduced: bool) -> bool:
+	return reduced or posmod(frame, CRACKLE_PERIOD_FRAMES) < CRACKLE_ON_FRAMES
