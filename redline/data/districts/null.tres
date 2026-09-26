@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DistrictTheme" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/districts/DistrictTheme.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+district_name = "Deep Rig"
+sky_top = Color(0.01, 0.01, 0.02, 1)
+sky_bottom = Color(0.04, 0.04, 0.05, 1)
+far_color = Color(0.05, 0.05, 0.06, 1)
+mid_color = Color(0.07, 0.07, 0.08, 1)
+window_colors = PackedColorArray(0.91, 0.16, 0.24, 1)
+window_density = 0.02
+solid_color = Color(0.3, 0.31, 0.35, 1)
+edge_color = Color(0.86, 0.87, 0.9, 1)
+one_way_color = Color(0.62, 0.63, 0.68, 1)
+rain = false

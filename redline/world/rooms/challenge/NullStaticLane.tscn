@@ -1,0 +1,258 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/hazards/SpikeHazard.gd" id="spikes"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://world/hazards/ScannerBeam.gd" id="scanner"]
+[ext_resource type="Resource" path="res://data/level/scanner_low_null.tres" id="level_scanner_low_null"]
+[ext_resource type="Resource" path="res://data/level/scanner_high_null.tres" id="level_scanner_high_null"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_null.tres" id="level_scanner_full_null"]
+[ext_resource type="Resource" path="res://data/level/scanner_high.tres" id="level_scanner_high"]
+[ext_resource type="Script" path="res://world/rooms/FlowZone.gd" id="flow"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Watcher.tscn" id="scene_Watcher"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Needle.tscn" id="scene_Needle"]
+[ext_resource type="Resource" path="res://data/enemies/needle_null.tres" id="enemy_needle_null"]
+[ext_resource type="PackedScene" path="res://enemies/variants/ScoutDrone.tscn" id="scene_ScoutDrone"]
+[ext_resource type="Resource" path="res://data/enemies/scout_drone_null.tres" id="enemy_scout_drone_null"]
+[ext_resource type="Script" path="res://challenges/ChallengeGoal.gd" id="challenge_goal"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="exit"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/null.tres" id="theme"]
+
+[node name="NullStaticLane" type="Node2D"]
+script = ExtResource("room")
+room_name = "Static Lane"
+bounds = Rect2(-64, -360, 2560, 456)
+draw_grid = false
+world_room = true
+district_name = "Deep Rig"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -360)
+script = ExtResource("block")
+size = Vector2(2560, 16)
+
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -344)
+script = ExtResource("block")
+size = Vector2(16, 344)
+
+[node name="WallRightUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2480, -344)
+script = ExtResource("block")
+size = Vector2(16, 248)
+
+[node name="FloorA" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(868, 96)
+
+[node name="LandingB1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1020, 0)
+script = ExtResource("block")
+size = Vector2(80, 96)
+
+[node name="LandingB2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1230, 0)
+script = ExtResource("block")
+size = Vector2(100, 96)
+
+[node name="FloorC" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1530, 0)
+script = ExtResource("block")
+size = Vector2(966, 96)
+
+[node name="Block1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(820, 48)
+script = ExtResource("block")
+size = Vector2(200, 48)
+
+[node name="Spikes1" type="Area2D" parent="Hazards"]
+position = Vector2(844, 40)
+script = ExtResource("spikes")
+size = Vector2(152, 8)
+
+[node name="Block2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1100, 48)
+script = ExtResource("block")
+size = Vector2(130, 48)
+
+[node name="Spikes2" type="Area2D" parent="Hazards"]
+position = Vector2(1124, 40)
+script = ExtResource("spikes")
+size = Vector2(82, 8)
+
+[node name="Block3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1330, 48)
+script = ExtResource("block")
+size = Vector2(200, 48)
+
+[node name="Spikes3" type="Area2D" parent="Hazards"]
+position = Vector2(1354, 40)
+script = ExtResource("spikes")
+size = Vector2(152, 8)
+
+[node name="Spawn_start" type="Marker2D" parent="Spawns"]
+position = Vector2(20, 0)
+script = ExtResource("spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Scanner_nsl_low_1" type="Area2D" parent="Hazards"]
+position = Vector2(160, 0)
+script = ExtResource("scanner")
+beam_id = "nsl_low_1"
+data = ExtResource("level_scanner_low_null")
+top_y = -20
+bottom_y = 0
+
+[node name="Scanner_nsl_high_1" type="Area2D" parent="Hazards"]
+position = Vector2(300, 0)
+script = ExtResource("scanner")
+beam_id = "nsl_high_1"
+data = ExtResource("level_scanner_high_null")
+top_y = -176
+bottom_y = 0
+phase = 0.40
+
+[node name="Scanner_nsl_low_2" type="Area2D" parent="Hazards"]
+position = Vector2(440, 0)
+script = ExtResource("scanner")
+beam_id = "nsl_low_2"
+data = ExtResource("level_scanner_low_null")
+top_y = -20
+bottom_y = 0
+phase = 0.80
+
+[node name="Scanner_nsl_full_1" type="Area2D" parent="Hazards"]
+position = Vector2(580, 0)
+script = ExtResource("scanner")
+beam_id = "nsl_full_1"
+data = ExtResource("level_scanner_full_null")
+top_y = -176
+bottom_y = 0
+
+[node name="Scanner_nsl_high_2" type="Area2D" parent="Hazards"]
+position = Vector2(1580, 0)
+script = ExtResource("scanner")
+beam_id = "nsl_high_2"
+data = ExtResource("level_scanner_high")
+top_y = -176
+bottom_y = 0
+
+[node name="Flow1" type="Area2D" parent="Zones"]
+position = Vector2(1700, -300)
+script = ExtResource("flow")
+size = Vector2(660, 300)
+
+[node name="WatcherPerch" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1860, -160)
+script = ExtResource("block")
+size = Vector2(80, 16)
+
+[node name="Watcher1" parent="Enemies" instance=ExtResource("scene_Watcher")]
+position = Vector2(1900, -162)
+
+[node name="Needle1" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(1760, -2)
+data = ExtResource("enemy_needle_null")
+
+[node name="Needle2" parent="Enemies" instance=ExtResource("scene_Needle")]
+position = Vector2(2140, -2)
+data = ExtResource("enemy_needle_null")
+
+[node name="ScoutDrone1" parent="Enemies" instance=ExtResource("scene_ScoutDrone")]
+position = Vector2(2040, -150)
+data = ExtResource("enemy_scout_drone_null")
+
+[node name="Goal_static_lane" type="Area2D" parent="Triggers"]
+position = Vector2(2380, -96)
+script = ExtResource("challenge_goal")
+size = Vector2(40, 96)
+stage_id = "static_lane"
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(2380, -130)
+script = ExtResource("neon")
+size = Vector2(40, 10)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 3
+flicker = false
+
+[node name="Exit1" type="Area2D" parent="Triggers"]
+position = Vector2(2480, -96)
+script = ExtResource("exit")
+size = Vector2(16, 96)
+target_room = "res://world/rooms/challenge/NullBreakerRun.tscn"
+target_entry = &"from_lane"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(-40, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 340)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(690, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 340)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(1520, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 340)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(2470, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(10, 340)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(350, -2)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(700, 2)
+color = Color(0.86, 0.87, 0.9, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor6" type="Node2D" parent="Props"]
+position = Vector2(2030, -2)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(660, 2)
+color = Color(0.86, 0.87, 0.9, 1)
+accent = Color(1, 0.81, 0.35, 1)

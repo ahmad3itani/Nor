@@ -1,0 +1,171 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="spawn"]
+[ext_resource type="Script" path="res://interactables/Breaker.gd" id="breaker"]
+[ext_resource type="Script" path="res://world/props/Decor.gd" id="decor"]
+[ext_resource type="Script" path="res://world/transitions/GridClamp.gd" id="clamp"]
+[ext_resource type="Resource" path="res://data/level/clamp_null.tres" id="level_clamp_null"]
+[ext_resource type="Resource" path="res://data/combat/grid_clamp_attack.tres" id="clamp_attack"]
+[ext_resource type="Script" path="res://world/props/NeonSign.gd" id="neon"]
+[ext_resource type="PackedScene" path="res://bosses/variants/WardenKrailNull.tscn" id="scene_WardenKrailNull"]
+[ext_resource type="Script" path="res://bosses/BossArena.gd" id="arena"]
+[ext_resource type="Script" path="res://challenges/ChallengeGoal.gd" id="challenge_goal"]
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
+[ext_resource type="Resource" path="res://data/districts/null.tres" id="theme"]
+
+[node name="NullFloor" type="Node2D"]
+script = ExtResource("room")
+room_name = "The Floor"
+bounds = Rect2(-64, -300, 544, 364)
+draw_grid = false
+world_room = true
+district_name = "Deep Rig"
+theme = ExtResource("theme")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EncounterDirector" type="Node" parent="."]
+script = ExtResource("director")
+
+[node name="WallLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-64, -300)
+script = ExtResource("block")
+size = Vector2(16, 300)
+
+[node name="WallRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(464, -300)
+script = ExtResource("block")
+size = Vector2(16, 300)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, -300)
+script = ExtResource("block")
+size = Vector2(512, 30)
+
+[node name="Floor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-48, 0)
+script = ExtResource("block")
+size = Vector2(512, 96)
+
+[node name="Spawn_from_breaker" type="Marker2D" parent="Spawns"]
+position = Vector2(16, 0)
+script = ExtResource("spawn")
+spawn_id = &"from_breaker"
+is_default = true
+
+[node name="OneWay1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(120, -72)
+script = ExtResource("block")
+size = Vector2(52, 8)
+one_way = true
+
+[node name="OneWay2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(244, -72)
+script = ExtResource("block")
+size = Vector2(52, 8)
+one_way = true
+
+[node name="Breaker_wt_grid_w" type="Area2D" parent="Interactables"]
+position = Vector2(36, -96)
+script = ExtResource("breaker")
+breaker_id = "wt_grid_w"
+circuit = &"wt_clamp"
+
+[node name="Breaker_wt_grid_e" type="Area2D" parent="Interactables"]
+position = Vector2(396, -96)
+script = ExtResource("breaker")
+breaker_id = "wt_grid_e"
+circuit = &"wt_clamp"
+
+[node name="Decor1" type="Node2D" parent="Props"]
+position = Vector2(44, -22)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(6, 248)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor2" type="Node2D" parent="Props"]
+position = Vector2(404, -22)
+script = ExtResource("decor")
+kind = 11
+size = Vector2(6, 248)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Clamp_wt_clamp" type="StaticBody2D" parent="Geometry"]
+position = Vector2(176, -270)
+script = ExtResource("clamp")
+clamp_id = "wt_clamp"
+width = 64
+raised_bottom = -120
+timing = ExtResource("level_clamp_null")
+circuits = Array[StringName]([&"wt_clamp"])
+attack = ExtResource("clamp_attack")
+
+[node name="Decor3" type="Node2D" parent="Props"]
+position = Vector2(208, -2)
+script = ExtResource("decor")
+kind = 7
+size = Vector2(64, 2)
+color = Color(0.86, 0.87, 0.9, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Neon1" type="Node2D" parent="Props"]
+position = Vector2(168, -8)
+script = ExtResource("neon")
+size = Vector2(80, 6)
+color = Color(0.91, 0.16, 0.24, 1)
+strokes = 3
+flicker = false
+
+[node name="Decor4" type="Node2D" parent="Props"]
+position = Vector2(0, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(12, 270)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="Decor5" type="Node2D" parent="Props"]
+position = Vector2(416, 0)
+script = ExtResource("decor")
+kind = 0
+size = Vector2(12, 270)
+color = Color(0.3, 0.31, 0.35, 1)
+accent = Color(1, 0.81, 0.35, 1)
+
+[node name="WardenKrailNull1" parent="Enemies" instance=ExtResource("scene_WardenKrailNull")]
+position = Vector2(330, -2)
+
+[node name="BossArena" type="Area2D" parent="Triggers"]
+position = Vector2(40, -250)
+script = ExtResource("arena")
+size = Vector2(400, 250)
+boss_id = "null_krail"
+boss_title = "WARDEN KRAIL"
+boss_subtitle = "Echo"
+boss_path = NodePath("../../Enemies/WardenKrailNull1")
+
+[node name="Goal_floor" type="Area2D" parent="Triggers"]
+position = Vector2(192, -96)
+script = ExtResource("challenge_goal")
+size = Vector2(32, 96)
+stage_id = "floor"
+on_boss = "null_krail"

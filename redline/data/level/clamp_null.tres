@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ClampTiming" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/transitions/ClampTiming.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+warn = 0.9
+drop = 0.15
+hold = 1.0
+rise = 0.5
+rearm = 6.0

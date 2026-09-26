@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+[ext_resource type="Resource" path="res://data/enemies/brains/scout_drone.tres" id="brain_res"]
+
+[sub_resource type="Resource" id="Proj"]
+script = ExtResource("3_proj")
+speed = 172.5
+lifetime = 2.4
+pellets = 2
+spread_deg = 14.0
+color = Color(1, 0.23, 0.31, 1)
+tracer_length = 6.0
+
+[sub_resource type="Resource" id="Attack"]
+script = ExtResource("1_attack")
+id = &"drone_bolt"
+startup = 0.7
+active = 0.05
+recovery = 0.6
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(120, -100)
+hitstop = 0.05
+hitbox = Rect2(0, 0, 1, 1)
+lunge_speed = 0.0
+projectile = SubResource("Proj")
+swing_sfx = &"enemy_shoot"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"scout_drone"
+display_name = "Scout Drone"
+max_health = 20.0
+max_poise = 8.0
+stagger_time = 0.6
+mass = 0.8
+move_speed = 90.0
+accel = 300.0
+friction = 400.0
+flying = true
+body_size = Vector2(14, 10)
+aggro_range = 280.0
+brain = ExtResource("brain_res")
+attack_cooldown = 1.6
+reactor_reward = 10.0
+scrap_drop = 0
+style_value = 45.0
+color = Color(0.85, 0.72, 0.35, 1)
+attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])
