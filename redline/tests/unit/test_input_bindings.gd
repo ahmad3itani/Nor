@@ -112,6 +112,24 @@ func test_apply_override_and_reset() -> void:
 	check(InputBindings.reset(two).is_empty(), "reset everything")
 
 
+## Decoded events keep device -1 (all pads), like project.godot: a rebound
+## slot must still work on a second pad or a reconnected one.
+func test_rebound_events_match_any_device() -> void:
+	for code in ["k%d" % KEY_J, "b2", "a4+"]:
+		check(InputBindings.decode(code).device == InputBindings.ALL_DEVICES, "%s decodes for all devices" % code)
+	InputBindings.apply({"jump": {"pad": ["b2"], "key": ["k%d" % KEY_J]}})
+	for dev in [0, 1, 3]:
+		var b := _button(JOY_BUTTON_X)
+		b.device = dev
+		b.pressed = true
+		check(InputMap.event_is_action(b, &"jump"), "rebound pad jump works on device %d" % dev)
+		check(InputMap.event_is_action(b, &"cinematic_skip"), "mirrored skip works on device %d" % dev)
+		var k := _key(KEY_J)
+		k.device = dev
+		k.pressed = true
+		check(InputMap.event_is_action(k, &"jump"), "rebound key jump works on device %d" % dev)
+
+
 func test_stick_axes_survive_pad_override() -> void:
 	InputBindings.apply({"move_left": {"pad": ["b2"]}})
 	var evs := _encoded(&"move_left")
