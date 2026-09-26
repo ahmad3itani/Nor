@@ -22,12 +22,15 @@ const ACCENT := Color("e8283c")
 static var _italic: FontVariation
 
 
+## The UI font with the locale's fallback chain (D5 §10).
 static func font() -> Font:
-	return ThemeDB.fallback_font
+	return UiTheme.font()
 
 
+## The Subtitle size setting, floored by the locale's min_font_size (wide
+## glyphs need more pixels; 7 in English, so nothing moves).
 static func font_size() -> int:
-	return SIZES[Settings.effective_subtitle_size()]
+	return maxi(SIZES[Settings.effective_subtitle_size()], Loc.info().min_font_size)
 
 
 ## Height of the speaker label row (font size + 2).
@@ -116,7 +119,8 @@ static func draw_text(ci: CanvasItem, f: Font, pos: Vector2, text: String, width
 
 
 static func _italic_font() -> Font:
-	if _italic == null:
+	# Rebuilt when the locale's font changes.
+	if _italic == null or _italic.base_font != font():
 		_italic = FontVariation.new()
 		_italic.base_font = font()
 		# Placeholder slant until the art pass picks a real italic (D-026).

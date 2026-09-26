@@ -6,6 +6,11 @@ extends RefCounted
 ## M9 (D4 §7.2, §7.4): the theme is cached per (high contrast, UI scale) and
 ## dropped on settings_changed (invalidate). The default variant is exactly
 ## the M8 look, so tours and screenshots do not move with the options off.
+##
+## Localization (M9 D5 §10, §11): font() is the one font every text renderer
+## uses (menus through the theme, HUD, subtitles, world labels), built per
+## locale with that LocaleInfo's fallback chain, and every size read here is
+## lifted by the locale's min_font_size. English reads exactly as before.
 ## High contrast never relies on colour alone: the focused row gets borders
 ## on both sides and disabled rows a text prefix.
 
@@ -24,6 +29,8 @@ const DISABLED_PREFIX := "— "
 ## "hc:scale_index:palette_mode" -> Theme.
 static var _themes: Dictionary = {}
 static var _font: Font = null
+## Locale code _font was built for (rebuilt on a switch).
+static var _font_code: String = ""
 
 
 ## Drops the cached themes (high contrast or the UI scale changed; the
@@ -35,6 +42,7 @@ static func invalidate() -> void:
 static func clear_cache() -> void:
 	invalidate()
 	_font = null
+	_font_code = ""
 
 
 static func high_contrast() -> bool:
@@ -56,9 +64,23 @@ static func scale() -> float:
 	return cfg.ui_scale_factor(int(s.get("ui_scale"))) if cfg else 1.0
 
 
-## Menu font size at the current scale (delta: +2 for headings).
+## Menu font size at the current scale (delta: +2 for headings), lifted by
+## the locale's size floor (font_lift).
 static func font_size(delta: int = 0) -> int:
-	return roundi((FONT_SIZE + delta) * scale())
+	return roundi((FONT_SIZE + delta + font_lift()) * scale())
+
+
+## How many points the current locale lifts every text size (D5 §10):
+## LocaleInfo.min_font_size is the floor of the body size (FONT_SIZE, 7), and
+## smaller authored sizes (headers at -1/-2, the HUD's 6) rise by the same
+## step, so the hierarchy holds. 0 in English and the pseudo-locale.
+static func font_lift() -> int:
+	return maxi(0, Loc.info().min_font_size - FONT_SIZE)
+
+
+## A HUD text size (CombatHud authors 5-7 px) with the locale lift.
+static func hud_font_size(base: int) -> int:
+	return base + font_lift()
 
 
 ## Any authored pixel size at the current scale.
@@ -66,14 +88,43 @@ static func scaled(size: int) -> int:
 	return roundi(size * scale())
 
 
-## The one UI font: a variation over the engine fallback font with an empty
-## fallback chain (T13 adds the locale chain here).
+## The one UI font (D5 §10): a variation over the engine default font whose
+## fallbacks are the current locale's chain (font_chain). Built once per
+## locale; a switch rebuilds it on the next read. The only place that reads
+## ThemeDB.fallback_font (test_no_direct_fallback_font), besides base_font().
 static func font() -> Font:
-	if _font == null:
+	var code := Loc.locale()
+	if _font == null or _font_code != code:
 		var f := FontVariation.new()
-		f.base_font = ThemeDB.fallback_font
+		f.base_font = base_font()
+		f.fallbacks = font_chain(Loc.info())
 		_font = f
+		_font_code = code
 	return _font
+
+
+## The engine default face (Open Sans in 4.3) under every locale's chain.
+static func base_font() -> Font:
+	return ThemeDB.fallback_font
+
+
+## A locale's fallback fonts: its bundled res:// files that exist (none ship
+## in M9, D-163), then its SystemFont names (desktop only: the Web build has
+## no system fonts, so coverage checks never count them).
+static func font_chain(info: LocaleInfo) -> Array[Font]:
+	var chain: Array[Font] = []
+	if info == null:
+		return chain
+	for p in info.font_paths:
+		if ResourceLoader.exists(p):
+			var f := load(p) as Font
+			if f:
+				chain.append(f)
+	if not info.system_fonts.is_empty():
+		var sf := SystemFont.new()
+		sf.font_names = info.system_fonts
+		chain.append(sf)
+	return chain
 
 
 ## TEXT / MUTED for the current contrast mode (callers that pass a colour).
@@ -100,11 +151,13 @@ static func get_theme() -> Theme:
 	var hc := high_contrast()
 	# The accent comes from the colour-blind palette (T12, D4 §7.3), so the
 	# palette mode is part of the key.
-	var key := "%s:%d:%d" % [hc, scale_index(), Palette.mode()]
+	# The locale is part of the key: its font chain and size floor (D5 §10).
+	var key := "%s:%d:%d:%s" % [hc, scale_index(), Palette.mode(), Loc.locale()]
 	if _themes.has(key):
 		return _themes[key]
 	var t := Theme.new()
 	var accent := Palette.color(&"accent")
+	t.default_font = font()
 	t.default_font_size = font_size()
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = PANEL

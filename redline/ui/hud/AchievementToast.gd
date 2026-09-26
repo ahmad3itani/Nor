@@ -158,7 +158,7 @@ static func rect_for(view: Vector2, scale: float) -> Rect2:
 	var y := TOP
 	var layout_view := view / scale
 	if layout_view.x < HUD.COMPACT_WIDTH:
-		var boss: Rect2 = HUD.element_rects(layout_view, ThemeDB.fallback_font,
+		var boss: Rect2 = HUD.element_rects(layout_view, UiTheme.font(),
 			{"boss_title": "WARDEN KRAIL", "staggered": true})["boss"]
 		y = maxf(TOP, boss.end.y * scale + 4.0)
 	return Rect2(Vector2(roundf((view.x - size.x) * 0.5), y), size)

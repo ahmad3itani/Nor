@@ -387,7 +387,7 @@ func debug_draw(canvas: CanvasItem) -> void:
 	var fp := footprint()
 	canvas.draw_rect(fp, Color(1.0, 0.7, 0.28, 0.9), false, 1.0)
 	var text := "%s %s t%.2f rearm %.1f" % [clamp_id, state_name(), state_time, rearm_left]
-	canvas.draw_string(ThemeDB.fallback_font, fp.position + Vector2(0, -2), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
+	canvas.draw_string(UiTheme.font(), fp.position + Vector2(0, -2), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 
 
 # --- Content protocol (ContentValidator) ------------------------------------------

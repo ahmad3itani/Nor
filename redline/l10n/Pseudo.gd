@@ -66,9 +66,9 @@ static func _regex() -> RegEx:
 ## Glyphs of `text` that no font in the chain has (the default font plus the
 ## locale's bundled fallbacks; system fonts never count: the Web build has
 ## none). Each missing glyph is listed once, in order of appearance.
-## T13 swaps the base to UiTheme.font() when the locale font chain lands.
+## The base face is UiTheme.base_font(), the one UiTheme.font() builds on.
 static func missing_glyphs(text: String, info: LocaleInfo = null) -> String:
-	var chain: Array[Font] = [ThemeDB.fallback_font]
+	var chain: Array[Font] = [UiTheme.base_font()]
 	if info != null:
 		for p in info.font_paths:
 			if ResourceLoader.exists(p):

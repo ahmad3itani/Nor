@@ -161,7 +161,7 @@ func _draw_hud() -> void:
 	var ls := lines()
 	if ls.is_empty():
 		return
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	var h := minf(LINE * ls.size() + 2.0, BLOCK.y)
 	_root.draw_rect(Rect2(ORIGIN - Vector2(2, 1), Vector2(BLOCK.x, h)), Color(0, 0, 0, 0.45))
 	for i in ls.size():

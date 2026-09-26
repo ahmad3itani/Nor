@@ -2875,7 +2875,7 @@ msgstr ""
 #. MemoryConfig
 #. max 60 chars
 #: data/memories/memory_config.tres
-msgid "— rest at an Anchor to remember"
+msgid "— rest at an Anchor"
 msgstr ""
 
 #. key: data/memories/memory_config.tres::detail_line

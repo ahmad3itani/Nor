@@ -73,7 +73,7 @@ func _draw() -> void:
 	# Facing mark (a visor tick), so the ghost's direction reads at a glance.
 	var fx := rect.end.x - 3.0 if flags & GhostData.FLAG_RIGHT else rect.position.x + 1.0
 	draw_rect(Rect2(fx, rect.position.y + 4.0, 2.0, 2.0), outline)
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	var tag := tag_text()
 	var w := font.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE).x
 	draw_string(font, Vector2(-w * 0.5, rect.position.y - 3.0), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE, outline)

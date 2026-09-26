@@ -564,7 +564,7 @@ func _draw() -> void:
 func debug_draw(canvas: CanvasItem) -> void:
 	if data == null or path.size() < 2:
 		return
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	var g := PackedVector2Array()
 	for pt in path:
 		g.append(to_global(pt))

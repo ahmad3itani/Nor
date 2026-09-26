@@ -375,7 +375,7 @@ func debug_draw(canvas: CanvasItem) -> void:
 	canvas.draw_rect(Rect2(global_position, Vector2(size.x, full_height() - gap)), Color(1.0, 0.7, 0.28, 0.9), false, 1.0)
 	var m := "-" if is_nan(last_margin) else "%.2f" % last_margin
 	var text := "%s %s %.2fs m %s%s" % [shutter_id, state_name(), time_left(), m, " HOLD" if _holding else ""]
-	canvas.draw_string(ThemeDB.fallback_font, global_position + Vector2(-8, -4), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
+	canvas.draw_string(UiTheme.font(), global_position + Vector2(-8, -4), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 
 
 # --- Content protocol (ContentValidator) ------------------------------------------

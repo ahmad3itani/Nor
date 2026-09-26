@@ -189,7 +189,8 @@ func add_label(text: String, color: Color = UiTheme.TEXT, size: int = UiTheme.FO
 	var l := Label.new()
 	l.text = text
 	l.add_theme_color_override("font_color", UiTheme.label_color(color))
-	l.add_theme_font_size_override("font_size", UiTheme.scaled(size))
+	# The locale's size floor lifts every label (0 in English, D5 §10).
+	l.add_theme_font_size_override("font_size", UiTheme.scaled(size + UiTheme.font_lift()))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_body.add_child(l)
 	return l

@@ -101,7 +101,7 @@ func debug_text() -> String:
 ## HitboxView hook: tuned zones name their numbers so playtesters can see why
 ## the Core drains slower here.
 func debug_draw(canvas: CanvasItem) -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	canvas.draw_string(font, global_position + Vector2(2, 10), debug_text(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.91, 0.16, 0.24, 0.9))
 
 

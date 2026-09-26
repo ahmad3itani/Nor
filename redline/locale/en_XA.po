@@ -1535,8 +1535,8 @@ msgid "MEMORIES  —  ACT {act}"
 msgstr "[MÉMÓŔÍÉŠ  —  ÁÇŤ {act}~~~~~~]"
 
 #: data/memories/memory_config.tres
-msgid "— rest at an Anchor to remember"
-msgstr "[— ŕéšť áť áñ Áñçĥóŕ ťó ŕémémbéŕ~~~~~~~~~~~]"
+msgid "— rest at an Anchor"
+msgstr "[— ŕéšť áť áñ Áñçĥóŕ~~~~~~~]"
 
 #: data/memories/memory_config.tres
 msgid "Detail: {detail}"

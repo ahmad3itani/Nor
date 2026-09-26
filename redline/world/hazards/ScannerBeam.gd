@@ -403,7 +403,7 @@ func _draw() -> void:
 	if _trip_text_left > 0.0:
 		var rise := (1.0 - _trip_text_left / TRIP_TEXT_TIME) * 14.0
 		# l10n: ignore(world art stays English, K-M9-L3)
-		draw_string(ThemeDB.fallback_font, _trip_text_pos + Vector2(-18, -6 - rise), "TRIPPED",
+		draw_string(UiTheme.font(), _trip_text_pos + Vector2(-18, -6 - rise), "TRIPPED",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, minf(1.0, _trip_text_left * 3.0)))
 
 
@@ -432,5 +432,5 @@ func debug_draw(canvas: CanvasItem) -> void:
 		label += " x%.0f" % beam_x()
 	if offline_left > 0.0:
 		label += " off%.1f" % offline_left
-	canvas.draw_string(ThemeDB.fallback_font, Vector2(r.position.x - 10, r.position.y - 4), label,
+	canvas.draw_string(UiTheme.font(), Vector2(r.position.x - 10, r.position.y - 4), label,
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)

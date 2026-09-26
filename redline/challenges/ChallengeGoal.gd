@@ -58,7 +58,7 @@ func _reach() -> void:
 
 
 func _draw() -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	draw_rect(Rect2(Vector2.ZERO, size), Color(1, 1, 1, 0.08))
 	draw_rect(Rect2(Vector2.ZERO, size), Color(1, 1, 1, 0.5), false, 1.0)
 	# l10n: a room-internal marker label (dev teleports and the editor only).

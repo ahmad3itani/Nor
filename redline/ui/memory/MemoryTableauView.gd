@@ -225,7 +225,7 @@ func _draw_detail(ox: float) -> void:
 func _draw_chevrons(w: float, h: float) -> void:
 	if scene.tableau_width <= int(VIEW_HALF * 2.0):
 		return
-	var f := ThemeDB.fallback_font
+	var f := UiTheme.font()
 	var a := 0.4 if Settings.flash_reduction else 0.3 + 0.15 * sin(t * 2.0)
 	if view_x > VIEW_HALF + 1.0:
 		draw_string(f, Vector2(4, h * 0.5), "‹", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(TONES[2], a))

@@ -53,14 +53,17 @@ const LOC_EXEMPT := ["glyph_seen", "glyph_pending", "glyph_locked", "glyph_gap",
 ## Journal gallery.
 @export var gallery_title: String = "MEMORIES  —  ACT {act}"
 @export var act_names: PackedStringArray = PackedStringArray(["I", "II", "III", "IV", "V"])
-@export var pending_hint: String = "— rest at an Anchor to remember"
+@export var pending_hint: String = "— rest at an Anchor"
 @export var detail_line: String = "Detail: {detail}"
 @export var detail_unfound_text: String = "Something else was there."
 @export var back_label: String = "Back"
 ## Timeline strip glyphs: remembered, recovered but not remembered, not yet
 ## recovered, and the gap between memories (the strip never shows a total).
-@export var glyph_seen: String = "◆"
-@export var glyph_pending: String = "◇"
+## Every glyph must be in the default font (test_glyph_coverage_per_locale):
+## the M8 diamonds (U+25C6/25C7) were not, and showed as tofu on Web. The
+## stand-ins keep filled = remembered, hollow = waiting.
+@export var glyph_seen: String = "•"
+@export var glyph_pending: String = "◊"
 @export var glyph_locked: String = "·"
 @export var glyph_gap: String = "?"
 ## Vignette pause panel (bible §24 pause during scenes).

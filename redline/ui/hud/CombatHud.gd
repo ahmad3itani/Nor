@@ -289,7 +289,7 @@ func _draw_hud() -> void:
 	var y := base.y + 21
 	if w:
 		var ammo := int(combat.ammo.get(w.id, 0))
-		_root.draw_string(font, Vector2(base.x, y), Loc.upper(w.display_name), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("c9c3d6"))
+		_root.draw_string(font, Vector2(base.x, y), Loc.upper(w.display_name), HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color("c9c3d6"))
 		var ax := base.x + 62
 		var ammo_col := Palette.color(&"ammo")
 		for i in w.ammo_max:
@@ -310,18 +310,18 @@ func _draw_hud() -> void:
 	# Scrap (banked + unbanked, unbanked shown dimmer).
 	var st := Game.state
 	var scrap_text := scrap_label(st.scrap_banked, st.scrap_unbanked)
-	_root.draw_string(font, Vector2(base.x + 92 + 50, base.y + 21), scrap_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Palette.color(&"currency"))
+	_root.draw_string(font, Vector2(base.x + 92 + 50, base.y + 21), scrap_text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Palette.color(&"currency"))
 
 	# Contextual prompt and hints (bottom centre).
 	if _prompt != "":
 		var t := Loc.f("[{key}] {prompt}", {"key": InputGlyphs.label(&"interact"), "prompt": _prompt})
-		_draw_centered(font, t, lay["prompt_y"], FONT_SIZE + 1, Color.WHITE)
+		_draw_centered(font, t, lay["prompt_y"], fs() + 1, Color.WHITE)
 	if _hint_time > 0.0:
 		var c := Color(1, 1, 1, clampf(_hint_time * 2.0, 0.0, 1.0))
 		if hc:
 			# High contrast: the hint sits on an opaque card.
-			_root.draw_rect(text_rect(font, _hint, lay["hint_y"], FONT_SIZE + 1, view).grow(2.0), Color(HC_CARD, c.a))
-		_draw_centered(font, _hint, lay["hint_y"], FONT_SIZE + 1, c)
+			_root.draw_rect(text_rect(font, _hint, lay["hint_y"], fs() + 1, view).grow(2.0), Color(HC_CARD, c.a))
+		_draw_centered(font, _hint, lay["hint_y"], fs() + 1, c)
 
 	# Memory Fragment card: short, readable, never pauses play (bible §2.7 story through play).
 	if _lore_time > 0.0:
@@ -329,15 +329,15 @@ func _draw_hud() -> void:
 		var card: Rect2 = lay["lore_card"]
 		_root.draw_rect(card, Color(0.04, 0.03, 0.07, (1.0 if hc else 0.85) * a))
 		_root.draw_rect(Rect2(card.position, Vector2(2, card.size.y)), Color(0.62, 0.85, 1.0, a))
-		_root.draw_string(font, card.position + Vector2(8, 11), _lore_title, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 12, FONT_SIZE, Color(0.62, 0.85, 1.0, a))
-		_root.draw_multiline_string(font, card.position + Vector2(8, 22), _lore_text, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 14, FONT_SIZE, -1, Color(1, 1, 1, a))
+		_root.draw_string(font, card.position + Vector2(8, 11), _lore_title, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 12, fs(), Color(0.62, 0.85, 1.0, a))
+		_root.draw_multiline_string(font, card.position + Vector2(8, 22), _lore_text, HORIZONTAL_ALIGNMENT_LEFT, card.size.x - 14, fs(), -1, Color(1, 1, 1, a))
 
 	# Boss bar (bottom centre; top centre in the compact layout), with the
 	# phase-2 threshold marked.
 	if _boss and is_instance_valid(_boss) and not _boss.is_dead():
 		var bar_r: Rect2 = lay["boss_bar"]
 		var bw := bar_r.size.x
-		_draw_centered(font, Loc.t(_boss_title), bar_r.position.y - 3, FONT_SIZE, Color.WHITE)
+		_draw_centered(font, Loc.t(_boss_title), bar_r.position.y - 3, fs(), Color.WHITE)
 		_root.draw_rect(bar_r, DIM)
 		var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
 		_root.draw_rect(Rect2(bar_r.position, Vector2(bw * f, 4)), red)
@@ -345,7 +345,7 @@ func _draw_hud() -> void:
 			_root.draw_rect(bar_r, HC_OUTLINE, false, 1.0)
 		_root.draw_rect(Rect2(bar_r.position + Vector2(bw * 0.5, -1), Vector2(1, 6)), Color.WHITE)
 		if _boss.ai == Enemy.AI.STAGGER:
-			_draw_centered(font, Loc.t("STAGGERED"), bar_r.end.y + 8, FONT_SIZE - 1, Color("ffcf5a"))
+			_draw_centered(font, Loc.t("STAGGERED"), bar_r.end.y + 8, fs() - 1, Color("ffcf5a"))
 	elif _boss and (not is_instance_valid(_boss) or _boss.is_dead()):
 		_boss = null
 
@@ -368,7 +368,7 @@ func _draw_hud() -> void:
 	var mbar := Rect2(pos + Vector2(0, 4), Vector2(62, 2))
 	_root.draw_rect(mbar, DIM)
 	_root.draw_rect(Rect2(mbar.position, Vector2(mbar.size.x * meter.rank_progress(), 2)), col)
-	_root.draw_string(font, pos + Vector2(0, 12), style_label(int(meter.points)), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color("c9c3d6"))
+	_root.draw_string(font, pos + Vector2(0, 12), style_label(int(meter.points)), HORIZONTAL_ALIGNMENT_LEFT, -1, fs() - 1, Color("c9c3d6"))
 
 
 ## One pip or tick: the draw ops from pip_ops().
@@ -412,6 +412,11 @@ static func rank_color(base: Color, flashing: bool, reduced: bool) -> Color:
 
 ## Anchors for a layout space `view` (the viewport / UI scale). At 480 x 270
 ## this is exactly the M8 layout; narrower views (125 %, 150 %) are compact.
+## The HUD text size (6) with the locale's size lift (UiTheme.hud_font_size).
+static func fs() -> int:
+	return UiTheme.hud_font_size(FONT_SIZE)
+
+
 static func layout(view: Vector2) -> Dictionary:
 	var compact := view.x < COMPACT_WIDTH
 	var base := Vector2(6, view.y - 30)
@@ -484,31 +489,31 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		out["health"] = Rect2(base, Vector2(right - base.x, PIP.y))
 	if content.has("core_label"):
 		var bar := Rect2(base + Vector2(0, 9), Vector2(92, 4))
-		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], bar.position + Vector2(bar.size.x + 4, 5), FONT_SIZE))
+		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], bar.position + Vector2(bar.size.x + 4, 5), fs()))
 	var y := base.y + 21
 	if content.has("weapon"):
-		var r := _left_text_rect(font, Loc.upper(String(content["weapon"])), Vector2(base.x, y), FONT_SIZE)
+		var r := _left_text_rect(font, Loc.upper(String(content["weapon"])), Vector2(base.x, y), fs())
 		r = r.merge(Rect2(base.x + 62, y - 5, int(content.get("ammo_max", 0)) * 4, 5))
 		out["weapon"] = r.merge(Rect2(base.x + 116, y - 6, 18, 7))
 	if content.has("scrap"):
-		out["scrap"] = _left_text_rect(font, content["scrap"], Vector2(base.x + 142, y), FONT_SIZE)
+		out["scrap"] = _left_text_rect(font, content["scrap"], Vector2(base.x + 142, y), fs())
 	if content.has("prompt"):
-		out["prompt"] = text_rect(font, content["prompt"], lay["prompt_y"], FONT_SIZE + 1, view)
+		out["prompt"] = text_rect(font, content["prompt"], lay["prompt_y"], fs() + 1, view)
 	if content.has("hint"):
-		out["hint"] = text_rect(font, content["hint"], lay["hint_y"], FONT_SIZE + 1, view)
+		out["hint"] = text_rect(font, content["hint"], lay["hint_y"], fs() + 1, view)
 	if content.has("boss_title"):
 		var bar_r: Rect2 = lay["boss_bar"]
-		var r := bar_r.merge(text_rect(font, content["boss_title"], bar_r.position.y - 3, FONT_SIZE, view))
+		var r := bar_r.merge(text_rect(font, content["boss_title"], bar_r.position.y - 3, fs(), view))
 		r = r.merge(Rect2(bar_r.position + Vector2(bar_r.size.x * 0.5, -1), Vector2(1, 6)))
 		if content.get("staggered", false):
-			r = r.merge(text_rect(font, Loc.t("STAGGERED"), bar_r.end.y + 8, FONT_SIZE - 1, view))
+			r = r.merge(text_rect(font, Loc.t("STAGGERED"), bar_r.end.y + 8, fs() - 1, view))
 		out["boss"] = r
 	if content.has("rank"):
 		var pos: Vector2 = lay["rank"]
 		var rank: String = content["rank"]
 		var size := 16 if rank.length() <= 3 else 11
 		var r := _left_text_rect(font, rank, pos, size).merge(Rect2(pos + Vector2(0, 4), Vector2(62, 2)))
-		out["rank"] = r.merge(_left_text_rect(font, style_label(9999), pos + Vector2(0, 12), FONT_SIZE - 1))
+		out["rank"] = r.merge(_left_text_rect(font, style_label(9999), pos + Vector2(0, 12), fs() - 1))
 	if content.has("banner"):
 		var r := text_rect(font, content["banner"], lay["banner_y"], 12, view)
 		out["banner"] = r.merge(text_rect(font, content.get("banner_sub", ""), lay["banner_y"] + 14, 7, view))
@@ -533,7 +538,7 @@ func _draw_core(font: Font, base: Vector2) -> void:
 	if UiTheme.high_contrast():
 		_root.draw_rect(bar, HC_OUTLINE, false, 1.0)
 	var label := core_label(int(reactor.charge), reactor.in_flow(), _core_online > 0.0)
-	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
+	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color.WHITE)
 
 
 func _draw_centered(font: Font, text: String, y: float, size: int, color: Color) -> void:

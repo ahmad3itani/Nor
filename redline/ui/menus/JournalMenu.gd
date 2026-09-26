@@ -188,7 +188,7 @@ func _build_gallery() -> void:
 	focus_index(0)
 
 
-## "?  ◆  ?  ◇  ?  ·  ?": remembered / waiting / not yet recovered, with a
+## "?  •  ?  ◊  ?  ·  ?": remembered / waiting / not yet recovered, with a
 ## gap between every memory and at both ends, and never a total.
 func _strip(scenes: Array) -> String:
 	var cfg := MemoryLibrary.config()
