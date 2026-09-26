@@ -9,9 +9,20 @@ var _last_prompt: String = ""
 @onready var player: Player = get_parent()
 
 
+func _ready() -> void:
+	# A scene, dialogue or menu clears the prompt from outside (emits ""):
+	# forget ours so the next tick shows it again once control is back.
+	EventBus.interact_prompt_changed.connect(_on_prompt_changed)
+
+
+func _on_prompt_changed(text: String) -> void:
+	_last_prompt = text
+
+
 func tick(input: PlayerInputFrame) -> void:
 	current = _find()
-	var prompt := current.prompt_text() if current else ""
+	# A locking scene owns Rook: no prompt until it hands control back.
+	var prompt := current.prompt_text() if current and not player.cinematic_lock else ""
 	if prompt != _last_prompt:
 		_last_prompt = prompt
 		EventBus.interact_prompt_changed.emit(prompt)

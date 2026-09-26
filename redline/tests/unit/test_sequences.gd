@@ -674,6 +674,31 @@ func test_trigger_retries_after_another_play() -> void:
 	trig.queue_free()
 
 
+## Rook standing on an Interactable when a locking scene starts gets the
+## prompt back when it ends, without stepping off and on again.
+func test_prompt_returns_after_scene() -> void:
+	var prompts: Array = []
+	var rec := func(t: String) -> void: prompts.append(t)
+	EventBus.interact_prompt_changed.connect(rec)
+	var it := Interactable.new()
+	it.name = "PromptProbe"
+	it.prompt_verb = "Probe"
+	it.size = Vector2(64, 64)
+	room.add_child(it)
+	it.global_position = room.player.global_position
+	await physics_frames(4)
+	check(prompts.has("Probe"), "the prompt shows: %s" % [prompts])
+	_auto(4.0)
+	_start(_seq(PARITY))
+	await physics_frames(4)
+	check(prompts.back() == "", "the scene clears the prompt: %s" % [prompts])
+	await _until_finished()
+	await physics_frames(4)
+	check(prompts.back() != "", "the prompt is back after the scene: %s" % [prompts])
+	EventBus.interact_prompt_changed.disconnect(rec)
+	it.queue_free()
+
+
 func test_non_locking_repeat_play() -> void:
 	Game.set_flag("seen_seq_test_seq_repeat_bark")
 	var walk := ScriptedInputSource.new()
