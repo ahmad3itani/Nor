@@ -101,10 +101,12 @@ func accepts(ws: WaveSet) -> bool:
 ## Fresh state for `ws`: nothing spawned yet; wave 1 starts on the first
 ## counted tick. Re-arming frees the enemies this director spawned.
 func arm(ws: WaveSet) -> void:
+	# Variant, not Node: an enemy freed after the run stopped ticking is still
+	# listed, and assigning a freed instance to a typed var aborts (4.3).
 	for pair: Array in _alive:
-		var e: Node = pair[0]
+		var e: Variant = pair[0]
 		if is_instance_valid(e):
-			e.queue_free()
+			(e as Node).queue_free()
 	wave_set = ws
 	armed = true
 	wave = 0

@@ -70,6 +70,22 @@ func test_waves_start_after_start_and_restart() -> void:
 	check(await _spawned(), "waves spawn after a title start")
 
 
+## An enemy freed after the director stopped pruning (the run already over)
+## must not abort a re-arm (a freed instance in a typed Node var does, 4.3).
+func test_rearm_with_freed_enemy_listed() -> void:
+	check(await h.start(_pit("pit_style"), {}), "pit_style started")
+	check(await _spawned(), "waves spawn")
+	var d := _director()
+	if d == null or d.alive_count() == 0:
+		check(false, "an enemy is alive to free")
+		return
+	(d._alive[0][0] as Node).free()
+	d.arm(d.wave_set)
+	check(d.armed and d.wave == 0 and d.spawn_log.is_empty() and d.alive_count() == 0, "the re-arm ran to the end")
+	d.disarm()
+	check(not d.armed and d.spawn_log.is_empty(), "disarm with nothing listed")
+
+
 func test_waves_validate() -> void:
 	for path in [STYLE_SET, ENDURANCE_SET]:
 		var ws := load(path) as WaveSet
