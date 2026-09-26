@@ -1,5 +1,65 @@
 # REDLINE Changelog
 
+## 0.8.0-m8: Narrative Integration (systems + Act I)
+
+Bible §36 M8: "cinematics, memory scenes, NPC arcs, endings and world-state changes." Scope (D-105, FLAG): the narrative systems are built fully and integrated into Act I; Acts II–V and the finale are not built, so the endings are a complete framework reachable only through the dev Ending theatre. Report: `M8_NARRATIVE_REPORT.md`. Decisions D-105..D-139.
+
+### Sequences (cinematics)
+- **One sequence system** (D-106): `SequenceData` step lists in `data/sequences/`, run by the new **`Cinematics` autoload** (`cinematics/`, `ui/cinematic/CinematicOverlay.gd`). Steps: line (speaker labels, narration), wait, fade, letterbox, camera, actor move/face/flash, Rook pose, shake, sfx, music, flag, mark, title card, credits.
+- A skip and INSTANT run every remaining `finish()`; an abort (room left, Save & Quit, test teardown) only restores, reverts actor moves and flashes, and the scene replays.
+- **Act I scenes:** `uc_opening` (Wake, New Game), `uc_collector_intro` and `ll_krail_intro` (first attempt locks and plays in full; retries are 0.8 s non-locking overlays that keep control, D-108), `relay_arrival` (first arrival from the Undercity), `act1_close` (after Krail, before the card; sets `act1_complete` under the fade). Three non-locking radio barks: `bark_market_patrol`, `bark_bell_lift`, `bark_tunnel_orr`.
+- **`CinematicMode`** PLAY / AUTO / INSTANT, shared with memory scenes. Headless runs default to INSTANT (`--cinematics=` overrides), so every route and boss test is unchanged; an INSTANT boss intro keeps the M7 timer and leaves the camera alone (D-107).
+- **`SkipGate`**: a tap advances a line, a skip is a hold of `cinematic_skip` (0.8 s first view, 0.4 s repeat), or two taps under "Skip scenes: Press twice", or PauseMenu **Skip scene**; 0.25 s grace; presses carried in from before the scene are ignored (D-108).
+- New input action `cinematic_skip` (Space / Enter / K / Z, pad A); `ui_accept` / `ui_cancel` gain pad A / B, so **every menu now works from a controller** (D-111, a behaviour change: menu buttons press on pad A and menus close on pad B).
+- `Player.cinematic_lock` gates `PlayerCombat` and `ScannerBeam`; `SequenceTrigger` (`play_when`, `autoplay`, `require_spawn`, `once`) never starts while enemies are active; `BossArena.intro_sequence`.
+
+### Settings and accessibility
+- New **"Subtitles & scenes…"** sub-page with six settings (D-110): subtitle size (7 / 9 / 11 px), subtitle background (outline / 0.6 / 0.92; DialogueBox outline / 0.92 / 1.0), speaker labels, subtitle speed (×1 / ×1.5 / ×2), skip scenes (Hold / Press twice), memories at Anchors. Defaults render exactly as M7.
+- `SubtitleStyle` is shared by the overlay, the memory player and DialogueBox; the skip prompt and title cards follow the size setting. `--subtitle-size=N` sets the size for one session without saving (captures).
+- The HUD holds hints, the banner and the fragment card while it is hidden by a scene.
+- Text auto-advance was cut and moves to M9 (TODO).
+
+### Memory scenes
+- Memory Fragments become **playable vignettes** (`MemorySceneData`, `data/memories/`): a panning tableau, 3–6 player-paced beats, one hidden detail, memory-blue treatment with neutral edge static (D-115). Played by `MemoryScenePlayer` (own pause panel: Resume / Skip memory / Subtitle size, D-136).
+- They surface **at Anchors, never on pickup**, one per rest (D-112); the fragment card now says "Rest at an Anchor to remember." A skipped memory counts as remembered.
+- **Journal gallery**: a timeline strip (slots 100..600, D-114), replays and "Remember now". `MusicDirector` gets a MEMORY state.
+- Act I set: the five fragment vignettes plus the surfaced **"Count the Last One"** on the first rest (D-113, FLAG). `collectible_taken` EventBus signal.
+
+### NPC arcs
+- **`NpcArc`** (spine + reactions, sticky, flags only) and **`ArcTracker`**, a `QuestTracker` sibling (D-117). Pick order: story rules > pending beat > stage idle > fallback.
+- Act I arcs for **Mara, Vell, Nix, Orr and Iko** (`data/arcs/`), reacting to the bosses, Dead Air, the chart, memories and each other; threads seed later acts. Arc dialogue is economy-neutral (D-122).
+- **One Act I choice:** Orr's on-air beat after the Act I close (`DialogueChoice`, `orr_air_named` / `orr_air_ghost`, D-118). The choice box shows an `[E]` / `[A]` footer; D-pad Up (pad interact) only moves the cursor.
+- A pending-beat tick over NPCs and the radio board (`UiTheme.TEXT`, D-120); the journal gains a People page.
+- `mara_after_boss` is one-shot and plays after her intro; Iko gets a Relay introduction on the Orr path (D-121).
+
+### World state
+- The Relay changes with progress: gallery door lamp, Orr's repeater pips, the lit train, Iko's stall, a door watch after the close, Vell's sign, arc props (Mara's bench lamp, Nix's tower sheet, Iko's Spire crates, Orr's on-air lamp) and Mara's post at the alley door after the close (D-123).
+- The **radio board** (`relay_board`, a bodiless "Listen" NPC with a new-chatter cue) and Orr's post-Act-I radio line (`orr_radio` rule 0 needs `act1_complete` and `met_orr_radio`).
+- Undercity and Lowlight rooms react: Wake's Collector mark, Broken Lift's crew radio, Collector Bay's stranded cargo, Flooded Alley's chalk eye and posters or tags, Market Run's radios and late lamps, the Stack's windows, the Cell Four marks, the Smuggler den's eye, Bell Tower and Warden Tower banners and cargo (`DISTRICTS.md` "World state").
+- Three map notes as `MapMarker.NOTE` with `shown_when` (D-124). Hub music layers are data (`data/audio/hub_music.tres`, D-125).
+
+### Endings and the Act I card
+- `EndingData`, pure `EndingResolver`, `EndingDirector` (D-126); four endings (Sever, Crown, Release, hidden Redline) with placeholder sequences and a credits roll (`CreditsData`, `SeqCredits`). `FutureFlagSet` (`data/story/future_flags.tres`) makes them unreachable by construction until their acts exist (D-127); the dev theatre plays them in a `FlagSandbox` (D-128).
+- `ActData` / `ActLibrary` (`data/story/act1.tres`): the end card reads **"ACT I COMPLETE — RUN"** with up to three "where things stand" lines (D-131). `SliceEndMenu` stays the card, so the §44 kit flow is unchanged.
+
+### Save
+- All M8 state is flags (bool/int); no `GameState` key, no schema bump (D-116). A pre-M8 save with `slice_end_seen` gains `act1_complete` on load. `Game.set_flag` ignores numerically equal writes. Pinned by `test_m8_adds_no_game_state_keys` and `test_v3_fixture_loads_with_m8_defaults`.
+
+### Validation and tools
+- `ContentValidator`: the **resource content protocol** (`content_flags()` / `content_check()`), `check_resource()` as the test API, producer/consumer multimaps, `count:` conditions (D-119), the visual-only switch lint, NOTE markers away from secrets, sequence rules (budgets, actors, no Rook moves, only `SeqFlag` sets flags), memory/arc/ending/act/credits rules, `validate_story()` cross-area rules, the **Act I knowledge lint** (D-132), `SCAN_DIRS` + `cinematics/`, `story/` (D-133), and a **"## Story"** report section.
+- `DataDir.list` / `list_scenes`: export-safe (`.remap`) data scans for every M8 runtime scan (K-M8-22).
+- roomgen: `switch(parent=)`, `npc(name=)`, `mapmarker(shown_when=)`, `sequence_trigger(...)`; new fixtures `scaffold_m8_*`.
+- **Dev console "Story…"**: sequence, memory and Ending theatres, story state presets (`data/dev/story_presets.tres`), arcs, boss intro replays, the `SequenceInspector` and DebugOverlay ACT/SEQ lines. `StoryTestKit` for tests.
+- **`CaptureTour --tour=story`** (51 shots: Act I scenes, the card, memories, the Relay per preset, arcs, before/after rooms, the choice box, a size-2 line, endings, the theatre page, the inspector, subtitle settings). Every other tour forces INSTANT.
+- Placeholder sfx `radio_static`, `memory_open`, `memory_beat`, `memory_tear`, `memory_detail`.
+
+### Playtest
+- Recorder: `seq_start` / `seq_end` (first, locked, step, skipped), `memory_start` / `memory_end`, `arc`, `choice`, `ending_start` / `ending`, and new `slice_complete` fields. Scene time is `cinematic_s`, never idle time.
+- Report: a **Story** section (first-view skip rates with a > 50% warning, memories, arc beats, the Orr split, endings, standing lines) and a "Median min minus cinematic_s" column in the Undercity timeline.
+
+### Tests
+- 600 automated tests (185 new), 0 failed. New files: `test_m8_foundation_engine`, `test_m8_foundation_ui`, `test_sequences`, `test_act1_sequences`, `test_memory_scenes`, `test_npc_arcs`, `test_world_state`, `test_endings`, `test_story_telemetry`, `test_story_tools`.
+
 ## 0.7.0-m7: District Production, batch 1 (Act I: Undercity + Lowlight)
 
 Bible §36 M7, batch 1 (D-061). Report: `M7_DISTRICT_REPORT.md`. District sheet: `DISTRICTS.md`. Decisions D-061..D-104.

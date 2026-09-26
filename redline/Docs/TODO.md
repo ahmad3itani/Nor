@@ -7,6 +7,30 @@
 - [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
 
+## M8 (narrative integration): humans
+- [ ] Confirm or overrule the M8 flags: D-105 (scope, and M8 before §44), D-108 (hold-to-skip; repeat intros never lock), D-109 (Rook's name), D-110 (six settings pulled forward from M9), D-113 (the surfaced first-rest memory), D-114 (memory timeline order), D-115 (memory blue / red on redacted shapes), D-118 (Rook's choice labels; the choice sits after the card), D-120 (pending tick), D-129 (ending thresholds and Act I links), D-130 (Redline needs The Null), D-131 (the Act I boundary and card), D-134 (arc canon), D-135 (pacing), D-136 (no pause menu over dialogue), D-137 (placeholder ending text), D-138 (gallery in the journal, not Sera), D-139 (the story needs the Undercity campaign start).
+- [ ] **Rook's name decision** (D-109): covers `data/npcs/orr.tres:75` ("And Rook - don't go up that tower tired."), the on-air choice wording, the Krail / Wake PA designation "Fourteen", the pronoun in `mf_undercity_01`, and `data/playtest/playtest_config.tres` `curious_world` ("I'm curious about Veyra and Rook."). Then update `test_content_validator.gd:test_knowledge_lint_warns`, which pins the single orr.tres warning.
+- [ ] Review the canon commitments before Act II writing (D-134, D-137; A3's "Later act" notes are non-binding).
+- [ ] The manual first-time windowed run (the M8 gate, not automatable here): Wake → Relay → Krail → card; the opening plays; first-view intros skip only with a 0.8 s hold (a tap advances a line); a Krail/Collector retry keeps control; journal/dev replays skip with a 0.4 s hold; the close then the card; the §44 survey button. With a pad: every menu (pause incl. "Skip scene", Subtitles & scenes, the journal gallery and People, DevConsole Story pages, the vignette pause panel) works with A/B; Orr's choice on D-pad Up only moves the cursor while E confirms; the first Anchor rest shows the "[E]" cue.
+- [ ] Look at the story tour (`CaptureTour --tour=story`) against the Art Bible, especially the Relay's cyan budget (K-M8-10).
+- [ ] **Smoke-test an exported build** (memory, arc, ending and card data through `DataDir` `.remap` scans, K-M8-22) before the playtest.
+
+## M8 follow-ups
+- [ ] **Act V finale** calls `EndingResolver.resolve` + `EndingDirector.play` (D-126).
+- [ ] **Remove the future-flag gate at Act V**: drop the "needs a future flag" rule and each `future_flags.tres` entry as its act lands (D-127).
+- [ ] **M9: cross-profile endings, NG+.**
+- [ ] **Raise the ending epilogue thresholds** (Release `memories_remembered` 24, planned arc stages) when later arcs exist (D-129).
+- [ ] **M9: text auto-advance setting** (cut from M8, D-110).
+- [ ] **M9: pause menu over DialogueBox and choice mode** (D-136): MenuHost opens PauseMenu while a box is open, PauseMenu restores the prior paused state, the boxes ignore input while a menu is open. Vignettes already have their own pause panel.
+- [ ] Memory replay and translation may move to **Sera, the Relay archivist** (§13, D-138).
+- [ ] Data fix: `chart_lowlight`'s reward `map_lens` overwrites Nix's shop counter (K-M8-27).
+- [ ] `SliceEndTrigger`: add the `CinematicMode.theatre` guard `SequenceTrigger` has (K-M8-28).
+- [ ] Guard the other `take_damage` paths (`ChaseDirector` catch, `Room._pit_fall`, `PlayerCombat._check_hazards`) with `cinematic_lock` before any locking sequence plays over a chase, pit or hazard (K-M8-25).
+- [ ] `CombatHud`: a hint-queue flush for capture tours (K-M8-29).
+- [ ] `MusicDirector`: clear the MEMORY state on an in-play abort path if one is ever added (K-M8-30).
+- [ ] Final art: the italic narration face (a `FontVariation` slant on the fallback font today), the memory tableau shapes, the ending cards (D-026).
+- [ ] If first-view skips exceed 50% in §44 data, cut the opening to its two lines (D-135).
+
 ## M7 batch 1 follow-ups (Undercity + Lowlight)
 - [ ] Playtest checks: the Undercity timeline against §42 (K-45); whether the Collector eye still threatens (K-54); the Collector's fight length (K-56); Rainline G3 catches (K-44); air juggling after D-093; heads bumping under Power Block's shaft lips (D-098).
 - [ ] If the median Relay arrival is under ~25 min: deepen Medical Ruin and First Pursuit (D-083).
@@ -109,4 +133,4 @@
 - [ ] `AccessibilityConfig` resource once a menu exists.
 
 ## Do NOT start until the slice passes §44
-- M7 batch 2+ (Ironworks and later districts). Bible §44: "If these fail, fix the core instead of producing more content." M5, M6 and M7 batch 1 were built on request before the playtest (D-044, D-053, D-061).
+- M7 batch 2+ (Ironworks and later districts) and Acts II–V. Bible §44: "If these fail, fix the core instead of producing more content." M5, M6, M7 batch 1 and M8 were built on request before the playtest (D-044, D-053, D-061, D-105).
