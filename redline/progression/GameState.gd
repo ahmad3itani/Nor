@@ -51,6 +51,24 @@ var visited_rooms: Array[String] = []
 var play_time_sec: float = 0.0
 var deaths: int = 0
 
+## --- M9 optional keys (D-087/D-090, D-142): no schema bump. ---
+## Per-profile COUNTER/MAX/MIN stat values by stat id (T02 StatsTracker;
+## lifetime values live in user://platform/achievements.json).
+var stats: Dictionary = {}
+## The profile was fabricated by dev tools: achievements are not earned (D-145).
+var dev_tainted: bool = false
+## Campaign in-game time in counted physics frames (T04 CampaignClock).
+var igt_frames: int = 0
+## split_id -> igt_frames the first time this profile reached it.
+var igt_splits: Dictionary = {}
+## True only for profiles begun by Game.start_campaign() after M9: older saves
+## would undercount IGT, so they never post a campaign best.
+var igt_complete: bool = false
+## {cycles: [...], seen_flags: [...]} from earlier NG+ cycles (T09).
+var ng_archive: Dictionary = {}
+## Neutral assist/timing tags seen while the campaign clock counted (D-149).
+var igt_tags: PackedStringArray = PackedStringArray()
+
 
 func total_scrap() -> int:
 	return scrap_banked + scrap_unbanked
@@ -94,6 +112,13 @@ func to_dict() -> Dictionary:
 		"visited_rooms": visited_rooms.duplicate(),
 		"play_time_sec": play_time_sec,
 		"deaths": deaths,
+		"stats": stats.duplicate(true),
+		"dev_tainted": dev_tainted,
+		"igt_frames": igt_frames,
+		"igt_splits": igt_splits.duplicate(),
+		"igt_complete": igt_complete,
+		"ng_archive": ng_archive.duplicate(true),
+		"igt_tags": Array(igt_tags),
 	}
 
 
@@ -128,6 +153,18 @@ static func from_dict(d: Dictionary) -> GameState:
 	s.visited_rooms.assign(d.get("visited_rooms", []))
 	s.play_time_sec = float(d.get("play_time_sec", 0.0))
 	s.deaths = int(d.get("deaths", 0))
+	# M9 optional keys (D-087/D-090, D-142): no schema bump. JSON turns every
+	# number into a float: frame counts are cast back to int here; stats stay
+	# float (they are float stats); ng_archive ints are cast where read.
+	s.stats = (d.get("stats", {}) as Dictionary).duplicate(true)
+	s.dev_tainted = bool(d.get("dev_tainted", false))
+	s.igt_frames = int(d.get("igt_frames", 0))
+	var splits: Dictionary = d.get("igt_splits", {})
+	for k: String in splits:
+		s.igt_splits[k] = int(splits[k])
+	s.igt_complete = bool(d.get("igt_complete", false))
+	s.ng_archive = (d.get("ng_archive", {}) as Dictionary).duplicate(true)
+	s.igt_tags = PackedStringArray(d.get("igt_tags", []))
 	return s
 
 

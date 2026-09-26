@@ -26,29 +26,27 @@ func new_profile_data() -> Dictionary:
 	return d
 
 
+## Writes through AtomicJson (tmp -> .bak -> rename, the M0 contract), then
+## tells the platform layer a save landed (cloud-save hook, M9).
 func save_profile(profile_id: int, data: Dictionary) -> Error:
-	var err := DirAccess.make_dir_recursive_absolute(save_dir)
-	if err != OK and err != ERR_ALREADY_EXISTS:
-		return err
 	var payload := data.duplicate(true)
 	payload["schema_version"] = CURRENT_SCHEMA_VERSION
 	var path := profile_path(profile_id)
-	var tmp_path := path + ".tmp"
-	var bak_path := path + ".bak"
+	var err := AtomicJson.write(path, payload)
+	if err == OK:
+		var p := get_node_or_null("/root/Platform")
+		if p:
+			p.notify_file_written(path)
+	return err
 
-	var f := FileAccess.open(tmp_path, FileAccess.WRITE)
-	if f == null:
-		return FileAccess.get_open_error()
-	f.store_string(JSON.stringify(payload, "\t"))
-	f.close()
 
-	if FileAccess.file_exists(path):
-		if FileAccess.file_exists(bak_path):
-			DirAccess.remove_absolute(bak_path)
-		err = DirAccess.rename_absolute(path, bak_path)
-		if err != OK:
-			return err
-	return DirAccess.rename_absolute(tmp_path, path)
+## NG+ (T09) keeps the finished cycle: copies the profile as it is on disk to
+## profile_<id>.<tag>.json. That file is never loaded by the game.
+func archive_profile(profile_id: int, tag: String) -> Error:
+	var data := load_profile(profile_id)
+	if data.is_empty():
+		return ERR_DOES_NOT_EXIST
+	return AtomicJson.write("%s/profile_%d.%s.json" % [save_dir, profile_id, tag], data)
 
 
 ## Returns an empty Dictionary if neither the save nor its backup is readable.

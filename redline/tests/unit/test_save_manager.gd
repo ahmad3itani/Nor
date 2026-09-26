@@ -96,15 +96,19 @@ const GAME_STATE_KEYS := ["abilities", "anchors_rested", "collected", "core_shar
 	"equipped_circuits", "flags", "health", "injectors", "last_anchor_id", "last_anchor_room", "last_entry_id",
 	"last_entry_room", "map_explored", "map_pins", "melee_weapon", "memory_fragments", "owned_circuits",
 	"owned_weapons", "play_time_sec", "ranged_weapon", "reactor_charge", "scrap_banked", "scrap_unbanked",
-	"visited_rooms"]
+	"visited_rooms",
+	# M9 (D-142): seven optional keys, defaults in from_dict, no schema bump.
+	"dev_tainted", "igt_complete", "igt_frames", "igt_splits", "igt_tags", "ng_archive", "stats"]
 const SAVE_V3 := "res://tests/fixtures/save_v3_slice.json"
 
 
-func test_m8_adds_no_game_state_keys() -> void:
+func test_m9_adds_only_planned_optional_keys() -> void:
 	var keys: Array = GameState.new().to_dict().keys()
 	keys.sort()
-	check(keys == GAME_STATE_KEYS, "GameState keys changed (D-090): %s" % [keys])
-	check(SaveManager.CURRENT_SCHEMA_VERSION == 3, "M8 needs no schema bump")
+	var expected: Array = GAME_STATE_KEYS.duplicate()
+	expected.sort()
+	check(keys == expected, "GameState keys changed (D-090): %s" % [keys])
+	check(SaveManager.CURRENT_SCHEMA_VERSION == 3, "M8/M9 need no schema bump")
 
 
 func test_v3_fixture_loads_with_m8_defaults() -> void:
@@ -126,3 +130,85 @@ func test_v3_fixture_loads_with_m8_defaults() -> void:
 	check(Game.flag_int("memories_remembered") == 2 and Game.check_condition("atleast:memories_remembered:2"),
 		"an int flag round-trips through JSON as 2 (%s)" % Game.state.flags.get("memories_remembered"))
 	Game.new_game()
+
+
+# --- M9 (T01): AtomicJson, archive, optional keys (D-087/D-090, D-142) ---
+
+func test_atomic_json_bak_recovery() -> void:
+	var path := TEST_DIR + "/atomic.json"
+	check(AtomicJson.write(path, {"v": 1}) == OK, "first write")
+	check(AtomicJson.write(path, {"v": 2}) == OK, "second write")
+	check(FileAccess.file_exists(path + ".bak"), "backup kept")
+	check(not FileAccess.file_exists(path + ".tmp"), "no temp file left")
+	check(int(AtomicJson.read(path).get("v", 0)) == 2, "reads the latest")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string("{ broken")
+	f.close()
+	check(int(AtomicJson.read(path).get("v", 0)) == 1, "a corrupt file falls back to .bak")
+	check(AtomicJson.read(TEST_DIR + "/missing.json").is_empty(), "missing -> {}")
+
+
+func test_save_profile_unchanged_after_refactor() -> void:
+	var s := GameState.new()
+	s.scrap_banked = 17
+	s.flags["met_orr"] = true
+	var payload := s.to_dict().duplicate(true)
+	payload["schema_version"] = SaveManager.CURRENT_SCHEMA_VERSION
+	check(SaveManager.save_profile(1, s.to_dict()) == OK, "saved")
+	var bytes := FileAccess.get_file_as_string(SaveManager.profile_path(1))
+	check(bytes == JSON.stringify(payload, "\t"), "the save file is the pre-refactor JSON byte for byte")
+
+
+func test_archive_profile_writes_cycle_file() -> void:
+	check(SaveManager.archive_profile(1, "cycle1") == ERR_DOES_NOT_EXIST, "no save, no archive")
+	var data := SaveManager.new_profile_data()
+	data["scrap_banked"] = 5
+	SaveManager.save_profile(1, data)
+	check(SaveManager.archive_profile(1, "cycle1") == OK, "archived")
+	var path := "%s/profile_1.cycle1.json" % TEST_DIR
+	check(FileAccess.file_exists(path), "cycle file written")
+	check(int(AtomicJson.read(path).get("scrap_banked", 0)) == 5, "the archive holds the profile")
+	check(int(SaveManager.load_profile(1).get("scrap_banked", 0)) == 5, "the profile itself is untouched")
+
+
+func test_v3_fixture_loads_m9_defaults() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SAVE_V3))
+	var state := GameState.from_dict(SaveManager.migrate(raw))
+	check(state.stats.is_empty(), "stats {}")
+	check(not state.dev_tainted, "dev_tainted false")
+	check(not state.igt_complete, "igt_complete false for a pre-M9 save")
+	check(state.igt_frames == 0 and state.igt_splits.is_empty() and state.igt_tags.is_empty(), "no IGT")
+	check(state.ng_archive.is_empty(), "ng_archive {}")
+
+
+func test_m9_keys_roundtrip() -> void:
+	var s := GameState.new()
+	s.stats = {"kills": 12.0}
+	s.dev_tainted = true
+	s.igt_frames = 3600
+	s.igt_splits = {"collector": 1800}
+	s.igt_complete = true
+	s.ng_archive = {"cycles": [{"cycle": 1}], "seen_flags": ["seen_seq_x"]}
+	s.igt_tags = PackedStringArray(["assist"])
+	check(SaveManager.save_profile(1, s.to_dict()) == OK, "saved")
+	var back := GameState.from_dict(SaveManager.load_profile(1))
+	check(back.igt_frames == 3600 and typeof(back.igt_frames) == TYPE_INT, "igt_frames is the int 3600")
+	check(typeof(back.igt_splits["collector"]) == TYPE_INT and back.igt_splits["collector"] == 1800, "split values are ints")
+	check(back.dev_tainted and back.igt_complete, "bools round-trip")
+	check(is_equal_approx(float(back.stats["kills"]), 12.0), "stats round-trip")
+	check(int((back.ng_archive["cycles"] as Array)[0]["cycle"]) == 1, "ng_archive round-trips")
+	check(back.igt_tags == PackedStringArray(["assist"]), "igt_tags round-trip")
+
+
+func test_schema_version_still_3() -> void:
+	check(SaveManager.CURRENT_SCHEMA_VERSION == 3, "M9 adds optional keys only (D-087/D-090)")
+	check(int(SaveManager.new_profile_data()["schema_version"]) == 3, "new profiles are v3")
+
+
+func test_migrated_v1_has_igt_complete_false() -> void:
+	var v1 := {"schema_version": 1, "story_flags": {}, "abilities": {}, "currencies": {"scrap": 1},
+		"statistics": {"play_time_sec": 30.0, "deaths": 0}}
+	var migrated := SaveManager.migrate(v1)
+	check(migrated.get("igt_complete") == false and int(migrated.get("igt_frames", -1)) == 0, "v1 migration carries igt_complete false, igt_frames 0")
+	var state := GameState.from_dict(migrated)
+	check(not state.igt_complete, "the migrated state never posts a campaign best")

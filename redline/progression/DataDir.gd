@@ -25,6 +25,12 @@ static func list_scenes(dir: String) -> PackedStringArray:
 	return _list(dir, "tscn")
 
 
+## Load paths of every .<ext> (or .<ext>.remap) directly in dir, sorted
+## (e.g. the .po catalogs, T06).
+static func list_files(dir: String, ext: String) -> PackedStringArray:
+	return _list(dir, ext)
+
+
 static func _list(dir: String, ext: String) -> PackedStringArray:
 	var seen := {}
 	for f in DirAccess.get_files_at(dir):
