@@ -57,6 +57,7 @@ func _build_text() -> String:
 		Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 		Engine.time_scale, Engine.physics_ticks_per_second,
 		"ON" if get_tree().physics_interpolation else "off"])
+	lines.append_array(story_lines())
 	if _player == null or not is_instance_valid(_player):
 		return "\n".join(lines)
 	var p := _player
@@ -103,6 +104,23 @@ func _world_lines() -> PackedStringArray:
 			SliceStats.secrets_found(), SliceStats.totals()["secret_ids"].size(), st.memory_fragments.size(),
 			st.flags.size(), st.deaths, SliceStats.format_time(st.play_time_sec)],
 	])
+
+
+## M8 story state: "ACT 1 (RUN)" and, while a sequence plays,
+## "SEQ <id> <i>/<n> <kind> <t>s first|repeat" (step i of n, its kind, the
+## sequence clock).
+static func story_lines() -> PackedStringArray:
+	var out := PackedStringArray()
+	var n := ActLibrary.current_act()
+	var act := ActLibrary.act(n)
+	out.append("ACT %d (%s)" % [n, act.name if act and act.name != "" else "-"])
+	var p := Cinematics.current
+	if Cinematics.is_playing():
+		var i := maxi(p.index, 0)
+		var step := p.seq.steps[i] if i < p.seq.steps.size() else null
+		out.append("SEQ %s %d/%d %s %.1fs %s" % [p.seq.id, i + 1, p.seq.steps.size(),
+			step.kind() if step else "-", p.clock(), "first" if p.first_view else "repeat"])
+	return out
 
 
 func _yn(b: bool) -> String:
