@@ -526,3 +526,30 @@ func test_menus_fit_270_or_scroll_at_ui_scales() -> void:
 		var card := _card(_finished(ch, 1500, 3, {"new_best": true, "prev_best": 1600}))
 		check(await panel_height(card) <= 270.0, "the result card fits or scrolls at UI scale %d" % s)
 		card.close_menu()
+
+
+# --- Dev page ----------------------------------------------------------------------
+
+func test_dev_page_starts_finishes_and_fails() -> void:
+	var ch := ChallengeLibrary.by_id("tt_neon_roofs")
+	check(ChallengeDevActions.value_for_tier(ch, 0) > ch.medal_thresholds[0], "the Clear value is slower than Bronze")
+	for tier in range(1, 5):
+		check(ch.medal_for(ChallengeDevActions.value_for_tier(ch, tier)) == tier, "value_for_tier(%d) earns tier %d" % [tier, tier])
+	await h.goto(RELAY, &"challenges")
+	check(ChallengeDevActions.start("tt_neon_roofs"), "a dev start ignores unlocks (nothing is unlocked here)")
+	check(await h.until(func() -> bool: return Challenges.phase() == Challenges.Phase.RUNNING and not SceneRouter.transitioning), "the run goes live")
+	check(Challenges.session.return_to.get("room", "") == RELAY, "a dev start from a world room returns there")
+	var console: DevConsole = (load("res://ui/menus/DevConsole.gd") as GDScript).new()
+	add_child(console)
+	_menus.append(console)
+	console.open_menu()
+	console.go(&"chal")
+	check(_has(_texts(console), "Finish now: Gold") and _has(_texts(console), "Fail now: hit"), "the run rows show: %s" % [_texts(console)])
+	console.close_menu()
+	check(ChallengeDevActions.finish_as(3), "finish now as Gold")
+	check(int(Challenges.last_result.get("medal", -1)) == 3, "the result is a Gold finish (%s)" % [Challenges.last_result])
+	Challenges.restart(&"menu")
+	check(await h.until(func() -> bool: return Challenges.phase() == Challenges.Phase.RUNNING and not SceneRouter.transitioning), "retried")
+	check(ChallengeDevActions.fail_now(&"hit"), "fail now")
+	check(int(Challenges.last_result.get("outcome", -1)) == ChallengeData.Outcome.FAILED_HIT, "a hit failure")
+	check(str(Challenges.last_result.get("cause", "")) == "Run over: hit taken", "with the neutral cause")
