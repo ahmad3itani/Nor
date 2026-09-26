@@ -26,6 +26,197 @@ msgstr ""
 msgid "WEAPON ACQUIRED  —  {name}"
 msgstr ""
 
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Space"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Shift"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Ctrl"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Alt"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Enter"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Escape"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Tab"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Backspace"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Delete"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Insert"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Home"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "End"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "PageUp"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "PageDown"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Up"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Down"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Left"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Right"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "CapsLock"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Meta"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Menu"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Pause"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Print"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Clear"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Enter"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Add"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Subtract"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Multiply"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Divide"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::l10n
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Period"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::Loc.f
+#. placeholders: {n}
+#: autoload/InputGlyphs.gd
+msgid "Pad {n}"
+msgstr ""
+
+#. key: autoload/InputGlyphs.gd::Loc.t
+#: autoload/InputGlyphs.gd
+msgid "Pad"
+msgstr ""
+
 #. key: bosses/BossArena.gd::boss_title
 #. key: data/sequences/speakers.tres::labels[2]
 #. key: world/rooms/challenge/NullFloor.tscn::Triggers/BossArena.boss_title

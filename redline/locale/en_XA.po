@@ -20,6 +20,164 @@ msgstr "[ÇÍŔÇÚÍŤ ÁÇQÚÍŔÉĎ  —  {name}~~~~~~~~]"
 msgid "WEAPON ACQUIRED  —  {name}"
 msgstr "[ŴÉÁPÓÑ ÁÇQÚÍŔÉĎ  —  {name}~~~~~~~]"
 
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Space"
+msgstr "[Špáçé~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Shift"
+msgstr "[Šĥífť~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Ctrl"
+msgstr "[Çťŕĺ~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Alt"
+msgstr "[Áĺť~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Enter"
+msgstr "[Éñťéŕ~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Escape"
+msgstr "[Éšçápé~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Tab"
+msgstr "[Ťáb~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Backspace"
+msgstr "[Báçķšpáçé~~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Delete"
+msgstr "[Ďéĺéťé~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Insert"
+msgstr "[Íñšéŕť~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Home"
+msgstr "[Ĥómé~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "End"
+msgstr "[Éñď~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "PageUp"
+msgstr "[PáğéÚp~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "PageDown"
+msgstr "[PáğéĎóŵñ~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Up"
+msgstr "[Úp~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Down"
+msgstr "[Ďóŵñ~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Left"
+msgstr "[Ĺéfť~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Right"
+msgstr "[Ŕíğĥť~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "CapsLock"
+msgstr "[ÇápšĹóçķ~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Meta"
+msgstr "[Méťá~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Menu"
+msgstr "[Méñú~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Pause"
+msgstr "[Páúšé~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Print"
+msgstr "[Pŕíñť~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Clear"
+msgstr "[Çĺéáŕ~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Enter"
+msgstr "[Ķp Éñťéŕ~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Add"
+msgstr "[Ķp Áďď~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Subtract"
+msgstr "[Ķp Šúbťŕáçť~~~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Multiply"
+msgstr "[Ķp Múĺťípĺý~~~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Divide"
+msgstr "[Ķp Ďívíďé~~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgctxt "key"
+msgid "Kp Period"
+msgstr "[Ķp Péŕíóď~~~~~]"
+
+#: autoload/InputGlyphs.gd
+msgid "Pad {n}"
+msgstr "[Páď {n}~~]"
+
+#: autoload/InputGlyphs.gd
+msgid "Pad"
+msgstr "[Páď~~]"
+
 #: bosses/BossArena.gd data/sequences/speakers.tres world/rooms/challenge/NullFloor.tscn
 msgid "WARDEN KRAIL"
 msgstr "[ŴÁŔĎÉÑ ĶŔÁÍĹ~~~~~~]"

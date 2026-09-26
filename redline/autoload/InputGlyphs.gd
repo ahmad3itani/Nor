@@ -8,12 +8,21 @@ extends Node
 ## name, and keyboard names follow the player's layout (an AZERTY player sees
 ## "A" for the key a QWERTY board calls Q). Prompts read label() every time
 ## they draw, so a rebind shows everywhere with no extra wiring.
+##
+## Localization (D5 §4.2): names are display text. Pad names come from the
+## GlyphSet data (catalogued there) and go through Loc.t; multi-letter key
+## names (KEY_NAMES) go through Loc.t with the "key" context. Single letters,
+## digits and short marks (A, LB, F1) read the same in every language.
 
 signal device_changed(using_pad: bool)
 
 const GLYPH_PATH := "res://data/input/glyphs/%s.tres"
 ## Settings.pad_glyphs 1..3 in order (0 = Auto).
 const FAMILIES: Array[StringName] = [&"xbox", &"playstation", &"nintendo"]
+## OS.get_keycode_string names that are words, not marks (catalogued, "key").
+const KEY_NAMES: PackedStringArray = ["Space", "Shift", "Ctrl", "Alt", "Enter", "Escape", "Tab", "Backspace", "Delete",  # l10n(key)
+	"Insert", "Home", "End", "PageUp", "PageDown", "Up", "Down", "Left", "Right", "CapsLock", "Meta", "Menu", "Pause",  # l10n(key)
+	"Print", "Clear", "Kp Enter", "Kp Add", "Kp Subtract", "Kp Multiply", "Kp Divide", "Kp Period"]  # l10n(key)
 
 var using_pad: bool = false
 ## Device id of the last pad event (Auto family detection, Haptics).
@@ -111,11 +120,11 @@ func pad_label(ev: InputEvent) -> String:
 	if ev is InputEventJoypadButton:
 		var i := (ev as InputEventJoypadButton).button_index
 		var n := gs.button_name(i) if gs else ""
-		return n if n != "" else "Pad %d" % i
+		return Loc.t(n) if n != "" else Loc.f("Pad {n}", {"n": i})
 	if ev is InputEventJoypadMotion:
 		var m := ev as InputEventJoypadMotion
 		var n := gs.axis_name(m.axis, m.axis_value >= 0.0) if gs else ""
-		return n if n != "" else "Pad"
+		return Loc.t(n) if n != "" else Loc.t("Pad")
 	return ""
 
 
@@ -127,4 +136,5 @@ func key_label(physical: Key) -> String:
 		var l := DisplayServer.keyboard_get_label_from_physical(physical)
 		if l != KEY_NONE:
 			shown = l
-	return OS.get_keycode_string(shown)
+	var name := OS.get_keycode_string(shown)
+	return Loc.t(name, "key") if KEY_NAMES.has(name) else name
