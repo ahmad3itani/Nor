@@ -4,6 +4,9 @@ extends MenuScreen
 ## a scripted sequence it also offers "Skip scene" (§24, no hold needed).
 ## M9: inside a challenge run the run rows replace the normal ones (restart,
 ## ghost mode, quit the run); the header shows the NG+ cycle.
+## M9 (D4 §8.7, D-159): the menu also opens over a conversation. Map and
+## Journal stay hidden then (no nested state over the box); Save & Quit aborts
+## the conversation, which replays on Continue.
 
 signal quit_to_title
 
@@ -24,7 +27,7 @@ func rebuild() -> void:
 	add_button("Resume", close_menu)
 	if Cinematics.can_skip():
 		add_button("Skip scene", _skip_scene)
-	if room and room.world_room:
+	if room and room.world_room and not dialogue_open():
 		# Same rule as MenuHost.can_open: a locking scene keeps the map shut.
 		if not Cinematics.locks_input():
 			add_button("Map", _open.bind(&"map"))
@@ -72,10 +75,24 @@ func _skip_scene() -> void:
 	Cinematics.request_skip()
 
 
+## Order matters (R11.1): close_menu restores the pause it found, and over a
+## conversation that pause was on; unpausing after it lets SceneRouter's fade
+## tween run, or the quit would hang on a frozen tree.
 func _quit() -> void:
 	save_and_quit_state()
 	close_menu()
+	get_tree().paused = false
 	quit_to_title.emit()
+
+
+## Whether a conversation box is on screen (the box joins "dialogue_box").
+func dialogue_open() -> bool:
+	if not is_inside_tree():
+		return false
+	for n in get_tree().get_nodes_in_group(&"dialogue_box"):
+		if n.has_method("is_open") and bool(n.call("is_open")):
+			return true
+	return false
 
 
 ## Everything Save & Quit does before leaving (DemoEndMenu reuses it).
@@ -84,6 +101,10 @@ func _quit() -> void:
 ## during the title fade and open a menu over it.
 static func save_and_quit_state() -> void:
 	CinematicMode.abort_all()
+	# A conversation left open would keep the tree paused through the quit;
+	# aborted, none of its effects apply and it replays on Continue.
+	if is_instance_valid(DialogueBox.open_instance):
+		DialogueBox.open_instance.abort()
 	var room := SceneRouter.current_room as Room
 	if room and room.world_room and is_instance_valid(room.player):
 		Game.capture_from_player(room.player)

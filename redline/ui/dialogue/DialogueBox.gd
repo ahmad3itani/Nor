@@ -1,3 +1,4 @@
+class_name DialogueBox
 extends CanvasLayer
 ## Conversation box (bible §19, §24 "pause during dialogue"). Pauses the game
 ## while open, types text out, and advances on interact/confirm/jump/attack.
@@ -15,6 +16,15 @@ extends CanvasLayer
 ## held or mashed press carried over from the last line never picks. The
 ## picked answer's reply plays with the normal advance rules, then the box
 ## closes and Game.apply_dialogue(d, choice) applies everything at once.
+##
+## M9 (D4 §8.7, D-159): pause opens the pause menu over the box (both modes,
+## Orr's choice included); while any menu is open the box ignores input, and
+## the menu's close keeps the tree paused because the box owns that pause
+## (MenuScreen.PAUSE_OWNERS). Save & Quit aborts the conversation (abort():
+## no effects, so it replays on Continue). Text auto-advance (D-110, Settings
+## .text_auto_advance) moves fully typed lines on after a reading time;
+## choices always wait. In NG+ a conversation whose flags the player already
+## set in an earlier cycle shows each line fully typed (R11.13).
 
 const CHARS_PER_SECOND := 70.0
 const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", &"attack_light"]
@@ -38,6 +48,13 @@ var _choice: int = -1
 var _choice_shown_ms: int = 0
 ## Advance actions seen released since the options appeared.
 var _released: Dictionary = {}
+## Seconds a fully typed line has waited (text auto-advance; process delta,
+## which keeps running while the tree is paused).
+var _auto_wait: float = 0.0
+
+## The box with a conversation on screen (null when none): Save & Quit
+## aborts it (PauseMenu.save_and_quit_state).
+static var open_instance: DialogueBox = null
 
 
 func _ready() -> void:
@@ -49,7 +66,21 @@ func _ready() -> void:
 	_root.draw.connect(_draw_box)
 	add_child(_root)
 	visible = false
+	# PauseMenu finds the box through this group (Map and Journal stay shut
+	# over a conversation); MenuScreen keeps the tree paused while it is open.
+	add_to_group(&"dialogue_box")
+	add_to_group(MenuScreen.PAUSE_OWNERS)
 	EventBus.dialogue_requested.connect(open)
+
+
+func _exit_tree() -> void:
+	if open_instance == self:
+		open_instance = null
+
+
+## MenuScreen.PAUSE_OWNERS: a menu closing over the box leaves the tree paused.
+func owns_pause() -> bool:
+	return is_open()
 
 
 func is_open() -> bool:
@@ -68,15 +99,25 @@ func open(d: Resource, npc_name: String = "") -> void:
 	_choice = -1
 	_released.clear()
 	line_index = 0
-	shown_chars = 0.0
+	_line_opened()
 	_opened_frame = Engine.get_process_frames()
 	visible = true
+	open_instance = self
 	get_tree().paused = true
 	EventBus.interact_prompt_changed.emit("")
 
 
 func _process(delta: float) -> void:
 	if dialogue == null:
+		return
+	# A menu over the box (pause, settings) owns every press until it closes.
+	if MenuScreen.open_count > 0:
+		return
+	# §24 pause during dialogue: the pause menu opens over the box (MenuHost
+	# refuses its own pause key while the tree is paused). Not on the frame
+	# the box opened, like every other press.
+	if Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed(&"pause"):
+		EventBus.menu_requested.emit(&"pause")
 		return
 	# Choice mode first: the generic advance path below would confirm on the
 	# D-pad Up (interact) a pad player uses to move the cursor.
@@ -92,7 +133,41 @@ func _process(delta: float) -> void:
 			shown_chars = line.text.length()
 		else:
 			advance()
+	elif _auto_advance_due(line, delta):
+		advance()
 	_root.queue_redraw()
+
+
+## Text auto-advance (D-110): Off (the default) never advances by itself.
+## On, a fully typed line waits AccessibilityConfig's reading time (scaled
+## like subtitles) and moves on. Never while choosing (choices always wait).
+func _auto_advance_due(line: DialogueLine, delta: float) -> bool:
+	if Settings.text_auto_advance != 1 or _choosing or shown_chars < line.text.length():
+		_auto_wait = 0.0
+		return false
+	_auto_wait += delta
+	var cfg := Settings.config()
+	var wait := (cfg.auto_advance_seconds(line.text.length()) if cfg else 3.0) * SubtitleStyle.time_scale()
+	return _auto_wait >= wait
+
+
+## A new line is on screen: typing starts over, unless NG+ already knows the
+## conversation (R11.13: every flag it sets was seen in an earlier cycle), in
+## which case it shows fully typed and the first confirm advances.
+func _line_opened() -> void:
+	shown_chars = 0.0
+	_auto_wait = 0.0
+	if _known_in_new_game_plus():
+		shown_chars = float(_current_line().text.length())
+
+
+func _known_in_new_game_plus() -> bool:
+	if dialogue == null or dialogue.set_flags.is_empty() or NewGamePlus.cycle() < 1:
+		return false
+	for f in dialogue.set_flags:
+		if not NewGamePlus.knows_seen_flag(f):
+			return false
+	return true
 
 
 func _advance_pressed() -> bool:
@@ -116,9 +191,11 @@ func advance() -> void:
 		_enter_choice_mode()
 		return
 	line_index += 1
-	shown_chars = 0.0
 	if line_index >= _lines.size():
+		shown_chars = 0.0
 		_close()
+		return
+	_line_opened()
 
 
 func is_choosing() -> bool:
@@ -193,7 +270,7 @@ func choose(i: int) -> void:
 		return
 	_lines = c.reply
 	line_index = 0
-	shown_chars = 0.0
+	_line_opened()
 
 
 ## Footer under the options: the button that confirms on the active device
@@ -213,9 +290,28 @@ func _close() -> void:
 	dialogue = null
 	_choosing = false
 	visible = false
+	if open_instance == self:
+		open_instance = null
 	get_tree().paused = false
 	Game.apply_dialogue(finished, picked)
 	EventBus.dialogue_finished.emit(finished)
+
+
+## Leaves the conversation without any of its effects (Save & Quit over a
+## dialogue, R11.1): no flags, gifts or follow-up menu and no
+## dialogue_finished, so it replays on Continue like an aborted scene. The
+## tree is unpaused here, or the quit's fade could never run.
+func abort() -> void:
+	if dialogue == null:
+		return
+	dialogue = null
+	_choosing = false
+	_choice = -1
+	visible = false
+	if open_instance == self:
+		open_instance = null
+	if is_inside_tree():
+		get_tree().paused = false
 
 
 ## Wrapped rows the current line needs at the current subtitle size (tests).
