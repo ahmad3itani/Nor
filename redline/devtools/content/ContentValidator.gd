@@ -394,14 +394,14 @@ func _register_story(res: Resource, path: String) -> void:
 		kind = "future"
 	elif res is KnowledgeLint:
 		kind = "lint"
-	elif res is NpcProfile or res is DialogueData or res is QuestData or res is MemoryConfig:
+	elif res is NpcProfile or res is DialogueData or res is QuestData or res is MemoryConfig or res is SpeakerTable:
 		kind = "text"
 	if kind != "":
 		(story[kind] as Dictionary)[path] = res
 
 
 ## Room nodes the story rules need: who plays which sequence, which
-## fragments are placed, and hint text shown in play.
+## fragments are placed, and room text shown in play (hints, map labels).
 func _note_story_node(n: Node, room_id: String, path: String) -> void:
 	var seq: SequenceData = null
 	var what := ""
@@ -418,6 +418,10 @@ func _note_story_node(n: Node, room_id: String, path: String) -> void:
 		placed_fragments[(n as Collectible).fragment.id] = room_id
 	elif n is HintTrigger and (n as HintTrigger).text != "":
 		room_text.append([path, "hint %s" % (n as HintTrigger).hint_id, (n as HintTrigger).text])
+	elif n is MapMarker and (n as MapMarker).label != "":
+		# Map notes (D-124) and marker labels are read on the map screen.
+		var mm := n as MapMarker
+		room_text.append([path, "map %s %s" % [MapMarker.Kind.keys()[mm.kind].to_lower(), mm.name], mm.label])
 	if seq != null and seq.id != "":
 		_push_ref(seq.id, "%s: %s" % [room_id, what])
 
@@ -561,6 +565,7 @@ func _shown_text(lint: KnowledgeLint) -> Array:
 	for path: String in story["text"]:
 		var res: Resource = story["text"][path]
 		if res is NpcProfile:
+			out.append([path, "npc %s name" % (res as NpcProfile).npc_id, (res as NpcProfile).display_name])
 			for rule in (res as NpcProfile).rules:
 				if rule and rule.dialogue:
 					_dialogue_text(rule.dialogue, path, out)
@@ -574,9 +579,18 @@ func _shown_text(lint: KnowledgeLint) -> Array:
 		elif res is MemoryConfig:
 			for field in MEMORY_CONFIG_TEXT:
 				out.append([path, "memory config %s" % field, String(res.get(field))])
+		elif res is SpeakerTable:
+			var t := res as SpeakerTable
+			for i in mini(t.ids.size(), t.labels.size()):
+				out.append([path, "speaker %s" % t.ids[i], t.labels[i]])
 	for path: String in story["arcs"]:
-		for d in (story["arcs"][path] as NpcArc).dialogues():
+		var arc := story["arcs"][path] as NpcArc
+		for d in arc.dialogues():
 			_dialogue_text(d, path, out)
+		# The journal People page shows the latest reached stage's note.
+		for s: NpcArcStage in arc.stages:
+			if s and s.journal_note != "":
+				out.append([path, "arc %s stage %s journal note" % [arc.npc_id, s.id], s.journal_note])
 	for path: String in story["fragments"]:
 		var fr := story["fragments"][path] as MemoryFragmentData
 		out.append([path, "fragment %s" % fr.id, fr.title])
@@ -590,6 +604,8 @@ func _shown_text(lint: KnowledgeLint) -> Array:
 		for i in sc.beats.size():
 			if sc.beats[i]:
 				out.append([path, "memory %s beat %d" % [sc.id, i], sc.beats[i].text])
+				if sc.beats[i].speaker != "":
+					out.append([path, "memory %s beat %d speaker" % [sc.id, i], sc.beats[i].speaker])
 		out.append([path, "memory %s detail" % sc.id, sc.detail_text])
 	for path: String in story["sequences"]:
 		var seq := story["sequences"][path] as SequenceData
@@ -615,6 +631,8 @@ func _dialogue_text(d: DialogueData, path: String, out: Array) -> void:
 	for l in d.lines:
 		if l:
 			out.append([path, "dialogue %s" % d.id, l.text])
+			if l.speaker != "":
+				out.append([path, "dialogue %s speaker" % d.id, l.speaker])
 	for c in d.choices:
 		if c == null:
 			continue
@@ -622,6 +640,8 @@ func _dialogue_text(d: DialogueData, path: String, out: Array) -> void:
 		for l in c.reply:
 			if l:
 				out.append([path, "dialogue %s choice %s" % [d.id, c.id], l.text])
+				if l.speaker != "":
+					out.append([path, "dialogue %s choice %s speaker" % [d.id, c.id], l.speaker])
 
 
 # --- Flags (quest/dialogue validator) ------------------------------------------

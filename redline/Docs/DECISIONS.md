@@ -577,6 +577,7 @@ Each was found by a route test and changed as little as possible:
 ## D-132: Act I knowledge lint
 - Warns when Act I-visible text uses Act II+ terms (Project REDLINE, Architect, The Null, neural, harvest, Redline disaster); endings and theatre sequences exempt.
 - As built (T10): 12 terms (`data/story/knowledge_lint.tres`): Project REDLINE, Architect, The Null, neural, harvest, Redline disaster, conscious, 'Pulse is', 'stores memor', 'made of memor', research, Rook. It scans dialogue lines, choice labels and replies, fragment titles and bodies, memory beats and SURFACED titles, sequence lines outside theatre-only sequences, standing lines, map notes and the `MemoryConfig` gallery strings; `data/endings` is exempt. The one shipped warning is orr.tres 'Rook' (D-109).
+- Audit repair (M8): the first build did not read map-marker labels or arc journal notes although this entry said it did. The lint now also scans every `MapMarker` label (notes, landmarks, gates), each spine stage's `journal_note` (the journal People page), NPC display names and speaker labels (`DialogueLine.speaker`, memory beat speakers, `speakers.tres`). `test_knowledge_lint_reads_notes_journal_and_speakers` plants a term in each.
 
 ## D-133: New script folders cinematics/ and story/ in ContentValidator.SCAN_DIRS; resource content protocol
 - Resources lint themselves via content_flags()/content_check(), mirroring the node protocol.

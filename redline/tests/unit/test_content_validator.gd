@@ -220,6 +220,41 @@ func test_knowledge_lint_warns() -> void:
 		"shipped knowledge warnings must be exactly orr.tres 'Rook': %s" % [shipped])
 
 
+## Map labels, arc journal notes and speaker labels are shown text too
+## (D-132 as built: the lint reads every player-visible Act I string).
+func test_knowledge_lint_reads_notes_journal_and_speakers() -> void:
+	var v := ContentValidator.new()
+	var room := (load("res://tests/fixtures/WorldA.tscn") as PackedScene).instantiate() as Room
+	var note := MapMarker.new()
+	note.name = "LintNote"
+	note.kind = MapMarker.Kind.NOTE
+	note.label = "Nix: harvest rumour"
+	room.add_child(note)
+	v._check_world_room(room, "res://tests/fixtures/WorldA.tscn", {})
+	room.free()
+	var arc := NpcArc.new()
+	arc.npc_id = "lint_arc"
+	var st := NpcArcStage.new()
+	st.id = "met"
+	st.journal_note = "Mechanic. Knows the Architect."
+	arc.stages = [st] as Array[NpcArcStage]
+	v.check_resource(arc, "res://data/arcs/lint_arc.tres")
+	var d := DialogueData.new()
+	d.id = "test_lint_speaker"
+	var l := _line("Hello.")
+	l.speaker = "The Null"
+	d.lines = [l] as Array[DialogueLine]
+	v.check_resource(d, "res://data/npcs/test_lint_speaker.tres")
+	v.validate_story()
+	var found := _knowledge(v.warnings)
+	check(found.any(func(w: String) -> bool: return w.contains("WorldA.tscn") and w.contains("map note LintNote") and w.contains("'harvest'")),
+		"a NOTE label is linted: %s" % [found])
+	check(found.any(func(w: String) -> bool: return w.contains("lint_arc.tres") and w.contains("journal note") and w.contains("'Architect'")),
+		"an arc journal note is linted: %s" % [found])
+	check(found.any(func(w: String) -> bool: return w.contains("test_lint_speaker.tres") and w.contains("speaker") and w.contains("'The Null'")),
+		"a speaker label is linted: %s" % [found])
+
+
 func test_story_report_section() -> void:
 	var md := _shipped_run().report()
 	check(md.contains("## Story"), "report has a Story section")
