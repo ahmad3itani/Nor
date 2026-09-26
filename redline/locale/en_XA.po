@@ -8,6 +8,1082 @@ msgstr ""
 "Language: en_XA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: autoload/Challenges.gd
+msgid "New at the Relay training rig: {group}"
+msgstr "[Ñéŵ áť ťĥé Ŕéĺáý ťŕáíñíñğ ŕíğ: {group}~~~~~~~~~~~]"
+
+#: challenges/ChallengeGoal.gd
+msgid "Goal"
+msgstr "[Ğóáĺ~~]"
+
+#: challenges/RuleWatch.gd
+msgid "Run over: fell"
+msgstr "[Ŕúñ óvéŕ: féĺĺ~~~~~]"
+
+#: challenges/RuleWatch.gd
+msgid "Run over: Core ran dry"
+msgstr "[Ŕúñ óvéŕ: Çóŕé ŕáñ ďŕý~~~~~~~~]"
+
+#: challenges/RuleWatch.gd
+msgid "Run over: hit taken"
+msgstr "[Ŕúñ óvéŕ: ĥíť ťáķéñ~~~~~~~]"
+
+#: challenges/RuleWatch.gd
+msgid "Run over: attack used"
+msgstr "[Ŕúñ óvéŕ: áťťáçķ úšéď~~~~~~~~]"
+
+#: data/accessibility/accessibility_config.tres
+msgid "The Core ran dry a few times."
+msgstr "[Ťĥé Çóŕé ŕáñ ďŕý á féŵ ťíméš.~~~~~~~~~~~]"
+
+#: data/accessibility/accessibility_config.tres
+msgid "Learning a fight takes a few tries."
+msgstr "[Ĺéáŕñíñğ á fíğĥť ťáķéš á féŵ ťŕíéš.~~~~~~~~~~~~~]"
+
+#: data/accessibility/accessibility_config.tres
+msgid "This stretch has stopped you a few times."
+msgstr "[Ťĥíš šťŕéťçĥ ĥáš šťóppéď ýóú á féŵ ťíméš.~~~~~~~~~~~~~~~]"
+
+#: data/accessibility/accessibility_config.tres
+msgid "This room has stopped you a few times."
+msgstr "[Ťĥíš ŕóóm ĥáš šťóppéď ýóú á féŵ ťíméš.~~~~~~~~~~~~~~]"
+
+#: data/challenges/challenge_config.tres
+msgid "Deep Rig"
+msgstr "[Ďéép Ŕíğ~~~~]"
+
+#: data/challenges/challenge_config.tres
+msgid "Boss Rematch"
+msgstr "[Bóšš Ŕémáťçĥ~~~~~~]"
+
+#: data/challenges/challenge_config.tres
+msgid "Time Trial"
+msgstr "[Ťímé Ťŕíáĺ~~~~~]"
+
+#: data/challenges/challenge_config.tres
+msgid "Nerve"
+msgstr "[Ñéŕvé~~~]"
+
+#: data/challenges/challenge_config.tres
+msgid "Pulse Pit"
+msgstr "[Púĺšé Píť~~~~~]"
+
+#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/SettingsMenu.gd
+msgid "Off"
+msgstr "[Óff~~]"
+
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Personal best"
+msgstr "[Péŕšóñáĺ béšť~~~~~]"
+
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Rig ghost"
+msgstr "[Ŕíğ ğĥóšť~~~~~]"
+
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Both"
+msgstr "[Bóťĥ~~]"
+
+#: data/challenges/rank_ladder.tres
+msgid "Clear"
+msgstr "[Çĺéáŕ~~~]"
+
+#: data/challenges/rank_ladder.tres
+msgid "Bronze"
+msgstr "[Bŕóñžé~~~]"
+
+#: data/challenges/rank_ladder.tres
+msgid "Silver"
+msgstr "[Šíĺvéŕ~~~]"
+
+#: data/challenges/rank_ladder.tres
+msgid "Gold"
+msgstr "[Ğóĺď~~]"
+
+#: data/challenges/rank_ladder.tres
+msgid "Redline"
+msgstr "[Ŕéďĺíñé~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/settings/pages/controls.tres
+msgid "Nintendo"
+msgstr "[Ñíñťéñďó~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "B"
+msgstr "[B~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "A"
+msgstr "[Á~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "Y"
+msgstr "[Ý~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "X"
+msgstr "[X~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "-"
+msgstr "[-~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "Home"
+msgstr "[Ĥómé~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "+"
+msgstr "[+~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "L-Stick"
+msgstr "[Ĺ-Šťíçķ~~~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "R-Stick"
+msgstr "[Ŕ-Šťíçķ~~~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "L"
+msgstr "[Ĺ~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "R"
+msgstr "[Ŕ~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Up"
+msgstr "[Ď-Páď Úp~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Down"
+msgstr "[Ď-Páď Ďóŵñ~~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Left"
+msgstr "[Ď-Páď Ĺéfť~~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Right"
+msgstr "[Ď-Páď Ŕíğĥť~~~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "Left stick"
+msgstr "[Ĺéfť šťíçķ~~~~~]"
+
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "Right stick"
+msgstr "[Ŕíğĥť šťíçķ~~~~~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "ZL"
+msgstr "[ŽĹ~~]"
+
+#: data/input/glyphs/nintendo.tres
+msgid "ZR"
+msgstr "[ŽŔ~~]"
+
+#: data/input/glyphs/playstation.tres data/settings/pages/controls.tres
+msgid "PlayStation"
+msgstr "[PĺáýŠťáťíóñ~~~~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Cross"
+msgstr "[Çŕóšš~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Circle"
+msgstr "[Çíŕçĺé~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Square"
+msgstr "[Šqúáŕé~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Triangle"
+msgstr "[Ťŕíáñğĺé~~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Create"
+msgstr "[Çŕéáťé~~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "PS"
+msgstr "[PŠ~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "Options"
+msgstr "[Ópťíóñš~~~~]"
+
+#: data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "L3"
+msgstr "[Ĺ3~~]"
+
+#: data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "R3"
+msgstr "[Ŕ3~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "L1"
+msgstr "[Ĺ1~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "R1"
+msgstr "[Ŕ1~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "L2"
+msgstr "[Ĺ2~~]"
+
+#: data/input/glyphs/playstation.tres
+msgid "R2"
+msgstr "[Ŕ2~~]"
+
+#: data/input/glyphs/xbox.tres data/settings/pages/controls.tres
+msgid "Xbox"
+msgstr "[Xbóx~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "View"
+msgstr "[Víéŵ~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "Guide"
+msgstr "[Ğúíďé~~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "Menu"
+msgstr "[Méñú~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "LB"
+msgstr "[ĹB~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "RB"
+msgstr "[ŔB~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "LT"
+msgstr "[ĹŤ~~]"
+
+#: data/input/glyphs/xbox.tres
+msgid "RT"
+msgstr "[ŔŤ~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Move left"
+msgstr "[Móvé ĺéfť~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Movement"
+msgstr "[Móvéméñť~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Move right"
+msgstr "[Móvé ŕíğĥť~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Move up"
+msgstr "[Móvé úp~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Move down"
+msgstr "[Móvé ďóŵñ~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Jump"
+msgstr "[Ĵúmp~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Dodge / dash"
+msgstr "[Ďóďğé / ďášĥ~~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Grapple"
+msgstr "[Ğŕáppĺé~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Light attack"
+msgstr "[Ĺíğĥť áťťáçķ~~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Combat"
+msgstr "[Çómbáť~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Heavy attack"
+msgstr "[Ĥéávý áťťáçķ~~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Ranged"
+msgstr "[Ŕáñğéď~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Heal"
+msgstr "[Ĥéáĺ~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Interact / talk"
+msgstr "[Íñťéŕáçť / ťáĺķ~~~~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "World"
+msgstr "[Ŵóŕĺď~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Map"
+msgstr "[Máp~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Pause"
+msgstr "[Páúšé~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Menus"
+msgstr "[Méñúš~~~]"
+
+#: data/input/rebind_catalog.tres
+msgid "Restart challenge"
+msgstr "[Ŕéšťáŕť çĥáĺĺéñğé~~~~~~]"
+
+#: data/platform/presence.tres
+msgid "In the menus"
+msgstr "[Íñ ťĥé méñúš~~~~~~]"
+
+#: data/platform/presence.tres
+msgid "{district} — {room}"
+msgstr "[{district} — {room}~~]"
+
+#: data/platform/presence.tres
+msgid "Fighting {boss}"
+msgstr "[Fíğĥťíñğ {boss}~~~~~]"
+
+#: data/platform/presence.tres
+msgid "Remembering"
+msgstr "[Ŕémémbéŕíñğ~~~~~~]"
+
+#: data/platform/presence.tres
+msgid "Watching"
+msgstr "[Ŵáťçĥíñğ~~~~]"
+
+#: data/platform/presence.tres
+msgid "Act I complete — {room}"
+msgstr "[Áçť Í çómpĺéťé — {room}~~~~~~]"
+
+#: data/platform/presence.tres
+msgid "In the {room}"
+msgstr "[Íñ ťĥé {room}~~~~]"
+
+#: data/platform/presence.tres
+msgid "Challenge — {name}"
+msgstr "[Çĥáĺĺéñğé — {name}~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Time played"
+msgstr "[Ťímé pĺáýéď~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Deaths"
+msgstr "[Ďéáťĥš~~~]"
+
+#: data/platform/stats.tres
+msgid "Enemies defeated"
+msgstr "[Éñémíéš ďéféáťéď~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Environment takedowns"
+msgstr "[Éñvíŕóñméñť ťáķéďóŵñš~~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Aerial takedowns"
+msgstr "[Áéŕíáĺ ťáķéďóŵñš~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Perfect dodges"
+msgstr "[Péŕféçť ďóďğéš~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Best style rank"
+msgstr "[Béšť šťýĺé ŕáñķ~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Bosses defeated"
+msgstr "[Bóššéš ďéféáťéď~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Collector Drone, untouched"
+msgstr "[Çóĺĺéçťóŕ Ďŕóñé, úñťóúçĥéď~~~~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Warden Krail, untouched"
+msgstr "[Ŵáŕďéñ Ķŕáíĺ, úñťóúçĥéď~~~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Fastest Collector Drone"
+msgstr "[Fášťéšť Çóĺĺéçťóŕ Ďŕóñé~~~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Fastest Warden Krail"
+msgstr "[Fášťéšť Ŵáŕďéñ Ķŕáíĺ~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Clean getaways"
+msgstr "[Çĺéáñ ğéťáŵáýš~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Fastest Rainline chase"
+msgstr "[Fášťéšť Ŕáíñĺíñé çĥášé~~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Grid Clamp staggers"
+msgstr "[Ğŕíď Çĺámp šťáğğéŕš~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Shutter close calls"
+msgstr "[Šĥúťťéŕ çĺóšé çáĺĺš~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Fastest Act I"
+msgstr "[Fášťéšť Áçť Í~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Memory details found"
+msgstr "[Mémóŕý ďéťáíĺš fóúñď~~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Anchors rested at"
+msgstr "[Áñçĥóŕš ŕéšťéď áť~~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Secrets found"
+msgstr "[Šéçŕéťš fóúñď~~~~~]"
+
+#: data/platform/stats.tres
+msgid "Silver medals or better"
+msgstr "[Šíĺvéŕ méďáĺš óŕ béťťéŕ~~~~~~~~~]"
+
+#: data/settings/catalog.tres
+msgid "Change these any time. They never lock content or achievements."
+msgstr "[Çĥáñğé ťĥéšé áñý ťímé. Ťĥéý ñévéŕ ĺóçķ çóñťéñť óŕ áçĥíévéméñťš.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/catalog.tres
+msgid "Reset every setting except controls and language?"
+msgstr "[Ŕéšéť évéŕý šéťťíñğ éxçépť çóñťŕóĺš áñď ĺáñğúáğé?~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "ASSISTS"
+msgstr "[ÁŠŠÍŠŤŠ~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Assists…"
+msgstr "[Áššíšťš…~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Core mode"
+msgstr "[Çóŕé móďé~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "How fast the Redline Core drains and how much it forgives."
+msgstr "[Ĥóŵ fášť ťĥé Ŕéďĺíñé Çóŕé ďŕáíñš áñď ĥóŵ múçĥ íť fóŕğívéš.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres data/settings/pages/subtitles.tres
+msgid "Normal"
+msgstr "[Ñóŕmáĺ~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Story / Assist"
+msgstr "[Šťóŕý / Áššíšť~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Redline Challenge"
+msgstr "[Ŕéďĺíñé Çĥáĺĺéñğé~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Core burnout costs health"
+msgstr "[Çóŕé búŕñóúť çóšťš ĥéáĺťĥ~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Off: an empty Core still warns you, but costs no health."
+msgstr "[Óff: áñ émpťý Çóŕé šťíĺĺ ŵáŕñš ýóú, búť çóšťš ñó ĥéáĺťĥ.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Damage assist"
+msgstr "[Ďámáğé áššíšť~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Hits cost fewer pips. Knockback and recovery stay the same."
+msgstr "[Ĥíťš çóšť féŵéŕ pípš. Ķñóçķbáçķ áñď ŕéçóvéŕý šťáý ťĥé šámé.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Bosses: reduced"
+msgstr "[Bóššéš: ŕéďúçéď~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "All: reduced"
+msgstr "[Áĺĺ: ŕéďúçéď~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "All: greatly reduced"
+msgstr "[Áĺĺ: ğŕéáťĺý ŕéďúçéď~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Aim assist"
+msgstr "[Áím áššíšť~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Ranged shots bend toward a nearby enemy you can see."
+msgstr "[Ŕáñğéď šĥóťš béñď ťóŵáŕď á ñéáŕbý éñémý ýóú çáñ šéé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Light"
+msgstr "[Ĺíğĥť~~~]"
+
+#: data/settings/pages/assists.tres data/settings/pages/visual.tres
+msgid "Strong"
+msgstr "[Šťŕóñğ~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Drop Scrap on death"
+msgstr "[Ďŕóp Šçŕáp óñ ďéáťĥ~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Off: unbanked Scrap stays with you when you fall."
+msgstr "[Óff: úñbáñķéď Šçŕáp šťáýš ŵíťĥ ýóú ŵĥéñ ýóú fáĺĺ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Respawn at room entrance"
+msgstr "[Ŕéšpáŵñ áť ŕóóm éñťŕáñçé~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Come back where you entered the room instead of at the last Anchor."
+msgstr "[Çómé báçķ ŵĥéŕé ýóú éñťéŕéď ťĥé ŕóóm íñšťéáď óf áť ťĥé ĺášť Áñçĥóŕ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Map hints"
+msgstr "[Máp ĥíñťš~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "How much the map marks. Secrets always need the lens."
+msgstr "[Ĥóŵ múçĥ ťĥé máp máŕķš. Šéçŕéťš áĺŵáýš ñééď ťĥé ĺéñš.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Minimal"
+msgstr "[Míñímáĺ~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Standard"
+msgstr "[Šťáñďáŕď~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Guided"
+msgstr "[Ğúíďéď~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Suggest options after repeated defeats"
+msgstr "[Šúğğéšť ópťíóñš áfťéŕ ŕépéáťéď ďéféáťš~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/assists.tres
+msgid "Offers a card with options. Nothing changes unless you pick one."
+msgstr "[Ófféŕš á çáŕď ŵíťĥ ópťíóñš. Ñóťĥíñğ çĥáñğéš úñĺéšš ýóú píçķ óñé.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "AUDIO"
+msgstr "[ÁÚĎÍÓ~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Audio…"
+msgstr "[Áúďíó…~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Master volume"
+msgstr "[Mášťéŕ vóĺúmé~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Every sound in the game."
+msgstr "[Évéŕý šóúñď íñ ťĥé ğámé.~~~~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Music volume"
+msgstr "[Múšíç vóĺúmé~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Music and ambient score."
+msgstr "[Múšíç áñď ámbíéñť šçóŕé.~~~~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Effects volume"
+msgstr "[Éfféçťš vóĺúmé~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Combat, movement and world sounds."
+msgstr "[Çómbáť, móvéméñť áñď ŵóŕĺď šóúñďš.~~~~~~~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Interface sounds"
+msgstr "[Íñťéŕfáçé šóúñďš~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Menu ticks, prompts and pop-ups."
+msgstr "[Méñú ťíçķš, pŕómpťš áñď póp-úpš.~~~~~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "CHALLENGES & SPEEDRUN"
+msgstr "[ÇĤÁĹĹÉÑĞÉŠ & ŠPÉÉĎŔÚÑ~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Challenges & speedrun…"
+msgstr "[Çĥáĺĺéñğéš & špééďŕúñ…~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Speedrun timer"
+msgstr "[Špééďŕúñ ťíméŕ~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "In-game time on screen, with or without splits per room and boss."
+msgstr "[Íñ-ğámé ťímé óñ šçŕééñ, ŵíťĥ óŕ ŵíťĥóúť špĺíťš péŕ ŕóóm áñď bóšš.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "IGT"
+msgstr "[ÍĞŤ~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "IGT + splits"
+msgstr "[ÍĞŤ + špĺíťš~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Challenge ghost"
+msgstr "[Çĥáĺĺéñğé ğĥóšť~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Which recorded run races with you in challenges."
+msgstr "[Ŵĥíçĥ ŕéçóŕďéď ŕúñ ŕáçéš ŵíťĥ ýóú íñ çĥáĺĺéñğéš.~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Fast reset"
+msgstr "[Fášť ŕéšéť~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Hold restart for a moment, so a stray press never ends a run."
+msgstr "[Ĥóĺď ŕéšťáŕť fóŕ á móméñť, šó á šťŕáý pŕéšš ñévéŕ éñďš á ŕúñ.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/challenges.tres
+msgid "Press"
+msgstr "[Pŕéšš~~~]"
+
+#: data/settings/pages/challenges.tres data/settings/pages/subtitles.tres
+msgid "Hold"
+msgstr "[Ĥóĺď~~]"
+
+#: data/settings/pages/controls.tres
+msgid "CONTROLS"
+msgstr "[ÇÓÑŤŔÓĹŠ~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Controls…"
+msgstr "[Çóñťŕóĺš…~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Showing"
+msgstr "[Šĥóŵíñğ~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Which bindings the list below shows and edits."
+msgstr "[Ŵĥíçĥ bíñďíñğš ťĥé ĺíšť béĺóŵ šĥóŵš áñď éďíťš.~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/controls.tres ui/menus/SettingsMenu.gd
+msgid "Keyboard"
+msgstr "[Ķéýbóáŕď~~~~]"
+
+#: data/settings/pages/controls.tres ui/menus/SettingsMenu.gd
+msgid "Controller"
+msgstr "[Çóñťŕóĺĺéŕ~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Button prompts"
+msgstr "[Búťťóñ pŕómpťš~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Which controller's button names prompts use. Auto follows the controller."
+msgstr "[Ŵĥíçĥ çóñťŕóĺĺéŕ'š búťťóñ ñáméš pŕómpťš úšé. Áúťó fóĺĺóŵš ťĥé çóñťŕóĺĺéŕ.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Auto"
+msgstr "[Áúťó~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Vibration"
+msgstr "[Víbŕáťíóñ~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Controller rumble strength. 0% turns it off."
+msgstr "[Çóñťŕóĺĺéŕ ŕúmbĺé šťŕéñğťĥ. 0% ťúŕñš íť óff.~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Jump height"
+msgstr "[Ĵúmp ĥéíğĥť~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Always full height: a tap jumps as high as a hold. Short hops need a quick release."
+msgstr "[Áĺŵáýš fúĺĺ ĥéíğĥť: á ťáp ĵúmpš áš ĥíğĥ áš á ĥóĺď. Šĥóŕť ĥópš ñééď á qúíçķ ŕéĺéášé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Hold for height"
+msgstr "[Ĥóĺď fóŕ ĥéíğĥť~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Always full height"
+msgstr "[Áĺŵáýš fúĺĺ ĥéíğĥť~~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "Rebind wait"
+msgstr "[Ŕébíñď ŵáíť~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "How long a rebind listens. Esc, Backspace or Start cancels at any time."
+msgstr "[Ĥóŵ ĺóñğ á ŕébíñď ĺíšťéñš. Éšç, Báçķšpáçé óŕ Šťáŕť çáñçéĺš áť áñý ťímé.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/controls.tres
+msgid "5 s"
+msgstr "[5 š~~]"
+
+#: data/settings/pages/controls.tres
+msgid "10 s"
+msgstr "[10 š~~]"
+
+#: data/settings/pages/controls.tres
+msgid "No limit"
+msgstr "[Ñó ĺímíť~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "INTERFACE"
+msgstr "[ÍÑŤÉŔFÁÇÉ~~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Interface…"
+msgstr "[Íñťéŕfáçé…~~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "UI size"
+msgstr "[ÚÍ šížé~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Size of menus and on-screen text. Long pages scroll."
+msgstr "[Šížé óf méñúš áñď óñ-šçŕééñ ťéxť. Ĺóñğ páğéš šçŕóĺĺ.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "100%"
+msgstr "[100%~~]"
+
+#: data/settings/pages/interface.tres
+msgid "125%"
+msgstr "[125%~~]"
+
+#: data/settings/pages/interface.tres
+msgid "150%"
+msgstr "[150%~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Achievement pop-ups"
+msgstr "[Áçĥíévéméñť póp-úpš~~~~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Show a short card when an achievement unlocks. They still unlock when off."
+msgstr "[Šĥóŵ á šĥóŕť çáŕď ŵĥéñ áñ áçĥíévéméñť úñĺóçķš. Ťĥéý šťíĺĺ úñĺóçķ ŵĥéñ óff.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Language"
+msgstr "[Ĺáñğúáğé~~~~]"
+
+#: data/settings/pages/interface.tres
+msgid "Menu and subtitle language."
+msgstr "[Méñú áñď šúbťíťĺé ĺáñğúáğé.~~~~~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "PLAYTEST & DEBUG"
+msgstr "[PĹÁÝŤÉŠŤ & ĎÉBÚĞ~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest & debug…"
+msgstr "[Pĺáýťéšť & ďébúğ…~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest recording (local file)"
+msgstr "[Pĺáýťéšť ŕéçóŕďíñğ (ĺóçáĺ fíĺé)~~~~~~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Saves a session file on this computer only. Nothing is sent anywhere."
+msgstr "[Šávéš á šéššíóñ fíĺé óñ ťĥíš çómpúťéŕ óñĺý. Ñóťĥíñğ íš šéñť áñýŵĥéŕé.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest variant"
+msgstr "[Pĺáýťéšť váŕíáñť~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Pins one experiment arm. Auto rotates per session."
+msgstr "[Píñš óñé éxpéŕíméñť áŕm. Áúťó ŕóťáťéš péŕ šéššíóñ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Debug overlay"
+msgstr "[Ďébúğ óvéŕĺáý~~~~~]"
+
+#: data/settings/pages/playtest_debug.tres
+msgid "Frame, state and room readout (F1)."
+msgstr "[Fŕámé, šťáťé áñď ŕóóm ŕéáďóúť (F1).~~~~~~~~~~~~~]"
+
+#: data/settings/pages/quick.tres
+msgid "COMFORT & ACCESSIBILITY"
+msgstr "[ÇÓMFÓŔŤ & ÁÇÇÉŠŠÍBÍĹÍŤÝ~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "SUBTITLES & SCENES"
+msgstr "[ŠÚBŤÍŤĹÉŠ & ŠÇÉÑÉŠ~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Subtitles & scenes…"
+msgstr "[Šúbťíťĺéš & šçéñéš…~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle size"
+msgstr "[Šúbťíťĺé šížé~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Text size of dialogue and scene lines."
+msgstr "[Ťéxť šížé óf ďíáĺóğúé áñď šçéñé ĺíñéš.~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Small"
+msgstr "[Šmáĺĺ~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Medium"
+msgstr "[Méďíúm~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Large"
+msgstr "[Ĺáŕğé~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle background"
+msgstr "[Šúbťíťĺé báçķğŕóúñď~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Outline only, a see-through box, or a solid box behind lines."
+msgstr "[Óúťĺíñé óñĺý, á šéé-ťĥŕóúğĥ bóx, óŕ á šóĺíď bóx béĥíñď ĺíñéš.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Outline"
+msgstr "[Óúťĺíñé~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Box"
+msgstr "[Bóx~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Solid"
+msgstr "[Šóĺíď~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Speaker names"
+msgstr "[Špéáķéŕ ñáméš~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Show who is speaking above each line."
+msgstr "[Šĥóŵ ŵĥó íš špéáķíñğ ábóvé éáçĥ ĺíñé.~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle speed"
+msgstr "[Šúbťíťĺé špééď~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "How long timed scene lines stay on screen."
+msgstr "[Ĥóŵ ĺóñğ ťíméď šçéñé ĺíñéš šťáý óñ šçŕééñ.~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Slow"
+msgstr "[Šĺóŵ~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Slower"
+msgstr "[Šĺóŵéŕ~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Skip scenes"
+msgstr "[Šķíp šçéñéš~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Hold the skip button, or press it twice, to skip a scene."
+msgstr "[Ĥóĺď ťĥé šķíp búťťóñ, óŕ pŕéšš íť ťŵíçé, ťó šķíp á šçéñé.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Press twice"
+msgstr "[Pŕéšš ťŵíçé~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Memories play at Anchors"
+msgstr "[Mémóŕíéš pĺáý áť Áñçĥóŕš~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Off: found memories wait in the journal instead."
+msgstr "[Óff: fóúñď mémóŕíéš ŵáíť íñ ťĥé ĵóúŕñáĺ íñšťéáď.~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Text auto-advance"
+msgstr "[Ťéxť áúťó-áďváñçé~~~~~~]"
+
+#: data/settings/pages/subtitles.tres
+msgid "Lines move on by themselves after a reading pause. Choices always wait."
+msgstr "[Ĺíñéš móvé óñ bý ťĥémšéĺvéš áfťéŕ á ŕéáďíñğ páúšé. Çĥóíçéš áĺŵáýš ŵáíť.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/subtitles.tres ui/menus/SettingsMenu.gd
+msgid "On"
+msgstr "[Óñ~~]"
+
+#: data/settings/pages/visual.tres
+msgid "VISUAL & COMFORT"
+msgstr "[VÍŠÚÁĹ & ÇÓMFÓŔŤ~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Visual & comfort…"
+msgstr "[Víšúáĺ & çómfóŕť…~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Screen shake"
+msgstr "[Šçŕééñ šĥáķé~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Camera shake from hits, landings and scenes."
+msgstr "[Çáméŕá šĥáķé fŕóm ĥíťš, ĺáñďíñğš áñď šçéñéš.~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Freeze frames (hitstop)"
+msgstr "[Fŕééžé fŕáméš (ĥíťšťóp)~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "The short pause when a hit lands. 0% plays every hit without it."
+msgstr "[Ťĥé šĥóŕť páúšé ŵĥéñ á ĥíť ĺáñďš. 0% pĺáýš évéŕý ĥíť ŵíťĥóúť íť.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Flash reduction"
+msgstr "[Fĺášĥ ŕéďúçťíóñ~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Softens bright flashes and keeps blinking below three times a second."
+msgstr "[Šófťéñš bŕíğĥť fĺášĥéš áñď ķéépš bĺíñķíñğ béĺóŵ ťĥŕéé ťíméš á šéçóñď.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "High contrast"
+msgstr "[Ĥíğĥ çóñťŕášť~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Solid panels, brighter text and outlined focus in menus and on screen."
+msgstr "[Šóĺíď páñéĺš, bŕíğĥťéŕ ťéxť áñď óúťĺíñéď fóçúš íñ méñúš áñď óñ šçŕééñ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Colour-blind mode"
+msgstr "[Çóĺóúŕ-bĺíñď móďé~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Swaps warning colours for ones that stay apart. Shapes always mark states."
+msgstr "[Šŵápš ŵáŕñíñğ çóĺóúŕš fóŕ óñéš ťĥáť šťáý ápáŕť. Šĥápéš áĺŵáýš máŕķ šťáťéš.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Red-green"
+msgstr "[Ŕéď-ğŕééñ~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Blue-yellow"
+msgstr "[Bĺúé-ýéĺĺóŵ~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Background dim"
+msgstr "[Báçķğŕóúñď ďím~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Darkens the far backdrop so the play layer stands out."
+msgstr "[Ďáŕķéñš ťĥé fáŕ báçķďŕóp šó ťĥé pĺáý ĺáýéŕ šťáñďš óúť.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Some"
+msgstr "[Šómé~~]"
+
+#: input/InputBindings.gd
+msgid "That input cannot be used here."
+msgstr "[Ťĥáť íñpúť çáññóť bé úšéď ĥéŕé.~~~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} is kept for Pause."
+msgstr "[{key} íš ķépť fóŕ Páúšé.~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} is kept for backing out of menus."
+msgstr "[{key} íš ķépť fóŕ báçķíñğ óúť óf méñúš.~~~~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} is kept for dev tools."
+msgstr "[{key} íš ķépť fóŕ ďév ťóóĺš.~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} also confirms menus and dialogue."
+msgstr "[{key} áĺšó çóñfíŕmš méñúš áñď ďíáĺóğúé.~~~~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} also backs out of menus."
+msgstr "[{key} áĺšó báçķš óúť óf méñúš.~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} also skips scenes."
+msgstr "[{key} áĺšó šķípš šçéñéš.~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "Keep at least one key for {action}."
+msgstr "[Ķéép áť ĺéášť óñé ķéý fóŕ {action}.~~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "Keep at least one button for {action}."
+msgstr "[Ķéép áť ĺéášť óñé búťťóñ fóŕ {action}.~~~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "Pause needs one more key."
+msgstr "[Páúšé ñééďš óñé móŕé ķéý.~~~~~~~~~]"
+
+#: input/InputBindings.gd
+msgid "{key} stays on {action}."
+msgstr "[{key} šťáýš óñ {action}.~~~~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "IGT {time}"
+msgstr "[ÍĞŤ {time}~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "Wave {wave} · Score {score}"
+msgstr "[Ŵávé {wave} · Šçóŕé {score}~~~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "Score {score}"
+msgstr "[Šçóŕé {score}~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "Attempt {n}"
+msgstr "[Áťťémpť {n}~~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "Hold {key}: restart"
+msgstr "[Ĥóĺď {key}: ŕéšťáŕť~~~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "{key}: restart"
+msgstr "[{key}: ŕéšťáŕť~~~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "NO HIT"
+msgstr "[ÑÓ ĤÍŤ~~~]"
+
+#: ui/hud/RunTimerHud.gd
+msgid "NO ATTACKS"
+msgstr "[ÑÓ ÁŤŤÁÇĶŠ~~~~~]"
+
 #: ui/menus/PauseMenu.gd
 msgid "PAUSED"
 msgstr "[PÁÚŠÉĎ~~~]"
@@ -35,6 +1111,118 @@ msgstr "[Šéťťíñğš~~~~]"
 #: ui/menus/PauseMenu.gd
 msgid "Quit challenge"
 msgstr "[Qúíť çĥáĺĺéñğé~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "SETTINGS"
+msgstr "[ŠÉŤŤÍÑĞŠ~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset all settings…"
+msgstr "[Ŕéšéť áĺĺ šéťťíñğš…~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+msgid "Back"
+msgstr "[Báçķ~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset this page…"
+msgstr "[Ŕéšéť ťĥíš páğé…~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset every option on {page}?"
+msgstr "[Ŕéšéť évéŕý ópťíóñ óñ {page}?~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Done"
+msgstr "[Ďóñé~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "{row} (set by this challenge)"
+msgstr "[{row} (šéť bý ťĥíš çĥáĺĺéñğé)~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Controller: {name}"
+msgstr "[Çóñťŕóĺĺéŕ: {name}~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset keyboard controls…"
+msgstr "[Ŕéšéť ķéýbóáŕď çóñťŕóĺš…~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset controller controls…"
+msgstr "[Ŕéšéť çóñťŕóĺĺéŕ çóñťŕóĺš…~~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Put every keyboard control back?"
+msgstr "[Púť évéŕý ķéýbóáŕď çóñťŕóĺ báçķ?~~~~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Put every controller control back?"
+msgstr "[Púť évéŕý çóñťŕóĺĺéŕ çóñťŕóĺ báçķ?~~~~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "{action} ({device})"
+msgstr "[{action} ({device})~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "(empty)"
+msgstr "[(émpťý)~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "{key} (fixed)"
+msgstr "[{key} (fíxéď)~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Key {n}: {key}"
+msgstr "[Ķéý {n}: {key}~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Button {n}: {key}"
+msgstr "[Búťťóñ {n}: {key}~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Left stick (fixed)"
+msgstr "[Ĺéfť šťíçķ (fíxéď)~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Remove mode: {v}"
+msgstr "[Ŕémóvé móďé: {v}~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Reset {action}"
+msgstr "[Ŕéšéť {action}~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "{key} is already {action}."
+msgstr "[{key} íš áĺŕéáďý {action}.~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Swap ({other} gets {key})"
+msgstr "[Šŵáp ({other} ğéťš {key})~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Move it here"
+msgstr "[Móvé íť ĥéŕé~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Cancel"
+msgstr "[Çáñçéĺ~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Yes"
+msgstr "[Ýéš~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "No"
+msgstr "[Ñó~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Auto (rotates)"
+msgstr "[Áúťó (ŕóťáťéš)~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Automatic ({language})"
+msgstr "[Áúťómáťíç ({language})~~~~~~]"
 
 #: ui/menus/TitleMenu.gd
 msgid "Comfort & accessibility"
@@ -80,9 +1268,29 @@ msgstr "[Qúíť~~]"
 msgid "LABS & DEV STARTS"
 msgstr "[ĹÁBŠ & ĎÉV ŠŤÁŔŤŠ~~~~~~]"
 
-#: ui/menus/TitleMenu.gd
-msgid "Back"
-msgstr "[Báçķ~~]"
+#: ui/settings/RebindCapture.gd
+msgid "Press a key for {action} (Esc to cancel)"
+msgstr "[Pŕéšš á ķéý fóŕ {action} (Éšç ťó çáñçéĺ)~~~~~~~~~~~~]"
+
+#: ui/settings/RebindCapture.gd
+msgid "Press a button for {action} (Start to cancel)"
+msgstr "[Pŕéšš á búťťóñ fóŕ {action} (Šťáŕť ťó çáñçéĺ)~~~~~~~~~~~~~]"
+
+#: ui/settings/RebindCapture.gd
+msgid "Waiting for a controller button."
+msgstr "[Ŵáíťíñğ fóŕ á çóñťŕóĺĺéŕ búťťóñ.~~~~~~~~~~~~]"
+
+#: ui/settings/RebindCapture.gd
+msgid "Waiting for a key."
+msgstr "[Ŵáíťíñğ fóŕ á ķéý.~~~~~~~]"
+
+#: world/props/GhostActor.gd
+msgid "PB"
+msgstr "[PB~~]"
+
+#: world/props/GhostActor.gd
+msgid "RIG"
+msgstr "[ŔÍĞ~~]"
 
 #: world/rooms/CombatLab.tscn
 msgid "SAFE: no core drain.  DUMMIES ->"

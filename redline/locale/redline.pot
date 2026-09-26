@@ -8,6 +8,1931 @@ msgstr ""
 "Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. key: autoload/Challenges.gd::Loc.f
+#. placeholders: {group}
+#: autoload/Challenges.gd
+msgid "New at the Relay training rig: {group}"
+msgstr ""
+
+#. key: challenges/ChallengeGoal.gd::Loc.t
+#: challenges/ChallengeGoal.gd
+msgid "Goal"
+msgstr ""
+
+#. key: challenges/RuleWatch.gd::Loc.t
+#: challenges/RuleWatch.gd
+msgid "Run over: fell"
+msgstr ""
+
+#. key: challenges/RuleWatch.gd::Loc.t
+#: challenges/RuleWatch.gd
+msgid "Run over: Core ran dry"
+msgstr ""
+
+#. key: challenges/RuleWatch.gd::Loc.t
+#: challenges/RuleWatch.gd
+msgid "Run over: hit taken"
+msgstr ""
+
+#. key: challenges/RuleWatch.gd::Loc.t
+#: challenges/RuleWatch.gd
+msgid "Run over: attack used"
+msgstr ""
+
+#. key: data/accessibility/accessibility_config.tres::rules[0].text
+#. AssistRule
+#. max 90 chars
+#: data/accessibility/accessibility_config.tres
+msgid "The Core ran dry a few times."
+msgstr ""
+
+#. key: data/accessibility/accessibility_config.tres::rules[1].text
+#. AssistRule
+#. max 90 chars
+#: data/accessibility/accessibility_config.tres
+msgid "Learning a fight takes a few tries."
+msgstr ""
+
+#. key: data/accessibility/accessibility_config.tres::rules[2].text
+#. key: data/accessibility/accessibility_config.tres::rules[3].text
+#. key: data/accessibility/accessibility_config.tres::rules[4].text
+#. AssistRule
+#. max 90 chars
+#: data/accessibility/accessibility_config.tres
+msgid "This stretch has stopped you a few times."
+msgstr ""
+
+#. key: data/accessibility/accessibility_config.tres::rules[5].text
+#. AssistRule
+#. max 90 chars
+#: data/accessibility/accessibility_config.tres
+msgid "This room has stopped you a few times."
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[0]
+#. ChallengeConfig
+#. max 24 chars
+#: data/challenges/challenge_config.tres
+msgid "Deep Rig"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[1]
+#. ChallengeConfig
+#. max 24 chars
+#: data/challenges/challenge_config.tres
+msgid "Boss Rematch"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[2]
+#. ChallengeConfig
+#. max 24 chars
+#: data/challenges/challenge_config.tres
+msgid "Time Trial"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[3]
+#. ChallengeConfig
+#. max 24 chars
+#: data/challenges/challenge_config.tres
+msgid "Nerve"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[4]
+#. ChallengeConfig
+#. max 24 chars
+#: data/challenges/challenge_config.tres
+msgid "Pulse Pit"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::ghost_mode_names[0]
+#. key: data/settings/pages/assists.tres::rows[2].choices[0]
+#. key: data/settings/pages/assists.tres::rows[3].choices[0]
+#. key: data/settings/pages/challenges.tres::rows[0].choices[0]
+#. key: data/settings/pages/challenges.tres::rows[1].choices[0]
+#. key: data/settings/pages/subtitles.tres::rows[6].choices[0]
+#. key: data/settings/pages/visual.tres::rows[4].choices[0]
+#. key: data/settings/pages/visual.tres::rows[5].choices[0]
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. ChallengeConfig
+#. SettingDef
+#. max 16 chars
+#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/SettingsMenu.gd
+msgid "Off"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::ghost_mode_names[1]
+#. key: data/settings/pages/challenges.tres::rows[1].choices[1]
+#. ChallengeConfig
+#. SettingDef
+#. max 16 chars
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Personal best"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::ghost_mode_names[2]
+#. key: data/settings/pages/challenges.tres::rows[1].choices[2]
+#. ChallengeConfig
+#. SettingDef
+#. max 16 chars
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Rig ghost"
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::ghost_mode_names[3]
+#. key: data/settings/pages/challenges.tres::rows[1].choices[3]
+#. ChallengeConfig
+#. SettingDef
+#. max 16 chars
+#: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
+msgid "Both"
+msgstr ""
+
+#. key: data/challenges/rank_ladder.tres::names[0]
+#. RankLadder
+#. max 12 chars
+#: data/challenges/rank_ladder.tres
+msgid "Clear"
+msgstr ""
+
+#. key: data/challenges/rank_ladder.tres::names[1]
+#. RankLadder
+#. max 12 chars
+#: data/challenges/rank_ladder.tres
+msgid "Bronze"
+msgstr ""
+
+#. key: data/challenges/rank_ladder.tres::names[2]
+#. RankLadder
+#. max 12 chars
+#: data/challenges/rank_ladder.tres
+msgid "Silver"
+msgstr ""
+
+#. key: data/challenges/rank_ladder.tres::names[3]
+#. RankLadder
+#. max 12 chars
+#: data/challenges/rank_ladder.tres
+msgid "Gold"
+msgstr ""
+
+#. key: data/challenges/rank_ladder.tres::names[4]
+#. RankLadder
+#. max 12 chars
+#: data/challenges/rank_ladder.tres
+msgid "Redline"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::display_name
+#. key: data/settings/pages/controls.tres::rows[1].choices[3]
+#. GlyphSet
+#. SettingDef
+#. max 20 chars
+#: data/input/glyphs/nintendo.tres data/settings/pages/controls.tres
+msgid "Nintendo"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[0]
+#. key: data/input/glyphs/xbox.tres::buttons[1]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "B"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[1]
+#. key: data/input/glyphs/xbox.tres::buttons[0]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "A"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[2]
+#. key: data/input/glyphs/xbox.tres::buttons[3]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "Y"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[3]
+#. key: data/input/glyphs/xbox.tres::buttons[2]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/xbox.tres
+msgid "X"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[4]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "-"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[5]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "Home"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[6]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "+"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[7]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "L-Stick"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[8]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "R-Stick"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[9]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "L"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[10]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "R"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[11]
+#. key: data/input/glyphs/playstation.tres::buttons[11]
+#. key: data/input/glyphs/xbox.tres::buttons[11]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Up"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[12]
+#. key: data/input/glyphs/playstation.tres::buttons[12]
+#. key: data/input/glyphs/xbox.tres::buttons[12]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Down"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[13]
+#. key: data/input/glyphs/playstation.tres::buttons[13]
+#. key: data/input/glyphs/xbox.tres::buttons[13]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Left"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::buttons[14]
+#. key: data/input/glyphs/playstation.tres::buttons[14]
+#. key: data/input/glyphs/xbox.tres::buttons[14]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "D-Pad Right"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::axes[a0+]
+#. key: data/input/glyphs/nintendo.tres::axes[a0-]
+#. key: data/input/glyphs/nintendo.tres::axes[a1+]
+#. key: data/input/glyphs/nintendo.tres::axes[a1-]
+#. key: data/input/glyphs/playstation.tres::axes[a0+]
+#. key: data/input/glyphs/playstation.tres::axes[a0-]
+#. key: data/input/glyphs/playstation.tres::axes[a1+]
+#. key: data/input/glyphs/playstation.tres::axes[a1-]
+#. key: data/input/glyphs/xbox.tres::axes[a0+]
+#. key: data/input/glyphs/xbox.tres::axes[a0-]
+#. key: data/input/glyphs/xbox.tres::axes[a1+]
+#. key: data/input/glyphs/xbox.tres::axes[a1-]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "Left stick"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::axes[a2+]
+#. key: data/input/glyphs/nintendo.tres::axes[a2-]
+#. key: data/input/glyphs/nintendo.tres::axes[a3+]
+#. key: data/input/glyphs/nintendo.tres::axes[a3-]
+#. key: data/input/glyphs/playstation.tres::axes[a2+]
+#. key: data/input/glyphs/playstation.tres::axes[a2-]
+#. key: data/input/glyphs/playstation.tres::axes[a3+]
+#. key: data/input/glyphs/playstation.tres::axes[a3-]
+#. key: data/input/glyphs/xbox.tres::axes[a2+]
+#. key: data/input/glyphs/xbox.tres::axes[a2-]
+#. key: data/input/glyphs/xbox.tres::axes[a3+]
+#. key: data/input/glyphs/xbox.tres::axes[a3-]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "Right stick"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::axes[a4+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "ZL"
+msgstr ""
+
+#. key: data/input/glyphs/nintendo.tres::axes[a5+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/nintendo.tres
+msgid "ZR"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::display_name
+#. key: data/settings/pages/controls.tres::rows[1].choices[2]
+#. GlyphSet
+#. SettingDef
+#. max 20 chars
+#: data/input/glyphs/playstation.tres data/settings/pages/controls.tres
+msgid "PlayStation"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[0]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Cross"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[1]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Circle"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[2]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Square"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[3]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Triangle"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[4]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Create"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[5]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "PS"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[6]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "Options"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[7]
+#. key: data/input/glyphs/xbox.tres::buttons[7]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "L3"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[8]
+#. key: data/input/glyphs/xbox.tres::buttons[8]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres data/input/glyphs/xbox.tres
+msgid "R3"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[9]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "L1"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::buttons[10]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "R1"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::axes[a4+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "L2"
+msgstr ""
+
+#. key: data/input/glyphs/playstation.tres::axes[a5+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/playstation.tres
+msgid "R2"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::display_name
+#. key: data/settings/pages/controls.tres::rows[1].choices[1]
+#. GlyphSet
+#. SettingDef
+#. max 20 chars
+#: data/input/glyphs/xbox.tres data/settings/pages/controls.tres
+msgid "Xbox"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::buttons[4]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "View"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::buttons[5]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "Guide"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::buttons[6]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "Menu"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::buttons[9]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "LB"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::buttons[10]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "RB"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::axes[a4+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "LT"
+msgstr ""
+
+#. key: data/input/glyphs/xbox.tres::axes[a5+]
+#. GlyphSet
+#. max 16 chars
+#: data/input/glyphs/xbox.tres
+msgid "RT"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[0].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Move left"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[0].group
+#. key: data/input/rebind_catalog.tres::actions[1].group
+#. key: data/input/rebind_catalog.tres::actions[2].group
+#. key: data/input/rebind_catalog.tres::actions[3].group
+#. key: data/input/rebind_catalog.tres::actions[4].group
+#. key: data/input/rebind_catalog.tres::actions[5].group
+#. key: data/input/rebind_catalog.tres::actions[6].group
+#. RebindActionData
+#. max 16 chars
+#: data/input/rebind_catalog.tres
+msgid "Movement"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[1].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Move right"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[2].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Move up"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[3].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Move down"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[4].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Jump"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[5].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Dodge / dash"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[6].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Grapple"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[7].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Light attack"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[10].group
+#. key: data/input/rebind_catalog.tres::actions[7].group
+#. key: data/input/rebind_catalog.tres::actions[8].group
+#. key: data/input/rebind_catalog.tres::actions[9].group
+#. RebindActionData
+#. max 16 chars
+#: data/input/rebind_catalog.tres
+msgid "Combat"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[8].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Heavy attack"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[9].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Ranged"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[10].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Heal"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[11].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Interact / talk"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[11].group
+#. key: data/input/rebind_catalog.tres::actions[12].group
+#. RebindActionData
+#. max 16 chars
+#: data/input/rebind_catalog.tres
+msgid "World"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[12].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Map"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[13].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Pause"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[13].group
+#. key: data/input/rebind_catalog.tres::actions[14].group
+#. RebindActionData
+#. max 16 chars
+#: data/input/rebind_catalog.tres
+msgid "Menus"
+msgstr ""
+
+#. key: data/input/rebind_catalog.tres::actions[14].label
+#. RebindActionData
+#. max 32 chars
+#: data/input/rebind_catalog.tres
+msgid "Restart challenge"
+msgstr ""
+
+#. key: data/platform/presence.tres::title
+#. PresenceTable
+#. max 40 chars
+#: data/platform/presence.tres
+msgid "In the menus"
+msgstr ""
+
+#. key: data/platform/presence.tres::room
+#. PresenceTable
+#. max 40 chars · placeholders: {district} {room}
+#: data/platform/presence.tres
+msgid "{district} — {room}"
+msgstr ""
+
+#. key: data/platform/presence.tres::boss
+#. PresenceTable
+#. max 40 chars · placeholders: {boss}
+#: data/platform/presence.tres
+msgid "Fighting {boss}"
+msgstr ""
+
+#. key: data/platform/presence.tres::memory
+#. PresenceTable
+#. max 40 chars
+#: data/platform/presence.tres
+msgid "Remembering"
+msgstr ""
+
+#. key: data/platform/presence.tres::cinematic
+#. PresenceTable
+#. max 40 chars
+#: data/platform/presence.tres
+msgid "Watching"
+msgstr ""
+
+#. key: data/platform/presence.tres::act_done
+#. PresenceTable
+#. max 40 chars · placeholders: {room}
+#: data/platform/presence.tres
+msgid "Act I complete — {room}"
+msgstr ""
+
+#. key: data/platform/presence.tres::lab
+#. PresenceTable
+#. max 40 chars · placeholders: {room}
+#: data/platform/presence.tres
+msgid "In the {room}"
+msgstr ""
+
+#. key: data/platform/presence.tres::challenge
+#. PresenceTable
+#. max 40 chars · placeholders: {name}
+#: data/platform/presence.tres
+msgid "Challenge — {name}"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[0].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Time played"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[1].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Deaths"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[2].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Enemies defeated"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[3].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Environment takedowns"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[4].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Aerial takedowns"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[5].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Perfect dodges"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[6].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Best style rank"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[7].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Bosses defeated"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[8].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Collector Drone, untouched"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[9].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Warden Krail, untouched"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[10].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Fastest Collector Drone"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[11].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Fastest Warden Krail"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[12].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Clean getaways"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[13].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Fastest Rainline chase"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[14].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Grid Clamp staggers"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[15].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Shutter close calls"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[16].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Fastest Act I"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[17].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Memory details found"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[18].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Anchors rested at"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[19].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Secrets found"
+msgstr ""
+
+#. key: data/platform/stats.tres::stats[20].label
+#. StatDef
+#. max 32 chars
+#: data/platform/stats.tres
+msgid "Silver medals or better"
+msgstr ""
+
+#. key: data/settings/catalog.tres::assist_header
+#. SettingsCatalog
+#. max 120 chars
+#: data/settings/catalog.tres
+msgid "Change these any time. They never lock content or achievements."
+msgstr ""
+
+#. key: data/settings/catalog.tres::reset_all_prompt
+#. SettingsCatalog
+#. max 90 chars
+#: data/settings/catalog.tres
+msgid "Reset every setting except controls and language?"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/assists.tres
+msgid "ASSISTS"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/assists.tres
+msgid "Assists…"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Core mode"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "How fast the Redline Core drains and how much it forgives."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[0].choices[0]
+#. key: data/settings/pages/subtitles.tres::rows[3].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres data/settings/pages/subtitles.tres
+msgid "Normal"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[0].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Story / Assist"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[0].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Redline Challenge"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Core burnout costs health"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Off: an empty Core still warns you, but costs no health."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Damage assist"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Hits cost fewer pips. Knockback and recovery stay the same."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[2].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Bosses: reduced"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[2].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "All: reduced"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[2].choices[3]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "All: greatly reduced"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[3].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Aim assist"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Ranged shots bend toward a nearby enemy you can see."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[3].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Light"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[3].choices[2]
+#. key: data/settings/pages/visual.tres::rows[5].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres data/settings/pages/visual.tres
+msgid "Strong"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[4].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Drop Scrap on death"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[4].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Off: unbanked Scrap stays with you when you fall."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[5].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Respawn at room entrance"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[5].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Come back where you entered the room instead of at the last Anchor."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[6].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Map hints"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[6].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "How much the map marks. Secrets always need the lens."
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[6].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Minimal"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[6].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Standard"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[6].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/assists.tres
+msgid "Guided"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[7].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/assists.tres
+msgid "Suggest options after repeated defeats"
+msgstr ""
+
+#. key: data/settings/pages/assists.tres::rows[7].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/assists.tres
+msgid "Offers a card with options. Nothing changes unless you pick one."
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/audio.tres
+msgid "AUDIO"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/audio.tres
+msgid "Audio…"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/audio.tres
+msgid "Master volume"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/audio.tres
+msgid "Every sound in the game."
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/audio.tres
+msgid "Music volume"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/audio.tres
+msgid "Music and ambient score."
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/audio.tres
+msgid "Effects volume"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/audio.tres
+msgid "Combat, movement and world sounds."
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[3].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/audio.tres
+msgid "Interface sounds"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/audio.tres
+msgid "Menu ticks, prompts and pop-ups."
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/challenges.tres
+msgid "CHALLENGES & SPEEDRUN"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/challenges.tres
+msgid "Challenges & speedrun…"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/challenges.tres
+msgid "Speedrun timer"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/challenges.tres
+msgid "In-game time on screen, with or without splits per room and boss."
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[0].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/challenges.tres
+msgid "IGT"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[0].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/challenges.tres
+msgid "IGT + splits"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/challenges.tres
+msgid "Challenge ghost"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/challenges.tres
+msgid "Which recorded run races with you in challenges."
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/challenges.tres
+msgid "Fast reset"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/challenges.tres
+msgid "Hold restart for a moment, so a stray press never ends a run."
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[2].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/challenges.tres
+msgid "Press"
+msgstr ""
+
+#. key: data/settings/pages/challenges.tres::rows[2].choices[1]
+#. key: data/settings/pages/subtitles.tres::rows[4].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/challenges.tres data/settings/pages/subtitles.tres
+msgid "Hold"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/controls.tres
+msgid "CONTROLS"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/controls.tres
+msgid "Controls…"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/controls.tres
+msgid "Showing"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/controls.tres
+msgid "Which bindings the list below shows and edits."
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[0].choices[0]
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres ui/menus/SettingsMenu.gd
+msgid "Keyboard"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[0].choices[1]
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres ui/menus/SettingsMenu.gd
+msgid "Controller"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/controls.tres
+msgid "Button prompts"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/controls.tres
+msgid "Which controller's button names prompts use. Auto follows the controller."
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[1].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "Auto"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/controls.tres
+msgid "Vibration"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/controls.tres
+msgid "Controller rumble strength. 0% turns it off."
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[3].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/controls.tres
+msgid "Jump height"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/controls.tres
+msgid "Always full height: a tap jumps as high as a hold. Short hops need a quick release."
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[3].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "Hold for height"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[3].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "Always full height"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[4].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/controls.tres
+msgid "Rebind wait"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[4].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/controls.tres
+msgid "How long a rebind listens. Esc, Backspace or Start cancels at any time."
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[4].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "5 s"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[4].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "10 s"
+msgstr ""
+
+#. key: data/settings/pages/controls.tres::rows[4].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/controls.tres
+msgid "No limit"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/interface.tres
+msgid "INTERFACE"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/interface.tres
+msgid "Interface…"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/interface.tres
+msgid "UI size"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/interface.tres
+msgid "Size of menus and on-screen text. Long pages scroll."
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[0].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/interface.tres
+msgid "100%"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[0].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/interface.tres
+msgid "125%"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[0].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/interface.tres
+msgid "150%"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/interface.tres
+msgid "Achievement pop-ups"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/interface.tres
+msgid "Show a short card when an achievement unlocks. They still unlock when off."
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/interface.tres
+msgid "Language"
+msgstr ""
+
+#. key: data/settings/pages/interface.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/interface.tres
+msgid "Menu and subtitle language."
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "PLAYTEST & DEBUG"
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest & debug…"
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest recording (local file)"
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Saves a session file on this computer only. Nothing is sent anywhere."
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Playtest variant"
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Pins one experiment arm. Auto rotates per session."
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Debug overlay"
+msgstr ""
+
+#. key: data/settings/pages/playtest_debug.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/playtest_debug.tres
+msgid "Frame, state and room readout (F1)."
+msgstr ""
+
+#. key: data/settings/pages/quick.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/quick.tres
+msgid "COMFORT & ACCESSIBILITY"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/subtitles.tres
+msgid "SUBTITLES & SCENES"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/subtitles.tres
+msgid "Subtitles & scenes…"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle size"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Text size of dialogue and scene lines."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Small"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Medium"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Large"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle background"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Outline only, a see-through box, or a solid box behind lines."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[1].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Outline"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[1].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Box"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[1].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Solid"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Speaker names"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Show who is speaking above each line."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[3].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Subtitle speed"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "How long timed scene lines stay on screen."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[3].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Slow"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[3].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Slower"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[4].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Skip scenes"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[4].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Hold the skip button, or press it twice, to skip a scene."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[4].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres
+msgid "Press twice"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[5].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Memories play at Anchors"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[5].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Off: found memories wait in the journal instead."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[6].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/subtitles.tres
+msgid "Text auto-advance"
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[6].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/subtitles.tres
+msgid "Lines move on by themselves after a reading pause. Choices always wait."
+msgstr ""
+
+#. key: data/settings/pages/subtitles.tres::rows[6].choices[1]
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/subtitles.tres ui/menus/SettingsMenu.gd
+msgid "On"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::title
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/visual.tres
+msgid "VISUAL & COMFORT"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::link_label
+#. SettingsPageData
+#. max 32 chars
+#: data/settings/pages/visual.tres
+msgid "Visual & comfort…"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[0].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Screen shake"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[0].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Camera shake from hits, landings and scenes."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[1].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Freeze frames (hitstop)"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[1].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "The short pause when a hit lands. 0% plays every hit without it."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[2].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Flash reduction"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[2].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Softens bright flashes and keeps blinking below three times a second."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[3].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "High contrast"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Solid panels, brighter text and outlined focus in menus and on screen."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[4].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Colour-blind mode"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[4].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Swaps warning colours for ones that stay apart. Shapes always mark states."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[4].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/visual.tres
+msgid "Red-green"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[4].choices[2]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/visual.tres
+msgid "Blue-yellow"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[5].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Background dim"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[5].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Darkens the far backdrop so the play layer stands out."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[5].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/visual.tres
+msgid "Some"
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.t
+#: input/InputBindings.gd
+msgid "That input cannot be used here."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} is kept for Pause."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} is kept for backing out of menus."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} is kept for dev tools."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} also confirms menus and dialogue."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} also backs out of menus."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {key}
+#: input/InputBindings.gd
+msgid "{key} also skips scenes."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {action}
+#: input/InputBindings.gd
+msgid "Keep at least one key for {action}."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {action}
+#: input/InputBindings.gd
+msgid "Keep at least one button for {action}."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.t
+#: input/InputBindings.gd
+msgid "Pause needs one more key."
+msgstr ""
+
+#. key: input/InputBindings.gd::Loc.f
+#. placeholders: {action} {key}
+#: input/InputBindings.gd
+msgid "{key} stays on {action}."
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {time}
+#: ui/hud/RunTimerHud.gd
+msgid "IGT {time}"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {score} {wave}
+#: ui/hud/RunTimerHud.gd
+msgid "Wave {wave} · Score {score}"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {score}
+#: ui/hud/RunTimerHud.gd
+msgid "Score {score}"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {n}
+#: ui/hud/RunTimerHud.gd
+msgid "Attempt {n}"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {key}
+#: ui/hud/RunTimerHud.gd
+msgid "Hold {key}: restart"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.f
+#. placeholders: {key}
+#: ui/hud/RunTimerHud.gd
+msgid "{key}: restart"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.t
+#: ui/hud/RunTimerHud.gd
+msgid "NO HIT"
+msgstr ""
+
+#. key: ui/hud/RunTimerHud.gd::Loc.t
+#: ui/hud/RunTimerHud.gd
+msgid "NO ATTACKS"
+msgstr ""
+
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd
 msgid "PAUSED"
@@ -43,6 +1968,159 @@ msgstr ""
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd
 msgid "Quit challenge"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "SETTINGS"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Reset all settings…"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. key: ui/menus/TitleMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+msgid "Back"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Reset this page…"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {page}
+#: ui/menus/SettingsMenu.gd
+msgid "Reset every option on {page}?"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Done"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {row}
+#: ui/menus/SettingsMenu.gd
+msgid "{row} (set by this challenge)"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {name}
+#: ui/menus/SettingsMenu.gd
+msgid "Controller: {name}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Reset keyboard controls…"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Reset controller controls…"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Put every keyboard control back?"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Put every controller control back?"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {action} {device}
+#: ui/menus/SettingsMenu.gd
+msgid "{action} ({device})"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "(empty)"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {key}
+#: ui/menus/SettingsMenu.gd
+msgid "{key} (fixed)"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {key} {n}
+#: ui/menus/SettingsMenu.gd
+msgid "Key {n}: {key}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {key} {n}
+#: ui/menus/SettingsMenu.gd
+msgid "Button {n}: {key}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Left stick (fixed)"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {v}
+#: ui/menus/SettingsMenu.gd
+msgid "Remove mode: {v}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {action}
+#: ui/menus/SettingsMenu.gd
+msgid "Reset {action}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {action} {key}
+#: ui/menus/SettingsMenu.gd
+msgid "{key} is already {action}."
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {key} {other}
+#: ui/menus/SettingsMenu.gd
+msgid "Swap ({other} gets {key})"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Move it here"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Cancel"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Yes"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "No"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#: ui/menus/SettingsMenu.gd
+msgid "Auto (rotates)"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {language}
+#: ui/menus/SettingsMenu.gd
+msgid "Automatic ({language})"
 msgstr ""
 
 #. key: ui/menus/TitleMenu.gd::Loc.t
@@ -101,9 +2179,36 @@ msgstr ""
 msgid "LABS & DEV STARTS"
 msgstr ""
 
-#. key: ui/menus/TitleMenu.gd::Loc.t
-#: ui/menus/TitleMenu.gd
-msgid "Back"
+#. key: ui/settings/RebindCapture.gd::Loc.f
+#. placeholders: {action}
+#: ui/settings/RebindCapture.gd
+msgid "Press a key for {action} (Esc to cancel)"
+msgstr ""
+
+#. key: ui/settings/RebindCapture.gd::Loc.f
+#. placeholders: {action}
+#: ui/settings/RebindCapture.gd
+msgid "Press a button for {action} (Start to cancel)"
+msgstr ""
+
+#. key: ui/settings/RebindCapture.gd::Loc.t
+#: ui/settings/RebindCapture.gd
+msgid "Waiting for a controller button."
+msgstr ""
+
+#. key: ui/settings/RebindCapture.gd::Loc.t
+#: ui/settings/RebindCapture.gd
+msgid "Waiting for a key."
+msgstr ""
+
+#. key: world/props/GhostActor.gd::Loc.t
+#: world/props/GhostActor.gd
+msgid "PB"
+msgstr ""
+
+#. key: world/props/GhostActor.gd::Loc.t
+#: world/props/GhostActor.gd
+msgid "RIG"
 msgstr ""
 
 #. key: world/rooms/CombatLab.tscn::Labels/Label0.text
