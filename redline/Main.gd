@@ -46,6 +46,9 @@ func _ready() -> void:
 
 
 func _to_title() -> void:
+	# A result card queued behind the closing menu must not open over the fade
+	# or the title.
+	(menus as MenuHost).drop_queued()
 	Playtest.end_session("quit_to_title")
 	await SceneRouter.transition_to("res://world/rooms/TitleBackdrop.tscn")
 	(menus.get_node("TitleMenu") as MenuScreen).open_menu()

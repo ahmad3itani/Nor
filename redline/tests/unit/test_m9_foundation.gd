@@ -368,6 +368,10 @@ func test_scene_router_demo_refusal_emits() -> void:
 	DemoGate.dev_bypass = true
 	SceneRouter.transition_to("res://tests/fixtures/WorldB.tscn")
 	check(SceneRouter.transitioning, "the dev bypass walks past the boundary")
+	DemoGate.dev_bypass = false
+	SceneRouter.transition_to("res://tests/fixtures/WorldB.tscn")
+	check(seen.size() == 1, "a refused exit touched mid-transition emits nothing (%s)" % [seen])
+	DemoGate.dev_bypass = true
 	while SceneRouter.transitioning:
 		await get_tree().process_frame
 	check(SceneRouter.current_room_path == "res://tests/fixtures/WorldB.tscn", "bypassed room loaded")
@@ -469,6 +473,7 @@ func test_open_when_free_opens_after_close() -> void:
 	host.open_when_free(&"journal", {"k": 1})
 	check(not host.journal.is_open(), "queued while pause is open")
 	host.pause.close_menu()
+	await get_tree().process_frame
 	check(host.journal.is_open(), "the queued screen opens once the last menu closes")
 	check(host.journal.ctx == {"k": 1}, "with its context (%s)" % [host.journal.ctx])
 	host.journal.close_menu()
@@ -661,6 +666,9 @@ func test_save_and_quit_emits_to_title_once() -> void:
 			if SceneRouter.transitioning:
 				early.append(1)
 	t.visibility_changed.connect(watch)
+	_record()
+	var session_file := Playtest.session_path
+	check(host.quit_to_title.get_connections().size() == 1, "Main holds exactly one quit_to_title connection")
 	check(host.open(&"pause"), "pause opens")
 	(host.pause as PauseMenu)._quit()
 	for i in 120:
@@ -670,6 +678,43 @@ func test_save_and_quit_emits_to_title_once() -> void:
 	check(opens.size() == 1, "the title opens once (%d)" % opens.size())
 	check(early.is_empty(), "only after the transition")
 	check(FileAccess.file_exists(SaveManager.profile_path(1)), "Save & Quit saved")
+	check(Playtest.session == null, "the playtest session ended")
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(session_file))
+	var ends: Array = []
+	if data is Dictionary:
+		ends = (data.get("events", []) as Array).filter(func(e: Variant) -> bool: return e is Dictionary and e.get("type", "") == "session_end")
+	check(data is Dictionary and data.get("ended", "") == "quit_to_title" and ends.size() == 1, "end_session ran once, for quit_to_title (%s)" % [ends])
+
+
+## A screen queued with open_when_free behind Pause never opens during the
+## Save & Quit fade or over the title.
+func test_queued_screen_dropped_on_save_and_quit() -> void:
+	var host := await _boot_main(ROOM_A)
+	var t := _title_of(host)
+	check(host.open(&"pause"), "pause opens")
+	host.open_when_free(&"journal", {})
+	(host.pause as PauseMenu)._quit()
+	var opened_during := false
+	for i in 120:
+		await get_tree().process_frame
+		if host.journal.is_open():
+			opened_during = true
+		if not SceneRouter.transitioning and t.visible:
+			break
+	for i in 3:
+		await get_tree().process_frame
+	check(t.visible, "the title opened")
+	check(not opened_during and not host.journal.is_open(), "the queued screen never opened")
+	check(host._queued.is_empty(), "the queue was dropped")
+	t.close_menu()
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	check(host.open(&"pause"), "pause opens again")
+	host.open_when_free(&"journal", {})
+	MenuHost.clear_cache()
+	host.pause.close_menu()
+	await get_tree().process_frame
+	check(not host.journal.is_open() and host._queued.is_empty(), "clear_cache drops pending requests")
 
 
 func test_dev_console_main_rows_le_page_rows() -> void:

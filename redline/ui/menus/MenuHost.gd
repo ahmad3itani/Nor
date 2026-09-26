@@ -158,12 +158,37 @@ func _on_screen_closed() -> void:
 	if any_open():
 		return
 	if not _queued.is_empty():
-		var next: Array = _queued.pop_front()
-		open_with(next[0], next[1])
+		# Deferred: a screen that closes and then quits to the title (Pause's
+		# Save & Quit, the demo end card) emits quit_to_title after close_menu,
+		# and Main._to_title drops the queue before the drain runs.
+		_drain_queued.call_deferred()
 		return
 	if title.visible:
 		title.call("focus_index", title.get("last_focus"))
 
 
+## Opens the next queued screen once no menu is open and no transition runs;
+## never over the title or into the next session (the queue is dropped there).
+func _drain_queued() -> void:
+	while SceneRouter.transitioning and is_inside_tree():
+		await get_tree().process_frame
+	if title.visible:
+		_queued.clear()
+		return
+	if _queued.is_empty() or any_open() or not is_inside_tree():
+		return
+	var next: Array = _queued.pop_front()
+	open_with(next[0], next[1])
+
+
+## Forgets every open_when_free request (quit to title, cache reset).
+func drop_queued() -> void:
+	_queued.clear()
+
+
 static func clear_cache() -> void:
 	context = {}
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null:
+		for host in tree.get_nodes_in_group(&"menu_host"):
+			(host as MenuHost).drop_queued()

@@ -55,12 +55,13 @@ func goto_room(scene_path: String, entry: StringName = &"", carry: Dictionary = 
 
 ## Fade out, swap rooms, fade in. Safe to call from physics callbacks.
 func transition_to(scene_path: String, entry: StringName = &"", carry: Dictionary = {}) -> void:
+	if transitioning:
+		return
 	# Demo builds: an exit into content outside the demo opens the end card
-	# (MenuHost) instead of loading the room.
+	# (MenuHost) instead of loading the room. After the transitioning guard,
+	# so an exit touched mid-fade never opens the card.
 	if not BuildInfo.room_allowed(scene_path) and not DemoGate.dev_bypass:
 		EventBus.demo_boundary_reached.emit(current_room_path, scene_path)
-		return
-	if transitioning:
 		return
 	transitioning = true
 	await _fade_to(1.0)
