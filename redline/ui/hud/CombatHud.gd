@@ -27,6 +27,11 @@ extends CanvasLayer
 
 const FONT_SIZE := 6
 const PIP := Vector2(6, 6)
+## Ammo pips: offset from the weapon slot, and the least gap after its name.
+const AMMO_X := 62.0
+const AMMO_GAP := 4.0
+## The empty-melee outline's offset (the weapon row ends before it).
+const MELEE_SLOT_X := 116.0
 const RED := Color("e8283c")
 const DIM := Color(1, 1, 1, 0.18)
 ## Empty pips drawn hollow (every empty injector; every empty pip in high contrast).
@@ -289,8 +294,9 @@ func _draw_hud() -> void:
 	var y := base.y + 21
 	if w:
 		var ammo := int(combat.ammo.get(w.id, 0))
-		_root.draw_string(font, Vector2(base.x, y), Loc.upper(w.display_name), HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color("c9c3d6"))
-		var ax := base.x + 62
+		var wname := Loc.upper(w.display_name)
+		_root.draw_string(font, Vector2(base.x, y), wname, HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color("c9c3d6"))
+		var ax := ammo_x(font, wname, base.x)
 		var ammo_col := Palette.color(&"ammo")
 		for i in w.ammo_max:
 			_draw_pip(Rect2(ax + i * 4, y - 5, 2, 5), i < ammo, false, hc, ammo_col)
@@ -299,7 +305,7 @@ func _draw_hud() -> void:
 	# The melee slot has no readout of its own; when empty, a small outline
 	# after the ranged slot shows there is a second slot to fill.
 	if combat.melee_weapon == null:
-		_root.draw_rect(Rect2(base.x + 116, y - 6, 18, 7), HOLLOW if hc else DIM, false, 1.0)
+		_root.draw_rect(Rect2(base.x + MELEE_SLOT_X, y - 6, 18, 7), HOLLOW if hc else DIM, false, 1.0)
 
 	# Injectors (green pips after health): full = filled, empty = hollow.
 	var inj_x := base.x + combat.config.max_health * (PIP.x + 2) + 6
@@ -467,6 +473,13 @@ static func text_rect(font: Font, text: String, y: float, size: int, view: Vecto
 	return Rect2((view.x - w) * 0.5, y - font.get_ascent(size), w, font.get_ascent(size) + font.get_descent(size))
 
 
+## Where the ammo pips start: 62 px after the slot, or after a longer
+## weapon name (a translated or pseudo-locale name never runs into the pips).
+static func ammo_x(font: Font, weapon_label: String, base_x: float) -> float:
+	var w := font.get_string_size(weapon_label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs()).x
+	return maxf(base_x + AMMO_X, ceilf(base_x + w + AMMO_GAP))
+
+
 static func _left_text_rect(font: Font, text: String, at: Vector2, size: int) -> Rect2:
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 	return Rect2(at.x, at.y - font.get_ascent(size), w, font.get_ascent(size) + font.get_descent(size))
@@ -492,9 +505,10 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], bar.position + Vector2(bar.size.x + 4, 5), fs()))
 	var y := base.y + 21
 	if content.has("weapon"):
-		var r := _left_text_rect(font, Loc.upper(String(content["weapon"])), Vector2(base.x, y), fs())
-		r = r.merge(Rect2(base.x + 62, y - 5, int(content.get("ammo_max", 0)) * 4, 5))
-		out["weapon"] = r.merge(Rect2(base.x + 116, y - 6, 18, 7))
+		var wname := Loc.upper(String(content["weapon"]))
+		var r := _left_text_rect(font, wname, Vector2(base.x, y), fs())
+		r = r.merge(Rect2(ammo_x(font, wname, base.x), y - 5, int(content.get("ammo_max", 0)) * 4, 5))
+		out["weapon"] = r.merge(Rect2(base.x + MELEE_SLOT_X, y - 6, 18, 7))
 	if content.has("scrap"):
 		out["scrap"] = _left_text_rect(font, content["scrap"], Vector2(base.x + 142, y), fs())
 	if content.has("prompt"):

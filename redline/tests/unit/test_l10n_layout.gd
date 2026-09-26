@@ -295,6 +295,17 @@ func test_hud_strings_fit_pseudo() -> void:
 			var r: Rect2 = rects[id]
 			if r.position.x < 0.0 or r.end.x > VIEW.x:
 				bad.append("%s %s: x %.0f..%.0f" % [id, str(c.values()[0]).left(60), r.position.x, r.end.x])
+		if c.has("weapon"):
+			# The name never runs into the ammo pips, and the pips end before
+			# the melee slot (M9 audit: en_XA names hit the first pip).
+			var base: Vector2 = HUD.layout(VIEW)["base"]
+			var label := Loc.upper(String(c["weapon"]))
+			var text_end := base.x + font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, HUD.fs()).x
+			var ax: float = HUD.ammo_x(font, label, base.x)
+			if text_end >= ax:
+				bad.append("weapon %s: name ends at %.0f, pips start at %.0f" % [label, text_end, ax])
+			if ax + int(c["ammo_max"]) * 4 > base.x + HUD.MELEE_SLOT_X - 2:
+				bad.append("weapon %s: pips reach the melee slot" % label)
 	check(bad.is_empty(), "HUD strings leave the %d px view: %s" % [int(VIEW.x), "\n".join(bad)])
 
 
