@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ChallengeConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeConfig.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+fast_reset_tap_window_s = 60.0
+fast_reset_hold_s = 0.35
+reset_chip_s = 3.0
+finish_card_delay_s = 1.0
+pb_board_size = 10
+split_toast_s = 2.0
+bot_margin = 1.1
+silver_floor_mult = 1.5
+silver_floor_add_s = 3.0
+group_titles = PackedStringArray("Deep Rig", "Boss Rematch", "Time Trial", "Nerve", "Pulse Pit")
+ghost_mode_names = PackedStringArray("Off", "Personal best", "Rig ghost", "Both")
+suggest_new_group_hint_s = 3.0
