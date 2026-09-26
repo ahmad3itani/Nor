@@ -90,9 +90,16 @@ func test_inactive_headless_by_default_writes_nothing() -> void:
 	Game.set_flag("t02_probe")
 	await physics_frames(3)
 	check(not Platform.is_unlocked("probe_a"), "no unlock while inactive")
+	var seen: Array = []
+	var spy := func(id: String, _retro: bool) -> void: seen.append(id)
+	EventBus.achievement_unlocked.connect(spy)
 	Platform.dev_unlock("probe_a")
+	await physics_frames(2)
+	EventBus.achievement_unlocked.disconnect(spy)
+	check(not Platform.is_unlocked("probe_a") and seen.is_empty(), "an inactive dev unlock records and announces nothing")
 	Platform.flush()
 	Platform.notify_file_written("user://x.json")
+	Platform._exit_tree()
 	check(not DirAccess.dir_exists_absolute(TEST_DIR), "no file or folder written while inactive")
 
 
@@ -295,6 +302,25 @@ func test_shipped_platform_data_valid() -> void:
 	check(table.validate().is_empty(), "presence valid: %s" % [table.validate()])
 	var v := ContentValidator.new().run(true)
 	check(v.stats["rooms"] > 0, "room pass ran")
+	var bosses := PlatformRules.world_boss_ids(v)
+	check(bosses.has("collector_drone") and bosses.has("warden_krail"), "the flags-only room pass finds both bosses: %s" % [bosses])
+	check(PlatformRules.boss_stat_errors(cat, bosses).is_empty(), "PL-11 clean against the scanned rooms: %s"
+		% [PlatformRules.boss_stat_errors(cat, bosses)])
+	var krail := cat.stat(&"boss_nohit_warden_krail")
+	check(krail.reveal_when == "flag:warden_krail_intro_seen", "boss rows hide behind the intro flag")
+	check(not krail.revealed(0.0), "a boss row is hidden before the meeting")
+	check(krail.revealed(1.0), "a row with a value is always listed")
+	Game.set_flag("warden_krail_intro_seen")
+	check(krail.revealed(0.0), "listed once the boss was met")
+	check(not deaths.revealed(3.0), "an unshown stat is never listed")
+	var unguarded := StatCatalog.new()
+	var ub := StatDef.new()
+	ub.id = &"boss_time_warden_krail"
+	ub.label = "X"
+	unguarded.stats.append(ub)
+	check(PlatformRules.boss_stat_errors(unguarded, bosses).size() == 1, "PL-11 wants the spoiler guard")
+	ub.reveal_when = "nonsense"
+	check(not ub.validate().is_empty(), "reveal_when must be a valid condition")
 	var dup := StatCatalog.new()
 	var s1 := StatDef.new()
 	s1.id = &"x"

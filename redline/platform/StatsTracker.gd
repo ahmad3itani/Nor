@@ -66,6 +66,7 @@ func _ready() -> void:
 	EventBus.challenge_started.connect(_on_challenge_started)
 	EventBus.challenge_reset.connect(func(_id: String, _r: StringName) -> void: _reset_run_feats())
 	EventBus.challenge_finished.connect(_on_challenge_finished)
+	EventBus.game_state_reset.connect(_on_game_state_reset)
 
 
 func _process(delta: float) -> void:
@@ -178,6 +179,15 @@ func reset() -> void:
 
 
 # --- Listeners ---
+
+## A load, new game or restore starts clean: no open fight carries into the
+## next profile, and a stale run is dropped unless a run is live (the
+## sandbox swap itself resets the state mid-run).
+func _on_game_state_reset() -> void:
+	_boss_fight.clear()
+	if not Challenges.active():
+		_run = {}
+
 
 func _count(id: StringName) -> void:
 	if counting():
@@ -301,6 +311,9 @@ func _on_challenge_finished(challenge_id: String, outcome: int, _value: int, med
 	if challenge_id == FEAT_STYLE_RUN and int(run.get("style", 0)) > lifetime_value(&"best_style_rank"):
 		_lifetime_set(&"best_style_rank", float(run["style"]))
 	changed.emit()
+	# These counters live only in the lifetime store: persist them now rather
+	# than on the flush timer.
+	Platform.flush()
 
 
 func _lifetime_add(id: StringName, amount: float = 1.0) -> void:

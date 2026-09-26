@@ -82,6 +82,12 @@ func _notification(what: int) -> void:
 		flush()
 
 
+## get_tree().quit() (the title's Quit) sends no close request; the tree
+## finalizing does reach here, so lifetime-only stats are never lost.
+func _exit_tree() -> void:
+	flush()
+
+
 # --- Gates ---
 
 ## Whether platform files may be written: a real display, or a test opt-in.
@@ -147,9 +153,10 @@ func profile_stat(id: StringName) -> float:
 # --- Unlocks ---
 
 ## The one unlock path (AchievementTracker and dev tools): store, save,
-## mirror, announce. False when it was already unlocked.
+## mirror, announce. False when it was already unlocked, or while inactive
+## (an unlock that cannot be persisted is never recorded or announced).
 func record_unlock(a: AchievementData, retroactive: bool) -> bool:
-	if a == null or not store().unlock(a.id, Game.profile_id, int(Time.get_unix_time_from_system())):
+	if a == null or not active() or not store().unlock(a.id, Game.profile_id, int(Time.get_unix_time_from_system())):
 		return false
 	_save()
 	backend.unlock(a.api())
@@ -270,7 +277,7 @@ func dev_unlock(id: String) -> void:
 
 
 func dev_lock(id: String) -> void:
-	if store().lock(id):
+	if active() and store().lock(id):
 		_save()
 		var a := AchievementLibrary.by_id(id)
 		backend.lock(a.api() if a != null else "ACH_" + id.to_upper())
@@ -278,6 +285,8 @@ func dev_lock(id: String) -> void:
 
 ## Clears every unlock and lifetime stat (store and backend).
 func dev_reset_all() -> void:
+	if not active():
+		return
 	store().clear_all()
 	backend.reset_all()
 	_save()

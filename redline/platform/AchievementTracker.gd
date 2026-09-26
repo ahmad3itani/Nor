@@ -10,8 +10,8 @@ extends Node
 ##   the pass runs once earning is allowed again (D-145).
 ## - game_state_reset (load, new game, the Challenges restore) re-evaluates
 ##   with retroactive = true: an old save earns what it already did (D-143).
-##   Only the first pass after the reset is retroactive; if that pass is
-##   blocked, the later one is a live pass.
+##   Only the first full pass after the reset is retroactive; if that pass is
+##   fully blocked, the later one is a live pass. An in-run pass keeps the mark.
 ## - During a challenge run only lifetime-only achievements are evaluated
 ##   (R02.3): the lifetime whitelist is all a run can change. Their toasts are
 ##   held by Platform until the result card closes (R02.9).
@@ -69,13 +69,15 @@ func _evaluate() -> void:
 	# Retroactive means "earned by the load itself": only the first pass after
 	# a reset may be, so a pass that was blocked then never marks later,
 	# live unlocks as retroactive.
-	var retro := _retro
-	_retro = false
+	# A run pass (lifetime-only achievements) leaves the mark for the full
+	# pass after the restore, so catch-up unlocks still toast as retroactive.
 	var full := Platform.earning_allowed()
 	var run_pass := not full and Platform.run_pass_allowed()
+	var retro := _retro and full
+	if full or not run_pass:
+		_retro = false
 	if not full and not run_pass:
 		return
-	retro = retro and full
 	for a in AchievementLibrary.all():
 		if Platform.is_unlocked(a.id):
 			continue

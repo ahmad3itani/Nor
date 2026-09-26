@@ -14,6 +14,15 @@ const NEEDLE_DATA := preload("res://data/enemies/needle.tres")
 var root: Node2D
 
 
+## Stands in for T01's MenuHost: a node in group menu_host with a menu open.
+class StubMenuHost:
+	extends Node
+	var open := true
+
+	func any_open() -> bool:
+		return open
+
+
 func before_each() -> void:
 	get_tree().paused = false
 	for d in [TEST_DIR, SAVE_DIR]:
@@ -262,13 +271,68 @@ func test_lifetime_only_achievement_unlocks_during_run_toast_after_result() -> v
 	await get_tree().process_frame
 	check(seen.is_empty(), "held while paused")
 	get_tree().paused = false
+	var host := StubMenuHost.new()
+	host.add_to_group(&"menu_host")
+	add_child(host)
 	await physics_frames(2)
+	check(seen.is_empty() and not Platform.pending_toasts.is_empty(), "held while a MenuScreen is open (%s)" % [seen])
+	host.open = false
+	await physics_frames(2)
+	host.queue_free()
 	check(seen.size() >= 1 and seen[0] == ["probe_top", false], "announced on the first free frame (%s)" % [seen])
 	check(Platform.pending_toasts.is_empty(), "queue drained")
 	EventBus.game_state_reset.emit()
 	await physics_frames(2)
 	check(Platform.is_unlocked("probe_flag"), "the restore's pass unlocks the rest")
 	EventBus.achievement_unlocked.disconnect(spy)
+
+
+func test_run_pass_keeps_the_retro_mark() -> void:
+	var flagged := AchievementData.new()
+	flagged.id = "probe_retro"
+	flagged.title = "Probe retro"
+	flagged.description = "Probe."
+	flagged.conditions = PackedStringArray(["flag:t02_retro_flag"])
+	AchievementLibrary.use_for_tests([flagged] as Array[AchievementData])
+	var seen: Array = []
+	var spy := func(id: String, retro: bool) -> void: seen.append([id, retro])
+	EventBus.achievement_unlocked.connect(spy)
+	Challenges.force_active = true
+	Game.state.flags["t02_retro_flag"] = true
+	EventBus.game_state_reset.emit()
+	await physics_frames(2)
+	check(not Platform.is_unlocked("probe_retro"), "the in-run pass skips campaign achievements")
+	Challenges.force_active = false
+	await physics_frames(3)
+	check(seen == [["probe_retro", true]], "the first full pass after the reset is still retroactive (%s)" % [seen])
+	EventBus.achievement_unlocked.disconnect(spy)
+
+
+func test_lifetime_only_stats_flush_on_finish_and_exit() -> void:
+	Challenges.force_active = true
+	EventBus.challenge_started.emit("tt_market_run", 1)
+	EventBus.challenge_finished.emit("tt_market_run", 0, 3600, 2, true)
+	var file := TEST_DIR + "/achievements.json"
+	check(float(AtomicJson.read(file)["lifetime"]["challenge_silver_medals"]) == 1.0, "a finished run persists its medal at once")
+	Challenges.force_active = false
+	Platform.store().set_lifetime(&"chase_clean", 4.0)
+	check(Platform.store().dirty, "an unsaved lifetime value")
+	# get_tree().quit() sends no close request; leaving the tree must flush.
+	Platform._exit_tree()
+	check(float(AtomicJson.read(file)["lifetime"]["chase_clean"]) == 4.0, "flushed when the autoload leaves the tree")
+	check(not Platform.store().dirty, "nothing left unsaved")
+
+
+func test_game_state_reset_drops_open_fight_and_stale_run() -> void:
+	Platform.stats.begin_fight("warden_krail")
+	EventBus.challenge_started.emit("br_krail", 1)
+	EventBus.game_state_reset.emit()
+	check(Platform.stats._boss_fight.is_empty(), "no open fight carries into the next profile")
+	check(Platform.stats._run.is_empty(), "a stale run is dropped outside a live run")
+	Challenges.force_active = true
+	EventBus.challenge_started.emit("br_krail", 2)
+	EventBus.game_state_reset.emit()
+	check(not Platform.stats._run.is_empty(), "the sandbox swap mid-run keeps the run's feats")
 
 
 func test_act1_clear_time_not_set_by_load_derivation() -> void:
