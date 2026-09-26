@@ -48,6 +48,10 @@ func _ready() -> void:
 	reset()
 	player.state_machine.state_changed.connect(_on_state_changed)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
+	# The damage-assist buffer starts over after a respawn or a rest, so a
+	# half pip never follows Rook into the next attempt (D4 §8.2).
+	EventBus.player_respawned.connect(_on_player_respawned)
+	EventBus.anchor_rested.connect(_on_anchor_rested)
 
 
 func reset() -> void:
@@ -309,6 +313,10 @@ func _try_fire(input: PlayerInputFrame) -> void:
 	fire_cooldown = w.fire_interval
 	since_last_shot = 0.0
 	var muzzle := player.global_position + Vector2(w.muzzle_offset.x * player.facing, w.muzzle_offset.y)
+	# Aim assist bends the shot after facing is set, so it never turns Rook
+	# around; ground waves follow the floor and ignore aim anyway (D4 §8.1).
+	if not w.shot.projectile.ground_wave:
+		aim = assisted_aim(aim, muzzle)
 	var pellets := w.shot.projectile.pellets
 	var spread := w.shot.projectile.spread_deg
 	var tags := context_tags(w.shot, true)
@@ -328,6 +336,15 @@ func _try_fire(input: PlayerInputFrame) -> void:
 		EventBus.camera_shake_requested.emit(w.shot.camera_trauma)
 	fired.emit(w)
 	EventBus.ranged_fired.emit(w, int(ammo[w.id]))
+
+
+## The aim after Settings.aim_assist (unchanged when Off).
+func assisted_aim(aim: Vector2, muzzle: Vector2) -> Vector2:
+	var cfg := Settings.config()
+	var cr := AimAssist.cone_and_range(Settings.aim_assist, cfg)
+	if cr.x <= 0.0 or cr.y <= 0.0:
+		return aim
+	return AimAssist.adjust(aim, muzzle, AimAssist.candidates_for(player, muzzle, cr.y, cfg.aim_require_on_screen), cr.x, cr.y)
 
 
 func _apply_recoil(w: WeaponData, aim: Vector2) -> void:
@@ -384,7 +401,14 @@ func receive_hit(hit: HitInfo) -> int:
 	var away := player.global_position.x - hit.source_position.x
 	var side := signf(away) if not is_zero_approx(away) else signf(hit.direction.x)
 	var kb := Vector2(side * config.hurt_knockback.x, config.hurt_knockback.y)
-	return take_damage(int(ceil(hit.attack.damage)), kb, hit.attack.hitstop, true, _source_of(hit))
+	return take_damage(int(ceil(hit.attack.damage)), kb, hit.attack.hitstop, true, _source_of(hit), false, _is_boss_hit(hit))
+
+
+## A hit from a boss itself (EnemyData.boss): the damage assist's
+## "Bosses: reduced" scope. The attacker may be freed already.
+static func _is_boss_hit(hit: HitInfo) -> bool:
+	return is_instance_valid(hit.attacker) and hit.attacker is Enemy and (hit.attacker as Enemy).data != null \
+		and (hit.attacker as Enemy).data.boss
 
 
 ## "enemy_id/attack_id" for playtest death causes (M4). The attacker may be
@@ -398,8 +422,9 @@ static func _source_of(hit: HitInfo) -> String:
 
 ## knock=false for damage over time (reactor burnout): no stun, no knockback.
 ## `source` names what hurt Rook (enemy/attack, hazard, pit, burnout) so
-## playtest telemetry can report death causes.
-func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown", nonlethal: bool = false) -> int:
+## playtest telemetry can report death causes. `from_boss` marks a boss's own
+## hit (receive_hit fills it) for the bosses-only damage assist.
+func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown", nonlethal: bool = false, from_boss: bool = false) -> int:
 	if dead:
 		return CombatResult.IGNORED
 	# A locking scene owns Rook (M8): direct damage (pits, chase catches,
@@ -409,6 +434,13 @@ func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bo
 		return CombatResult.IGNORED
 	last_damage_source = source
 	amount = ceili(amount * Game.circuit_mult(&"damage_taken"))
+	# Damage assist (D4 §8.2): before the nonlethal clamp and Emergency Loop,
+	# so neither can be bypassed; a hit that rounds to 0 still counts as a hit.
+	var factor := DamageAssist.factor_for(Settings.damage_assist, Settings.config(), source, from_boss)
+	if factor < 1.0:
+		var scaled := DamageAssist.scale(amount, damage_carry, factor)
+		amount = int(scaled[0])
+		damage_carry = float(scaled[1])
 	# Teaching set pieces (M7) may hurt but never kill: clamp after the
 	# circuit multiplier so a damage-taken penalty can't sneak a death in.
 	if nonlethal:
@@ -468,6 +500,15 @@ func _on_enemy_killed(_enemy: Node2D, hit: HitInfo) -> void:
 			health += 1
 			AudioManager.play_sfx(&"heal")
 			EventBus.player_healed.emit(health)
+
+
+func _on_player_respawned(p: Node2D, _spawn: StringName) -> void:
+	if p == player:
+		damage_carry = 0.0
+
+
+func _on_anchor_rested(_anchor: Node) -> void:
+	damage_carry = 0.0
 
 
 func _on_state_changed(_from: StringName, to: StringName) -> void:
