@@ -10,10 +10,10 @@ extends RedlineTestCase
 ## capture-tour files). Known temp settings files are removed first (R14.8);
 ## logs and the shader cache are the engine's.
 ##
-## A file left inside a suite's own temp folder (user://test_*) is reported,
-## not failed: it cannot reach a player's data, and the real risk this test
-## guards is a store writing to the developer's real paths. Do not run a
-## capture tour at the same time: tours write the real user dir.
+## A file left inside a suite's own temp folder (user://test_*) fails too
+## (M9 audit): every suite removes its temp dirs in its teardown. Capture
+## tours never write the real platform store (Platform.hold_writes), but do
+## not run one at the same time: its sandbox and temp settings are its own.
 
 ## Paths (relative to user://) that may change during a run.
 const ALLOWED_PREFIXES: PackedStringArray = ["logs/", "shader_cache/", "vulkan/"]
@@ -43,8 +43,7 @@ func test_no_stray_user_files() -> void:
 				leftovers.append(rel)
 			else:
 				strays.append(rel)
-	if not leftovers.is_empty():
-		print("  user dir: temp files a suite did not remove: %s" % [leftovers])
+	check(leftovers.is_empty(), "temp files a suite did not remove (remove its user://test_* dirs in teardown): %s" % [leftovers])
 	check(strays.is_empty(), "files written to the real user:// paths by the test run (use a temp dir and remove it): %s" % [strays])
 
 

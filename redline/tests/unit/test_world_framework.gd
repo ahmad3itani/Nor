@@ -27,6 +27,7 @@ func after_each() -> void:
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
 	Game.new_game()
 	await physics_frames(2)
+	AtomicJson.remove_tree("user://test_world_framework")
 
 
 func _on_menu(id: StringName) -> void:

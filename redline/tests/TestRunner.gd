@@ -7,6 +7,7 @@ extends Node
 ## Run a subset: append `-- --filter=<substring>` (matches file::method).
 
 const TEST_DIR := "res://tests/unit"
+const DEMO_DIR := "user://demo"
 
 
 func _ready() -> void:
@@ -27,6 +28,8 @@ func _run() -> void:
 	Settings.first_run = false
 	# A developer's saved language (or --locale) never reaches a test (M9 D5).
 	reset_locale()
+	# Demo tests redirect into user://demo; a run that found none removes it.
+	var demo_existed := DirAccess.dir_exists_absolute(DEMO_DIR)
 	var files := DirAccess.get_files_at(TEST_DIR)
 	files.sort()
 	for file in files:
@@ -57,6 +60,8 @@ func _run() -> void:
 		for f in suite.failures:
 			printerr("  - " + f)
 		suite.queue_free()
+	if not demo_existed:
+		AtomicJson.remove_tree(DEMO_DIR)
 	print("\n" + summary(total, failed, skipped))
 	get_tree().quit(1 if failed > 0 else 0)
 
@@ -110,6 +115,10 @@ static func reset_global_state() -> void:
 		build_info.set("force_web", -1)
 	DemoGate.dev_bypass = false
 	Game.suppress_leave_capture = false
+	# A test that reloads Settings.SETTINGS_PATH on a machine without one sets
+	# first_run; a later title test would then save the real settings.cfg
+	# (M9 audit: a clean XDG_DATA_HOME run wrote it).
+	Settings.first_run = false
 	AtomicJson.remove_tree("user://tour_sandbox")
 	reset_locale()
 

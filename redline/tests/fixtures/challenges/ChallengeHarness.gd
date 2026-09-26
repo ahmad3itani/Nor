@@ -90,8 +90,9 @@ func teardown() -> void:
 	SceneRouter.world_root = null
 	if is_instance_valid(root):
 		root.queue_free()
-	for d in [save_dir, platform_dir]:
-		AtomicJson.remove_tree(d)
+	# Platform back to the (headless-inactive) real dir first: a flush in the
+	# frames below would otherwise recreate the temp store after its removal.
+	Platform.reset_after_tests()
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
 	Settings.restore(_settings)
 	Settings.remove_settings_files(settings_path())
@@ -100,6 +101,15 @@ func teardown() -> void:
 	CinematicMode.theatre = false
 	Game.new_game()
 	await t.physics_frames(2)
+	# Removed last, with the playtest folder a suite may point Playtest at
+	# (M9 audit: temp dirs were left in the user dir).
+	for d in temp_dirs():
+		AtomicJson.remove_tree(d)
+
+
+## Every temp folder this harness (or its suite) may write.
+func temp_dirs() -> PackedStringArray:
+	return [save_dir, platform_dir, save_dir + "_playtest"]
 
 
 func settings_path() -> String:
