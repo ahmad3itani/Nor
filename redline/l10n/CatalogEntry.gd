@@ -5,9 +5,10 @@ extends RefCounted
 ## fuzzy matching, never for lookup.
 
 ## Named {placeholders} and printf-style % specs (both are protected by the
-## pseudo-locale and must survive every translation, L-4). No space flag:
-## GDScript's % has none, so prose like "40% slower" is not a spec (T13).
-const PLACEHOLDER_PATTERN := "\\{[a-z_][a-z0-9_]*\\}|%[-+0#]*[0-9]*(?:\\.[0-9]+)?[sdfxXcoe%]"
+## pseudo-locale and must survive every translation, L-4). Names may be
+## mixed-case ({Name}, {n2x}). No space flag: GDScript's % has none, so prose
+## like "40% slower" is not a spec (T13).
+const PLACEHOLDER_PATTERN := "\\{[A-Za-z_][A-Za-z0-9_]*\\}|%[-+0#]*[0-9]*(?:\\.[0-9]+)?[sdifuvxXcoe%]"
 
 var ctx: String = ""
 var msgid: String = ""

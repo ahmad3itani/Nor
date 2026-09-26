@@ -10,6 +10,10 @@ func test_placeholders_protected() -> void:
 		check(p.contains(token), "%s survives: %s" % [token, p])
 	check(not p.contains("Press") and p.contains("Ṕŕéšš") == false and p.contains("Pŕéšš"), "letters are mapped (p is kept): %s" % p)
 	check(p.begins_with("[") and p.ends_with("]"), "bracketed")
+	var mixed := Pseudo.pseudo("Hi {Name} and {n2x}: %v %i")
+	for token in ["{Name}", "{n2x}", "%v", "%i"]:
+		check(mixed.contains(token), "%s survives: %s" % [token, mixed])
+	check(CatalogEntry.placeholders("{Name} %v") == PackedStringArray(["{Name}", "%v"]), "L-4 sees the same spans")
 
 
 func test_expansion_ratio() -> void:
