@@ -5749,6 +5749,30 @@ msgstr ""
 msgid "NO ATTACKS"
 msgstr ""
 
+#. key: ui/map/MapView.gd::Loc.f
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. key: ui/menus/PauseMenu.gd::Loc.f
+#. placeholders: {district} {room}
+#: ui/map/MapView.gd ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
+msgid "{district}  —  {room}"
+msgstr ""
+
+#. key: ui/map/MapView.gd::Loc.f
+#. placeholders: {name} {role}
+#: ui/map/MapView.gd
+msgid "{name} ({role})"
+msgstr ""
+
+#. key: ui/map/MapView.gd::Loc.t
+#: ui/map/MapView.gd
+msgid "Anchor  (transit)"
+msgstr ""
+
+#. key: ui/map/MapView.gd::Loc.t
+#: ui/map/MapView.gd
+msgid "Anchor"
+msgstr ""
+
 #. key: ui/menus/AchievementsMenu.gd::l10n
 #: ui/menus/AchievementsMenu.gd
 msgid "Story"
@@ -6345,13 +6369,6 @@ msgstr ""
 #. key: ui/menus/LoadoutMenu.gd::Loc.t
 #: ui/menus/LoadoutMenu.gd
 msgid "No other Anchors on the line yet. Rest at one to add it."
-msgstr ""
-
-#. key: ui/menus/LoadoutMenu.gd::Loc.f
-#. key: ui/menus/PauseMenu.gd::Loc.f
-#. placeholders: {district} {room}
-#: ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
-msgid "{district}  —  {room}"
 msgstr ""
 
 #. key: ui/menus/MapMenu.gd::Loc.t

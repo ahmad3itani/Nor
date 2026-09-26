@@ -109,17 +109,18 @@ func hover_text() -> String:
 	if r == null:
 		return ""
 	var info := WorldMapIndex.room_info(r.room_path)
-	var text := "%s  —  %s" % [info["district_name"], info["name"]]
+	# Names stay source in WorldMapIndex; translated here, at display (D-162).
+	var text := Loc.f("{district}  —  {room}", {"district": Loc.t(info["district_name"]), "room": Loc.t(info["name"])})
 	var best := 18.0 / zoom()
 	for n: Dictionary in visible_npcs(info):
 		if _visited(r) and (r.offset + n["pos"]).distance_to(cursor) < best:
-			text += "   ·   %s (%s)" % [n["name"], n["role"]] if n["role"] != "" else ""
+			text += "   ·   " + Loc.f("{name} ({role})", {"name": Loc.t(n["name"]), "role": Loc.t(n["role"])}) if n["role"] != "" else ""
 	for a: Dictionary in info["anchors"]:
 		if _cell_seen(r, a["pos"]) and (r.offset + a["pos"]).distance_to(cursor) < best:
-			text += "   ·   Anchor%s" % ("  (transit)" if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]) else "")
+			text += "   ·   " + (Loc.t("Anchor  (transit)") if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]) else Loc.t("Anchor"))
 	for m: Dictionary in info["markers"]:
 		if int(m["kind"]) == MapMarker.Kind.NOTE and show_quest_notes() and WorldMapIndex.marker_active(m) and (r.offset + m["pos"]).distance_to(cursor) < best:
-			text += "   ·   " + String(m["label"])
+			text += "   ·   " + Loc.t(String(m["label"]))
 	return text
 
 
@@ -277,7 +278,7 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			if _known(r) and show_quest_notes():
 				var p := to_screen(r.offset + m["pos"])
 				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
-				draw_string(font, p + Vector2(5, 3), m["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
+				draw_string(font, p + Vector2(5, 3), Loc.t(String(m["label"])), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 		elif _cell_seen(r, m["pos"]):
 			var p := to_screen(r.offset + m["pos"])
 			draw_circle(p, 4.0, Palette.color(&"map_gate"))
@@ -288,7 +289,8 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 				continue
 			var p := to_screen(r.offset + n["pos"] + Vector2(0, -14))
 			draw_circle(p, 3.5, COL_NPC)
-			draw_string(font, p + Vector2(-2.5, 3), String(n["name"]).left(1), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_BG)
+			# The initial of the name as displayed.
+			draw_string(font, p + Vector2(-2.5, 3), Loc.t(String(n["name"])).left(1), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_BG)
 		for boss: Dictionary in info["bosses"]:
 			var p := to_screen(r.offset + boss["pos"])
 			var boss_col := Palette.color(&"safe")
@@ -315,7 +317,7 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 		if i < q.stages.size() and q.stages[i].map_room == r.room_id():
 			var p := to_screen(r.offset + q.stages[i].map_pos)
 			draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
-			draw_string(font, p + Vector2(5, 3), q.stages[i].map_note, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
+			draw_string(font, p + Vector2(5, 3), Loc.t(q.stages[i].map_note), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 	# The dropped Scrap cache (bible §7: recoverable).
 	var drop := state.dropped_scrap
 	if drop.get("room", "") == r.room_path and int(drop.get("amount", 0)) > 0:

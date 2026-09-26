@@ -209,3 +209,27 @@ func _button_texts(m: MenuScreen) -> PackedStringArray:
 		if c is Button and not c.is_queued_for_deletion():
 			out.append((c as Button).text)
 	return out
+
+
+## The map keeps WorldMapIndex names as source and translates the hover line
+## where it is composed (D5 §4.2 MapView row).
+func test_map_hover_translated() -> void:
+	var room := await h.goto(RELAY, &"start")
+	await physics_frames(6)
+	var menu: MenuScreen = load("res://ui/menus/MapMenu.gd").new()
+	add_child(menu)
+	menu.open_menu()
+	await get_tree().process_frame
+	var view: MapView = menu.get("view")
+	check(view != null and view.room_at(view.cursor) != null, "the cursor starts in the Relay")
+	if view == null:
+		menu.queue_free()
+		return
+	var en := view.hover_text()
+	var district := (room as Room).district_name
+	check(en.begins_with(district + "  —  "), "English hover: %s" % en)
+	_pseudo()
+	var xa := view.hover_text()
+	check(xa.contains(Loc.t(district)) and not xa.contains(district), "pseudo hover: %s" % xa)
+	menu.close_menu()
+	menu.queue_free()

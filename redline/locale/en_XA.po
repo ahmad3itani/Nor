@@ -3163,6 +3163,22 @@ msgstr "[ÑÓ ĤÍŤ~~~]"
 msgid "NO ATTACKS"
 msgstr "[ÑÓ ÁŤŤÁÇĶŠ~~~~~]"
 
+#: ui/map/MapView.gd ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
+msgid "{district}  —  {room}"
+msgstr "[{district}  —  {room}~~~]"
+
+#: ui/map/MapView.gd
+msgid "{name} ({role})"
+msgstr "[{name} ({role})~~]"
+
+#: ui/map/MapView.gd
+msgid "Anchor  (transit)"
+msgstr "[Áñçĥóŕ  (ťŕáñšíť)~~~~~~]"
+
+#: ui/map/MapView.gd
+msgid "Anchor"
+msgstr "[Áñçĥóŕ~~~]"
+
 #: ui/menus/AchievementsMenu.gd
 msgid "Story"
 msgstr "[Šťóŕý~~~]"
@@ -3602,10 +3618,6 @@ msgstr "[ÁÑÇĤÓŔ  —  ŤŔÁÑŠÍŤ~~~~~~~]"
 #: ui/menus/LoadoutMenu.gd
 msgid "No other Anchors on the line yet. Rest at one to add it."
 msgstr "[Ñó óťĥéŕ Áñçĥóŕš óñ ťĥé ĺíñé ýéť. Ŕéšť áť óñé ťó áďď íť.~~~~~~~~~~~~~~~~~~~~]"
-
-#: ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
-msgid "{district}  —  {room}"
-msgstr "[{district}  —  {room}~~~]"
 
 #: ui/menus/MapMenu.gd
 msgid "MAP"
