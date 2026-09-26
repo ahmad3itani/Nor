@@ -469,6 +469,26 @@ func test_session_off_and_bypass_clear_barriers_in_room() -> void:
 	check(exit2.monitoring, "Exit2 works again in the full game")
 
 
+## A build that is itself a demo (simulated: force_demo set with no session
+## call) has no session to toggle, and settling the gate while still a demo
+## keeps the border barrier instead of stripping it (review, T05).
+func test_session_toggle_never_strips_a_real_demo() -> void:
+	BuildInfo.set_force_demo(-1)
+	check(not DemoDevActions.build_is_demo(), "tests run the full game")
+	DemoDevActions.set_demo_session(true)
+	await get_tree().process_frame
+	SceneRouter.goto_room(TUNNEL)
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).size() == 1, "walled in the demo")
+	DemoDevActions.settle_gate(get_tree())
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).size() == 1, "still a demo: the barrier stays")
+	check(not get_tree().get_nodes_in_group(&"demo_gate").is_empty(), "still a demo: the gate stays")
+	DemoDevActions.set_demo_session(false)
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).is_empty(), "session off in the full game frees it")
+
+
 # --- The card ---------------------------------------------------------------------
 
 func test_card_fits_270_and_controller_reachable() -> void:
@@ -576,11 +596,14 @@ func test_debug_demo_leaves_user_saves_untouched() -> void:
 	var real := SaveManager.DEFAULT_SAVE_DIR + "/profile_1.json"
 	var demo := BuildInfo.DEMO_SAVE_DIR + "/profile_1.json"
 	var real_before := FileAccess.get_file_as_bytes(real) if FileAccess.file_exists(real) else PackedByteArray()
-	var demo_before := FileAccess.get_file_as_bytes(demo) if FileAccess.file_exists(demo) else PackedByteArray()
 	var real_existed := FileAccess.file_exists(real)
-	var demo_existed := FileAccess.file_exists(demo)
 	var dir_existed := DirAccess.dir_exists_absolute(BuildInfo.DEMO_SAVE_DIR)
-	var files_before := DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR) if dir_existed else PackedStringArray()
+	# Every file's bytes, not just its name: AtomicJson rotates .bak/.tmp
+	# siblings, so an existing demo backup may be rewritten by this save.
+	var files_before := {}
+	if dir_existed:
+		for name: String in DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR):
+			files_before[name] = FileAccess.get_file_as_bytes(BuildInfo.DEMO_SAVE_DIR + "/" + name)
 	BuildInfo.set_force_demo(1)
 	Game.start_campaign()
 	check(Game.save_game() == OK, "saved")
@@ -589,16 +612,25 @@ func test_debug_demo_leaves_user_saves_untouched() -> void:
 		and (not real_existed or FileAccess.get_file_as_bytes(real) == real_before), "user://saves is unchanged")
 	BuildInfo.set_force_demo(-1)
 	check(SaveManager.save_dir == SaveManager.DEFAULT_SAVE_DIR, "the full game's save dir is back")
-	# Put the developer's own demo save back as it was, and remove only the
-	# files this test created (the save and its .bak/.tmp siblings): other
-	# demo profiles and backups in user://demo/saves stay.
-	if demo_existed:
-		var f := FileAccess.open(demo, FileAccess.WRITE)
-		f.store_buffer(demo_before)
-		f.close()
+	# Put the developer's user://demo/saves back byte for byte: files this test
+	# created go, files it changed (the profile, a rotated .bak) are restored.
 	for name: String in DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR):
-		if not name in files_before:
-			DirAccess.remove_absolute(BuildInfo.DEMO_SAVE_DIR + "/" + name)
+		var path := BuildInfo.DEMO_SAVE_DIR + "/" + name
+		if not files_before.has(name):
+			DirAccess.remove_absolute(path)
+		elif FileAccess.get_file_as_bytes(path) != files_before[name]:
+			var f := FileAccess.open(path, FileAccess.WRITE)
+			f.store_buffer(files_before[name])
+			f.close()
+	for name: String in files_before:
+		var path := BuildInfo.DEMO_SAVE_DIR + "/" + name
+		if not FileAccess.file_exists(path):
+			var f := FileAccess.open(path, FileAccess.WRITE)
+			f.store_buffer(files_before[name])
+			f.close()
+	for name: String in files_before:
+		check(FileAccess.get_file_as_bytes(BuildInfo.DEMO_SAVE_DIR + "/" + name) == files_before[name],
+			"%s restored" % name)
 	if not dir_existed and DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR).is_empty() \
 			and DirAccess.get_directories_at(BuildInfo.DEMO_SAVE_DIR).is_empty():
 		DirAccess.remove_absolute(BuildInfo.DEMO_SAVE_DIR)

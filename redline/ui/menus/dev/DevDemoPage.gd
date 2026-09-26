@@ -7,9 +7,12 @@ extends RefCounted
 
 static func build(c: DevConsole) -> void:
 	c.add_label(DemoDevActions.summary(), UiTheme.MUTED, UiTheme.FONT_SIZE - 2)
-	c.add_button("Demo mode (session): %s" % ("on" if DemoDevActions.demo_session_on() else "off"), func() -> void:
-		DemoDevActions.set_demo_session(not DemoDevActions.demo_session_on())
-		c._refresh())
+	if DemoDevActions.build_is_demo():
+		c.add_button("Demo mode: this build is a demo", func() -> void: pass, Callable(), false)
+	else:
+		c.add_button("Demo mode (session): %s" % ("on" if DemoDevActions.demo_session_on() else "off"), func() -> void:
+			DemoDevActions.set_demo_session(not DemoDevActions.demo_session_on())
+			c._refresh())
 	c.add_button("Show demo end card", func() -> void:
 		c.close_menu()
 		DemoDevActions.show_demo_end())
