@@ -267,3 +267,141 @@ func test_story_report_section() -> void:
 	check(md.contains("flag:act5_finale_reached (Act 5)") and not md.contains("(Act 9)"), "a future flag reads with its act")
 	check(md.contains("| act5_finale_reached | Act 5 |") and not md.contains("| null_depth_reached |"), "future-flag table shows act5_finale_reached, not null_depth_reached")
 	check(_shipped_run().produced.has("null_depth_reached"), "null_depth_reached is produced (the Deep Rig's on_finish_flags, D-154)")
+
+
+# --- M9 T14: cross-area rules (CrossRules X-1..X-10) and DM-4 -------------------------
+
+func test_real_content_has_no_m9_errors() -> void:
+	var v := _shipped_run()
+	var m9 := Array(v.errors).filter(func(e: String) -> bool: return e.begins_with("["))
+	check(m9.is_empty(), "no M9 rule errors on shipped content: %s" % [m9])
+	var dm4 := Array(v.warnings).filter(func(w: String) -> bool: return w.begins_with("[DM-4]"))
+	check(dm4.is_empty(), "demo.tres lists every achievement the demo can earn: %s" % [dm4])
+	var demo := BuildInfo.config()
+	check(demo != null and demo.achievements.size() >= 8, "the demo lists its Undercity achievements")
+	for id in demo.achievements:
+		check(String(DemoRules.last_earnable.get(id, "?")) == "", "%s is earnable in the demo" % id)
+	check(not demo.achievements.has("top_marks"), "top_marks needs the training rig, which a demo never opens")
+
+
+## Every M9 rule module prefixes its findings with the rule id.
+func test_modules_prefix_rule_ids() -> void:
+	var v := ContentValidator.new()
+	var re := RegEx.create_from_string("^\\[[A-Z0-9]+-[0-9]+\\] ")
+	v.validate_m9()
+	for line in Array(v.errors) + Array(v.warnings):
+		check(re.search(String(line)) != null, "prefixed with its rule id: %s" % line)
+	var shipped := _shipped_run()
+	for line in Array(shipped.errors) + Array(shipped.warnings):
+		var s := String(line)
+		if s.begins_with("["):
+			check(re.search(s) != null, "prefixed with its rule id: %s" % s)
+
+
+func _ach(id: String, conditions: PackedStringArray = PackedStringArray(), api := "") -> AchievementData:
+	var a := AchievementData.new()
+	a.id = id
+	a.title = id
+	a.conditions = conditions
+	a.api_name = api
+	return a
+
+
+func test_x1_ids_and_api_names_unique_across_kinds() -> void:
+	var st := StatDef.new()
+	st.id = &"dup_stat"
+	st.api_name = "SHARED_API"
+	var out := CrossRules.id_errors_for([_ach("dup"), _ach("dup"), _ach("other", PackedStringArray(), "SHARED_API")], [st], [])
+	check(_has(out, ["achievement id 'dup'"]), "a duplicate achievement id: %s" % out)
+	check(_has(out, ["SHARED_API"]), "an api name shared by an achievement and a stat: %s" % out)
+	check(CrossRules.id_errors().is_empty(), "shipped ids are unique: %s" % CrossRules.id_errors())
+
+
+func test_x2_menu_ids_match() -> void:
+	var main := FileAccess.get_file_as_string(CrossRules.MAIN_SCENE)
+	check(CrossRules.menu_errors(MenuHost.IDS, ContentValidator.MENU_IDS, main).is_empty(), "shipped menu ids match")
+	var extra := PackedStringArray(MenuHost.IDS)
+	extra.append("ghost_menu")
+	var out := CrossRules.menu_errors(extra, ContentValidator.MENU_IDS, main)
+	check(_has(out, ["ghost_menu", "not ContentValidator.MENU_IDS"]) and _has(out, ["ghost_menu", "no screen"]), "%s" % out)
+	check(_has(CrossRules.menu_errors(MenuHost.IDS, ContentValidator.MENU_IDS, ""), ["Main.tscn has no Menus/PauseMenu"]), "a missing Menus node")
+
+
+func test_x3_unrecorded_signal_fails() -> void:
+	var bus := "signal a_done(x: int)\nsignal b_seen\nsignal c_quiet\n"
+	var pt := "EventBus.a_done.connect(_on_a)\n"
+	var out := CrossRules.unrecorded_signals(bus, pt, {"c_quiet": "presentation only"})
+	check(out.size() == 1 and out[0].contains("EventBus.b_seen"), "only the unlisted, unrecorded signal: %s" % out)
+	check(_has(CrossRules.unrecorded_signals(bus, pt, {"b_seen": " ", "c_quiet": "x"}), ["needs a one-line reason"]), "an empty reason fails")
+
+
+func test_x4_network_class_fails() -> void:
+	check(not CrossRules.scan_network("var r := HTTPRequest.new()").is_empty(), "HTTPRequest")
+	check(not CrossRules.scan_network("\tOS.shell_open(url)").is_empty(), "OS.shell_open")
+	check(not CrossRules.scan_network("var s = Engine.get_singleton(\"Steam\")").is_empty(), "the storefront singleton")
+	check(not CrossRules.scan_network("JavaScriptBridge.eval(x)").is_empty(), "JavaScriptBridge")
+	check(CrossRules.scan_network("# HTTPRequest in a comment\nvar p := [\"HTTPRequest\", \"Steam.\"]").is_empty(), "comments and strings are not calls")
+	check(CrossRules.network_violations().is_empty(), "the whole project is clean: %s" % CrossRules.network_violations())
+
+
+func test_x5_raw_scan_fails_and_datadir_passes() -> void:
+	check(not CrossRules.scan_raw("res://ui/Foo.gd", "for f in DirAccess.get_files_at(dir):").is_empty(), "a raw scan in ui/")
+	check(CrossRules.scan_raw("res://ui/Foo.gd", "for f in DataDir.list(dir):").is_empty(), "DataDir passes")
+	check(CrossRules.scan_raw("res://progression/DataDir.gd", "DirAccess.get_files_at(dir)").is_empty(), "the allowlist passes")
+	check(CrossRules.raw_scan_violations().is_empty(), "shipped scripts: %s" % CrossRules.raw_scan_violations())
+
+
+func test_x6_unscanned_folder_fails() -> void:
+	var out := CrossRules.unscanned_dirs(PackedStringArray(["res://ui", "res://locale", "res://newthing"]))
+	check(out.size() == 1 and out[0].contains("res://newthing"), "only the unknown folder: %s" % out)
+	check(CrossRules.unscanned_dirs(CrossRules.top_level_dirs()).is_empty(), "every shipped folder is scanned or ignored")
+
+
+func test_x7_readers_registered() -> void:
+	var v := ContentValidator.new()
+	var out := CrossRules.unregistered_readers(v)
+	check(not out.is_empty(), "an empty flag graph has unregistered readers")
+	var shipped := _shipped_run()
+	check(CrossRules.unregistered_readers(shipped).is_empty(), "shipped readers are registered: %s" % CrossRules.unregistered_readers(shipped))
+	check(CrossRules.condition_flags(["flag:a", "!flag:b", "count:secrets:3", ""]) == PackedStringArray(["a", "b"]), "condition flags")
+
+
+func test_x8_shaming_words_fail() -> void:
+	var cat := load(SettingsCatalog.PATH) as SettingsCatalog
+	var out := CrossRules.shaming_text([["data/challenges/x.tres", "The easy route for beginners"]], cat)
+	check(_has(out, ["'easy'"]), "a forbidden word: %s" % out)
+	check(CrossRules.shaming_text([["x", "Assists never lock content."]], cat).is_empty(), "neutral text passes")
+	var m9 := CrossRules.m9_catalog_text(PoFile.load_file(CrossRules.POT_PATH))
+	check(m9.size() > 100, "the M9 part of the catalog is read (%d)" % m9.size())
+
+
+func test_x9_knowledge_lint_reads_m9_text() -> void:
+	var v := ContentValidator.new()
+	var out := CrossRules.knowledge_warnings(v, [["res://data/achievements/fx.tres", "achievement fx title", "Into The Null"],
+		["res://world/rooms/challenge/fx.tres", "challenge fx", "The Null"]])
+	check(out.size() == 1 and out[0].begins_with("knowledge lint") and out[0].contains("fx.tres"), "one warning, the exempt dir skipped: %s" % out)
+	var items := CrossRules.add_m9_shown_text(v)
+	check(items.size() > 60 and v.extra_shown_text.size() == items.size(), "achievement, challenge and demo lines registered")
+
+
+func test_x10_code_flags_known() -> void:
+	var v := ContentValidator.new()
+	var out := CrossRules.unproduced_code_flags(v)
+	check(_has(out, ["ng_cycle"]), "an unproduced NG+ flag: %s" % out)
+	for f in ["ng_cycle", "ng_remix", "ng_keep_dash"]:
+		v.add_producer(f, "res://data/ngplus/ng_plus.tres")
+	check(CrossRules.unproduced_code_flags(v).is_empty(), "produced by data: %s" % CrossRules.unproduced_code_flags(v))
+
+
+func test_dm4_unearnable_demo_achievement() -> void:
+	var c := (BuildInfo.config() as DemoConfig).duplicate(true) as DemoConfig
+	var v := ContentValidator.new()
+	v.add_producer("warden_krail_defeated", "res://world/rooms/lowlight/WardenTower.tscn")
+	v.add_producer("fx_uc_done", "res://world/rooms/undercity/Wake.tscn")
+	var krail := _ach("fx_krail", PackedStringArray(["flag:warden_krail_defeated"]))
+	var uc := _ach("fx_uc", PackedStringArray(["flag:fx_uc_done"]))
+	c.achievements = PackedStringArray(["fx_krail", "fx_missing"])
+	var r := DemoRules.achievement_check(c, v, [krail, uc] as Array[AchievementData], DemoRules.scope(c), "fx_demo.tres")
+	check(_has(r["errors"], ["[DM-4]", "fx_krail", "cannot be earned"]), "a Lowlight flag is unearnable: %s" % r["errors"])
+	check(_has(r["errors"], ["[DM-4]", "fx_missing", "does not exist"]), "an unknown id: %s" % r["errors"])
+	check(_has(r["warnings"], ["[DM-4]", "fx_uc", "add it to demo.tres"]), "earnable but unlisted warns: %s" % r["warnings"])
