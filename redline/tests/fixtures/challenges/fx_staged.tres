@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Script" path="res://challenges/ChallengeKit.gd" id="2_kit"]
+[ext_resource type="Script" path="res://challenges/ChallengeStage.gd" id="3_stage"]
+[ext_resource type="Script" path="res://challenges/RankTable.gd" id="4_rank"]
+
+[sub_resource type="Resource" id="Resource_kit"]
+script = ExtResource("2_kit")
+use_profile_loadout = true
+
+[sub_resource type="Resource" id="Resource_a"]
+script = ExtResource("3_stage")
+id = "stage_a"
+title = "Stage A"
+room = "res://tests/fixtures/challenges/StageA.tscn"
+entry = &"start"
+par_s = 20.0
+redline_s = 10.0
+
+[sub_resource type="Resource" id="Resource_b"]
+script = ExtResource("3_stage")
+id = "stage_b"
+title = "Stage B"
+room = "res://tests/fixtures/challenges/StageB.tscn"
+entry = &"from_a"
+par_s = 20.0
+redline_s = 10.0
+
+[sub_resource type="Resource" id="Resource_rank"]
+script = ExtResource("4_rank")
+
+[resource]
+script = ExtResource("1_data")
+id = "fx_staged"
+group = 0
+title = "Fixture Descent"
+description = "Two fixture stages, one goal each."
+locked_hint = "Finish the first act."
+unlock_when = "flag:null_open"
+requires = PackedStringArray("ability:dash")
+requires_text = "The rig needs the Dash module."
+start_room = "res://tests/fixtures/challenges/StageA.tscn"
+start_entry = &"start"
+kit = SubResource("Resource_kit")
+score_kind = 2
+start_on = 1
+end_on = 4
+on_death = 1
+stages = Array[ExtResource("3_stage")]([SubResource("Resource_a"), SubResource("Resource_b")])
+rank_table = SubResource("Resource_rank")
+on_finish_flags = PackedStringArray("fx_depth_reached")

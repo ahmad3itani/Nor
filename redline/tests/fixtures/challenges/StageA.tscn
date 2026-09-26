@@ -1,0 +1,59 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://world/rooms/Room.gd" id="1_room"]
+[ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="2_block"]
+[ext_resource type="Script" path="res://world/rooms/SpawnMarker.gd" id="3_spawn"]
+[ext_resource type="Script" path="res://world/transitions/RoomExit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://world/anchors/Anchor.gd" id="5_anchor"]
+[ext_resource type="Script" path="res://challenges/ChallengeGoal.gd" id="6_goal"]
+[ext_resource type="Script" path="res://world/props/HintTrigger.gd" id="7_hint"]
+[ext_resource type="Script" path="res://interactables/NPC.gd" id="8_npc"]
+[ext_resource type="Resource" path="res://tests/fixtures/props_npc_x.tres" id="9_profile"]
+
+[node name="StageA" type="Node2D"]
+script = ExtResource("1_room")
+room_name = "Stage A"
+bounds = Rect2(-64, -270, 800, 336)
+world_room = true
+district_name = "Test"
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(-64, 0)
+script = ExtResource("2_block")
+size = Vector2(800, 64)
+
+[node name="Spawn_start" type="Marker2D" parent="."]
+position = Vector2(40, 0)
+script = ExtResource("3_spawn")
+spawn_id = &"start"
+is_default = true
+
+[node name="Anchor" type="Area2D" parent="."]
+position = Vector2(40, 0)
+script = ExtResource("5_anchor")
+anchor_id = &"start"
+
+[node name="NPC_props_npc_x" type="Area2D" parent="."]
+position = Vector2(60, 0)
+script = ExtResource("8_npc")
+profile = ExtResource("9_profile")
+
+[node name="Hint" type="Area2D" parent="."]
+position = Vector2(80, -96)
+script = ExtResource("7_hint")
+size = Vector2(48, 96)
+hint_id = "fx_stage_tip"
+text = "A fixture tip."
+
+[node name="Goal" type="Area2D" parent="."]
+position = Vector2(400, -96)
+script = ExtResource("6_goal")
+size = Vector2(32, 96)
+stage_id = "stage_a"
+
+[node name="Exit" type="Area2D" parent="."]
+position = Vector2(720, -80)
+script = ExtResource("4_exit")
+size = Vector2(16, 80)
+target_room = "res://tests/fixtures/challenges/StageB.tscn"
+target_entry = &"from_a"
