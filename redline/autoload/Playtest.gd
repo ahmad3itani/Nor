@@ -33,6 +33,8 @@ var _room_since: float = 0.0
 var _was_paused: bool = false
 var _player: Player
 var _dodge_seen: bool = false
+## sequence id -> {first, locked} of the play in progress (seq_end copies it).
+var _seq_open: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -88,6 +90,25 @@ func _ready() -> void:
 	EventBus.chase_completed.connect(func(id: String, seconds: float, catches: int, min_lead: float) -> void:
 		_event("chase_done", {"id": id, "seconds": snappedf(seconds, 0.01), "catches": catches, "min_lead": snappedf(min_lead, 0.01)}))
 	EventBus.tracker_locked.connect(func(id: String) -> void: _event("tracker_lock", {"id": id}))
+	# M8 narrative: sequences, memory vignettes, arcs, the Act I choice and
+	# endings. Dev replays (the Ending theatre, sequence previews) set
+	# CinematicMode.theatre and their sequence events are dropped, so skip
+	# rates only count real views. Ending events carry `theatre` instead (the
+	# analyzer ignores those).
+	EventBus.sequence_started.connect(_on_sequence_started)
+	EventBus.sequence_finished.connect(_on_sequence_finished)
+	EventBus.memory_scene_started.connect(func(id: String, source: StringName) -> void:
+		_event("memory_start", {"id": id, "source": String(source)}))
+	EventBus.memory_scene_finished.connect(_on_memory_finished)
+	EventBus.arc_stage_entered.connect(func(npc: String, stage: String, on_load: bool) -> void:
+		if not on_load:
+			_event("arc", {"npc": npc, "stage": stage}))
+	EventBus.dialogue_choice_made.connect(func(dialogue: String, choice: String) -> void:
+		_event("choice", {"dialogue": dialogue, "choice": choice}))
+	EventBus.ending_started.connect(func(id: String, theatre: bool) -> void:
+		_event("ending_start", {"id": id, "theatre": theatre}))
+	EventBus.ending_finished.connect(func(id: String, theatre: bool, skipped: bool) -> void:
+		_event("ending", {"id": id, "theatre": theatre, "skipped": skipped}))
 
 
 func recording_allowed() -> bool:
@@ -172,6 +193,17 @@ func _process(delta: float) -> void:
 	_last_usec = now
 	if session == null:
 		return
+	# M8 scene time. A memory vignette pauses the tree itself, so it is
+	# checked first and counts as cinematic_s, never as a pause (no 'pause'
+	# event, no paused_s). A locking sequence counts only while the tree runs:
+	# under the PauseMenu it is paused_s alone, so the report's "minus
+	# cinematic_s" column never subtracts pause time twice.
+	var memory := is_instance_valid(MemoryScenePlayer.active_instance) and MemoryScenePlayer.active_instance.is_playing()
+	if memory or (Cinematics.locks_input() and not get_tree().paused):
+		_count("cinematic_s", delta)
+	if memory:
+		_was_paused = get_tree().paused
+		return
 	var paused := get_tree().paused
 	if paused and not _was_paused:
 		_event("pause")
@@ -185,7 +217,11 @@ func _process(delta: float) -> void:
 	session.add_frame(_t, _room, frame_ms, config.spike_ms, config.max_spikes)
 	_count("input_pad_s" if InputGlyphs.using_pad else "input_keyboard_s", delta)
 	_sample_acc += delta
-	if _sample_acc >= config.sample_interval and is_instance_valid(_player) and _room != "":
+	# No position samples while a scene holds the player: the gap splits
+	# idle_spans, so watching a scene never reads as standing still, confused.
+	if Cinematics.locks_input():
+		_sample_acc = 0.0
+	elif _sample_acc >= config.sample_interval and is_instance_valid(_player) and _room != "":
 		_sample_acc = 0.0
 		session.add_sample(_t, _room, _player.global_position)
 	_save_acc += delta
@@ -301,8 +337,62 @@ func _on_slice_completed() -> void:
 		"secrets": SliceStats.secrets_found(), "secrets_total": (t["secret_ids"] as Array).size(),
 		"fragments": Game.state.memory_fragments.size(), "shards": Game.state.core_shards,
 		"dead_air": Game.has_flag("dead_air_complete"),
+		# M8: what the player leaves Act I with (memories, people, the card).
+		"memories": MemoryLibrary.remembered_count(),
+		"memory_details": _count_flags("mem_detail_"),
+		"memories_pending": MemoryLibrary.pending().size(),
+		"arc_beats_heard": _count_flags("arcbeat_"),
+		"arcs": _arc_stages(),
+		"orr_air": "named" if Game.has_flag("orr_air_named") else ("ghost" if Game.has_flag("orr_air_ghost") else "none"),
+		"act1_complete": Game.has_flag("act1_complete"),
+		"standing": Array(ActLibrary.standing_lines(ActLibrary.act(1))),
 	})
 	flush()
+
+
+## seq_end repeats its start's `first` and `locked`, so the analyzer reads one
+## event per view. locked = the play held the player (barks and retry intros
+## do not): only those seconds sit inside the session clocks as scene time.
+func _on_sequence_started(id: String, first_view: bool) -> void:
+	if CinematicMode.theatre:
+		return
+	_seq_open[id] = {"first": first_view, "locked": Cinematics.locks_input()}
+	_event("seq_start", {"id": id, "first": first_view})
+
+
+func _on_sequence_finished(id: String, skipped: bool, seconds: float, step: int, step_count: int, nominal: float) -> void:
+	if CinematicMode.theatre:
+		return
+	var open: Dictionary = _seq_open.get(id, {})
+	_seq_open.erase(id)
+	_event("seq_end", {"id": id, "skipped": skipped, "seconds": snappedf(seconds, 0.01), "step": step,
+		"of": step_count, "nominal": snappedf(nominal, 0.01), "first": bool(open.get("first", false)),
+		"locked": bool(open.get("locked", false))})
+
+
+func _on_memory_finished(id: String, source: StringName, skipped: bool, seconds: float, beats: int, detail: bool, first: bool) -> void:
+	_event("memory_end", {"id": id, "source": String(source), "skipped": skipped, "seconds": snappedf(seconds, 0.01),
+		"beats": beats, "detail": detail, "first": first})
+
+
+## Set flags with this prefix (bool true or int > 0).
+func _count_flags(prefix: String) -> int:
+	var n := 0
+	for k: String in Game.state.flags:
+		if k.begins_with(prefix) and Game.has_flag(k):
+			n += 1
+	return n
+
+
+## {npc: spine index reached} for every arc the tracker knows.
+func _arc_stages() -> Dictionary:
+	var out := {}
+	if Game.arcs == null:
+		return out
+	for a: NpcArc in Game.arcs.arcs:
+		if a != null:
+			out[a.npc_id] = a.current_index()
+	return out
 
 
 func _on_enemy_damaged(_enemy: Node2D, hit: HitInfo, _result: int) -> void:
