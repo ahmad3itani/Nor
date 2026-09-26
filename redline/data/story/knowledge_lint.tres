@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="KnowledgeLint" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://story/KnowledgeLint.gd" id="1_lint"]
+
+[resource]
+script = ExtResource("1_lint")
+act = 1
+forbidden = PackedStringArray("Project REDLINE", "Architect", "The Null", "neural", "harvest", "Redline disaster", "conscious", "Pulse is", "stores memor", "made of memor", "research", "Rook")
+exempt_dirs = PackedStringArray("res://data/endings")

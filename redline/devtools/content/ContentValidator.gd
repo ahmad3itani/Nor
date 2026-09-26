@@ -53,6 +53,11 @@ var story: Dictionary = {"fragments": {}, "scenes": {}, "sequences": {}, "ending
 ## Sequence id -> ["<room>: <referrer kind>", ...] (SequenceTrigger, BossArena
 ## intro, SliceEndTrigger, ActData close).
 var sequence_refs: Dictionary = {}
+## MemoryConfig text the player sees (HUD card, journal gallery, vignette
+## pause panel): what the knowledge lint scans.
+const MEMORY_CONFIG_TEXT: PackedStringArray = ["title_label", "card_body_anchor", "card_body_journal", "more_waiting_hint",
+	"remembered_line", "gallery_button", "empty_text", "gallery_title", "pending_hint", "detail_line", "detail_unfound_text",
+	"back_label", "pause_title", "pause_resume", "pause_skip", "pause_size"]
 ## Fragment ids placed as Collectibles in rooms -> room id.
 var placed_fragments: Dictionary = {}
 ## Room text shown in play: [path, what, text] (HintTrigger lines).
@@ -439,6 +444,7 @@ func validate_story() -> void:
 	_check_memories()
 	_check_endings()
 	_check_arc_threads()
+	_check_knowledge()
 
 
 ## A5 §9.2: a future flag is produced only by its declaration and read only
@@ -522,6 +528,100 @@ func _check_arc_threads() -> void:
 		for t in a.threads:
 			if not producers.has(t):
 				errors.append("%s: arc %s thread %s is never set" % [path.get_file(), a.npc_id, t])
+
+
+## D-132 knowledge lint: text shown in the lint's act must not use a later
+## act's terms. Warnings only (a word can be innocent; the reviewer decides).
+func _check_knowledge() -> void:
+	var lint := _knowledge_lint()
+	if lint == null:
+		return
+	var seen := {}
+	for item: Array in _shown_text(lint):
+		var path: String = item[0]
+		if lint.is_exempt(path):
+			continue
+		for term in lint.hits(String(item[2])):
+			var w := "knowledge lint (Act %s): %s: %s: '%s' in \"%s\"" % [ActData.roman(lint.act), path.get_file(), item[1], term,
+				String(item[2]).replace("\n", " ").left(70)]
+			if not seen.has(w):
+				seen[w] = true
+				warnings.append(w)
+
+
+func _knowledge_lint() -> KnowledgeLint:
+	for path: String in story["lint"]:
+		return story["lint"][path] as KnowledgeLint
+	return load(KnowledgeLint.PATH) as KnowledgeLint if ResourceLoader.exists(KnowledgeLint.PATH) else null
+
+
+## [path, what, text] for every line the player can see in `lint.act`.
+func _shown_text(lint: KnowledgeLint) -> Array:
+	var out: Array = []
+	for path: String in story["text"]:
+		var res: Resource = story["text"][path]
+		if res is NpcProfile:
+			for rule in (res as NpcProfile).rules:
+				if rule and rule.dialogue:
+					_dialogue_text(rule.dialogue, path, out)
+		elif res is DialogueData:
+			_dialogue_text(res as DialogueData, path, out)
+		elif res is QuestData:
+			var q := res as QuestData
+			for i in q.stages.size():
+				if q.stages[i]:
+					out.append([path, "quest %s stage %d" % [q.id, i], q.stages[i].description])
+		elif res is MemoryConfig:
+			for field in MEMORY_CONFIG_TEXT:
+				out.append([path, "memory config %s" % field, String(res.get(field))])
+	for path: String in story["arcs"]:
+		for d in (story["arcs"][path] as NpcArc).dialogues():
+			_dialogue_text(d, path, out)
+	for path: String in story["fragments"]:
+		var fr := story["fragments"][path] as MemoryFragmentData
+		out.append([path, "fragment %s" % fr.id, fr.title])
+		out.append([path, "fragment %s" % fr.id, fr.text])
+	for path: String in story["scenes"]:
+		var sc := story["scenes"][path] as MemorySceneData
+		if sc.act != lint.act:
+			continue
+		if sc.source == MemorySceneData.Source.SURFACED:
+			out.append([path, "memory %s title" % sc.id, sc.title])
+		for i in sc.beats.size():
+			if sc.beats[i]:
+				out.append([path, "memory %s beat %d" % [sc.id, i], sc.beats[i].text])
+		out.append([path, "memory %s detail" % sc.id, sc.detail_text])
+	for path: String in story["sequences"]:
+		var seq := story["sequences"][path] as SequenceData
+		if seq.theatre_only:
+			continue
+		for i in seq.steps.size():
+			var st := seq.steps[i]
+			if st is SeqLine:
+				out.append([path, "sequence %s step %d" % [seq.id, i], (st as SeqLine).text])
+			elif st is SeqTitleCard:
+				out.append([path, "sequence %s step %d" % [seq.id, i], "%s %s" % [(st as SeqTitleCard).title, (st as SeqTitleCard).subtitle]])
+	for path: String in story["acts"]:
+		var a := story["acts"][path] as ActData
+		if a.act == lint.act:
+			for i in a.standing.size():
+				if a.standing[i]:
+					out.append([path, "act %d standing %d" % [a.act, i], a.standing[i].text])
+	out.append_array(room_text)
+	return out
+
+
+func _dialogue_text(d: DialogueData, path: String, out: Array) -> void:
+	for l in d.lines:
+		if l:
+			out.append([path, "dialogue %s" % d.id, l.text])
+	for c in d.choices:
+		if c == null:
+			continue
+		out.append([path, "dialogue %s choice %s" % [d.id, c.id], c.label])
+		for l in c.reply:
+			if l:
+				out.append([path, "dialogue %s choice %s" % [d.id, c.id], l.text])
 
 
 # --- Flags (quest/dialogue validator) ------------------------------------------
