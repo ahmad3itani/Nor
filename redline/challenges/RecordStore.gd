@@ -96,9 +96,26 @@ func _board(ch: ChallengeData) -> Dictionary:
 	return b
 
 
-func _peek(id: String) -> Dictionary:
+## A read-only view of the board. When the board was written by an older
+## revision than `revision` (-1 = the library's current revision), the view
+## is empty apart from the archive, so no page or split delta ever reads a
+## stale revision's record before the next submit archives it (_board).
+func _peek(id: String, revision: int = -1) -> Dictionary:
 	_ensure()
-	return _data["boards"].get(id, {})
+	var b: Dictionary = _data["boards"].get(id, {})
+	if b.is_empty():
+		return b
+	var rev := revision
+	if rev < 0:
+		var ch := ChallengeLibrary.by_id(id)
+		rev = ch.revision if ch else -1
+	if rev < 0 or int(b.get("revision", 1)) == rev:
+		return b
+	var archived: Array = (b.get("archived", []) as Array).duplicate()
+	var old := b.duplicate()
+	old.erase("archived")
+	archived.append(old)
+	return {"archived": archived}
 
 
 ## Records one finished or failed attempt. Failed runs (no value) count an
@@ -182,34 +199,36 @@ func submit_stage(ch: ChallengeData, profile: int, stage_id: String, result: Dic
 	return better
 
 
-## Top entries, best first (copies).
-func board(id: String) -> Array:
-	return (_peek(id).get("entries", []) as Array).duplicate(true)
+## Top entries, best first (copies). The read API takes the revision the
+## caller holds (-1 = the library's current one): an outdated record reads
+## as empty.
+func board(id: String, revision: int = -1) -> Array:
+	return (_peek(id, revision).get("entries", []) as Array).duplicate(true)
 
 
 ## {value, medal, splits, date, stages, ghost} or {}.
-func best(id: String, profile: int) -> Dictionary:
-	var d: Dictionary = _peek(id).get("best", {}).get(_pk(profile), {})
+func best(id: String, profile: int, revision: int = -1) -> Dictionary:
+	var d: Dictionary = _peek(id, revision).get("best", {}).get(_pk(profile), {})
 	return d.duplicate(true)
 
 
-func best_stage(id: String, profile: int, stage_id: String) -> Dictionary:
-	var d: Dictionary = _peek(id).get("stage_best", {}).get(_pk(profile), {}).get(stage_id, {})
+func best_stage(id: String, profile: int, stage_id: String, revision: int = -1) -> Dictionary:
+	var d: Dictionary = _peek(id, revision).get("stage_best", {}).get(_pk(profile), {}).get(stage_id, {})
 	return d.duplicate(true)
 
 
-func attempts(id: String, profile: int) -> int:
-	return int(_peek(id).get("attempts", {}).get(_pk(profile), 0))
+func attempts(id: String, profile: int, revision: int = -1) -> int:
+	return int(_peek(id, revision).get("attempts", {}).get(_pk(profile), 0))
 
 
-func clears(id: String, profile: int) -> int:
-	return int(_peek(id).get("clears", {}).get(_pk(profile), 0))
+func clears(id: String, profile: int, revision: int = -1) -> int:
+	return int(_peek(id, revision).get("clears", {}).get(_pk(profile), 0))
 
 
 ## Records from earlier revisions of this challenge (kept, not shown).
-func archived_count(id: String) -> int:
+func archived_count(id: String, revision: int = -1) -> int:
 	var n := 0
-	for a: Dictionary in _peek(id).get("archived", []):
+	for a: Dictionary in _peek(id, revision).get("archived", []):
 		n += (a.get("entries", []) as Array).size()
 	return n
 

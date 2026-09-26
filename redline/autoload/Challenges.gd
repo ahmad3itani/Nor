@@ -440,7 +440,7 @@ func _split() -> void:
 	var i := clock.splits.size()
 	var f := clock.split()
 	recorder.split()
-	var best := records.best(session.challenge.id, Game.profile_id)
+	var best := records.best(session.challenge.id, Game.profile_id, session.challenge.revision)
 	var best_splits: Array = best.get("splits", [])
 	if i < best_splits.size():
 		hud.show_split(f - int(best_splits[i]))
@@ -516,7 +516,10 @@ func restart(reason: StringName = &"reset") -> void:
 	else:
 		session.reset_stage(death)
 		if rules:
-			rules.hits = 0
+			# A death restart keeps the stage's hits: the rank charges each
+			# hit and each death separately (D3 §3.3-3.5).
+			if not death:
+				rules.hits = 0
 			rules.armed = true
 		if not clock.running and clock.frames > 0:
 			clock.start()
@@ -618,8 +621,25 @@ func _on_boss_defeated(boss_id: String) -> void:
 	var ch := session.challenge
 	if ch.end_on == ChallengeData.EndOn.BOSS_DEFEATED and boss_id == ch.boss_id:
 		finish(ChallengeData.Outcome.FINISHED)
-	elif ch.split_boss and clock.running:
+	elif ch.split_boss and clock.running and not _goal_owns_boss_split(boss_id):
 		_split()
+
+
+## A staged run (or a stage or ChallengeGoal tied to this boss) splits in
+## goal_reached; a boss split here too would count one kill twice.
+func _goal_owns_boss_split(boss_id: String) -> bool:
+	var ch := session.challenge
+	if ch.stages.size() > 1:
+		return true
+	var st := ch.stage(session.stage_index)
+	if st and st.boss_id != "":
+		return true
+	var room := _room()
+	if room:
+		for g in room.find_children("*", "ChallengeGoal", true, false):
+			if (g as ChallengeGoal).on_boss == boss_id:
+				return true
+	return false
 
 
 func _on_style_changed(points: float, rank: int) -> void:

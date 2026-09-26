@@ -117,7 +117,38 @@ func test_restart_stage_on_death_keeps_run_frames() -> void:
 	check(resets == [&"death"], "reason death (%s)" % [resets])
 	check(Challenges.clock.running and Challenges.clock.frames >= f1 + int(delay * 60.0) - 2, "the run clock kept running (%d vs %d)" % [Challenges.clock.frames, f1])
 	check(Challenges.attempt() == 1 and Challenges.session.stage_deaths == 1 and Challenges.session.stage_frames < 5, "same attempt, one death, stage time reset")
+	# The rank charges hits and deaths separately (D3 §3.3-3.5): the hit that
+	# killed Rook stays on the stage.
+	check(Challenges.rules.hits >= 1 and int(Challenges.stage_result()["hits"]) >= 1, "hits kept across a death restart (%d)" % Challenges.rules.hits)
+	var hits := Challenges.rules.hits
+	Challenges.restart(&"reset")
+	await h.until(func() -> bool: return Challenges.phase() == Challenges.Phase.RUNNING and h.room() != null and not SceneRouter.transitioning)
+	check(Challenges.rules.hits == 0 and hits > 0, "a reset clears them (%d)" % Challenges.rules.hits)
 	check(_finished.is_empty(), "no finish")
+
+
+## A stage that ends on a boss kill (ChallengeGoal on_boss) splits once: the
+## goal owns the stage split, not the boss split.
+func test_boss_goal_stage_splits_once() -> void:
+	Game.set_ability(&"dash", true)
+	var cleared: Array = []
+	h.listen(EventBus.challenge_stage_cleared, func(_id: String, st: String, _f: int, _hi: int, _d: int, _m: int) -> void: cleared.append(st))
+	var ch := H.fx(H.STAGED)
+	ch.split_boss = true
+	check(await h.start(ch, {}), "staged run started")
+	var goal := ChallengeGoal.new()
+	goal.stage_id = "stage_a"
+	goal.on_boss = "fx_boss"
+	goal.position = Vector2(-4000, -4000)
+	h.room().add_child(goal)
+	await physics_frames(10)
+	check(Challenges.clock.running, "counting")
+	EventBus.boss_defeated.emit("fx_boss")
+	check(cleared == ["stage_a"], "the boss kill clears stage A (%s)" % [cleared])
+	check(Challenges.clock.splits.size() == 1, "one clock split for one kill (%s)" % [Challenges.clock.splits])
+	check(Challenges.recorder.data.splits.size() == 1, "one recorder split (%s)" % [Challenges.recorder.data.splits])
+	check(await h.until(func() -> bool: return SceneRouter.current_room_path == H.STAGE_B and not SceneRouter.transitioning and h.player() != null, 90), "stage B loaded")
+	check(Challenges.clock.splits.size() == 1, "still one split per stage (%s)" % [Challenges.clock.splits])
 
 
 func test_finish_line_replaces_exit_room_never_changes() -> void:

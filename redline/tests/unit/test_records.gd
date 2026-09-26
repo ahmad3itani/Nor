@@ -103,12 +103,17 @@ func test_revision_bump_archives() -> void:
 	var ch := H.fx(H.TRIAL)
 	r.submit(ch, 1, 1000, ChallengeData.Outcome.FINISHED)
 	r.submit(ch, 1, 1100, ChallengeData.Outcome.FINISHED)
+	check(not r.best(ch.id, 1).is_empty() and r.board(ch.id).size() == 2, "the library's revision reads its record")
 	var v2 := H.fx(H.TRIAL)
 	v2.revision = 2
+	# Before the first v2 submit archives it, a v2 read never sees v1's record.
+	check(r.best(ch.id, 1, 2).is_empty() and r.board(ch.id, 2).is_empty(), "no stale PB or board before the next submit")
+	check(r.attempts(ch.id, 1, 2) == 0 and r.clears(ch.id, 1, 2) == 0 and r.archived_count(ch.id, 2) == 2, "stale counts read as archived")
 	var res := r.submit(v2, 1, 1500, ChallengeData.Outcome.FINISHED)
 	check(res["new_best"] and int(res["prev_best"]) == -1, "a new revision starts a fresh best")
-	check(r.board(ch.id).size() == 1 and r.archived_count(ch.id) == 2, "old entries archived (%d)" % r.archived_count(ch.id))
-	check(r.attempts(ch.id, 1) == 1, "attempts restart with the revision")
+	check(r.board(ch.id, 2).size() == 1 and r.archived_count(ch.id, 2) == 2, "old entries archived (%d)" % r.archived_count(ch.id, 2))
+	check(r.attempts(ch.id, 1, 2) == 1, "attempts restart with the revision")
+	check(r.best(ch.id, 1, 1).is_empty(), "a v1 read of a v2 board is empty too")
 
 
 func test_inactive_platform_keeps_memory_only() -> void:
