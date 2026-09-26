@@ -11,6 +11,9 @@ extends Area2D
 
 ## True while the close plays (no re-entry).
 var _busy: bool = false
+## A refused close (another play owned Cinematics) retries once that play
+## ends, if Rook is still inside: body_entered will not fire again.
+var _retry: bool = false
 
 
 func _ready() -> void:
@@ -24,6 +27,21 @@ func _ready() -> void:
 	add_child(shape)
 	if not Engine.is_editor_hint():
 		body_entered.connect(_on_body_entered)
+	set_process(false)
+
+
+func _process(_delta: float) -> void:
+	if not _retry:
+		set_process(false)
+		return
+	if Cinematics.is_playing():
+		return
+	_retry = false
+	set_process(false)
+	for b in get_overlapping_bodies():
+		if b is Player:
+			_on_body_entered(b)
+			return
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -46,6 +64,9 @@ func _on_body_entered(body: Node2D) -> void:
 				Game.state.flags = flags_before
 				EventBus.game_state_reset.emit()
 			_busy = false
+			if res.refused and is_inside_tree():
+				_retry = true
+				set_process(true)
 			return
 	# Set after the scene, not before: a quit mid-scene must replay it.
 	Game.set_flag("slice_end_seen")

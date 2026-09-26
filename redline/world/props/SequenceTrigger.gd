@@ -11,7 +11,8 @@ extends Area2D
 ##   room is ready (autoplay) or Rook is inside. Non-locking barks play
 ##   regardless (they take no control).
 ## - Nothing starts while a dev preview or the story tour owns Cinematics
-##   (CinematicMode.theatre) or another play is running.
+##   (CinematicMode.theatre). While another play is running (a bark, a boss
+##   intro) the trigger waits and retries every 0.5 s, like the danger rule.
 ## - A refused or aborted play re-arms the trigger: the seen flag is set only
 ##   by a finished or skipped play (SequencePlayer), so a quit replays it.
 
@@ -121,22 +122,32 @@ func danger() -> bool:
 func _try_play() -> void:
 	_pending = false
 	# A dev preview or the story tour already owns the room: stay quiet.
-	if CinematicMode.theatre or Cinematics.is_playing():
+	if CinematicMode.theatre:
 		return
 	if not is_inside_tree() or not eligible():
 		return
-	if sequence.locks_for(Cinematics.first_view(sequence)) and danger():
-		_pending = true
-		_retry = RETRY_SECONDS
-		set_process(true)
+	# Another play first (it ends on its own), or danger for a locking one.
+	if Cinematics.is_playing() or (sequence.locks_for(Cinematics.first_view(sequence)) and danger()):
+		_arm_retry()
 		return
 	_busy = true
 	var res := await Cinematics.play(sequence, SequenceContext.for_room(_room()))
 	_busy = false
-	if res.refused or res.aborted():
-		return  # re-armed: a later entry (or retry) plays it from the start
+	if res.refused:
+		_arm_retry()
+		return
+	if res.aborted():
+		return  # re-armed: a later entry plays it from the start
 	if once:
 		_done = true
+
+
+func _arm_retry() -> void:
+	if not is_inside_tree():
+		return
+	_pending = true
+	_retry = RETRY_SECONDS
+	set_process(true)
 
 
 ## ContentValidator protocol: the sequence's flags plus the play conditions.

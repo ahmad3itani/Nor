@@ -646,6 +646,34 @@ func test_subtitle_speed_scales_line() -> void:
 	check(is_equal_approx(seq.nominal_seconds(true), nominal), "nominal_seconds unchanged")
 
 
+## A trigger that finds another play running waits for it and retries
+## (it used to give up for the whole room visit).
+func test_trigger_retries_after_another_play() -> void:
+	Game.set_flag("seen_seq_test_seq_repeat_bark")
+	_auto(1.0)
+	_start(_seq(BARK))
+	await physics_frames(2)
+	check(Cinematics.is_playing() and Cinematics.current.seq.id == "test_seq_repeat_bark", "the bark plays")
+	var trig := SequenceTrigger.new()
+	trig.name = "RetryTrigger"
+	trig.sequence = _seq(PARITY)
+	trig.autoplay = true
+	room.add_child(trig)
+	await physics_frames(5)
+	check(Cinematics.current.seq.id == "test_seq_repeat_bark", "the trigger waits for the bark")
+	var played := false
+	for i in 1800:
+		if Cinematics.is_playing() and Cinematics.current.seq.id == "test_seq_parity":
+			played = true
+			break
+		await get_tree().process_frame
+	check(played, "the trigger played once the bark ended")
+	Cinematics.request_skip()
+	await _until_finished()
+	await physics_frames(30)
+	trig.queue_free()
+
+
 func test_non_locking_repeat_play() -> void:
 	Game.set_flag("seen_seq_test_seq_repeat_bark")
 	var walk := ScriptedInputSource.new()

@@ -809,6 +809,36 @@ func test_quit_late_in_close_reverts_flags() -> void:
 	check(slices.is_empty(), "slice_completed never emitted")
 
 
+## A close refused because another locking play owns Cinematics plays once
+## that play ends, while Rook still stands in the area.
+func test_refused_close_retries() -> void:
+	Game.set_flag("warden_krail_defeated")
+	_auto(4.0)
+	room = await _enter(RELAY, &"start")
+	var slice := _slice_end()
+	room.player.teleport(slice.global_position + slice.size * 0.5)
+	var blocker := load(PARITY) as SequenceData
+	Cinematics.play(blocker, SequenceContext.for_room(room))
+	await physics_frames(3)
+	check(Cinematics.is_playing() and Cinematics.current.seq.id == "test_seq_parity", "another locking play runs")
+	slice._on_body_entered(room.player)
+	await physics_frames(2)
+	check(Cinematics.current.seq.id == "test_seq_parity" and not slice._busy, "the close was refused")
+	var played := false
+	for i in 3000:
+		if Cinematics.is_playing() and Cinematics.current.seq.id == "act1_close":
+			played = true
+			break
+		await get_tree().process_frame
+	check(played, "the close plays once the other play ends")
+	Cinematics.request_skip()
+	for i in 600:
+		if not slices.is_empty():
+			break
+		await get_tree().process_frame
+	check(slices.size() == 1 and Game.has_flag("slice_end_seen"), "the card follows")
+
+
 func test_pause_skip_close_opens_card() -> void:
 	Game.set_flag("warden_krail_defeated")
 	_auto(1.0)
