@@ -61,6 +61,17 @@ var hitstop_timer: float = 0.0
 ## _post_move, so it always reflects this tick's floor check, never a stale one.
 var last_safe_position: Vector2
 var _drop_through_timer: float = 0.0
+## "Always full height" jump latch (D4 §8.4, R11.3, R11.10): with
+## Settings.jump_hold_mode 1 a jump press counts as held until the apex hang
+## is over (falling past apex_speed_threshold), on landing, or at
+## AccessibilityConfig.jump_latch_max_frames. It lives here, after sampling,
+## so every input source (live pad, RouteBot's ScriptedInputSource) gets the
+## same frames and the latched arc is exactly the held arc, apex hang included.
+var _latch_on: bool = false
+var _latch_frames: int = 0
+## The latch has seen Rook rising since the press (a press made while falling
+## waits for the buffered jump instead of letting go at once).
+var _latch_rose: bool = false
 
 
 func _ready() -> void:
@@ -113,6 +124,7 @@ func apply_config(new_config: PlayerMovementConfig) -> void:
 
 func _physics_process(delta: float) -> void:
 	var input := (input_override if input_override else input_source).sample(config)
+	_apply_jump_latch(input, hitstop_timer <= 0.0)
 	if hitstop_timer > 0.0:
 		hitstop_timer -= delta
 		_buffer_presses(input)
@@ -132,6 +144,42 @@ func _physics_process(delta: float) -> void:
 	var pre_move_vy := velocity.y
 	move_and_slide()
 	_post_move(was_on_floor, pre_move_vy, delta)
+
+
+## Applies the jump latch to this frame's input. `step` is false during a
+## hitstop freeze: the latch holds but neither counts nor lets go.
+func _apply_jump_latch(input: PlayerInputFrame, step: bool) -> void:
+	if Settings.jump_hold_mode != 1:
+		_latch_on = false
+		return
+	if input.jump_pressed:
+		_latch_on = true
+		_latch_frames = 0
+		_latch_rose = false
+	elif _latch_on and step:
+		# Judged on the state the last move left: past the apex window, or
+		# back on the floor after rising, or out of frames.
+		if not is_on_floor() and velocity.y < 0.0:
+			_latch_rose = true
+		var cap := Settings.config().jump_latch_max_frames if Settings.config() else 40
+		if _latch_frames >= cap or (_latch_rose and (velocity.y > config.apex_speed_threshold or is_on_floor())):
+			latch_done()
+	if not _latch_on:
+		return
+	input.jump_held = true
+	if step:
+		_latch_frames += 1
+
+
+## Ends the jump latch (the apex hang is over, a landing, the frame cap).
+func latch_done() -> void:
+	_latch_on = false
+	_latch_frames = 0
+	_latch_rose = false
+
+
+func jump_latched() -> bool:
+	return _latch_on
 
 
 func _tick_timers(delta: float, input: PlayerInputFrame) -> void:
@@ -352,6 +400,7 @@ func respawn(at: Vector2, face: int = 1) -> void:
 	invulnerable = false
 	hitstop_timer = 0.0
 	is_low = false
+	latch_done()
 	_apply_stance()
 	metrics.on_respawn(at)
 	combat.reset()
