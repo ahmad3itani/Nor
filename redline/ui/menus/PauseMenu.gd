@@ -15,7 +15,9 @@ func rebuild() -> void:
 	if Cinematics.can_skip():
 		add_button("Skip scene", _skip_scene)
 	if room and room.world_room:
-		add_button("Map", _open.bind(&"map"))
+		# Same rule as MenuHost.can_open: a locking scene keeps the map shut.
+		if not Cinematics.locks_input():
+			add_button("Map", _open.bind(&"map"))
 		add_button("Journal", _open.bind(&"journal"))
 	if Playtest.is_recording():
 		add_button("Report a moment (playtest)", _open.bind(&"moment"))

@@ -496,6 +496,12 @@ func test_menu_gating() -> void:
 	check(not host.can_open(&"map", false, false), "map shut while locked")
 	check(not host.can_open(&"debug_console", false, false), "dev console shut while locked")
 	check(host.can_open(&"pause", false, false), "pause still opens while locked")
+	var pm := _pause_menu()
+	pm.open_menu()
+	check(_button(pm, "Map") == null, "the pause menu offers no Map while locked")
+	check(_button(pm, "Journal") != null, "Journal stays")
+	pm.close_menu()
+	pm.queue_free()
 
 
 func test_grid_clamp_and_core_frozen_while_locked() -> void:
@@ -615,6 +621,9 @@ func test_lock_leaves_invulnerable_alone() -> void:
 	check(p.receive_hit(hit) == CombatResult.IGNORED, "hits are ignored under the lock")
 	check(perfects.is_empty(), "no perfect dodge under the lock")
 	check(p.combat.health == p.combat.config.max_health, "no damage")
+	# Direct damage (a pit, a chase catch) is ignored under the lock too.
+	check(p.combat.take_damage(1, Vector2.ZERO, 0.0, false, "pit") == CombatResult.IGNORED, "pit damage is ignored under the lock")
+	check(p.combat.health == p.combat.config.max_health and not p.combat.dead, "no pit damage")
 	Cinematics.request_skip()
 	await physics_frames(40)
 	check(not p.cinematic_lock, "lock released")

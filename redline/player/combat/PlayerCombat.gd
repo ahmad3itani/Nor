@@ -399,6 +399,11 @@ static func _source_of(hit: HitInfo) -> String:
 func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bool, source: String = "unknown", nonlethal: bool = false) -> int:
 	if dead:
 		return CombatResult.IGNORED
+	# A locking scene owns Rook (M8): direct damage (pits, chase catches,
+	# spikes, burnout) is ignored too, not only hits; a pit still returns him
+	# to his last safe spot.
+	if player.cinematic_lock:
+		return CombatResult.IGNORED
 	last_damage_source = source
 	amount = ceili(amount * Game.circuit_mult(&"damage_taken"))
 	# Teaching set pieces (M7) may hurt but never kill: clamp after the
