@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_speedrun_timer"]
+script = ExtResource("2_def")
+key = &"speedrun_timer"
+section = "challenges"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "IGT", "IGT + splits")
+steps = PackedFloat32Array()
+label = "Speedrun timer"
+description = "In-game time on screen, with or without splits per room and boss."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_challenge_ghost"]
+script = ExtResource("2_def")
+key = &"challenge_ghost"
+section = "challenges"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "Personal best", "Rig ghost", "Both")
+steps = PackedFloat32Array()
+label = "Challenge ghost"
+description = "Which recorded run races with you in challenges."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_fast_reset_hold"]
+script = ExtResource("2_def")
+key = &"fast_reset_hold"
+section = "challenges"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray("Press", "Hold")
+steps = PackedFloat32Array()
+label = "Fast reset"
+description = "Hold restart for a moment, so a stray press never ends a run."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"challenges"
+title = "CHALLENGES & SPEEDRUN"
+link_label = "Challenges & speedrun…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_speedrun_timer"), SubResource("Def_challenge_ghost"), SubResource("Def_fast_reset_hold")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = true
+dev_only = false
+special = &""

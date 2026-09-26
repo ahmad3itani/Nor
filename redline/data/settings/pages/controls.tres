@@ -1,0 +1,101 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_device"]
+script = ExtResource("2_def")
+key = &""
+section = ""
+cfg_key = ""
+kind = 3
+choices = PackedStringArray("Keyboard", "Controller")
+steps = PackedFloat32Array()
+label = "Showing"
+description = "Which bindings the list below shows and edits."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &"device"
+persisted = false
+
+[sub_resource type="Resource" id="Def_pad_glyphs"]
+script = ExtResource("2_def")
+key = &"pad_glyphs"
+section = "input"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Auto", "Xbox", "PlayStation", "Nintendo")
+steps = PackedFloat32Array()
+label = "Button prompts"
+description = "Which controller's button names prompts use. Auto follows the controller."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_vibration_strength"]
+script = ExtResource("2_def")
+key = &"vibration_strength"
+section = "accessibility"
+cfg_key = ""
+kind = 2
+choices = PackedStringArray()
+steps = PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+label = "Vibration"
+description = "Controller rumble strength. 0% turns it off."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_jump_hold_mode"]
+script = ExtResource("2_def")
+key = &"jump_hold_mode"
+section = "assist"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Hold for height", "Always full height")
+steps = PackedFloat32Array()
+label = "Jump height"
+description = "Always full height: a tap jumps as high as a hold. Short hops need a quick release."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_rebind_wait"]
+script = ExtResource("2_def")
+key = &"rebind_wait"
+section = "input"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("5 s", "10 s", "No limit")
+steps = PackedFloat32Array()
+label = "Rebind wait"
+description = "How long a rebind listens. Esc, Backspace or Start cancels at any time."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"controls"
+title = "CONTROLS"
+link_label = "Controls…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_device"), SubResource("Def_pad_glyphs"), SubResource("Def_vibration_strength"), SubResource("Def_jump_hold_mode"), SubResource("Def_rebind_wait")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = false
+dev_only = false
+special = &"controls"

@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_ui_scale"]
+script = ExtResource("2_def")
+key = &"ui_scale"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("100%", "125%", "150%")
+steps = PackedFloat32Array()
+label = "UI size"
+description = "Size of menus and on-screen text. Long pages scroll."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_achievement_toasts"]
+script = ExtResource("2_def")
+key = &"achievement_toasts"
+section = "ui"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Achievement pop-ups"
+description = "Show a short card when an achievement unlocks. They still unlock when off."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_locale"]
+script = ExtResource("2_def")
+key = &"locale"
+section = ""
+cfg_key = ""
+kind = 3
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Language"
+description = "Menu and subtitle language."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &"language"
+persisted = false
+
+[resource]
+script = ExtResource("1_page")
+id = &"interface"
+title = "INTERFACE"
+link_label = "Interface…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_ui_scale"), SubResource("Def_achievement_toasts"), SubResource("Def_locale")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = true
+dev_only = false
+special = &""

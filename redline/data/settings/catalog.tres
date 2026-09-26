@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="SettingsCatalog" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsCatalog.gd" id="1_cat"]
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="2_page"]
+[ext_resource type="Resource" path="res://data/settings/pages/controls.tres" id="p3_controls"]
+[ext_resource type="Resource" path="res://data/settings/pages/assists.tres" id="p4_assists"]
+[ext_resource type="Resource" path="res://data/settings/pages/visual.tres" id="p5_visual"]
+[ext_resource type="Resource" path="res://data/settings/pages/audio.tres" id="p6_audio"]
+[ext_resource type="Resource" path="res://data/settings/pages/subtitles.tres" id="p7_subtitles"]
+[ext_resource type="Resource" path="res://data/settings/pages/interface.tres" id="p8_interface"]
+[ext_resource type="Resource" path="res://data/settings/pages/challenges.tres" id="p9_challenges"]
+[ext_resource type="Resource" path="res://data/settings/pages/playtest_debug.tres" id="p10_playtest_debug"]
+[ext_resource type="Resource" path="res://data/settings/pages/quick.tres" id="p11_quick"]
+
+[resource]
+script = ExtResource("1_cat")
+pages = Array[ExtResource("2_page")]([ExtResource("p3_controls"), ExtResource("p4_assists"), ExtResource("p5_visual"), ExtResource("p6_audio"), ExtResource("p7_subtitles"), ExtResource("p8_interface"), ExtResource("p9_challenges"), ExtResource("p10_playtest_debug"), ExtResource("p11_quick")])
+forbidden_words = PackedStringArray("easy", "easier", "cheat", "casual", "baby", "noob", "weak", "git gud", "hard mode", "real mode", "intended")
+assist_header = "Change these any time. They never lock content or achievements."
+reset_all_prompt = "Reset every setting except controls and language?"

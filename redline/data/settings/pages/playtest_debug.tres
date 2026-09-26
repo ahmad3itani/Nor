@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_playtest_recording"]
+script = ExtResource("2_def")
+key = &"playtest_recording"
+section = "playtest"
+cfg_key = "recording"
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Playtest recording (local file)"
+description = "Saves a session file on this computer only. Nothing is sent anywhere."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &"recording"
+persisted = true
+
+[sub_resource type="Resource" id="Def_playtest_variant"]
+script = ExtResource("2_def")
+key = &"playtest_variant"
+section = "playtest"
+cfg_key = "variant"
+kind = 3
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Playtest variant"
+description = "Pins one experiment arm. Auto rotates per session."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &"variant"
+persisted = true
+
+[sub_resource type="Resource" id="Def_show_debug_overlay"]
+script = ExtResource("2_def")
+key = &"show_debug_overlay"
+section = "debug"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Debug overlay"
+description = "Frame, state and room readout (F1)."
+assist_tag = &""
+dev_only = true
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"playtest_debug"
+title = "PLAYTEST & DEBUG"
+link_label = "Playtest & debug…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_playtest_recording"), SubResource("Def_playtest_variant"), SubResource("Def_show_debug_overlay")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = false
+dev_only = false
+special = &""

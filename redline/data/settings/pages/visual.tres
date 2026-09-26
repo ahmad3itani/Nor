@@ -1,0 +1,118 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_screen_shake_scale"]
+script = ExtResource("2_def")
+key = &"screen_shake_scale"
+section = "accessibility"
+cfg_key = ""
+kind = 2
+choices = PackedStringArray()
+steps = PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+label = "Screen shake"
+description = "Camera shake from hits, landings and scenes."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &"shake"
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_hitstop_scale"]
+script = ExtResource("2_def")
+key = &"hitstop_scale"
+section = "accessibility"
+cfg_key = ""
+kind = 2
+choices = PackedStringArray()
+steps = PackedFloat32Array(0, 0.25, 0.5, 0.75, 1)
+label = "Freeze frames (hitstop)"
+description = "The short pause when a hit lands. 0% plays every hit without it."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_flash_reduction"]
+script = ExtResource("2_def")
+key = &"flash_reduction"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Flash reduction"
+description = "Softens bright flashes and keeps blinking below three times a second."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_high_contrast"]
+script = ExtResource("2_def")
+key = &"high_contrast"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "High contrast"
+description = "Solid panels, brighter text and outlined focus in menus and on screen."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_colorblind_mode"]
+script = ExtResource("2_def")
+key = &"colorblind_mode"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "Red-green", "Blue-yellow")
+steps = PackedFloat32Array()
+label = "Colour-blind mode"
+description = "Swaps warning colours for ones that stay apart. Shapes always mark states."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_background_dim"]
+script = ExtResource("2_def")
+key = &"background_dim"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "Some", "Strong")
+steps = PackedFloat32Array()
+label = "Background dim"
+description = "Darkens the far backdrop so the play layer stands out."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"visual"
+title = "VISUAL & COMFORT"
+link_label = "Visual & comfort…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_screen_shake_scale"), SubResource("Def_hitstop_scale"), SubResource("Def_flash_reduction"), SubResource("Def_high_contrast"), SubResource("Def_colorblind_mode"), SubResource("Def_background_dim")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = true
+dev_only = false
+special = &""

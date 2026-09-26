@@ -1,0 +1,152 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_reactor_mode"]
+script = ExtResource("2_def")
+key = &"reactor_mode"
+section = "gameplay"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Normal", "Story / Assist", "Redline Challenge")
+steps = PackedFloat32Array()
+label = "Core mode"
+description = "How fast the Redline Core drains and how much it forgives."
+assist_tag = &"reactor_assist"
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &"core_mode"
+persisted = true
+
+[sub_resource type="Resource" id="Def_burnout_hurts"]
+script = ExtResource("2_def")
+key = &"burnout_hurts"
+section = "assist"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Core burnout costs health"
+description = "Off: an empty Core still warns you, but costs no health."
+assist_tag = &"no_burnout"
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_damage_assist"]
+script = ExtResource("2_def")
+key = &"damage_assist"
+section = "assist"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "Bosses: reduced", "All: reduced", "All: greatly reduced")
+steps = PackedFloat32Array()
+label = "Damage assist"
+description = "Hits cost fewer pips. Knockback and recovery stay the same."
+assist_tag = &"damage_assist"
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_aim_assist"]
+script = ExtResource("2_def")
+key = &"aim_assist"
+section = "assist"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "Light", "Strong")
+steps = PackedFloat32Array()
+label = "Aim assist"
+description = "Ranged shots bend toward a nearby enemy you can see."
+assist_tag = &"aim_assist"
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_currency_loss"]
+script = ExtResource("2_def")
+key = &"currency_loss"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Drop Scrap on death"
+description = "Off: unbanked Scrap stays with you when you fall."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_generous_checkpoints"]
+script = ExtResource("2_def")
+key = &"generous_checkpoints"
+section = "assist"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Respawn at room entrance"
+description = "Come back where you entered the room instead of at the last Anchor."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_map_hints"]
+script = ExtResource("2_def")
+key = &"map_hints"
+section = "assist"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Minimal", "Standard", "Guided")
+steps = PackedFloat32Array()
+label = "Map hints"
+description = "How much the map marks. Secrets always need the lens."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_assist_suggestions"]
+script = ExtResource("2_def")
+key = &"assist_suggestions"
+section = "assist"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Suggest options after repeated defeats"
+description = "Offers a card with options. Nothing changes unless you pick one."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"assists"
+title = "ASSISTS"
+link_label = "Assists…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_reactor_mode"), SubResource("Def_burnout_hurts"), SubResource("Def_damage_assist"), SubResource("Def_aim_assist"), SubResource("Def_currency_loss"), SubResource("Def_generous_checkpoints"), SubResource("Def_map_hints"), SubResource("Def_assist_suggestions")])
+row_keys = PackedStringArray()
+show_assist_header = true
+reset_row = true
+dev_only = false
+special = &""

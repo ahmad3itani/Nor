@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[resource]
+script = ExtResource("1_page")
+id = &"quick"
+title = "COMFORT & ACCESSIBILITY"
+link_label = ""
+rows = Array[ExtResource("2_def")]([])
+row_keys = PackedStringArray("ui_scale", "subtitle_size", "flash_reduction", "screen_shake_scale", "colorblind_mode", "pad_glyphs")
+show_assist_header = false
+reset_row = false
+dev_only = false
+special = &"quick"

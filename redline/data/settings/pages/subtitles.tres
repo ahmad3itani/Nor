@@ -1,0 +1,135 @@
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
+[ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
+
+[sub_resource type="Resource" id="Def_subtitle_size"]
+script = ExtResource("2_def")
+key = &"subtitle_size"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Small", "Medium", "Large")
+steps = PackedFloat32Array()
+label = "Subtitle size"
+description = "Text size of dialogue and scene lines."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_subtitle_background"]
+script = ExtResource("2_def")
+key = &"subtitle_background"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Outline", "Box", "Solid")
+steps = PackedFloat32Array()
+label = "Subtitle background"
+description = "Outline only, a see-through box, or a solid box behind lines."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_speaker_labels"]
+script = ExtResource("2_def")
+key = &"speaker_labels"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Speaker names"
+description = "Show who is speaking above each line."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_subtitle_speed"]
+script = ExtResource("2_def")
+key = &"subtitle_speed"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Normal", "Slow", "Slower")
+steps = PackedFloat32Array()
+label = "Subtitle speed"
+description = "How long timed scene lines stay on screen."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_cinematic_skip_hold"]
+script = ExtResource("2_def")
+key = &"cinematic_skip_hold"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray("Press twice", "Hold")
+steps = PackedFloat32Array()
+label = "Skip scenes"
+description = "Hold the skip button, or press it twice, to skip a scene."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_memories_at_anchors"]
+script = ExtResource("2_def")
+key = &"memories_at_anchors"
+section = "accessibility"
+cfg_key = ""
+kind = 0
+choices = PackedStringArray()
+steps = PackedFloat32Array()
+label = "Memories play at Anchors"
+description = "Off: found memories wait in the journal instead."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[sub_resource type="Resource" id="Def_text_auto_advance"]
+script = ExtResource("2_def")
+key = &"text_auto_advance"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Off", "On")
+steps = PackedFloat32Array()
+label = "Text auto-advance"
+description = "Lines move on by themselves after a reading pause. Choices always wait."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
+[resource]
+script = ExtResource("1_page")
+id = &"subtitles"
+title = "SUBTITLES & SCENES"
+link_label = "Subtitles & scenes…"
+rows = Array[ExtResource("2_def")]([SubResource("Def_subtitle_size"), SubResource("Def_subtitle_background"), SubResource("Def_speaker_labels"), SubResource("Def_subtitle_speed"), SubResource("Def_cinematic_skip_hold"), SubResource("Def_memories_at_anchors"), SubResource("Def_text_auto_advance")])
+row_keys = PackedStringArray()
+show_assist_header = false
+reset_row = true
+dev_only = false
+special = &""
