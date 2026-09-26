@@ -81,6 +81,9 @@ static func prepare_session(tour: String, args: PackedStringArray) -> Dictionary
 	Settings.subtitle_speed = 0
 	Settings.cinematic_skip_hold = true
 	Settings.memories_at_anchors = true
+	# Plain property sets skip the setters' side effects: push the default
+	# volumes to the buses.
+	AudioManager.apply_volume()
 	# No toasts, assist cards or group notices in frames, and nothing written
 	# to the developer's user://platform: a wiped sandbox store per run, so
 	# every run starts with no unlocks or records (deterministic diffs).
@@ -113,6 +116,7 @@ static func tour_cinematic_mode(tour: String, args: PackedStringArray) -> int:
 static func restore_session(snap: Dictionary) -> void:
 	for k in snap:
 		Settings.set(k, snap[k])
+	AudioManager.apply_volume()
 	Challenges.quiet_notices = false
 	Platform.reset_after_tests()
 	AtomicJson.remove_tree("user://tour_sandbox")
