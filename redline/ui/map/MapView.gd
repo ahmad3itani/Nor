@@ -11,6 +11,15 @@ extends Control
 ## - "?" secret hint: with the Surveyor's lens, rooms with secrets left
 ##   (never the exact spot);
 ## - quest notes, player pins, the dropped Scrap cache, Rook himself.
+##
+## Map hint strength (M9 T12, bible §24, D4 §8.6, Settings.map_hints):
+## 0 Minimal: no quest notes and no "?"; 1 Standard (the M5-M8 map); 2 Guided:
+## Standard plus an outline around the active objective's room (pulsing, still
+## under flash reduction) and a dot on each unexplored exit of a visited room.
+## Secrets stay lens-gated in every mode: the lens is a purchase, and the map
+## says that something remains, never where (bible §20).
+## Anchor, gate and note colours come from Palette (safe / map_gate /
+## map_note); the COL_* constants are the default-palette values.
 
 signal hover_changed(text: String)
 
@@ -26,6 +35,8 @@ const COL_NPC := Color("ffcf5a")
 const COL_GATE := Color("7fd7ff")
 const COL_PIN := Color("ffd36b")
 const COL_NOTE := Color("9fd8ff")
+## Guided outline pulse (rad/s, well under the 3 Hz flash rule).
+const GUIDE_PULSE_RATE := 3.0
 
 var map: WorldMapData
 var state: GameState
@@ -107,12 +118,50 @@ func hover_text() -> String:
 		if _cell_seen(r, a["pos"]) and (r.offset + a["pos"]).distance_to(cursor) < best:
 			text += "   ·   Anchor%s" % ("  (transit)" if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]) else "")
 	for m: Dictionary in info["markers"]:
-		if int(m["kind"]) == MapMarker.Kind.NOTE and WorldMapIndex.marker_active(m) and (r.offset + m["pos"]).distance_to(cursor) < best:
+		if int(m["kind"]) == MapMarker.Kind.NOTE and show_quest_notes() and WorldMapIndex.marker_active(m) and (r.offset + m["pos"]).distance_to(cursor) < best:
 			text += "   ·   " + String(m["label"])
 	return text
 
 
 # --- Visibility rules ---------------------------------------------------------
+
+## The map-hint level in use (Settings.map_hints, 1 when Settings is absent).
+static func hint_level() -> int:
+	var tree := Engine.get_main_loop() as SceneTree
+	var s: Node = tree.root.get_node_or_null("Settings") if tree and tree.root else null
+	return clampi(int(s.get("map_hints")), 0, 2) if s else 1
+
+
+## Quest notes and rumour notes show at Standard and Guided.
+static func show_quest_notes(level: int = -1) -> bool:
+	return (hint_level() if level < 0 else level) >= 1
+
+
+## The "?" secret hint: Standard or Guided, and only with the Surveyor's lens.
+static func show_secret_hints(level: int = -1) -> bool:
+	return (hint_level() if level < 0 else level) >= 1 and Game.has_flag("map_lens")
+
+
+## Guided only: the room id of the first active quest stage that names a map
+## room ("" otherwise, and at Minimal or Standard).
+static func objective_room(level: int = -1) -> String:
+	if (hint_level() if level < 0 else level) < 2:
+		return ""
+	for q in Game.quests.active_quests():
+		var i := q.current_stage()
+		if i < q.stages.size() and q.stages[i].map_room != "":
+			return q.stages[i].map_room
+	return ""
+
+
+## Guided only: the unexplored exits of visited rooms get a dot.
+static func show_exit_dots(level: int = -1) -> bool:
+	return (hint_level() if level < 0 else level) >= 2
+
+
+## Guided outline alpha: a slow pulse, steady under flash reduction.
+static func guide_alpha(t: float, reduced: bool) -> float:
+	return 0.8 if reduced else 0.55 + 0.35 * (0.5 + 0.5 * sin(t * GUIDE_PULSE_RATE))
 
 ## NPCs currently in the room (present_when, M7): a character who moved on
 ## loses their pin here and gains one where they went.
@@ -156,6 +205,7 @@ func _draw() -> void:
 	for r in map.rooms:
 		if _known(r):
 			_draw_room_icons(r, z)
+	_draw_guides(z)
 	_draw_pins()
 	_draw_player()
 	# Cursor crosshair.
@@ -208,29 +258,29 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			var p := to_screen(r.offset + a["pos"] + Vector2(0, -16))
 			var pts := PackedVector2Array([p + Vector2(0, -4), p + Vector2(4, 0), p + Vector2(0, 4), p + Vector2(-4, 0)])
 			if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]):
-				draw_colored_polygon(pts, COL_ANCHOR)
+				draw_colored_polygon(pts, Palette.color(&"safe"))
 			else:
-				draw_polyline(pts + PackedVector2Array([pts[0]]), COL_ANCHOR)
+				draw_polyline(pts + PackedVector2Array([pts[0]]), Palette.color(&"safe"))
 	for g: Dictionary in info["gates"]:
 		var closed: bool = bool(g["closed"]) and (g["flag"] == "" or not Game.has_flag(g["flag"]))
 		var rect: Rect2 = g["rect"]
 		if closed and _cell_seen(r, rect.get_center()):
 			var p := to_screen(r.offset + rect.get_center())
-			draw_rect(Rect2(p - Vector2(3, 4), Vector2(6, 8)), COL_GATE, false, 1.0)
-			draw_line(p + Vector2(-3, 0), p + Vector2(3, 0), COL_GATE)
+			draw_rect(Rect2(p - Vector2(3, 4), Vector2(6, 8)), Palette.color(&"map_gate"), false, 1.0)
+			draw_line(p + Vector2(-3, 0), p + Vector2(3, 0), Palette.color(&"map_gate"))
 	for m: Dictionary in info["markers"]:
 		if not WorldMapIndex.marker_active(m):
 			continue
 		if int(m["kind"]) == MapMarker.Kind.NOTE:
 			# Rumours: shown once the room's outline is known (someone told
 			# Rook), in the quest-note look.
-			if _known(r):
+			if _known(r) and show_quest_notes():
 				var p := to_screen(r.offset + m["pos"])
-				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), COL_NOTE)
-				draw_string(font, p + Vector2(5, 3), m["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_NOTE)
+				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
+				draw_string(font, p + Vector2(5, 3), m["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 		elif _cell_seen(r, m["pos"]):
 			var p := to_screen(r.offset + m["pos"])
-			draw_circle(p, 4.0, COL_GATE)
+			draw_circle(p, 4.0, Palette.color(&"map_gate"))
 			draw_string(font, p + Vector2(-2, 3), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, COL_BG)
 	if _visited(r):
 		for n: Dictionary in visible_npcs(info):
@@ -241,14 +291,15 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			draw_string(font, p + Vector2(-2.5, 3), String(n["name"]).left(1), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_BG)
 		for boss: Dictionary in info["bosses"]:
 			var p := to_screen(r.offset + boss["pos"])
-			draw_circle(p, 5.0, COL_ANCHOR, false, 1.5)
+			var boss_col := Palette.color(&"safe")
+			draw_circle(p, 5.0, boss_col, false, 1.5)
 			if Game.has_flag(boss["flag"]):
-				draw_line(p + Vector2(-4, -4), p + Vector2(4, 4), COL_ANCHOR, 1.5)
-				draw_line(p + Vector2(-4, 4), p + Vector2(4, -4), COL_ANCHOR, 1.5)
+				draw_line(p + Vector2(-4, -4), p + Vector2(4, 4), boss_col, 1.5)
+				draw_line(p + Vector2(-4, 4), p + Vector2(4, -4), boss_col, 1.5)
 			else:
-				draw_circle(p, 2.0, COL_ANCHOR)
+				draw_circle(p, 2.0, boss_col)
 	# Secret hint: that something is left, never where (bible §20).
-	if Game.has_flag("map_lens"):
+	if show_secret_hints():
 		var left := 0
 		for s: Dictionary in info["secrets"]:
 			if not Game.is_collected(s["id"]):
@@ -256,19 +307,39 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 		if left > 0:
 			var b: Rect2 = info["bounds"]
 			var p := to_screen(r.offset + b.get_center())
-			draw_string(font, p + Vector2(-3, 4), "?" if left == 1 else "?%d" % left, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, COL_NOTE)
+			draw_string(font, p + Vector2(-3, 4), "?" if left == 1 else "?%d" % left, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Palette.color(&"map_note"))
 	# Quest map notes for active stages in this room.
-	for q in Game.quests.active_quests():
+	var quests: Array[QuestData] = Game.quests.active_quests() if show_quest_notes() else ([] as Array[QuestData])
+	for q in quests:
 		var i := q.current_stage()
 		if i < q.stages.size() and q.stages[i].map_room == r.room_id():
 			var p := to_screen(r.offset + q.stages[i].map_pos)
-			draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), COL_NOTE)
-			draw_string(font, p + Vector2(5, 3), q.stages[i].map_note, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, COL_NOTE)
+			draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
+			draw_string(font, p + Vector2(5, 3), q.stages[i].map_note, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 	# The dropped Scrap cache (bible §7: recoverable).
 	var drop := state.dropped_scrap
 	if drop.get("room", "") == r.room_path and int(drop.get("amount", 0)) > 0:
 		var p := to_screen(r.offset + Vector2(float(drop["x"]), float(drop["y"]) - 8))
 		draw_circle(p, 3.0, COL_PIN)
+
+
+## Guided hints: the objective room's outline and dots on unexplored exits.
+func _draw_guides(z: float) -> void:
+	var goal := objective_room()
+	if goal != "":
+		var r := map.room(goal)
+		if r and _known(r):
+			var b: Rect2 = WorldMapIndex.room_info(r.room_path)["bounds"]
+			var c := Color(Palette.color(&"map_note"), guide_alpha(_t, Settings.flash_reduction))
+			draw_rect(Rect2(to_screen(b.position + r.offset), b.size * z).grow(3.0), c, false, 1.0)
+	if not show_exit_dots():
+		return
+	for r in map.rooms:
+		if not _visited(r):
+			continue
+		for e: Dictionary in WorldMapIndex.room_info(r.room_path)["exits"]:
+			if not state.visited_rooms.has(String(e["target"])):
+				draw_circle(to_screen(r.offset + (e["rect"] as Rect2).get_center()), 2.0, Palette.color(&"map_note"))
 
 
 func _draw_transit_links() -> void:
@@ -301,5 +372,5 @@ func _draw_player() -> void:
 		return
 	var p := to_screen(r.offset + player_pos + Vector2(0, -16))
 	var a := 0.55 + 0.45 * sin(_t * 6.0)
-	draw_circle(p, 4.0, Color(COL_ANCHOR, a))
+	draw_circle(p, 4.0, Color(Palette.color(&"safe"), a))
 	draw_circle(p, 1.5, Color.WHITE)
