@@ -290,6 +290,33 @@ func test_rank_never_reads_settings() -> void:
 		assisted.append([s, table.rank_of(s, c[0], c[1], c[2], st)])
 	check(plain == assisted, "every assist on: the same ranks (%s vs %s)" % [plain, assisted])
 	check(plain[0][1] == RankTable.TOP_TIER and plain[1][1] < RankTable.TOP_TIER, "Redline needs no hit and the redline time")
+	# The live path: a running stratum counts a hit the same way and ranks the
+	# same stage result with every assist off and on.
+	_assists(false)
+	if not await _start("null_static_lane"):
+		return
+	var live := func(on: bool) -> Array:
+		_assists(on)
+		var before := Challenges.rules.hits
+		h.player().combat.take_damage(1, Vector2.ZERO, 0.0, false, "test", true)
+		var counted := Challenges.rules.hits - before
+		Challenges.session.stage_frames = 31 * RunClock.FPS
+		Challenges.session.stage_deaths = 0
+		Challenges.rules.hits = 1
+		var r := Challenges.stage_result()
+		return [counted, r["score"], r["tier"], Challenges.projected_rank()]
+	var off: Array = live.call(false)
+	var on: Array = live.call(true)
+	check(off == on and off[0] == 1, "a live stage ranks the same with every assist on (%s vs %s)" % [off, on])
+	_assists(false)
+
+
+func _assists(on: bool) -> void:
+	Settings.reactor_mode = 1 if on else 0
+	Settings.damage_assist = 2 if on else 0
+	Settings.aim_assist = 2 if on else 0
+	Settings.hitstop_scale = 0.5 if on else 1.0
+	Settings.generous_checkpoints = on
 
 
 func test_descent_splits_emit_stage_cleared() -> void:
@@ -347,3 +374,17 @@ func test_dev_null_page_builds_and_actions_taint() -> void:
 	check(NullDevActions.start("null_static_lane"), "a dev start without Dash")
 	check(await _wait_room(STATIC_LANE) and Challenges.current_id() == "null_static_lane", "running Static Lane")
 	check(NullDevActions.summary().contains("null_open yes"), "summary: %s" % NullDevActions.summary())
+	# Mid-run Game.state is the sandbox: the flag rows refuse (and show it).
+	check(not NullDevActions.flags_editable() and not NullDevActions.set_depth(true) and not NullDevActions.grant_open(),
+		"no flag edits mid-run")
+	check(not ChallengeLibrary.profile_holds("flag:" + DEPTH), "the profile's depth flag untouched")
+	var c2: DevConsole = load("res://ui/menus/DevConsole.gd").new()
+	add_child(c2)
+	c2.open_menu()
+	c2.go(&"null")
+	var flag_rows := c2._body.get_children().filter(func(n: Node) -> bool:
+		return n is Button and not n.is_queued_for_deletion() and ((n as Button).text.contains("Grant null_open") or (n as Button).text.contains("Depth flag:")))
+	check(flag_rows.size() == 2 and flag_rows.all(func(b: Button) -> bool: return b.disabled and b.text.contains("not mid-run")),
+		"the flag rows are disabled mid-run")
+	c2.close_menu()
+	c2.queue_free()
