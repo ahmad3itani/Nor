@@ -109,6 +109,16 @@ The sandbox profile is never counted, and a dev-tainted held profile counts noth
 
 `record_unlock` queues `[id, retroactive]` in `Platform.pending_toasts` and releases it at once when no run is live, no result card is pending (`Challenges.finishing()`), the tree is not paused and no MenuHost screen is open. Otherwise the queue is released on the first free frame (R02.9). The toast itself holds further while a scene locks input (T07).
 
+### Excluded achievements
+
+The Act I set (30 files in `data/achievements/`, T07) leaves these out on purpose. The validator rules that keep them out are `AchievementRules` PL-6, PL-9 and PL-10.
+
+- **Die N times, kill N enemies:** grind (§2.9, D-146) or shame (§24). Deaths are not even listed on the Records page.
+- **Anything that needs currency loss or a Core mode** (e.g. "finish with currency loss on", "clear in Redline Challenge mode"): it would shut out assist players (D-144). Difficulty-tagged goals belong to Challenges and their local boards.
+- **Recover a dropped cache:** impossible with `currency_loss` off (D-144).
+- **Speed goals** (e.g. "finish Act I in under 45 minutes"): they need §44 timing data. The `act1_clear_time` stat is recorded now; a goal can become a time trial or a later achievement with a measured threshold.
+- **Ending achievements:** the endings are unreachable until Act V (D-105). The data slot exists, and PL-9 blocks any achievement that reads a future flag while Act I is the last built act.
+
 ## Rich presence
 
 `PresenceTracker` derives one status, in priority order: a manual `set_presence` (until the next event), a challenge run (`challenge`, with `Challenges.current_title()`), a memory (`memory`), a scripted scene (`cinematic`), a boss fight (`boss`), a world room (`room`, or `act_done` once Act I is complete), a lab (`lab`), otherwise the menus (`title`). The lines live in `data/platform/presence.tres` with named placeholders (`{district}`, `{room}`, `{boss}`, `{name}`) and are translated at display. Changes are pushed to `backend.set_presence(key, text)`. Locally that only feeds the DebugOverlay line.
