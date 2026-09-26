@@ -354,6 +354,39 @@ func test_continue_disabled_for_full_game_save() -> void:
 	t.close_menu()
 
 
+## D-168 in a redirected demo (Web, debug --demo): the first title action
+## saves the demo's own settings file, so a relaunch no longer shows the
+## first-run row (T01 x T05 merge: TitleMenu asks BuildInfo.is_live_settings_path).
+func test_redirected_demo_title_retires_first_run_row() -> void:
+	var path := BuildInfo.DEMO_SETTINGS_PATH
+	var had := FileAccess.file_exists(path)
+	var before := FileAccess.get_file_as_bytes(path) if had else PackedByteArray()
+	var first := Settings.first_run
+	BuildInfo.set_force_demo(1)
+	check(BuildInfo.redirects_dirs(), "a forced debug demo redirects")
+	Settings._path = path
+	check(BuildInfo.is_live_settings_path(Settings._path), "the demo settings file is live")
+	Settings.first_run = true
+	var t := _title()
+	t.call("_act", func() -> void: pass)
+	check(not Settings.first_run, "the title action retires the row")
+	check(FileAccess.file_exists(path), "the demo settings file was written")
+	var s := (load("res://autoload/Settings.gd") as GDScript).new() as Node
+	BuildInfo.load_demo_settings(s, path)
+	check(not bool(s.get("first_run")), "a relaunched demo does not show the row again")
+	s.free()
+	t.close_menu()
+	Settings.first_run = first
+	if had:
+		var f := FileAccess.open(path, FileAccess.WRITE)
+		f.store_buffer(before)
+		f.close()
+	else:
+		DirAccess.remove_absolute(path)
+	check(had == FileAccess.file_exists(path) and (not had or FileAccess.get_file_as_bytes(path) == before),
+		"the developer's demo settings file is back byte for byte")
+
+
 func test_slice_stats_demo_counts_undercity_only() -> void:
 	BuildInfo.set_force_demo(1)
 	check(SliceStats.room_paths() == DataDir.list_scenes(UNDERCITY), "demo rooms = the Undercity (%s)" % [SliceStats.room_paths()])

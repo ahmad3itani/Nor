@@ -134,8 +134,9 @@ func _labs_row_index() -> int:
 func _act(action: Callable) -> void:
 	if Settings.first_run:
 		Settings.first_run = false
-		# Only the real settings file: tests and tours use their own paths.
-		if Settings._path == Settings.SETTINGS_PATH:
+		# Only a live settings file (the full game's, or a redirected demo's
+		# own): tests and tours use their own paths.
+		if BuildInfo.is_live_settings_path(Settings._path):
 			Settings.save_settings()
 	action.call()
 
