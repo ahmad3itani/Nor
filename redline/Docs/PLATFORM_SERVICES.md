@@ -36,12 +36,12 @@ Gameplay never calls `Platform`. The trackers only listen to EventBus (the Playt
 | `stat(id, lifetime = true)`, `profile_stat(id)` | Lifetime or this profile's value. During a run the profile value reads the held profile, never the sandbox. |
 | `record_unlock(a, retroactive)` | The one unlock path: store, save, `backend.unlock`, `backend.store_stats`, announce. |
 | `pending_toasts` | Unlocks waiting to be announced (see "Announcing"). |
-| `flush()` | Writes unsaved lifetime stats and mirrors every lifetime stat to the backend. Runs every `flush_interval_s`, on every profile save and on quit. |
+| `flush()` | Writes unsaved lifetime stats and mirrors every lifetime stat to the backend. Runs every `flush_interval_s`, on every profile save, after every finished challenge run, on a window close request and when the autoload leaves the tree (so `get_tree().quit()` from the title's Quit loses nothing). |
 | `notify_file_written(path)` | SaveManager's hook after each successful profile write: `backend.cloud_file_written(path)`, then `flush()`. |
 | `submit_score(board, value, meta)` | Mirrors a personal best to the backend. Local: no-op, because T04's `RecordStore` (`records.json`) already is the local board. |
 | `presence_text()`, `set_presence(key, arg = "")` | The live status line; a manual status until the next presence event. |
 | `register_overlay()`, `overlay_lines()` | F1 DebugOverlay lines `PRESENCE: …` and `ACH n/m` (§37.5). |
-| `dev_unlock(id)`, `dev_lock(id)`, `dev_reset_all()` | Dev tools. The reset clears unlocks and lifetime stats (store and backend). |
+| `dev_unlock(id)`, `dev_lock(id)`, `dev_reset_all()` | Dev tools. The reset clears unlocks and lifetime stats (store and backend). Like `record_unlock`, they do nothing while inactive: an unlock that cannot be saved is never recorded or announced. |
 | `reset_for_tests(dir)`, `reset_after_tests()`, `clear_cache()` | Test and tour seams (TestRunner and CaptureTour call them). |
 
 Achievement unlocks are announced on `EventBus.achievement_unlocked(achievement_id, retroactive)`. There is no Platform-local signal. The toast (`ui/hud/AchievementToast.gd`, T07) is instantiated by Platform as a child CanvasLayer on layer 70 when the script exists, and listens to EventBus.
@@ -100,7 +100,7 @@ The sandbox profile is never counted, and a dev-tainted held profile counts noth
 `AchievementTracker` re-evaluates every locked achievement once per dirty frame. Flags, collectibles, secrets, bosses, Circuits, weapons, memories, arc stages and stat changes mark it dirty.
 
 - All `conditions` must hold (`Game.check_condition`, no AND/OR, D-119), and the stat rule must be met (MIN stats: `0 < value <= target`).
-- **Retroactive (D-143):** `game_state_reset` (load, new game, the Challenges restore) re-evaluates with `retroactive = true`, so an old save earns what it already did. Only the first pass after the reset is retroactive.
+- **Retroactive (D-143):** `game_state_reset` (load, new game, the Challenges restore) re-evaluates with `retroactive = true`, so an old save earns what it already did. Only the first full pass after the reset is retroactive; an in-run pass (lifetime-only achievements) keeps the mark for the full pass after the restore.
 - A pass blocked by `earning_allowed()` keeps the dirty mark and runs once earning is allowed again.
 - **In runs (R02.3):** achievements that read only lifetime stats (no conditions, lifetime scope) are evaluated during a run too. Everything else waits for the restore.
 - `reveal_when` (a condition, empty = always) is a spoiler guard for the menu (T07). The validator treats it as a flag read.
@@ -117,7 +117,7 @@ The sandbox profile is never counted, and a dev-tainted held profile counts noth
 
 | Id | Rule |
 |---|---|
-| PL-11 | Every `boss_nohit_*` / `boss_time_*` stat suffix is the `boss_id` of a BossArena in a district room (from the room pass). |
+| PL-11 | Every `boss_nohit_*` / `boss_time_*` stat suffix is the `boss_id` of a BossArena in a district room (from the room pass), and the stat has `reveal_when = "flag:<boss_id>_intro_seen"`, so the Records page names no boss before the meeting (`StatDef.revealed(value)`: shown, and a value above 0 or the condition holds). |
 | PL-12 | StatDef ids are unique. API names are unique and match `^[A-Z0-9_]{1,128}$`. DERIVED stats are in `StatsTracker.DERIVED_IDS`. |
 | PL-14 | No network classes or storefront calls in code under `res://platform/` or in `autoload/Platform.gd`: `Steam.`, `HTTPRequest`, `HTTPClient`, `StreamPeerTCP`, `PacketPeerUDP`, `WebSocket(Peer)`, `ENet(MultiplayerPeer)`, `Engine.get_singleton("Steam")`. Comments are stripped first (everything from the first `#` outside a string), so notes like this page's may name those APIs. |
 
