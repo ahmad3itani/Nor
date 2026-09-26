@@ -1,0 +1,22 @@
+# Test catalog for test_l10n_runtime (a made-up locale "zz"; not shipped).
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zz\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Resume"
+msgstr "Zresume"
+
+msgctxt "toggle"
+msgid "On"
+msgstr "Zon"
+
+#, fuzzy
+msgid "Back"
+msgstr "Zback"
+
+msgid "Recovered {n} Scrap"
+msgid_plural "Recovered {n} Scraps"
+msgstr[0] "Z{n} one"
+msgstr[1] "Z{n} many"

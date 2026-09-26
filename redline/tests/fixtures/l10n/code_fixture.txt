@@ -1,0 +1,20 @@
+extends Node
+# Source fixture for test_l10n_extract (a .txt so nothing compiles or scans it).
+
+const SIZES := ["Small", "Large"]  # l10n
+const SKIPS := ["Skip"]  # l10n(size)
+const BRAND := "R E D L I N E"  # l10n: ignore(brand)
+
+
+func _demo(data: Object, n: int) -> void:
+	var a := Loc.t("A b")
+	var b := Loc.t("On", "toggle")
+	var c := Loc.f("x {n} of {m}", {"n": 1, "m": 2})
+	var d := Loc.tn("s {n}", "p {n}", n)
+	var e := Loc.t("Say \"hi\"\nnow")
+	# Loc.t("commented out")
+	var f := Loc.t(data.title)
+	var g := "Loc.t(\"inside a string\")"
+	var h := Loc.upper("Boss (phase 2)",
+		"banner")
+	var i := Loc.f("{who} says {what}", {"who": "A"}, "chat")
