@@ -248,6 +248,10 @@ func test_core_mode_locked_during_forced_challenge() -> void:
 	_menu._redraw()
 	row = _button("Core mode")
 	check(row != null and not row.disabled and row.text == "Core mode: Normal", "row back outside challenges")
+	# Control: outside a challenge the same step does reach the live core.
+	_menu._step(Settings.settings_catalog().def(&"reactor_mode"), 1, true)
+	check(Settings.reactor_mode == 1 and room != null and room.player.reactor.config != core_before, "the step applies to the live core when not forced")
+	Settings.reactor_mode = 0
 	_menu.close_menu()
 	SceneRouter.current_room = null
 	SceneRouter.world_root = null
