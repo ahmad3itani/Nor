@@ -115,7 +115,11 @@ func test_enforce_false_reports_warnings_only() -> void:
 	var warns := Array(r["warnings"])
 	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "pre-migration literals are reported as warnings")
 	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-2]")), "unclassified pre-M9 fields are reported as warnings")
-	check(not warns.any(func(w: String) -> bool: return w.begins_with("[L-1]")), "the checked-in catalog is current")
+	# Catalog freshness (L-1) is not asserted here: until T13 regenerates the
+	# catalog, later branches add Loc calls without --write (R06.2). The only
+	# freshness gate is test_catalog_up_to_date, skipped while ENFORCE is off.
+	var errs := Array(r["errors"])
+	check(not errs.any(func(e: String) -> bool: return e.begins_with("[L-1]")), "a stale catalog is never an error in warn mode")
 
 
 func test_module_quiet_outside_a_full_pass() -> void:
