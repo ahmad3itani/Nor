@@ -31,6 +31,11 @@ const BOSS_TITLE_IDS: Dictionary = {"WARDEN KRAIL": "warden_krail", "COLLECTOR D
 const BOSS_LABELS: Dictionary = {"warden_krail": ["Warden Krail", "him"], "collector_drone": ["Collector Drone", "it"]}
 ## Exact death-cause labels, checked before the generic "a/b" -> "a: b".
 const CAUSE_LABELS: Dictionary = {"unknown/collector_eye_bolt": "Collector eye", "clamp": "Grid clamp", "scanner": "Scanner beam"}
+## M8: a sequence whose first views are skipped more often than this is
+## "too long or badly placed" (design K-S1: then cut the opening).
+const FIRST_VIEW_SKIP_WARN := 0.5
+## Timeline row key suffix: the beat's minute minus locking-scene time so far.
+const CINE_SUFFIX := "_minus_cine"
 
 var config: PlaytestConfig
 ## A campaign run is a "new" session whose first room is this one (tests
@@ -110,6 +115,15 @@ func analyze() -> Dictionary:
 		"perf": {"histogram": [], "rooms": {}, "spikes": [], "hardware": []},
 		"survey": {},
 		"variants": {},
+		# M8 narrative. sequences: id -> {views, first_views, first_skips,
+		# watched: [s], nominal: [s]} (unskipped views only in watched/nominal).
+		"sequences": {},
+		"memories": {"first_views": 0, "first_skips": 0, "watch": [], "details": 0, "sources": {}, "never": []},
+		"arc_beats": [],
+		"orr_air": {},
+		"endings": {},
+		"standing": {},
+		"act1_complete": 0,
 	}
 	var hist: Array = []
 	hist.resize(PlaytestSession.BUCKETS.size() + 1)
@@ -129,6 +143,7 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 	r["session_minutes"].append(float(s.data.get("duration", 0.0)) / 60.0)
 	var visited := {}
 	var boss_starts := {}
+	var seq_first := {}  # id -> the last seq_start's `first` (for a seq_end without one)
 	var deaths := 0
 	for e: Dictionary in s.data["events"]:
 		var room := String(e.get("room", ""))
@@ -177,6 +192,7 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 				r["secrets_found"].append(int(e.get("secrets", 0)))
 				if bool(e.get("dead_air", false)):
 					r["dead_air_done"] = int(r["dead_air_done"]) + 1
+				_act1_end(e, r)
 			"moment":
 				r["moments"].append({"tag": e.get("tag", ""), "note": e.get("note", ""), "room": room, "x": e["x"], "y": e["y"]})
 				_inc(r["moment_tags"], String(e.get("tag", "")))
@@ -190,6 +206,16 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 				r["fast_travels"] = int(r["fast_travels"]) + 1
 			"purchase":
 				_inc(r["purchases"], String(e.get("item", "")))
+			"seq_start":
+				seq_first[String(e.get("id", ""))] = bool(e.get("first", false))
+			"seq_end":
+				_sequence(e, r, seq_first)
+			"memory_end":
+				_memory(e, r)
+			"ending":
+				# Dev theatre replays are not endings a tester reached.
+				if not bool(e.get("theatre", false)):
+					_inc(r["endings"], "%s%s" % [e.get("id", ""), " (skipped)" if bool(e.get("skipped", false)) else ""])
 	r["deaths_total"] = int(r["deaths_total"]) + deaths
 	v["deaths"] = int(v["deaths"]) + deaths
 	for bid: String in boss_starts:
@@ -247,6 +273,66 @@ static func boss_key(e: Dictionary) -> String:
 	return String(BOSS_TITLE_IDS.get(title, title.to_lower()))
 
 
+## One sequence view (seq_end). First views are what the skip warning is
+## about: a repeat skip is expected (§17 "skippable repeated intros").
+static func _sequence(e: Dictionary, r: Dictionary, seq_first: Dictionary) -> void:
+	var id := String(e.get("id", ""))
+	var row: Dictionary = (r["sequences"] as Dictionary).get(id, {"views": 0, "first_views": 0, "first_skips": 0, "watched": [], "nominal": []})
+	var first := bool(e.get("first", seq_first.get(id, false)))
+	var skipped := bool(e.get("skipped", false))
+	row["views"] = int(row["views"]) + 1
+	if first:
+		row["first_views"] = int(row["first_views"]) + 1
+		if skipped:
+			row["first_skips"] = int(row["first_skips"]) + 1
+	if not skipped and int(e.get("step", 0)) >= 0:
+		(row["watched"] as Array).append(float(e.get("seconds", 0.0)))
+		(row["nominal"] as Array).append(float(e.get("nominal", 0.0)))
+	r["sequences"][id] = row
+
+
+static func _memory(e: Dictionary, r: Dictionary) -> void:
+	var m: Dictionary = r["memories"]
+	_inc(m["sources"], String(e.get("source", "")))
+	if bool(e.get("detail", false)):
+		m["details"] = int(m["details"]) + 1
+	if not bool(e.get("first", false)):
+		return
+	m["first_views"] = int(m["first_views"]) + 1
+	if bool(e.get("skipped", false)):
+		m["first_skips"] = int(m["first_skips"]) + 1
+	else:
+		(m["watch"] as Array).append(float(e.get("seconds", 0.0)))
+
+
+## The M8 fields of slice_complete (older sessions simply lack them).
+static func _act1_end(e: Dictionary, r: Dictionary) -> void:
+	if e.has("memories_pending"):
+		(r["memories"]["never"] as Array).append(int(e["memories_pending"]))
+	if e.has("arc_beats_heard"):
+		(r["arc_beats"] as Array).append(int(e["arc_beats_heard"]))
+	if e.has("orr_air"):
+		_inc(r["orr_air"], String(e["orr_air"]))
+	if bool(e.get("act1_complete", false)):
+		r["act1_complete"] = int(r["act1_complete"]) + 1
+	for line in e.get("standing", []):
+		_inc(r["standing"], String(line))
+
+
+## Warning lines for sequences whose first views are mostly skipped.
+static func sequence_warnings(r: Dictionary) -> PackedStringArray:
+	var out := PackedStringArray()
+	var ids: Array = (r.get("sequences", {}) as Dictionary).keys()
+	ids.sort()
+	for id: String in ids:
+		var row: Dictionary = r["sequences"][id]
+		var n := int(row["first_views"])
+		if n > 0 and float(row["first_skips"]) / n > FIRST_VIEW_SKIP_WARN:
+			out.append("> Warning: %s first-view skip rate %d%% > %d%% (%d of %d): too long or badly placed." % [
+				id, roundi(100.0 * int(row["first_skips"]) / n), roundi(FIRST_VIEW_SKIP_WARN * 100.0), int(row["first_skips"]), n])
+	return out
+
+
 ## Lowlight on its own: Relay arrival (cumulative play time) to slice end,
 ## for every kind of session, so the slice target reads the same after the
 ## Undercity was put in front of it.
@@ -293,14 +379,22 @@ func _timeline(s: PlaytestSession, r: Dictionary) -> void:
 	# play time so a beat after Save & Quit reports its true campaign minute.
 	var use_pt := which == "continued"
 	var row := {}
+	# M8: seconds of locking scenes so far (the cinematic_s counter's share
+	# inside the session clocks). Memory vignettes pause the tree, so their
+	# time is already outside both clocks and is not subtracted again.
+	var scene_s := 0.0
 	for e: Dictionary in s.data["events"]:
+		if e["type"] == "seq_end" and bool(e.get("locked", true)):
+			scene_s += float(e.get("seconds", 0.0))
 		var key := _timeline_key(e)
 		if key == "" or row.has(key):
 			continue
 		row[key] = float(e.get("pt", 0.0) if use_pt else e.get("t", 0.0)) / 60.0
+		row[key + CINE_SUFFIX] = maxf(0.0, float(row[key]) - scene_s / 60.0)
 		# The first rest is also the uc_lift rest when it is that anchor.
 		if key == "anchor_lift" and not row.has("anchor"):
 			row["anchor"] = row[key]
+			row["anchor" + CINE_SUFFIX] = row[key + CINE_SUFFIX]
 	(tl[which] as Array).append(row)
 
 
@@ -337,13 +431,14 @@ static func _timeline_key(e: Dictionary) -> String:
 
 
 ## Median minutes per timeline item over rows ("—" when nobody reached it).
-static func timeline_medians(rows: Array) -> Dictionary:
+## suffix = CINE_SUFFIX gives the "minus cinematic_s" medians.
+static func timeline_medians(rows: Array, suffix: String = "") -> Dictionary:
 	var out := {}
 	for item: Dictionary in TIMELINE_ITEMS:
 		var vals: Array = []
 		for row: Dictionary in rows:
-			if row.has(item["key"]):
-				vals.append(row[item["key"]])
+			if row.has(item["key"] + suffix):
+				vals.append(row[item["key"] + suffix])
 		out[item["key"]] = _median(vals) if not vals.is_empty() else null
 	return out
 
@@ -439,6 +534,7 @@ func render_markdown(r: Dictionary, title: String = "REDLINE playtest report") -
 	md.append(_table("Pit falls by room", r["pits_by_room"]))
 	md.append(_timeline_markdown(r["timeline"]))
 	md.append(_set_piece_markdown(r))
+	md.append(_story_markdown(r))
 	md.append("## Confusion signals")
 	md.append("")
 	md.append("| Room | Median time (s) | Visits | Re-entries | Idle spans ≥ %ds |" % roundi(config.idle_seconds))
@@ -521,12 +617,16 @@ func _timeline_markdown(tl: Dictionary) -> String:
 	var campaign: Array = tl["campaign"]
 	md.append("Campaign runs (New Game from %s, minutes of session time): **%d**. Medians:" % [timeline_start_room, campaign.size()])
 	md.append("")
-	md.append("| Beat | Median min | Reached |")
-	md.append("|---|---|---|")
+	# M8: the last column keeps the D-083 pacing numbers comparable with the
+	# pre-M8 runs (locking scene time removed); appended so older columns keep
+	# their place.
+	md.append("| Beat | Median min | Reached | Median min minus cinematic_s |")
+	md.append("|---|---|---|---|")
 	var med := timeline_medians(campaign)
+	var med_play := timeline_medians(campaign, CINE_SUFFIX)
 	for item: Dictionary in TIMELINE_ITEMS:
 		var reached := campaign.filter(func(row: Dictionary) -> bool: return row.has(item["key"])).size()
-		md.append("| %s | %s | %d |" % [item["label"], _minutes(med[item["key"]]), reached])
+		md.append("| %s | %s | %d | %s |" % [item["label"], _minutes(med[item["key"]]), reached, _minutes(med_play[item["key"]])])
 	md.append("")
 	for title: String in ["Campaign", "Continued"]:
 		var rows: Array = tl[title.to_lower()]
@@ -585,6 +685,49 @@ func _set_piece_markdown(r: Dictionary) -> String:
 	md.append(_table("Scanner trips by kind / room / beam", r["scanner_trips"]))
 	md.append(_table("Grid clamp drops", r["clamp_drops"]))
 	md.append(_table("Breakers struck by room / circuit", r["breakers"]))
+	return "\n".join(md)
+
+
+## M8: sequences, memories, arcs, endings and the Act I card.
+func _story_markdown(r: Dictionary) -> String:
+	var md: PackedStringArray = ["## Story (M8)", "", "### Sequences", ""]
+	md.append("| Sequence | Views | First views | First-view skip rate | Median watched s / nominal s |")
+	md.append("|---|---|---|---|---|")
+	var seqs: Dictionary = r.get("sequences", {})
+	var ids: Array = seqs.keys()
+	ids.sort()
+	for id: String in ids:
+		var row: Dictionary = seqs[id]
+		var n := int(row["first_views"])
+		var rate := ("%d%%" % roundi(100.0 * int(row["first_skips"]) / n)) if n > 0 else "—"
+		var watched: Array = row["watched"]
+		var ratio := "—" if watched.is_empty() else "%.1f / %.1f" % [_median(watched), _median(row["nominal"])]
+		md.append("| %s | %d | %d | %s | %s |" % [id, int(row["views"]), n, rate, ratio])
+	if ids.is_empty():
+		md.append("| _none recorded_ | | | | |")
+	md.append("")
+	var warn := sequence_warnings(r)
+	if not warn.is_empty():
+		md.append("\n".join(warn))
+		md.append("")
+	var m: Dictionary = r.get("memories", {})
+	if not m.is_empty():
+		var fv := int(m["first_views"])
+		var src: PackedStringArray = []
+		for k: String in m["sources"]:
+			src.append("%s %d" % [k, int(m["sources"][k])])
+		md.append("- Memory scenes: first views %d (skipped %d = %d%%), median watch %s s (unskipped), details found %d / %d, sources %s, fragments never remembered by session end: %s" % [
+			fv, int(m["first_skips"]), roundi(100.0 * int(m["first_skips"]) / maxi(1, fv)),
+			("%.1f" % _median(m["watch"])) if not (m["watch"] as Array).is_empty() else "n/a",
+			int(m["details"]), fv, ", ".join(src) if not src.is_empty() else "none", _stats(m["never"])])
+	var air: PackedStringArray = []
+	for k: String in r.get("orr_air", {}):
+		air.append("%s %d" % [k, int(r["orr_air"][k])])
+	md.append("- Arc beats heard (median at slice end): %s · Orr on-air split: %s" % [_stats(r.get("arc_beats", [])), ", ".join(air) if not air.is_empty() else "n/a"])
+	md.append("- Act I complete at slice end: %d" % int(r.get("act1_complete", 0)))
+	md.append("")
+	md.append(_table("Endings reached (dev theatre replays ignored)", r.get("endings", {})))
+	md.append(_table("Act I standing (lines shown on the Act I card)", r.get("standing", {})))
 	return "\n".join(md)
 
 
