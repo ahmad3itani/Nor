@@ -16,8 +16,6 @@ extends RefCounted
 
 const KEY := &"key"
 const PAD := &"pad"
-## InputEvent.device for "any device" (every project.godot event uses it).
-const ALL_DEVICES := -1
 ## Pad stick axes (0..3) are never slots: move_* keep them as shipped.
 const FIRST_TRIGGER_AXIS := 4
 ## InputEvent.device for every event this class builds: all devices, as in
