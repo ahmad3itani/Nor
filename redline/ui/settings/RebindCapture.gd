@@ -3,7 +3,8 @@ extends Node
 ## Listens for one input to bind (D4 §4.5). A small state machine:
 ## ARMING waits until every key and button is released (and a short real-time
 ## pause passes), so the confirm press that started the capture never binds
-## itself; LISTENING takes the first key (key slot) or pad button / trigger
+## itself; it never lasts longer than arm_max_sec, so a stuck key cannot hold
+## the capture there; LISTENING takes the first key (key slot) or pad button / trigger
 ## (pad slot). Esc, Backspace and pad Start cancel any slot (R03.7, R03.17),
 ## so even "Rebind wait: No limit" with no pad connected can always be left.
 ## Sticks are ignored (drift never binds), and so is the mouse.
@@ -27,12 +28,15 @@ var action_label: String = ""
 ## Seconds LISTENING waits (0 = no limit).
 var timeout_sec: float = 10.0
 var arm_sec: float = 0.15
+## ARMING moves on to LISTENING after this long even if something is held.
+var arm_max_sec: float = 1.0
 var trigger_threshold: float = 0.6
 ## Process frame the capture ended on (the menu skips its cancel check then).
 var end_frame: int = -1
 var message: String = ""
 
 var _arm_left: float = 0.0
+var _arm_elapsed: float = 0.0
 var _time_left: float = 0.0
 ## Test seam: replaces Input.is_anything_pressed() (headless tests have no devices).
 var held_probe: Callable = Callable()
@@ -54,6 +58,7 @@ func start(label: String, slot_device: StringName) -> void:
 	device = slot_device
 	state = State.ARMING
 	_arm_left = arm_sec
+	_arm_elapsed = 0.0
 	_time_left = timeout_sec
 	end_frame = -1
 	_set_message("")
@@ -85,7 +90,8 @@ func _process(delta: float) -> void:
 	match state:
 		State.ARMING:
 			_arm_left -= delta
-			if _arm_left <= 0.0 and not _anything_held():
+			_arm_elapsed += delta
+			if _arm_left <= 0.0 and (_arm_elapsed >= arm_max_sec or not _anything_held()):
 				state = State.LISTENING
 				_time_left = timeout_sec
 				_set_message(prompt_text())
@@ -105,32 +111,32 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		return
 	_handled()
+	# Cancel works in ARMING too: a quick Esc is never swallowed.
+	if _is_cancel_press(event):
+		cancel(&"cancelled")
+		return
 	if state != State.LISTENING:
 		return
 	if event is InputEventKey:
 		var k := event as InputEventKey
 		if not k.pressed or k.echo:
 			return
-		if CANCEL_KEYS.has(int(k.physical_keycode)):
-			cancel(&"cancelled")
-			return
 		if device != &"key":
 			_set_message(Loc.t("Waiting for a controller button."))
 			return
 		var ev := InputEventKey.new()
+		ev.device = InputBindings.ALL_DEVICES
 		ev.physical_keycode = k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode
 		_capture(ev)
 	elif event is InputEventJoypadButton:
 		var b := event as InputEventJoypadButton
 		if not b.pressed:
 			return
-		if b.button_index == JOY_BUTTON_START:
-			cancel(&"cancelled")
-			return
 		if device != &"pad":
 			_set_message(Loc.t("Waiting for a key."))
 			return
 		var ev := InputEventJoypadButton.new()
+		ev.device = InputBindings.ALL_DEVICES
 		ev.button_index = b.button_index
 		_capture(ev)
 	elif event is InputEventJoypadMotion:
@@ -139,6 +145,7 @@ func _input(event: InputEvent) -> void:
 		if m.axis < JOY_AXIS_TRIGGER_LEFT or m.axis_value < trigger_threshold or device != &"pad":
 			return
 		var ev := InputEventJoypadMotion.new()
+		ev.device = InputBindings.ALL_DEVICES
 		ev.axis = m.axis
 		ev.axis_value = 1.0
 		_capture(ev)
@@ -155,10 +162,35 @@ func _finish() -> void:
 	_set_message("")
 
 
+func _is_cancel_press(event: InputEvent) -> bool:
+	if event is InputEventKey:
+		var k := event as InputEventKey
+		return k.pressed and not k.echo and CANCEL_KEYS.has(int(k.physical_keycode))
+	if event is InputEventJoypadButton:
+		var b := event as InputEventJoypadButton
+		return b.pressed and b.button_index == JOY_BUTTON_START
+	return false
+
+
+## True while a key or pad button is held. Joy axes are left out on purpose
+## (Input.is_anything_pressed() also counts actions held by a drifting stick
+## or a resting trigger); keys are read from the InputMap's key events.
 func _anything_held() -> bool:
 	if held_probe.is_valid():
 		return bool(held_probe.call())
-	return Input.is_anything_pressed()
+	for action in InputMap.get_actions():
+		for ev in InputMap.action_get_events(action):
+			if ev is InputEventKey:
+				var k := ev as InputEventKey
+				if k.physical_keycode != KEY_NONE and Input.is_physical_key_pressed(k.physical_keycode):
+					return true
+				if k.keycode != KEY_NONE and Input.is_key_pressed(k.keycode):
+					return true
+	for pad in Input.get_connected_joypads():
+		for i in JOY_BUTTON_SDL_MAX:
+			if Input.is_joy_button_pressed(pad, i as JoyButton):
+				return true
+	return false
 
 
 func _handled() -> void:

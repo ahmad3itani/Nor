@@ -149,6 +149,39 @@ func test_timeout_from_config_and_none() -> void:
 	check(not _cap.prompt_text().contains("·"), "no countdown shown")
 
 
+## A stuck key, drifting stick or resting trigger keeps held_probe true:
+## Esc and Start still cancel while ARMING, and ARMING ends on its own.
+func test_arming_never_traps() -> void:
+	_held[0] = true
+	_cap.start("Jump", &"key")
+	_cap._process(0.05)
+	_cap._input(_key(KEY_ESCAPE))
+	check(_cancelled == [&"cancelled"] and _got.is_empty(), "Esc cancels while arming")
+	_cap.start("Jump", &"pad")
+	_cap._process(0.05)
+	_cap._input(_button(JOY_BUTTON_START))
+	check(_cancelled.size() == 2 and _got.is_empty(), "Start cancels while arming")
+	_cap.start("Jump", &"key")
+	_cap.timeout_sec = 2.0
+	for i in 70:
+		_cap._process(1.0 / 60.0)
+	check(_cap.state == RebindCapture.State.LISTENING, "arming ends after arm_max_sec though input is held")
+	_cap._process(2.5)
+	check(not _cap.is_active() and _cancelled.size() == 3 and _cancelled[2] == &"timeout", "then the timeout runs (%s)" % str(_cancelled))
+
+
+func test_captured_events_match_any_device() -> void:
+	_listen(&"key")
+	_cap._input(_key(KEY_J))
+	_listen(&"pad")
+	_cap._input(_button(JOY_BUTTON_X))
+	_listen(&"pad")
+	_cap._input(_motion(JOY_AXIS_TRIGGER_RIGHT, 1.0))
+	check(_got.size() == 3, "three captures")
+	for ev: InputEvent in _got:
+		check(ev.device == -1, "%s is for all devices" % InputBindings.encode(ev))
+
+
 func test_start_cancels_key_slot() -> void:
 	_listen(&"key")
 	_cap._input(_button(JOY_BUTTON_START))
