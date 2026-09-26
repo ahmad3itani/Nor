@@ -5,13 +5,14 @@ extends RefCounted
 ##
 ## Tap and hold are exclusive, because one button (Space / Enter / pad A) is
 ## cinematic_skip, jump and ui_accept at once:
-## - a TAP (released within TAP_SECONDS, fired on release, never on press)
+## Times come from CinematicConfig (CinematicMode.config(), data).
+## - a TAP (released within tap_seconds, fired on release, never on press)
 ##   only advances text, and only if an advance action was part of the press;
-## - a SKIP is a hold of cinematic_skip: HOLD_SECONDS on a first view,
-##   REPEAT_HOLD_SECONDS on a repeat view (still a hold, since a tap advances).
+## - a SKIP is a hold of cinematic_skip: hold_seconds on a first view,
+##   repeat_hold_seconds on a repeat view (still a hold, since a tap advances).
 ##   A hold never advances text; releasing early just resets the bar;
 ## - "Skip scenes: Press twice" (Settings.cinematic_skip_hold == false): a tap
-##   of cinematic_skip inside the window that arms ARM_DELAY_SECONDS after a
+##   of cinematic_skip inside the window that arms arm_delay_seconds after a
 ##   TAP skips. Taps in the dead window are swallowed (a fast double tap never
 ##   advances twice), and on a first view the first window of the scene only
 ##   teaches, so a reader's quick double tap never skips an unseen scene.
@@ -25,19 +26,13 @@ enum Out { NONE, TAP, SKIP }
 ## Same list as ui/dialogue/DialogueBox.gd ADVANCE_ACTIONS (that script has no
 ## class_name, so everything else reads this one; a test pins the equality).
 const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", &"attack_light"]
-const TAP_SECONDS := 0.25
-const HOLD_SECONDS := 0.8
-const REPEAT_HOLD_SECONDS := 0.4
-const DOUBLE_TAP_SECONDS := 0.6
-const ARM_DELAY_SECONDS := 0.15
-const GRACE_SECONDS := 0.25
-const PROMPT_SHOW_SECONDS := 2.0
 
 var first_view: bool = true
 ## Whether the skip prompt should be drawn this frame (see prompt_text()).
 var prompt_visible: bool = false
 
-var _grace_left: float = GRACE_SECONDS
+var cfg: CinematicConfig = CinematicMode.config()
+var _grace_left: float = cfg.grace_seconds
 ## A press seen already down (or begun during grace) waits for a full release.
 var _blocked: bool = false
 var _tracking: bool = false
@@ -89,7 +84,7 @@ func _step(delta: float, hold_mode: bool, skip_held: bool, skip_just: bool, adv_
 		return Out.NONE
 	if any_held:
 		_press_time += delta
-		if skip_held and _press_time >= TAP_SECONDS:
+		if skip_held and _press_time >= cfg.tap_seconds:
 			_progress = _press_time
 			if _press_time >= _hold_seconds():
 				_end_press()
@@ -99,7 +94,7 @@ func _step(delta: float, hold_mode: bool, skip_held: bool, skip_just: bool, adv_
 			_progress = 0.0
 		return Out.NONE
 	# Released.
-	var was_tap := _press_time < TAP_SECONDS
+	var was_tap := _press_time < cfg.tap_seconds
 	_end_press()
 	if not was_tap:
 		return Out.NONE
@@ -124,7 +119,7 @@ func _begin_press(with_skip: bool, with_advance: bool) -> void:
 	_press_advance = with_advance
 	_press_in_dead = _arm_left > 0.0
 	_press_in_window = _arm_left <= 0.0 and _window_left > 0.0 and not _window_teaches
-	_prompt_left = PROMPT_SHOW_SECONDS
+	_prompt_left = cfg.prompt_show_seconds
 
 
 func _end_press() -> void:
@@ -136,14 +131,19 @@ func _end_press() -> void:
 ## Press twice: every TAP opens a window. On a first view the scene's first
 ## window only teaches (shows "again to skip"); later windows can skip.
 func _open_window() -> void:
-	_arm_left = ARM_DELAY_SECONDS
-	_window_left = DOUBLE_TAP_SECONDS
+	_arm_left = cfg.arm_delay_seconds
+	_window_left = cfg.double_tap_seconds
 	_window_teaches = first_view and not _taught
 	_taught = true
 
 
+## The hold that skips this view (first or repeat).
+func hold_seconds() -> float:
+	return cfg.hold_seconds if first_view else cfg.repeat_hold_seconds
+
+
 func _hold_seconds() -> float:
-	return HOLD_SECONDS if first_view else REPEAT_HOLD_SECONDS
+	return hold_seconds()
 
 
 func _update_prompt(hold_mode: bool) -> void:
@@ -156,7 +156,7 @@ func _update_prompt(hold_mode: bool) -> void:
 ## Restart the grace and drop the tracked press. Callers invoke it on the first
 ## frame after the tree was paused, so the "Resume" press never skips or advances.
 func notify_unpaused() -> void:
-	_grace_left = GRACE_SECONDS
+	_grace_left = cfg.grace_seconds
 	_end_press()
 	_blocked = true
 

@@ -35,6 +35,22 @@ static var bark_line: bool = false
 ## and trigger autoplay is suppressed.
 static var theatre: bool = false
 static var _teardowns: Array[Callable] = []
+## Timing tuning (data/cinematics/cinematic_config.tres), loaded once.
+static var _config: CinematicConfig = null
+
+
+## The shipped timing config (defaults when the file is missing).
+static func config() -> CinematicConfig:
+	if _config == null:
+		if ResourceLoader.exists(CinematicConfig.PATH):
+			_config = load(CinematicConfig.PATH) as CinematicConfig
+		if _config == null:
+			_config = CinematicConfig.new()
+	return _config
+
+
+static func clear_config() -> void:
+	_config = null
 
 
 static func current() -> Mode:

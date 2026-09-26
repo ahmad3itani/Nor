@@ -47,6 +47,7 @@ func _ready() -> void:
 ## last story-aware node to leave the tree.
 func _exit_tree() -> void:
 	CinematicMode._teardowns.clear()
+	CinematicMode.clear_config()
 	MemoryScenePlayer.active_instance = null
 	MemoryLibrary.clear_cache()
 	FutureFlagSet.clear_cache()

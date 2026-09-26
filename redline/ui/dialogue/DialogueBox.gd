@@ -10,7 +10,7 @@ extends CanvasLayer
 ## interact (E, the key the box's "[E]" cue taught). Pad D-pad Up is bound to
 ## both interact and move_up (project.godot button 11), so interact only
 ## confirms while the keyboard is the active device. A confirm counts only
-## after CHOICE_ARM_SECONDS real time (the tree is paused) and after every
+## after CinematicConfig.choice_arm_seconds real time (the tree is paused) and after every
 ## advance action has been seen released since the options appeared, so a
 ## held or mashed press carried over from the last line never picks. The
 ## picked answer's reply plays with the normal advance rules, then the box
@@ -22,7 +22,6 @@ const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", 
 const CHOICE_UP_ACTIONS: Array[StringName] = [&"move_up", &"ui_up"]
 const CHOICE_DOWN_ACTIONS: Array[StringName] = [&"move_down", &"ui_down"]
 const CHOICE_CONFIRM_ACTIONS: Array[StringName] = [&"ui_accept", &"jump"]
-const CHOICE_ARM_SECONDS := 0.4
 
 var dialogue: DialogueData
 var line_index: int = 0
@@ -139,7 +138,7 @@ func _enter_choice_mode() -> void:
 ## ms, the tree is paused) and every advance action was seen released since
 ## the options appeared.
 func confirm_armed() -> bool:
-	if not _choosing or Time.get_ticks_msec() - _choice_shown_ms < int(CHOICE_ARM_SECONDS * 1000.0):
+	if not _choosing or Time.get_ticks_msec() - _choice_shown_ms < int(CinematicMode.config().choice_arm_seconds * 1000.0):
 		return false
 	for a in ADVANCE_ACTIONS:
 		if not _released.has(a):

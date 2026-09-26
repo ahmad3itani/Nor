@@ -113,7 +113,7 @@ func build_text() -> String:
 	if end < n:
 		lines.append("   … %d more" % (n - end))
 	if p.gate:
-		var hold := SkipGate.HOLD_SECONDS if p.first_view else SkipGate.REPEAT_HOLD_SECONDS
+		var hold := CinematicMode.config().hold_seconds if p.first_view else CinematicMode.config().repeat_hold_seconds
 		var ratio := p.gate.progress_ratio()
 		var cells := int(round(ratio * BAR_CELLS))
 		lines.append("skip hold %s %.2f / %.2f" % ["█".repeat(cells) + "░".repeat(BAR_CELLS - cells), ratio * hold, hold])

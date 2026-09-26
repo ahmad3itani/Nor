@@ -437,3 +437,19 @@ class _InputProbe extends Node:
 			just_frames += 1
 		if Input.is_action_pressed(&"cinematic_skip"):
 			held_frames += 1
+
+
+## Scene timing is data (CinematicConfig, §37.3), with the D-108 defaults.
+func test_cinematic_config_is_data() -> void:
+	var cfg := CinematicMode.config()
+	check(cfg.resource_path == CinematicConfig.PATH, "loaded from %s" % CinematicConfig.PATH)
+	check(cfg.validate().is_empty(), "shipped config validates: %s" % cfg.validate())
+	check(is_equal_approx(cfg.tap_seconds, 0.25) and is_equal_approx(cfg.hold_seconds, 0.8) and is_equal_approx(cfg.repeat_hold_seconds, 0.4),
+		"D-108 skip times")
+	check(is_equal_approx(SeqLine.auto_seconds("x".repeat(20)), 2.3) and is_equal_approx(SeqLine.auto_seconds(""), 2.0)
+		and is_equal_approx(SeqLine.auto_seconds("x".repeat(200)), 7.0), "line time = clamp(1.0 + 0.065 * len, 2, 7)")
+	var gate := SkipGate.new(false)
+	check(is_equal_approx(gate.hold_seconds(), cfg.repeat_hold_seconds), "the gate reads the config")
+	var bad := CinematicConfig.new()
+	bad.hold_seconds = 0.1
+	check(not bad.validate().is_empty(), "a hold shorter than a tap is rejected")

@@ -7,16 +7,15 @@ extends Area2D
 ##
 ## Safety rules (A1 §4.1 as amended):
 ## - A locking sequence never starts while an enemy in the room is active
-##   (no cheap input lock during danger); it retries every 0.5 s while the
-##   room is ready (autoplay) or Rook is inside. Non-locking barks play
+##   (no cheap input lock during danger); it retries every 0.5 s
+##   (CinematicConfig.trigger_retry_seconds) while the room is ready
+##   (autoplay) or Rook is inside. Non-locking barks play
 ##   regardless (they take no control).
 ## - Nothing starts while a dev preview or the story tour owns Cinematics
 ##   (CinematicMode.theatre). While another play is running (a bark, a boss
-##   intro) the trigger waits and retries every 0.5 s, like the danger rule.
+##   intro) the trigger waits and retries on the same clock, like the danger rule.
 ## - A refused or aborted play re-arms the trigger: the seen flag is set only
 ##   by a finished or skipped play (SequencePlayer), so a quit replays it.
-
-const RETRY_SECONDS := 0.5
 
 @export var size: Vector2 = Vector2(64, 96):
 	set(v):
@@ -146,7 +145,7 @@ func _arm_retry() -> void:
 	if not is_inside_tree():
 		return
 	_pending = true
-	_retry = RETRY_SECONDS
+	_retry = CinematicMode.config().trigger_retry_seconds
 	set_process(true)
 
 

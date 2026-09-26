@@ -15,10 +15,7 @@ extends Node
 signal ticked(delta: float)
 signal completed
 
-const LETTERBOX_SECONDS := 0.35
 const HUD_OWNER := &"sequence"
-## First views: an early advance needs the full line up this share of its hold.
-const EARLY_FRACTION := 0.5
 
 var seq: SequenceData
 var ctx: SequenceContext
@@ -114,27 +111,28 @@ func adopt(t: Tween) -> Tween:
 	return t
 
 
-## Paces the line the overlay shows (SeqLine): typed at SeqLine.CPS, on
+## Paces the line the overlay shows (SeqLine): typed at cfg.type_cps, on
 ## screen for `hold` seconds. A TAP completes the typing, then advances early;
-## on a first view only once the full line has been up for EARLY_FRACTION of
+## on a first view only once the full line has been up for cfg.early_fraction of
 ## its hold, so a mashing first-timer cannot race through the only telling.
 ## A hold of the button never advances (the SkipGate reports it as a skip).
 func pace_line(length: int, hold: float, wait_for_tap: bool) -> void:
 	var ov := overlay()
+	var cfg := CinematicMode.config()
 	var typed_at := _clock
 	var full_at := -1.0
 	var start := _clock
 	_tap = false
 	while not interrupted():
-		var shown := mini(length, int((_clock - typed_at) * SeqLine.CPS))
+		var shown := mini(length, int((_clock - typed_at) * cfg.type_cps))
 		if shown >= length and full_at < 0.0:
 			full_at = _clock
 		if take_tap():
 			if full_at < 0.0:
-				typed_at = _clock - length / SeqLine.CPS
+				typed_at = _clock - length / cfg.type_cps
 				full_at = _clock
 				shown = length
-			elif not first_view or _clock - full_at >= EARLY_FRACTION * hold:
+			elif not first_view or _clock - full_at >= cfg.early_fraction * hold:
 				return
 		if is_instance_valid(ov):
 			ov.set_visible_chars(shown)
@@ -212,7 +210,7 @@ func run_timed() -> void:
 	if locking:
 		gate = SkipGate.new(first_view)
 		if seq.letterbox and is_instance_valid(overlay()):
-			adopt(overlay().letterbox(true, LETTERBOX_SECONDS))
+			adopt(overlay().letterbox(true, CinematicMode.config().letterbox_seconds))
 	for i in seq.steps.size():
 		if interrupted():
 			break
@@ -355,7 +353,7 @@ func _restore() -> void:
 		MusicDirector.clear_override()
 	var ov := overlay()
 	if is_instance_valid(ov):
-		ov.clear_all(LETTERBOX_SECONDS if (locking and seq.letterbox and not instant and not _aborted) else 0.0)
+		ov.clear_all(CinematicMode.config().letterbox_seconds if (locking and seq.letterbox and not instant and not _aborted) else 0.0)
 	if _hud_pushed:
 		CinematicMode.pop_hud_hide(HUD_OWNER)
 		_hud_pushed = false

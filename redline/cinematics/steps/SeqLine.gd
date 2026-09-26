@@ -1,12 +1,12 @@
 class_name SeqLine
 extends SequenceStep
-## One subtitle line, typed at 70 cps and held for its auto time
-## clamp(1.0 + 0.065 * len, 2.0, 7.0) x the Subtitle speed setting (about
-## 15 cps readable after the typing; budgets use x1.0). speaker_id: an
+## One subtitle line, typed at CinematicConfig.type_cps (70) and held for its
+## auto time CinematicConfig.line_seconds(len) = clamp(1.0 + 0.065 * len, 2.0,
+## 7.0) x the Subtitle speed setting (about 15 cps readable after the typing;
+## budgets use x1.0). speaker_id: an
 ## NpcProfile.npc_id, a SpeakerTable id, or "" = narration (italic, no
 ## label). Tap/advance pacing lives in SequencePlayer.pace_line().
 
-const CPS := 70.0
 const MAX_CHARS := 120
 
 @export var speaker_id: String = ""
@@ -19,7 +19,7 @@ const MAX_CHARS := 120
 
 
 static func auto_seconds(t: String) -> float:
-	return clampf(1.0 + 0.065 * t.length(), 2.0, 7.0)
+	return CinematicMode.config().line_seconds(t.length())
 
 
 func run(p: SequencePlayer) -> void:

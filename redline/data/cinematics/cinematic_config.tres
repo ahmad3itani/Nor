@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CinematicConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://cinematics/CinematicConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+tap_seconds = 0.25
+hold_seconds = 0.8
+repeat_hold_seconds = 0.4
+double_tap_seconds = 0.6
+arm_delay_seconds = 0.15
+grace_seconds = 0.25
+prompt_show_seconds = 2.0
+letterbox_seconds = 0.35
+early_fraction = 0.5
+type_cps = 70.0
+line_base_seconds = 1.0
+line_seconds_per_char = 0.065
+line_min_seconds = 2.0
+line_max_seconds = 7.0
+trigger_retry_seconds = 0.5
+choice_arm_seconds = 0.4

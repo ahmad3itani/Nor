@@ -567,7 +567,7 @@ func test_choice_ignores_carried_and_mashed_press() -> void:
 			break
 		await _wait_real_ms(62)
 	check(opened, "the mash opened the options")
-	var arm_ms := int(box.CHOICE_ARM_SECONDS * 1000.0)
+	var arm_ms := int(CinematicMode.config().choice_arm_seconds * 1000.0)
 	check(choices_made.size() == 1, "a fresh press after the arm time picks (%s)" % str(choices_made))
 	if choices_made.size() == 1:
 		check(choice_ms[0] - box._choice_shown_ms >= arm_ms, "no pick before the arm time (%d ms)" % (choice_ms[0] - box._choice_shown_ms))
