@@ -8,6 +8,8 @@ const TMP := "user://test_settings_menu.cfg"
 const SettingsRules := preload("res://devtools/content/rules/SettingsRules.gd")
 ## The explicit last row of each kind of page.
 const BACK_ROWS := ["Back", "Done", "Cancel", "No"]
+## A small fixture room with a player (its ReactorCore).
+const PROPS_ROOM := "res://tests/fixtures/props_flow.tscn"
 
 var _snap: Dictionary = {}
 var _menu: MenuScreen
@@ -218,9 +220,19 @@ func test_every_page_fits_or_scrolls_at_each_ui_scale() -> void:
 ## R03.8: while a challenge forces the Core mode the row is shown, disabled,
 ## and confirming it changes nothing (the live ReactorCore keeps the mode).
 func test_core_mode_locked_during_forced_challenge() -> void:
+	# A live room so the player's ReactorCore can be checked too.
+	var world := Node2D.new()
+	add_child(world)
+	SceneRouter.register_world_root(world)
+	Game.new_game()
+	Settings.reactor_mode = 0
+	SceneRouter.goto_room(PROPS_ROOM, &"start")
+	await physics_frames(4)
+	var room := SceneRouter.current_room as Room
+	check(room != null and is_instance_valid(room.player), "a live player")
+	var core_before: ReactorConfig = room.player.reactor.config if room else null
 	Challenges.force_active = true
 	Challenges.force_reactor_mode = 2
-	Settings.reactor_mode = 0
 	_menu.open_menu()
 	_menu._go(&"assists")
 	var row := _button("Core mode")
@@ -230,11 +242,18 @@ func test_core_mode_locked_during_forced_challenge() -> void:
 		row.pressed.emit()
 	_menu._step(Settings.settings_catalog().def(&"reactor_mode"), 1, true)
 	check(Settings.reactor_mode == 0, "the stored mode is untouched")
+	check(room != null and room.player.reactor.config == core_before, "the live ReactorCore config is untouched")
 	Challenges.force_active = false
 	Challenges.force_reactor_mode = -1
 	_menu._redraw()
 	row = _button("Core mode")
 	check(row != null and not row.disabled and row.text == "Core mode: Normal", "row back outside challenges")
+	_menu.close_menu()
+	SceneRouter.current_room = null
+	SceneRouter.world_root = null
+	world.queue_free()
+	Game.new_game()
+	await physics_frames(2)
 
 
 ## R03.17: every page returns to its parent with Backspace alone and shows
@@ -246,6 +265,9 @@ func test_every_page_backs_out_with_backspace() -> void:
 		var texts := _texts()
 		check(BACK_ROWS.has(texts[texts.size() - 1]), "%s ends with an explicit back row (%s)" % [str(path), texts[texts.size() - 1]])
 		var depth: int = _menu._stack.size()
+		# The menu ignores cancel on the frame it opened; step off that frame
+		# (the first path can start mid-frame, depending on the test before).
+		await get_tree().process_frame
 		await press_action(&"ui_back", 2)
 		await get_tree().process_frame
 		if path.is_empty():
@@ -256,6 +278,7 @@ func test_every_page_backs_out_with_backspace() -> void:
 	# The quick page (title link) backs out to the title.
 	_menu.ctx = {"page": &"quick"}
 	_menu.open_menu()
+	await get_tree().process_frame
 	await press_action(&"ui_back", 2)
 	await get_tree().process_frame
 	check(not _menu.is_open(), "Backspace on the quick page closes")
