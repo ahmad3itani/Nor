@@ -53,7 +53,10 @@ static func run(v: ContentValidator) -> void:
 			list.append(a)
 	var r := check_list(list, v)
 	v.errors.append_array(r["errors"])
-	v.warnings.append_array(r["warnings"])
+	# Review warnings (R07.6) belong to a full content run; a partial
+	# validator with no room pass (a test probing the rule seam) gets none.
+	if int(v.stats.get("rooms", 0)) > 0:
+		v.warnings.append_array(r["warnings"])
 
 
 static func report(_v: ContentValidator) -> String:
