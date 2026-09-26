@@ -23,6 +23,7 @@ const DEFAULT_SAVE_DIR := "user://saves"
 const DEFAULT_PLATFORM_DIR := "user://platform"
 const DEFAULT_SETTINGS_PATH := "user://settings.cfg"
 const DEFAULT_PLAYTEST_DIR := "user://playtests"
+const SLICE_STATS := "res://progression/SliceStats.gd"
 
 ## Test seam: -1 = follow the build (--demo / feature tag), 0 = full, 1 = demo.
 static var force_demo: int = -1
@@ -161,7 +162,9 @@ static func set_force_demo(v: int) -> void:
 	_restore_dirs()
 	if is_demo():
 		apply_demo_dirs()
-	SliceStats.clear_cache()
+	# By path, not the class name: Settings (the second autoload) compiles
+	# this script, and SliceStats names Game, which must not compile mid-cycle.
+	(load(SLICE_STATS) as GDScript).call("clear_cache")
 
 
 ## Whether this demo keeps its files under user://demo/ (D-165, R05.8): a

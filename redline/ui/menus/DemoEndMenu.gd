@@ -10,8 +10,9 @@ extends MenuScreen
 
 signal quit_to_title
 
-## Player-visible literals of this screen (the rest is DemoConfig data).
-const LOC_FIELDS := {"time_line": 40, "counts_line": 90}
+## No text fields of its own: the card's lines are DemoConfig data (its
+## LOC_FIELDS) and two Loc.f literals with named placeholders.
+const LOC_FIELDS := {}
 const LOC_EXEMPT := []
 
 
