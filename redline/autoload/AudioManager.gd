@@ -1,10 +1,13 @@
 extends Node
 ## Single entry point for sound (bible §28). M1 plays synthesized placeholder
 ## SFX from data/audio/placeholder_sfx.tres through a small voice pool on the
-## "SFX" bus, whose volume follows Settings.
+## "SFX" bus, whose volume follows Settings. M9 (D4 §9): menu and prompt sounds
+## (ui_* ids, the achievement chime) play on a separate "UI" bus with its own
+## slider, so a player can quiet combat without losing menu feedback.
 
 const BANK_PATH := "res://data/audio/placeholder_sfx.tres"
 const SFX_BUS := &"SFX"
+const UI_BUS := &"UI"
 const VOICES := 8
 
 var _streams: Dictionary = {}      # id -> AudioStream
@@ -48,6 +51,14 @@ func apply_volume() -> void:
 	var music := AudioServer.get_bus_index(&"Music")
 	if music >= 0:
 		AudioServer.set_bus_volume_db(music, linear_to_db(Settings.music_volume))
+	var ui := AudioServer.get_bus_index(UI_BUS)
+	if ui >= 0:
+		AudioServer.set_bus_volume_db(ui, linear_to_db(Settings.ui_volume))
+
+
+## The bus a sound id plays on: interface sounds on "UI", the rest on "SFX".
+static func bus_for(id: StringName) -> StringName:
+	return UI_BUS if String(id).begins_with("ui_") or id == &"achievement" else SFX_BUS
 
 
 ## volume_scale: 0..1+ multiplier (e.g. landing impact). Unknown ids warn once.
@@ -67,18 +78,20 @@ func play_sfx(id: StringName, volume_scale: float = 1.0) -> void:
 	var voice := _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % _voices.size()
 	voice.stream = stream
+	voice.bus = bus_for(id)
 	voice.volume_db = def.volume_db + linear_to_db(volume_scale)
 	voice.pitch_scale = 1.0 + randf_range(-def.pitch_jitter, def.pitch_jitter)
 	voice.play()
 
 
 func _ensure_bus() -> void:
-	if AudioServer.get_bus_index(SFX_BUS) >= 0:
-		return
-	AudioServer.add_bus()
-	var idx := AudioServer.bus_count - 1
-	AudioServer.set_bus_name(idx, SFX_BUS)
-	AudioServer.set_bus_send(idx, &"Master")
+	for bus_name: StringName in [SFX_BUS, UI_BUS]:
+		if AudioServer.get_bus_index(bus_name) >= 0:
+			continue
+		AudioServer.add_bus()
+		var idx := AudioServer.bus_count - 1
+		AudioServer.set_bus_name(idx, bus_name)
+		AudioServer.set_bus_send(idx, &"Master")
 
 
 func _exit_tree() -> void:
