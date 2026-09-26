@@ -133,6 +133,21 @@ func _entry(msgid: String, key: String) -> CatalogEntry:
 	return e
 
 
+func test_new_locale_code_is_checked() -> void:
+	check(ExtractStrings.new_code_error("") != "", "empty --new is rejected")
+	check(ExtractStrings.new_code_error("../x") != "", "a path is not a code")
+	check(ExtractStrings.new_code_error("en") != "" and ExtractStrings.new_code_error("en_XA") != "", "source and pseudo refused")
+	check(ExtractStrings.new_code_error("fr").contains("no row"), "an unknown code needs a LocaleInfo row first")
+
+
+func test_entries_from_pot_reads_the_catalog() -> void:
+	var entries := ExtractStrings.entries_from_pot()
+	check(not entries.is_empty(), "the checked-in POT has entries")
+	check(entries.all(func(e: CatalogEntry) -> bool: return e.msgid != ""), "no header entry")
+	var po := PoFile.parse(ExtractStrings.render_pot(entries))
+	check(po.entries.size() == entries.size(), "round-trips the entry count")
+
+
 func test_merge_carries_and_fuzzes() -> void:
 	var po := PoFile.parse("\n".join([
 		"msgid \"\"", "msgstr \"\"", "\"Language: fr\\n\"", "\"Plural-Forms: nplurals=2; plural=(n > 1);\\n\"", "",

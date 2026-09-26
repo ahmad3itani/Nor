@@ -202,6 +202,28 @@ static func render_pseudo(entries: Array[CatalogEntry], cfg: L10nConfig = null) 
 	return po.render()
 
 
+## The checked-in catalog read back as entries (msgid, context, plural, refs
+## and the "max N chars" limit): a cheap stand-in for build_catalog() where a
+## full scan is too heavy, such as the in-game dev report.
+static func entries_from_pot(path: String = POT_PATH) -> Array[CatalogEntry]:
+	var out: Array[CatalogEntry] = []
+	var re := RegEx.create_from_string("max (\\d+) chars")
+	for e: Dictionary in PoFile.load_file(path).entries:
+		if e.get("obsolete", false) or e["msgid"] == "":
+			continue
+		var c := CatalogEntry.new()
+		c.ctx = e["ctx"]
+		c.msgid = e["msgid"]
+		c.msgid_plural = e["msgid_plural"]
+		c.refs = e["refs"]
+		for line: String in e["extracted"]:
+			var m := re.search(line)
+			if m != null:
+				c.max_chars = m.get_string(1).to_int()
+		out.append(c)
+	return out
+
+
 static func _po_entry(c: CatalogEntry, comments: bool) -> Dictionary:
 	var e := PoFile.new_entry(c.ctx, c.msgid, c.msgid_plural)
 	if comments:
@@ -373,8 +395,8 @@ func _run(args: PackedStringArray) -> int:
 	var cfg := L10nConfig.shared()
 	if args.has("--write"):
 		var entries := build_catalog(cfg)
-		_write(POT_PATH, render_pot(entries))
-		_write(PSEUDO_PATH, render_pseudo(entries, cfg))
+		if _write(POT_PATH, render_pot(entries)) != OK or _write(PSEUDO_PATH, render_pseudo(entries, cfg)) != OK:
+			return 1
 		print("ExtractStrings: wrote %d entries to %s and %s" % [entries.size(), POT_PATH, PSEUDO_PATH])
 		return 0
 	if args.has("--check"):
@@ -395,6 +417,12 @@ func _run(args: PackedStringArray) -> int:
 			(lint["errors"] as PackedStringArray).size(), (lint["warnings"] as PackedStringArray).size(), "FAIL" if code else "OK"])
 		return code
 	if args.has("--merge"):
+		for a in args:
+			if a.begins_with("--new"):
+				var bad := new_code_error(a.trim_prefix("--new").trim_prefix("="))
+				if bad != "":
+					printerr("ExtractStrings: " + bad)
+					return 1
 		var entries := build_catalog(cfg)
 		for a in args:
 			if a.begins_with("--new="):
@@ -403,14 +431,18 @@ func _run(args: PackedStringArray) -> int:
 				if FileAccess.file_exists(path):
 					printerr("ExtractStrings: %s already exists" % path)
 					return 1
-				_write(path, new_locale_file(code).render())
+				if _write(path, new_locale_file(code).render()) != OK:
+					return 1
+		var failed := false
 		for path in DataDir.list_files(LocaleTable.CATALOG_DIR, "po"):
 			if path == PSEUDO_PATH:
 				continue
 			var merged := merge(PoFile.load_file(path), entries)
-			_write(path, merged.render())
+			if _write(path, merged.render()) != OK:
+				failed = true
+				continue
 			print("ExtractStrings: merged %s" % path)
-		return 0
+		return 1 if failed else 0
 	if args.has("--stats"):
 		print(stats_table(stats(build_catalog(cfg), cfg)))
 		return 0
@@ -430,10 +462,28 @@ static func first_difference(a: String, b: String) -> String:
 	return "length differs (%d vs generated %d lines)" % [la.size(), lb.size()]
 
 
-static func _write(path: String, text: String) -> void:
+static func _write(path: String, text: String) -> Error:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
-		printerr("ExtractStrings: cannot write %s" % path)
-		return
+		printerr("ExtractStrings: cannot write %s (%s)" % [path, error_string(FileAccess.get_open_error())])
+		return FAILED
 	f.store_string(text)
+	var err := f.get_error()
 	f.close()
+	if err != OK:
+		printerr("ExtractStrings: write failed for %s (%s)" % [path, error_string(err)])
+	return err
+
+
+## A --new=<code> value is usable: non-empty, a locale-code shape, not the
+## source language or the pseudo-locale, and a row in the locale table.
+static func new_code_error(code: String) -> String:
+	if code == "":
+		return "--new needs a locale code, e.g. --new=fr"
+	if not RegEx.create_from_string("^[a-z]{2,3}(_[A-Z]{2}|_[A-Za-z]{4})?$").search(code):
+		return "'%s' is not a locale code (expected e.g. fr, pt_BR)" % code
+	if code == Loc.SOURCE_LOCALE or code == PSEUDO_CODE:
+		return "'%s' is not a translatable locale" % code
+	if LocaleTable.shared().by_code(code) == null:
+		return "'%s' has no row in %s; add the LocaleInfo row first" % [code, LocaleTable.PATH]
+	return ""

@@ -35,28 +35,18 @@ static func toggle_flag_missing() -> bool:
 	return Loc.flag_missing
 
 
-## Short enough for the console's detail line: coverage per catalog and the
-## string-lint totals.
-static func l10n_summary() -> String:
+## The catalog report, built once from the checked-in POT (no repo scan and
+## no code lint, so nothing is loaded or instanced inside a live session):
+## "summary" fits the console's detail line, "report" is the --stats table
+## for stdout. The full lints run in ValidateContent and ExtractStrings --check.
+static func catalog_report() -> Dictionary:
 	var cfg := L10nConfig.shared()
-	var entries := ExtractStrings.build_catalog(cfg)
+	var entries := ExtractStrings.entries_from_pot()
+	var rows := ExtractStrings.stats(entries, cfg)
 	var parts := PackedStringArray()
-	for row: Dictionary in ExtractStrings.stats(entries, cfg):
+	for row: Dictionary in rows:
 		parts.append("%s %d/%d (fuzzy %d)" % [row["locale"], row["translated"], row["entries"], row["fuzzy"]])
-	var r := StringRules.lint(cfg, entries)
-	return "%s · lint %d errors, %d warnings" % [" · ".join(parts) if not parts.is_empty() else "no catalogs",
-		(r["errors"] as PackedStringArray).size(), (r["warnings"] as PackedStringArray).size()]
-
-
-## The --stats table plus the first 20 string-lint findings (L-*), for stdout.
-static func l10n_report() -> String:
-	var cfg := L10nConfig.shared()
-	var entries := ExtractStrings.build_catalog(cfg)
-	var lines := PackedStringArray([ExtractStrings.stats_table(ExtractStrings.stats(entries, cfg))])
-	var r := StringRules.lint(cfg, entries)
-	var findings: PackedStringArray = r["errors"] + r["warnings"]
-	lines.append("%d entries · %d lint errors · %d warnings" % [entries.size(), (r["errors"] as PackedStringArray).size(),
-		(r["warnings"] as PackedStringArray).size()])
-	for i in mini(20, findings.size()):
-		lines.append(findings[i])
-	return "\n".join(lines)
+	var summary := "%d entries · %s" % [entries.size(), " · ".join(parts) if not parts.is_empty() else "no catalogs"]
+	var report := "%s\n%d entries in %s (checked in). Lints: ExtractStrings -- --check" % [
+		ExtractStrings.stats_table(rows), entries.size(), ExtractStrings.POT_PATH]
+	return {"summary": summary, "report": report}

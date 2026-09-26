@@ -18,8 +18,9 @@ static func build(c: DevConsole) -> void:
 		LocaleDevActions.toggle_flag_missing()
 		_refresh(c))
 	c.add_button("Catalog report", func() -> void:
-		print(LocaleDevActions.l10n_report())
-		c.set_detail(LocaleDevActions.l10n_summary()))
+		var r := LocaleDevActions.catalog_report()
+		print(r["report"])
+		c.set_detail(r["summary"]))
 	c.add_button("Reset to en", func() -> void:
 		Loc.flag_missing = false
 		LocaleDevActions.set_locale(Loc.SOURCE_LOCALE)
