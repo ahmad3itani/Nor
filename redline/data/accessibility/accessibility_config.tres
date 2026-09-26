@@ -1,0 +1,122 @@
+[gd_resource type="Resource" script_class="AccessibilityConfig" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://accessibility/AccessibilityConfig.gd" id="1_cfg"]
+[ext_resource type="Script" path="res://accessibility/AssistRule.gd" id="2_rule"]
+[ext_resource type="Script" path="res://accessibility/HapticEvent.gd" id="3_hap"]
+
+[sub_resource type="Resource" id="Rule_burnout"]
+script = ExtResource("2_rule")
+cause_prefix = "burnout"
+boss_only = false
+suggest = PackedStringArray("burnout_hurts", "reactor_mode")
+values = [false, 1]
+text = "The Core ran dry a few times."
+
+[sub_resource type="Resource" id="Rule_boss"]
+script = ExtResource("2_rule")
+cause_prefix = ""
+boss_only = true
+suggest = PackedStringArray("damage_assist", "generous_checkpoints")
+values = [1, true]
+text = "Learning a fight takes a few tries."
+
+[sub_resource type="Resource" id="Rule_scanner"]
+script = ExtResource("2_rule")
+cause_prefix = "scanner"
+boss_only = false
+suggest = PackedStringArray("damage_assist", "generous_checkpoints")
+values = [2, true]
+text = "This stretch has stopped you a few times."
+
+[sub_resource type="Resource" id="Rule_clamp"]
+script = ExtResource("2_rule")
+cause_prefix = "clamp"
+boss_only = false
+suggest = PackedStringArray("damage_assist", "generous_checkpoints")
+values = [2, true]
+text = "This stretch has stopped you a few times."
+
+[sub_resource type="Resource" id="Rule_pit"]
+script = ExtResource("2_rule")
+cause_prefix = "pit"
+boss_only = false
+suggest = PackedStringArray("damage_assist", "generous_checkpoints")
+values = [2, true]
+text = "This stretch has stopped you a few times."
+
+[sub_resource type="Resource" id="Rule_room"]
+script = ExtResource("2_rule")
+cause_prefix = ""
+boss_only = false
+suggest = PackedStringArray("damage_assist", "aim_assist")
+values = [2, 1]
+text = "This room has stopped you a few times."
+
+[sub_resource type="Resource" id="Hap_damaged"]
+script = ExtResource("3_hap")
+event = &"player_damaged"
+weak = 0.25
+strong = 0.55
+seconds = 0.16
+
+[sub_resource type="Resource" id="Hap_died"]
+script = ExtResource("3_hap")
+event = &"player_died"
+weak = 0.4
+strong = 0.8
+seconds = 0.35
+
+[sub_resource type="Resource" id="Hap_dodge"]
+script = ExtResource("3_hap")
+event = &"perfect_dodge"
+weak = 0.45
+strong = 0.0
+seconds = 0.07
+
+[sub_resource type="Resource" id="Hap_boss"]
+script = ExtResource("3_hap")
+event = &"boss_defeated"
+weak = 0.35
+strong = 0.75
+seconds = 0.5
+
+[sub_resource type="Resource" id="Hap_clamp"]
+script = ExtResource("3_hap")
+event = &"clamp_dropped"
+weak = 0.2
+strong = 0.65
+seconds = 0.22
+
+[sub_resource type="Resource" id="Hap_challenge"]
+script = ExtResource("3_hap")
+event = &"challenge_finished"
+weak = 0.3
+strong = 0.3
+seconds = 0.2
+
+[resource]
+script = ExtResource("1_cfg")
+aim_cone_deg = PackedFloat32Array(0, 14, 32)
+aim_range_px = PackedFloat32Array(0, 170, 230)
+aim_require_on_screen = true
+damage_scale = PackedFloat32Array(1, 0.5, 0.5, 0.25)
+damage_bosses_only = Array[bool]([false, true, false, false])
+damage_exempt_sources = PackedStringArray("burnout")
+ui_scales = PackedFloat32Array(1, 1.25, 1.5)
+menu_max_height = 250
+menu_panel_width = PackedInt32Array(360, 400, 460)
+boss_deaths = 4
+room_deaths = 5
+window_seconds = 900.0
+cooldown_seconds = 1200.0
+max_per_session = 2
+rules = Array[ExtResource("2_rule")]([SubResource("Rule_burnout"), SubResource("Rule_boss"), SubResource("Rule_scanner"), SubResource("Rule_clamp"), SubResource("Rule_pit"), SubResource("Rule_room")])
+haptics = Array[ExtResource("3_hap")]([SubResource("Hap_damaged"), SubResource("Hap_died"), SubResource("Hap_dodge"), SubResource("Hap_boss"), SubResource("Hap_clamp"), SubResource("Hap_challenge")])
+background_dim = PackedFloat32Array(0, 0.3, 0.55)
+flash_max_hz = 3.0
+rebind_timeout_sec = PackedFloat32Array(5, 10, 0)
+rebind_arm_sec = 0.15
+rebind_trigger_threshold = 0.6
+jump_latch_max_frames = 40
+auto_advance_base_s = 1.2
+auto_advance_per_char_s = 0.045
