@@ -78,6 +78,15 @@ The theme, `data/districts/undercity.tres`:
 
 - **Lowlight's new rooms (M7)** keep the Lowlight palette (`tools/roomgen/lowlight_style.py`: RED, CYAN, AMBER, GREEN, VIOLET). Power Block's Transformer Core arcs are red until the grid is rerouted, then cyan; Security Station adds white security light with red strobes; the smugglers mark their route with violet chalk-eye neon.
 
+### Story colours (M8)
+World state and memory vignettes add no new reserved colour. The rules (D-115, D-120, D-123):
+- **Dead light is grey `0.28, 0.28, 0.3`** (Wake's `CollectorMarkDead` tube, after the Collector falls). It is never a cue: a grey tube means "off", never "secret" or "danger".
+- **Memory blue is full-screen only inside a memory vignette** (the tree is paused, nothing there can hurt Rook): tones `#2a4050` / `#5f93b3` / `#9fd8ff` (the reserved memory pale blue, used on purpose). The vignette's edge burn is a **neutral** static `#c8ccd8`, not Core red. **Core red `#e8283c` appears only on `redacted` shapes.** Nothing in Act I ties memories to the Core, so the HUD Core bar never pulses on a memory.
+- **Amber `OrrOnAir`** (the Relay's on-air lamp after Orr's choice) is the Lowlight AMBER neon, a small prop at Orr's desk, never an outline.
+- **Orr's repeater pips** in the Relay are Orr's radio cyan, the sanctioned cyan in a hub that has "almost no cyan" (K-M8-10).
+- **The NPC pending tick** (a 2×5 px mark over an NPC with an unheard arc beat, or over the radio board with new chatter) is `UiTheme.TEXT` with a 1 px dark outline, defined once as `NPC.PENDING_TICK_COLOR`. It is never amber (the elite outline) or red, and never on the map.
+- World-state switches are decor only (§3 roles still apply inside them): a banner coming down, lamps going dark, cargo left behind.
+
 ## 4. Outlines and shading
 - **Characters:** a 1 px dark outline (`#1a1320` range), colored per region, with no pure black. Enemies use a slightly warmer outline than the environment so they separate at speed.
 - **Environment:** no outlines. Shape comes from value steps: 3 values per material, plus 1 edge highlight on top edges (the `edge_color` in the theme).
@@ -121,4 +130,4 @@ The theme, `data/districts/undercity.tres`:
 ## 11. Sourcing rules (bible §3, §40)
 - Study the reference games' principles, never their assets, characters, silhouettes or maps.
 - AI-generated imagery may be used for **ideation and reference only**. Final assets need consistency with this document, clean-up, animation compatibility and clear commercial rights.
-- **Checklist for any delivered asset:** right canvas and scale? Origin correct? Palette from the district theme? Reserved colors respected? Readable with bloom off and flash reduction on? Named and exported to spec?
+- **Checklist for any delivered asset:** right canvas and scale? Origin correct? Palette from the district theme? Reserved colors respected? Readable with bloom off and flash reduction on? Named and exported to spec? Story marks (the NPC pending tick, dead lights, memory tones) kept to their §3 story rules, never a reserved gameplay colour outside a vignette?

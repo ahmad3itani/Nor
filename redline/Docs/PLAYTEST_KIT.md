@@ -1,8 +1,10 @@
-# REDLINE Playtest Kit (M4, updated for M7)
+# REDLINE Playtest Kit (M4, updated for M7 and M8)
 
 This is how to run the bible §44 vertical-slice test with real people and turn their sessions into a decision. Bible §36 M4 says: "Playtest and measure deaths, completion time, confusion, favorite mechanics, control complaints and performance. **Change design before scaling.**"
 
 > **Since M7 (batch 1), New Game is the Act I campaign.** It starts unarmed in Undercity/Wake and plays about 20–37 min (estimated, K-45) through the Undercity and the Collector Drone before the Relay, then Lowlight to Warden Krail. The old slice (full kit, Relay start) is the **"Slice (Relay start)"** title entry, which exists in **debug builds only**. Which build the §44 round uses is an open decision (D-068, K-58).
+
+> **Since M8, the Act I story plays on the Undercity campaign start only.** A first-time player sees the opening in Wake, the Collector and Krail intros, the Relay arrival, the first-rest memory at `uc_lift` and the Act I close before the card, which now reads "ACT I COMPLETE — RUN" with up to three "where things stand" lines. The debug "Slice (Relay start)" entry plays **no** opening and no Relay arrival (D-139, with D-068), so use the campaign start (onboarding `enforce = true`) if the round should judge the story. Every scene can be skipped with a hold (0.8 s on a first view); a tap only advances a line.
 
 The game records and summarises most of this by itself. What it can't do is find the testers and watch them play. That part is yours.
 
@@ -41,6 +43,7 @@ In Settings on the title screen:
 - Cap a campaign session at **75 minutes** (a Relay-start session at 45). If they haven't reached Krail by then, that is data. Write down the minute they reach the Relay either way.
 - Keep the §42 timeline on the note sheet (§9): the analyzer measures most of it, but your minute marks catch what the events can't (for example, when they *understood* the Core).
 - Use the note sheet below.
+- **Story beats (M8):** note whether they watch or skip the opening, both boss intros, the Relay arrival and the Act I close, and whether they try to skip by tapping (a tap only advances) or holding. Note what they do with the first-rest memory (the vignette at the first Anchor rest: watch, pan to the hidden detail, skip) and whether they read the new card header and its lines. Mashing through a scene is data (K-M8-2).
 
 **After:**
 1. The **in-game survey** appears on the slice-complete card. If they stopped early, open it from the pause menu under *Playtest survey*. It has 14 button-only questions and takes about 2 minutes.
@@ -83,12 +86,15 @@ This writes `REPORT.md` plus `heatmaps/<Room>.png`. The report contains:
 - favourite mechanics;
 - controls;
 - **real frame times per room**;
+- **Story (M8):** per sequence the views, first views, first-view skip rate and median watched/nominal seconds (a warning when first-view skips pass 50%, D-135); memory scenes (first views, skips, median watch, details found, fragments never remembered); arc beats heard and the Orr on-air split; Act I complete; endings (dev theatre replays ignored); the Act I card's standing lines;
 - the variant comparison.
 
 **The Undercity timeline** gives the median minute of each §42 beat: Pulse Blade granted, first dodge, Maintenance Shaft entered (a proxy for the first composition, about 2–3 min early), first secret, first NPC (the Radio), First Pursuit entered, first Flow hint, Core HUD shown, first Anchor rest, rest at `uc_lift`, Collector fight started, Collector defeated, Relay reached. Which sessions count:
 - **Counted:** sessions of kind `new` (the New Game button) whose first room is Wake. These give the medians.
 - **Separate table:** `continue` sessions that start in an Undercity room, measured from the cumulative play-time stamp.
 - **Excluded (and counted at the bottom):** `new_relay` debug sessions ("Slice (Relay start)") and anything else.
+
+Since M8 the timeline has a last column, **Median min minus cinematic_s**: the beat's minute minus the locking-scene time before it (sequences that took control). `cinematic_s` also counts memory-vignette time, but a vignette pauses the game, so that time never appears in the session clocks and is not subtracted again. The recorder writes `seq_start` / `seq_end` (with `first`, `locked`, the step reached and whether it was skipped), `memory_start` / `memory_end`, `arc`, `choice`, `ending_start` / `ending`, and new `slice_complete` fields (memories remembered, details found and pending, arc beats heard, arc stages, the Orr on-air result, Act I complete, the standing lines shown).
 
 Compare the medians with §42 and D-083: move/jump/interact and the blade in 0–5 min; dodge, the first composition and the first secret in 5–15; the first NPC, the safe Core introduction, the first Anchor and the first mini-boss in 15–30; the Relay in 30–60. If the median Relay arrival is under about 25 min, the Undercity is too short (D-083).
 
@@ -131,6 +137,8 @@ Time to first death:        Relay reached (min):    Krail reached? y/n   Act I f
   Blade pickup:      First dodge:        First composition (Shaft Floor 2):
   First secret:      Core hint (Broken Lift):              First rest (uc_lift):
   Collector start:   Collector win:      Relay arrival:
+Story (M8): opening watched/skipped:   intros watched/skipped:   arrival:   close:
+  First-rest memory (watched / skipped / found the detail):     Read the card header/lines? y/n
 Shutter moments (which shutter, made it / went low / missed):
 Chase catches (which checkpoint, their reaction):
 Hints I had to give (when / where / what):

@@ -70,7 +70,8 @@ If coverage ever passes 85%, halve the Undercity stashes (180 → 90) first, the
 
 ## Other currencies
 - **Core Shards** (5): each adds +1 Circuit capacity (4 → 9). Never sold. Three are Dash revisits (`cs_alley_dash`, `cs_smuggler_dash`, `cs_uc_tunnel_dash`), so capacity before Krail is at most 6. See `CIRCUITS.md`.
-- **Memory Fragments** (5: `mf_undercity_01`, `mf_lowlight_01`..`04`): story and lore only. Never spent.
+- **Memory Fragments** (5: `mf_undercity_01`, `mf_lowlight_01`..`04`): story and lore only. Never spent. Since M8 each recovered fragment unlocks its memory vignette (played at an Anchor or from the journal); it is still never spent, and remembering pays nothing (D-112).
+- **NPC arcs** (M8) are economy-neutral: arc dialogue carries no `give_*` (validator), so the re-clear headroom is untouched (D-122).
 - **Death:** unbanked Scrap drops as one recoverable cache (bible §7, D-031). Settings can turn loss off.
 
 ## Changing prices

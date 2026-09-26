@@ -1,4 +1,4 @@
-# REDLINE Content Pipeline (M6, extended in M7)
+# REDLINE Content Pipeline (M6, extended in M7 and M8)
 
 How to add rooms, enemies and art without touching engine code, and how to prove they work. Every command below runs from `redline/`.
 
@@ -25,6 +25,9 @@ The validator checks:
   - globally unique `persist_id`s;
   - enemies with data;
   - the **content protocol** (M7): any node may define `func content_errors(room: Node) -> PackedStringArray` (placement rules, e.g. a Breaker in grounded reach, a shutter column too far above the floor, a chase checkpoint off a block top) and `func content_flags() -> Dictionary` (flags and conditions it produces or reads, e.g. a lever's flag, a shutter's latch, a hint's `skip_when`). The validator runs it for every node, independent of the node's type.
+- the **resource content protocol** (M8): any resource in `data/` may define `func content_flags() -> Dictionary` (flags it sets and reads, conditions it checks) and `func content_check() -> PackedStringArray` (checks that read other files; no room argument). Sequences, sequence steps, memory scenes, arcs, endings, acts, hub music layers and `MapMarker` notes use it. Producers and consumers are kept as multimaps (`ContentValidator.producers` / `consumers`), so a second producer is visible. Tests lint an in-memory resource with `ContentValidator.check_resource(res)`.
+- **World-state switches are visual only** (M8, D-123): a solid block, enemy, pickup or interactable under a `WorldStateSwitch` is an error ("SolidCrate under a WorldStateSwitch (visual only)").
+- **Story** (M8): see "Story content" below.
 - **Quests and dialogue:** every flag that data requires must be set somewhere. Flags that are set but never read produce warnings.
 - **Art:** the Art Bible checks (below).
 - **Collectible tracker:** a table per room.
@@ -75,6 +78,15 @@ python3 -B tools/roomgen/uc_wake.py            # regenerate (byte-identical when
 | `chase(cid, data, path, speed_scale, start_area, end_area, checkpoints)` | A `ChaseDirector` with `ChaseCheckpoint`s (`data/world/chase/<data>.tres`) |
 | `flow(…, drain_scale, drain_floor)` · `enemy(…, ai, data)` · `npc(…, present_when)` · `hint(…, skip_when)` | Per-zone drain, enemy data variants and dormant enemies, NPCs that appear by condition, hints that stay silent by condition |
 
+**Helpers added in M8:**
+
+| Helper | Builds |
+|---|---|
+| `switch(name, condition, parent="Props")` | A visual-only `WorldStateSwitch` (children added with `parent=` the returned path). Name it; never rely on numbered `Neon#`/`Decor#` names, which shift when a room is regenerated |
+| `npc(profile, x, y, …, present_when, name=)` | An NPC post: `NPC_<id>` is the primary node, a second post is `NPC_<id>_<post>` with an exclusive `present_when` |
+| `mapmarker(x, y, label, resolved_when, kind, shown_when=)` | A map pin; `kind = 2` (NOTE) with `shown_when` is a rumour or arc note |
+| `sequence_trigger(name, seq_id, x, y, w, h, play_when, autoplay, require_spawn, once)` | A `SequenceTrigger` for `data/sequences/<seq_id>.tres`, always named. Append new nodes at the end of a room script, so existing numbered names don't move |
+
 **Decor:** a `decor()` or `neon()` origin is its **bottom-centre**, so `y` is the prop's bottom edge. Props placed by their top draw inside ceilings (several M7 specs did, D-098). Decor draws no text.
 
 The `.tscn` files are what the game loads. If you edit a room in Godot, `--check` will report it as drifted; after that, mirror the change in the script or stop regenerating that room.
@@ -104,6 +116,57 @@ The `.tscn` files are what the game loads. If you edit a room in Godot, `--check
 - A `jump` target must be *on* the platform, not in a gap before it: the steer stops a few px short (Collector Bay's catwalks needed 210/360, not 190/330).
 - An interact needs Rook's 12 px body to overlap the use area; stop inside it, not beside it.
 - New M7 steps: `["shoot", n, aim]`, `["dodge", x]`, `["dodgejump_airdodge", edge, x, delay_frames]`.
+
+## Story content (M8)
+Everything below is data. All story state is flags, bool or int only (D-116); nothing adds a `GameState` key. Run the full gate after any story change; `ValidateContent` lints every rule named here.
+
+**Flag names** (one namespace): `seen_seq_<id>`, `<boss>_intro_seen`, `act1_complete`, `ending_seen_<id>`, `mem_seen_<scene>`, `mem_detail_<scene>`, `memories_remembered` (int), `arc_<npc>_<stage>`, `arc_<npc>_stage` (int), `arcbeat_<npc>_<stage>`, `bond_<npc>_<fact>`, `thread_<npc>_<name>`, `orr_air_named` / `orr_air_ghost`. Bookkeeping prefixes (`seen_seq_`, `mem_seen_`, `mem_detail_`, `ending_seen_`, …) are never reported as unread.
+
+**Conditions** (`Game.check_condition`): `flag:x`, `ability:x`, `collected:x`, `atleast:flag:n`, `count:<metric>:<n>` (metrics `fragments`, `shards`, `circuits`, `secrets`) and `!` in front of any of them. There is no AND/OR: AND is a list or a nested switch, OR is per caller (D-119).
+
+### A scripted sequence
+1. Create `data/sequences/<id>.tres` (`SequenceData`): `id`, `room` (needed for actor lookups), `steps`, `seen_flag` (defaults to `seen_seq_<id>`), `lock_input`, `repeat_locks_input`, `hide_hud`, `letterbox`, `budget_seconds`, `repeat_budget_seconds`, `theatre_only`. Steps live in `cinematics/steps/`: `SeqLine` (speaker from `data/sequences/speakers.tres`, "" = narration), `SeqWait`, `SeqFade`, `SeqLetterbox`, `SeqCamera`, `SeqActorMove`/`Face`/`Flash`, `SeqRookPose`, `SeqShake`, `SeqSfx`, `SeqMusic`, `SeqFlag`, `SeqMark`, `SeqTitleCard`, `SeqCredits`.
+2. Play it from a room with `sequence_trigger(...)` (`play_when` conditions, `autoplay`, `require_spawn`, `once`), a `BossArena.intro_sequence`, or an `ActData.close_sequence`. A player-reachable sequence that nothing plays is a warning.
+3. Rules the linter enforces:
+   - the first view fits `budget_seconds` and the repeat view `repeat_budget_seconds`; a line costs 1.0 s + 0.065 s per character at subtitle speed Normal;
+   - only `SeqFlag` sets flags, and `only_when` never reads a flag a later step sets;
+   - actors are `@` ids (`@boss`, `@arena` need a BossArena room) or `Interactables/NPC_<id>` where `<id>` is an NPC profile; **never Rook** (Act I sequences never move him, D-109);
+   - a non-locking sequence (barks, repeat boss intros) cannot use camera, pose, letterbox or fade;
+   - a `CROUCH` pose needs a later `STAND`; `hold_for_input` is for theatre-only sequences.
+4. Every step implements `run()` and `finish()`: a skip or INSTANT calls the remaining `finish()`s, so `finish()` must leave the same end state as a full play. An abort calls no `finish()` and only restores (D-106).
+5. Test it in AUTO (`StoryTestKit` / `CinematicMode.set_mode(AUTO)`), check skip parity, and look at it in the dev console's sequence theatre and `CaptureTour --tour=story`.
+
+### A memory scene
+1. A fragment's vignette: `data/memories/<fragment_id>.tres` (`MemorySceneData`, `source = FRAGMENT`, `fragment` = the `data/lore` resource, same id). A memory not tied to a pickup: `source = SURFACED` with a `title` and an `unlock_condition`.
+2. Fill `timeline_slot` (spaced by 100; 0 = undated), `tableau_width`, `start_view_x`, `shapes` (`MemoryShape`, tone 0..2; `redacted` shapes are the only Core red, D-115), 3–6 `beats` (`MemoryBeat`: UPPERCASE speaker ≤ 16 chars, short text, `view_x`, `burn`, `min_seconds` 0.2–2.0) and optionally one hidden detail (`detail_text`, `detail_x`, `detail_from_beat`, 0-based). The validator rejects a detail the start view or a beat's auto-pan already reveals, or one out of reach.
+3. Vignettes play at Anchors (at most `MemoryConfig.max_per_rest` per rest) and from the journal gallery, never on pickup (D-112). Every player-facing string of the player and gallery lives in `data/memories/memory_config.tres`.
+
+### An NPC arc stage or reaction
+1. Arcs live in `data/arcs/arc_<npc>.tres` (`NpcArc`): an ordered `stages` spine and unordered `reactions`, each an `NpcArcStage` (`id`, `enter_all`, `enter_any`, `min_stage` for reactions, `set_flags`, `beat_rules`, `idle_rules`, `journal_note`, `optional`).
+2. Beats play once: each beat sets its `arcbeat_<npc>_<stage>` flag and the beat rules end with an unconditional rule. Idles set nothing and offer no choice. Reactions carry no idles or journal note. Arc dialogue gives nothing (no `give_*`, D-122).
+3. Pick order for the NPC: story rules > pending beat > stage idle > fallback (D-117). A pending beat shows the neutral tick over the NPC (D-120); a bodiless NPC opts in with `NpcProfile.cue_new_lines`.
+4. Arcs set no world flags. The world reacts through switches keyed on `arc_<npc>_<stage>` or thread flags.
+5. A choice is a `DialogueChoice` list on a beat's dialogue: choice flags must be disjoint, and automation always picks choice 0.
+
+### A world-state switch, an NPC post or a map note
+- **Switch:** `switch("Name", "condition")` in the room script, then its visual children (decor, neon) with `parent=`. Visual only: no collision, rewards, enemies or interactables under it (linted). Pair exclusive states as `!flag:x` / `flag:x`. Add the row to `DISTRICTS.md` "World state".
+- **NPC post:** a second `npc(profile, …, name="NPC_<id>_<post>")` with a `present_when` exclusive to the primary's. Sequences may target only the primary `NPC_<id>`. The map pin follows the present post.
+- **Map note:** `mapmarker(x, y, "Who: what", resolved_when, kind=2, shown_when="…")`. Only in rooms the map knows, never within 96 px of a secret (§20), and the one note mechanism for rumours and arcs (D-124). Keep the label short; the knowledge lint reads it.
+
+### An ending, an act or a future flag
+- **Ending:** `data/endings/<id>.tres` (`EndingData`: `id`, `title`, `tagline`, `priority`, `hidden`, `choice_condition`, `requires`, `requires_memories`, `requires_arcs`, `sequence`). The sequence is `theatre_only`, ends with `SeqCredits` as its last blocking step and sets `ending_seen_<id>`. `EndingResolver` is pure; `EndingDirector` plays it (the dev Ending theatre runs in a `FlagSandbox`, D-128).
+- **Act:** `data/story/act<n>.tres` (`ActData`: `act`, `name`, `complete_flag`, `close_sequence`, `standing` lines, `max_standing`). The Act I card shows the fallback line plus at most `max_standing - 1` passing lines (D-131).
+- **Future flag:** declare it in `data/story/future_flags.tres` (`FutureFlag`: `flag`, `act`, `note`). A future flag counts as produced; only `data/endings` may read it, and a real producer is an error until the entry is removed when its act lands (D-127).
+
+### The knowledge lint (D-132)
+`data/story/knowledge_lint.tres` lists terms Act I text must not use (Project REDLINE, Architect, The Null, neural, harvest, Redline disaster, conscious, "Pulse is", "stores memor", "made of memor", research, Rook). `ValidateContent` warns on any hit in text a player can see in Act I: dialogue and choices, fragments, memory text, sequence lines (theatre-only sequences exempt), standing lines, map notes and the gallery strings. `data/endings` is exempt, so review ending text by hand (D-137). Today the one expected warning is `data/npcs/orr.tres` "Rook" (D-109).
+
+### Tools
+- **Dev console "Story…"** pages: Sequence theatre (view full / repeat / auto), Memory theatre, Story state (the presets), Arcs (force the next spine stage), Ending theatre, Replay boss intro (full), the sequence inspector toggle and a toggle that lists the `test_*` fixture sequences. Everything goes through `DevActions` (`preview_sequence`, `play_sequence`, `play_ending`, `satisfy_ending`, `force_arc_stage`, `replay_act1_close`, …).
+- **Story presets** (`data/dev/story_presets.tres`, `StoryPresets.apply(id)`): fresh, collector_down, relay_met, repeaters_2, dead_air_done, grid_rerouted, charted, krail_down, act1_complete. Each holds its full cumulative flag list.
+- **`StoryTestKit`** (tests): sandbox, presets, the Act I max state, AUTO/INSTANT plays, skip and the restore contract.
+- **`SequenceInspector`** and the DebugOverlay ACT/SEQ lines show the running step, skip reasons and the hold bar.
+- **Placeholder sfx** added for M8: `radio_static`, `memory_open`, `memory_beat`, `memory_tear`, `memory_detail` (every placeholder sfx stays under 1.0 s, `test_feedback`).
 
 ## Enemies
 Enemies are data (bible §32, "composable modules"). An `EnemyData` holds a `brain` (`EnemyBrain`) assembled from modules in `enemies/modules/`:
@@ -142,6 +205,7 @@ The rules are in `Docs/ART_BIBLE.md`. Mechanically:
 
 ## Dev console (debug builds, backquote key)
 - Teleport to any room entry.
+- Story pages (M8, see above).
 - Spawn any enemy.
 - Quick boss restart.
 - Unlock-all profile.
