@@ -225,12 +225,28 @@ func test_demo_first_run_follows_demo_settings_file() -> void:
 	check(bool(s.get("first_run")), "no demo settings file: first run")
 	check(s.get("_path") == path, "reads and writes the demo file")
 	check(not bool(s.get("playtest_recording")), "demo recording default applied")
-	DirAccess.make_dir_recursive_absolute(dir)
-	check(ConfigFile.new().save(path) == OK, "demo settings written")
+	# No profile save made the dir first: Settings' own save must still land.
+	check(s.call("save_settings") == OK, "first settings save of a fresh demo succeeds")
+	check(FileAccess.file_exists(path), "demo settings written")
 	BuildInfo.load_demo_settings(s, path)
 	check(not bool(s.get("first_run")), "a saved demo settings file retires the row")
 	s.free()
 	AtomicJson.remove_tree(dir)
+
+
+## The TitleMenu first-run save (D-168) persists to the full game's file and
+## to a redirected demo's own, never to a test or tour path.
+func test_live_settings_path() -> void:
+	BuildInfo.set_force_demo(0)
+	check(BuildInfo.is_live_settings_path(BuildInfo.DEFAULT_SETTINGS_PATH), "full game file")
+	check(not BuildInfo.is_live_settings_path(BuildInfo.DEMO_SETTINGS_PATH), "demo file outside a demo")
+	check(not BuildInfo.is_live_settings_path("user://test_settings.cfg"), "test path")
+	BuildInfo.force_demo = 1
+	check(BuildInfo.redirects_dirs(), "forced debug demo redirects")
+	check(BuildInfo.is_live_settings_path(BuildInfo.DEMO_SETTINGS_PATH), "redirected demo file")
+	BuildInfo.force_feature_tag = true
+	check(not BuildInfo.is_live_settings_path(BuildInfo.DEMO_SETTINGS_PATH), "a demo export keeps its own user dir")
+	BuildInfo.set_force_demo(-1)
 
 
 ## The boot order of a redirected demo (debug --demo, Web): Settings._ready

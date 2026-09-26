@@ -205,6 +205,10 @@ static func apply_demo_dirs() -> void:
 	_redirect("Platform", "store_dir", DEMO_PLATFORM_DIR, DEFAULT_PLATFORM_DIR)
 	_redirect("Settings", "_path", DEMO_SETTINGS_PATH, DEFAULT_SETTINGS_PATH)
 	_redirect("Playtest", "dir", DEMO_PLAYTEST_DIR, DEFAULT_PLAYTEST_DIR)
+	# ConfigFile.save() makes no parent dirs: without user://demo/ the first
+	# settings save of a fresh redirected demo (before any profile save made
+	# it) fails and its accessibility choices are lost (review, T05).
+	DirAccess.make_dir_recursive_absolute(DEMO_SETTINGS_PATH.get_base_dir())
 	_reload_settings_after_boot()
 
 
@@ -239,6 +243,16 @@ static func load_demo_settings(s: Node, path: String = DEMO_SETTINGS_PATH) -> vo
 		s.set("playtest_recording", c.recording_default)
 	s.call("load_settings", path)
 	s.set("first_run", not FileAccess.file_exists(path))
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+
+
+## Whether `path` is a settings file the player's choices persist to: the
+## full game's, or a redirected demo's own. TitleMenu's first-run save (D-168)
+## asks this so a redirected demo retires its row too (T01 merge check).
+static func is_live_settings_path(path: String) -> bool:
+	if path == DEFAULT_SETTINGS_PATH:
+		return true
+	return path == DEMO_SETTINGS_PATH and redirects_dirs()
 
 
 ## Puts back every value apply_demo_dirs changed that nothing changed since.
