@@ -96,6 +96,9 @@ func _start_fight(seen: bool) -> void:
 		# and shift every later frame (CaptureTour s_boss_fight).
 		ctx.camera = null
 		await Cinematics.play(intro_sequence, ctx)
+		# Locals live as long as a suspended coroutine; drop them before the
+		# timers so a quit mid-timer leaks nothing at exit.
+		ctx = null
 		await _legacy_intro(seen)
 		_release_boss()
 		return
@@ -103,14 +106,17 @@ func _start_fight(seen: bool) -> void:
 		# Repeat: a non-locking overlay (repeat_locks_input = false). Rook
 		# never loses control on a retry; the boss acts on the M7 timer.
 		_play_overlay(ctx)
+		ctx = null
 		await _timer(retry_intro_time)
 		_release_boss()
 		return
 	var res := await Cinematics.play(intro_sequence, ctx)
+	ctx = null
 	if res.refused:
 		# Another locking play owns Cinematics (a preview, the story tour):
 		# the gates are already shut, so fall back to the M7 intro rather
 		# than leave a sealed arena with a sleeping boss.
+		res = null
 		await _legacy_intro(seen)
 		_release_boss()
 		return
@@ -120,6 +126,7 @@ func _start_fight(seen: bool) -> void:
 			# in full next time. A finished or skipped intro stays seen.
 			Game.set_flag("%s_intro_seen" % boss_id, false)
 		return
+	res = null
 	await _timer(post_intro_delay)
 	_release_boss()
 

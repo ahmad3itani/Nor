@@ -801,7 +801,8 @@ func _bad_arc(key: String) -> NpcArc:
 	owner.npc_id = "t"
 	owner.display_name = "T"
 	owner.rules = [fb]
-	owner.arc = arc
+	# Not owner.arc = arc: with lint_owner that is a reference cycle, and
+	# content_check never reads the owner's arc (the cycle leaked at exit).
 	arc.lint_owner = owner
 	return arc
 
