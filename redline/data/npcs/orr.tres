@@ -48,7 +48,7 @@ text = "All three? The static's gone. I can hear Warden Krail's patrol codes cle
 [sub_resource type="Resource" id="orr_report_l1"]
 script = ExtResource("line")
 speaker = "Orr"
-text = "He's pulling something up the Bell Tower lift every night. Same crates they carried you out in."
+text = "He's pulling something up the Bell Tower lift every night. Same crates they meant to carry you out in."
 
 [sub_resource type="Resource" id="orr_report_l2"]
 script = ExtResource("line")

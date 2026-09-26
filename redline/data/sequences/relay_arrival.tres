@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SequenceData" load_steps=17 format=3]
+[gd_resource type="Resource" script_class="SequenceData" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://cinematics/SequenceData.gd" id="1_seq"]
 [ext_resource type="Script" path="res://cinematics/SequenceStep.gd" id="2_step"]
@@ -45,12 +45,20 @@ script = ExtResource("7_line")
 speaker_id = "orr"
 text = "Top gallery. Told you I'd leave it open."
 label = "orr gallery"
+only_when = "flag:orr_radio_after"
+
+[sub_resource type="Resource" id="Resource_relay_arrival_06b"]
+script = ExtResource("7_line")
+speaker_id = "orr"
+text = "Top gallery. Door's open."
+label = "orr gallery (no promise heard)"
+only_when = "!flag:orr_radio_after"
 
 [sub_resource type="Resource" id="Resource_relay_arrival_07"]
 script = ExtResource("7_line")
 speaker_id = "orr"
-text = "Come on down. We're friendly. Mostly."
-label = "orr friendly"
+text = "Come on down. The kettle's still hot."
+label = "orr come down"
 
 [sub_resource type="Resource" id="Resource_relay_arrival_08"]
 script = ExtResource("3_camera")
@@ -63,5 +71,5 @@ script = ExtResource("1_seq")
 id = "relay_arrival"
 room = "res://world/rooms/lowlight/Relay.tscn"
 preview_entry = &"from_undercity"
-steps = Array[ExtResource("2_step")]([SubResource("Resource_relay_arrival_00"), SubResource("Resource_relay_arrival_01"), SubResource("Resource_relay_arrival_02"), SubResource("Resource_relay_arrival_03"), SubResource("Resource_relay_arrival_04"), SubResource("Resource_relay_arrival_05"), SubResource("Resource_relay_arrival_06"), SubResource("Resource_relay_arrival_07"), SubResource("Resource_relay_arrival_08")])
+steps = Array[ExtResource("2_step")]([SubResource("Resource_relay_arrival_00"), SubResource("Resource_relay_arrival_01"), SubResource("Resource_relay_arrival_02"), SubResource("Resource_relay_arrival_03"), SubResource("Resource_relay_arrival_04"), SubResource("Resource_relay_arrival_05"), SubResource("Resource_relay_arrival_06"), SubResource("Resource_relay_arrival_06b"), SubResource("Resource_relay_arrival_07"), SubResource("Resource_relay_arrival_08")])
 budget_seconds = 13.0
