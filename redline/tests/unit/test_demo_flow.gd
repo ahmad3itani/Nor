@@ -412,6 +412,9 @@ func test_settings_recording_default_off_in_demo() -> void:
 
 
 func test_demo_keeps_every_setting() -> void:
+	# Closing Settings saves: to a temp file (M9 T14, test_zz_user_dir_clean).
+	var real_path: String = Settings._path
+	Settings._path = "user://test_demo_flow_settings.cfg"
 	var host := await _boot_main(TUNNEL)
 	check(host.open(&"settings"), "settings open")
 	var full := _labels(host.settings)
@@ -423,6 +426,8 @@ func test_demo_keeps_every_setting() -> void:
 	# Row names only: values may differ (recording defaults off in a demo).
 	var names := func(rows: Array) -> Array: return rows.map(func(r: String) -> String: return r.get_slice(":", 0))
 	check(names.call(full) == names.call(demo) and full.size() > 3, "the demo has every setting (§24): %s vs %s" % [full, demo])
+	Settings.remove_settings_files(Settings._path)
+	Settings._path = real_path
 
 
 # --- ACT_CLOSE, dev routes -----------------------------------------------------------

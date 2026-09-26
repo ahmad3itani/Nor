@@ -21,6 +21,7 @@ var root: Node2D
 var save_dir: String
 var platform_dir: String
 var _settings: Dictionary = {}
+var _settings_path: String = ""
 var _variant: String = ""
 ## [Signal, Callable] connected through listen(), dropped in teardown.
 var _conns: Array = []
@@ -45,6 +46,9 @@ func setup() -> void:
 	ChallengeLibrary.data_dir = FIXTURES
 	ChallengeLibrary.clear_cache()
 	_settings = Settings.snapshot()
+	# Menus that close Settings save it: to a temp file (M9 T14).
+	_settings_path = Settings._path
+	Settings._path = settings_path()
 	_variant = Settings.playtest_variant
 	Settings.playtest_variant = ""
 	Settings.hitstop_scale = 1.0
@@ -90,10 +94,16 @@ func teardown() -> void:
 		AtomicJson.remove_tree(d)
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
 	Settings.restore(_settings)
+	Settings.remove_settings_files(settings_path())
+	Settings._path = _settings_path
 	Settings.playtest_variant = _variant
 	CinematicMode.theatre = false
 	Game.new_game()
 	await t.physics_frames(2)
+
+
+func settings_path() -> String:
+	return save_dir + "_settings.cfg"
 
 
 static func fx(path: String) -> ChallengeData:

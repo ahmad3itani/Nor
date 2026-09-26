@@ -22,7 +22,13 @@ var bot: RouteBot
 var _saved_onboarding: OnboardingConfig
 
 
+## Anchor rests and entries save: into a temp dir, never the developer's
+## real saves (M9 T14, test_zz_user_dir_clean).
+const TEMP_SAVES := "user://test_lowlight_m7_routes_saves"
+
+
 func before_each() -> void:
+	SaveManager.save_dir = TEMP_SAVES
 	_saved_onboarding = Game.onboarding
 	root = Node2D.new()
 	add_child(root)
@@ -42,6 +48,8 @@ func after_each() -> void:
 	dialogue_box.queue_free()
 	bot = null
 	Game.new_game()
+	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
+	AtomicJson.remove_tree(TEMP_SAVES)
 	await physics_frames(2)
 
 

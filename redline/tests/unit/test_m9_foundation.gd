@@ -622,6 +622,9 @@ func test_first_run_row_gone_after_new_game() -> void:
 
 
 func test_settings_back_from_title_refocuses_settings_row() -> void:
+	# Closing Settings saves: to a temp file (M9 T14, test_zz_user_dir_clean).
+	var real_path: String = Settings._path
+	Settings._path = "user://test_m9_foundation_settings.cfg"
 	var host := await _boot_main("")
 	var t := _title_of(host)
 	check(t.is_open(), "title up")
@@ -636,6 +639,8 @@ func test_settings_back_from_title_refocuses_settings_row() -> void:
 	check(t.focused_index() == settings_row, "focus returns to the Settings row (%d, want %d)" % [t.focused_index(), settings_row])
 	var handlers := host.settings.closed.get_connections().size()
 	check(handlers == 2, "one host handler plus this test's (%d)" % handlers)
+	Settings.remove_settings_files(Settings._path)
+	Settings._path = real_path
 
 
 func test_pause_run_rows_with_force_active() -> void:
