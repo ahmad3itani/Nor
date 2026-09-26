@@ -104,10 +104,14 @@ func earning_allowed() -> bool:
 
 ## Lifetime-only bookkeeping (the challenge feat whitelist, R02.3) may happen:
 ## like earning_allowed() but a live run does not block it, and the taint is
-## read from the real profile, never the sandbox.
+## read from the real profile, never the sandbox. A challenge run keeps
+## theatre on until its restore (after challenge_finished), so theatre only
+## blocks outside a run: that is the Ending theatre.
 func lifetime_allowed() -> bool:
 	var profile: GameState = Game.held_profile if Game.held_profile != null else Game.state
-	return active() and not CinematicMode.theatre and (not profile.dev_tainted or dev_allow_tainted)
+	var in_run := Challenges.active() or Challenges.finishing()
+	return active() and (in_run or not CinematicMode.theatre) \
+		and (not profile.dev_tainted or dev_allow_tainted)
 
 
 ## The in-run pass of lifetime-only achievements (R02.3).

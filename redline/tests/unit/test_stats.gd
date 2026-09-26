@@ -39,6 +39,7 @@ func before_each() -> void:
 func after_each() -> void:
 	await get_tree().process_frame
 	get_tree().paused = false
+	CinematicMode.theatre = false
 	Challenges.reset_for_tests()
 	Platform.reset_after_tests()
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
@@ -237,6 +238,28 @@ func test_challenge_feat_whitelist_counts_lifetime_only() -> void:
 	check(_lt(&"boss_nohit_warden_krail") == 1.0, "a dev-tainted profile counts nothing")
 
 
+## T04 keeps theatre on for the whole run and restores it only after
+## challenge_finished: the medal and the feats must still count.
+func test_run_theatre_does_not_block_lifetime_feats() -> void:
+	await _enter_world()
+	CinematicMode.theatre = true
+	Challenges.force_active = true
+	EventBus.challenge_started.emit("br_krail_nohit", 1)
+	EventBus.clamp_dropped.emit("c1", true)
+	EventBus.challenge_finished.emit("br_krail_nohit", 0, 5000, 3, true)
+	check(_lt(&"challenge_silver_medals") == 1.0, "the medal counts under the run's theatre")
+	check(_lt(&"boss_nohit_warden_krail") == 1.0, "the no-hit feat counts under the run's theatre")
+	EventBus.challenge_started.emit("br_krail", 1)
+	EventBus.clamp_dropped.emit("c1", true)
+	EventBus.challenge_finished.emit("br_krail", 0, 6000, 1, false)
+	check(_lt(&"clamp_boss_staggers") == 2.0, "both Krail clamp feats count under the run's theatre")
+	check(float(AtomicJson.read(TEST_DIR + "/achievements.json")["lifetime"]["challenge_silver_medals"]) == 1.0, "and is flushed at once")
+	Challenges.force_active = false
+	EventBus.challenge_started.emit("tt_market_run", 1)
+	EventBus.challenge_finished.emit("tt_market_run", 0, 3000, 2, true)
+	check(_lt(&"challenge_silver_medals") == 1.0, "outside a run, the Ending theatre blocks it")
+
+
 func test_lifetime_only_achievement_unlocks_during_run_toast_after_result() -> void:
 	var top := AchievementData.new()
 	top.id = "probe_top"
@@ -253,6 +276,9 @@ func test_lifetime_only_achievement_unlocks_during_run_toast_after_result() -> v
 	var seen: Array = []
 	var spy := func(id: String, retro: bool) -> void: seen.append([id, retro])
 	EventBus.achievement_unlocked.connect(spy)
+	# As in T04: theatre is on for the run and stays on until its restore,
+	# which keeps the full pass blocked until game_state_reset.
+	CinematicMode.theatre = true
 	Challenges.force_active = true
 	EventBus.challenge_started.emit("tt_market_run", 1)
 	Game.set_flag("t02_run_flag")
@@ -279,11 +305,14 @@ func test_lifetime_only_achievement_unlocks_during_run_toast_after_result() -> v
 	host.open = false
 	await physics_frames(2)
 	host.queue_free()
-	check(seen.size() >= 1 and seen[0] == ["probe_top", false], "announced on the first free frame (%s)" % [seen])
+	check(seen == [["probe_top", false]], "announced on the first free frame (%s)" % [seen])
 	check(Platform.pending_toasts.is_empty(), "queue drained")
+	check(not Platform.is_unlocked("probe_flag"), "still locked before the restore")
+	CinematicMode.theatre = false
 	EventBus.game_state_reset.emit()
 	await physics_frames(2)
 	check(Platform.is_unlocked("probe_flag"), "the restore's pass unlocks the rest")
+	check(seen == [["probe_top", false], ["probe_flag", true]], "the restore's unlock is retroactive (%s)" % [seen])
 	EventBus.achievement_unlocked.disconnect(spy)
 
 
