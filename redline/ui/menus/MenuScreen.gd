@@ -1,7 +1,7 @@
 class_name MenuScreen
 extends CanvasLayer
 ## Base for pause-the-world menus: controller-first focus navigation,
-## ui_cancel closes, the game is paused while open (bible §27).
+## ui_cancel (or ui_back outside text fields) closes, the game is paused while open (bible §27).
 
 signal closed
 
@@ -61,8 +61,22 @@ func rebuild() -> void:
 
 
 func _process(_delta: float) -> void:
-	if visible and Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed("ui_cancel"):
+	if visible and Engine.get_process_frames() != _opened_frame and cancel_pressed():
 		close_menu()
+
+
+## Back-out input for menus: ui_cancel (Esc, pad B) or ui_back (Backspace,
+## which the browser leaves alone in web fullscreen). Backspace is a separate
+## action, not part of ui_cancel: Godot's LineEdit/TextEdit treat ui_cancel as
+## "release focus", so a Backspace in ui_cancel could never delete a character.
+## ui_back is ignored while a text field has focus, so Backspace edits the text.
+func cancel_pressed() -> bool:
+	if Input.is_action_just_pressed(&"ui_cancel"):
+		return true
+	if not Input.is_action_just_pressed(&"ui_back"):
+		return false
+	var focus := get_viewport().gui_get_focus_owner() if get_viewport() != null else null
+	return not (focus is LineEdit or focus is TextEdit)
 
 
 func clear_body() -> void:

@@ -227,7 +227,7 @@ func _on_memory_done(_source: StringName) -> void:
 func _process(delta: float) -> void:
 	# In the gallery or PEOPLE, cancel steps back to the main page instead of
 	# closing.
-	if visible and (_mode == &"memories" or _mode == &"people") and Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed("ui_cancel"):
+	if visible and (_mode == &"memories" or _mode == &"people") and Engine.get_process_frames() != _opened_frame and cancel_pressed():
 		show_main()
 		return
 	super._process(delta)

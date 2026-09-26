@@ -216,7 +216,11 @@ func test_settings_snapshot_restore_roundtrip() -> void:
 	check(Settings.snapshot() == snap, "restore puts every key back")
 
 
-func test_ui_cancel_has_backspace() -> void:
+## R01.30 as corrected by the T01 review: Backspace backs out of menus through
+## its own action ui_back, never through ui_cancel. Godot's LineEdit treats
+## ui_cancel as "release focus", so a Backspace in ui_cancel could not delete
+## a character (MomentMenu's note).
+func test_ui_back_is_backspace_not_ui_cancel() -> void:
 	var keys: Array[int] = []
 	var pad_b := false
 	for ev in InputMap.action_get_events(&"ui_cancel"):
@@ -224,7 +228,12 @@ func test_ui_cancel_has_backspace() -> void:
 			keys.append((ev as InputEventKey).physical_keycode)
 		elif ev is InputEventJoypadButton and (ev as InputEventJoypadButton).button_index == JOY_BUTTON_B:
 			pad_b = true
-	check(KEY_ESCAPE in keys and KEY_BACKSPACE in keys and pad_b, "ui_cancel lists Esc, Backspace and pad B (%s)" % [keys])
+	check(KEY_ESCAPE in keys and not KEY_BACKSPACE in keys and pad_b, "ui_cancel lists Esc and pad B, not Backspace (%s)" % [keys])
+	var back_keys: Array[int] = []
+	for ev in InputMap.action_get_events(&"ui_back"):
+		if ev is InputEventKey:
+			back_keys.append((ev as InputEventKey).physical_keycode)
+	check(back_keys == [KEY_BACKSPACE], "ui_back is Backspace only (%s)" % [back_keys])
 	var pause_keys: Array[int] = []
 	for ev in InputMap.action_get_events(&"pause"):
 		if ev is InputEventKey:
@@ -535,6 +544,49 @@ func test_title_labs_subpage_back() -> void:
 	check((_body_buttons(t)[t.focused_index()] as Button).text == "Labs & dev starts…", "focus back on the labs row")
 	await press_action(&"ui_cancel", 2)
 	check(t.is_open() and _labels(t).has("New Game"), "ui_cancel does nothing on the main page")
+
+
+func test_ui_back_backs_out_of_menus() -> void:
+	var t := _bare_title()
+	if OS.is_debug_build():
+		_button(t, "Labs & dev starts…").pressed.emit()
+		await physics_frames(1)
+		await press_action(&"ui_back", 2)
+		check(_labels(t).has("New Game"), "Backspace (ui_back) returns from the labs page")
+	var menu: MenuScreen = _extra(load("res://ui/menus/MomentMenu.gd").new())
+	menu.open_menu()
+	await physics_frames(1)
+	await press_action(&"ui_back", 2)
+	check(not menu.is_open() and not get_tree().paused, "Backspace closes a menu when no text field has focus")
+
+
+## Backspace in MomentMenu's note deletes one character; the menu stays open
+## with the tag kept (the review's LineEdit regression).
+func test_moment_note_backspace_edits_text() -> void:
+	var menu: MenuScreen = _extra(load("res://ui/menus/MomentMenu.gd").new())
+	menu.open_menu()
+	menu._pick("Bug")
+	var note: LineEdit = menu._note
+	note.text = "abc"
+	note.grab_focus()
+	note.caret_column = 3
+	await physics_frames(2)
+	var ev := InputEventKey.new()
+	ev.physical_keycode = KEY_BACKSPACE
+	ev.keycode = KEY_BACKSPACE
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	for i in 3:
+		await get_tree().process_frame
+	var up := ev.duplicate() as InputEventKey
+	up.pressed = false
+	Input.parse_input_event(up)
+	for i in 2:
+		await get_tree().process_frame
+	check(note.text == "ab", "Backspace deleted one character (%s)" % note.text)
+	check(menu.is_open() and menu._tag == "Bug", "the menu stayed open with its tag")
+	check(note.has_focus(), "the note kept focus")
+	menu.close_menu()
 
 
 func _body_buttons(m: MenuScreen) -> Array:

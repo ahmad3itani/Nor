@@ -105,7 +105,7 @@ func _button_count() -> int:
 ## On the sub-page Cancel goes back to the main page instead of closing, so a
 ## controller user never leaves Settings by accident (save-on-close unchanged).
 func _process(delta: float) -> void:
-	if visible and page != &"main" and Engine.get_process_frames() != _opened_frame and Input.is_action_just_pressed("ui_cancel"):
+	if visible and page != &"main" and Engine.get_process_frames() != _opened_frame and cancel_pressed():
 		_go(&"main")
 		return
 	super._process(delta)
