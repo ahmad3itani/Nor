@@ -107,21 +107,35 @@ func test_display_logic_warns() -> void:
 
 
 func test_enforce_false_reports_warnings_only() -> void:
-	check(not StringRules.ENFORCE, "T06 lands the lints in warn mode (T13 flips it)")
-	check(not StringRules.level_is_error(StringRules.Level.ENFORCED), "enforced rules warn for now")
+	# Follows StringRules.ENFORCE so T13's flip needs no edit here. Never
+	# asserts catalog freshness: L-1 drift is test_catalog_up_to_date's job,
+	# gated on ENFORCE (R06.2).
+	check(StringRules.level_is_error(StringRules.Level.ENFORCED) == StringRules.ENFORCE,
+		"enforced rules are errors exactly when ENFORCE is on")
 	check(StringRules.level_is_error(StringRules.Level.ERROR), "PO integrity is an error from the start")
+	check(not StringRules.level_is_error(StringRules.Level.WARN), "warn-level rules never fail the gate")
+	# Routing contract on a synthetic finding: an L-1 finding goes to
+	# warnings in warn mode and to errors once enforced.
+	var probe := {"errors": PackedStringArray(), "warnings": PackedStringArray(), "counts": {}}
+	StringRules._add(probe, "L-1", PackedStringArray(["[L-1] probe"]), StringRules.Level.ENFORCED)
+	var in_errors := (probe["errors"] as PackedStringArray).has("[L-1] probe")
+	var in_warnings := (probe["warnings"] as PackedStringArray).has("[L-1] probe")
+	check(in_errors == StringRules.ENFORCE and in_warnings != StringRules.ENFORCE,
+		"an L-1 finding lands in %s" % ["errors" if StringRules.ENFORCE else "warnings"])
 	var r := StringRules.lint(_cfg(), ExtractStrings.build_catalog(), true)
-	check((r["errors"] as PackedStringArray).is_empty(), "the repo has no string-lint errors: %s" % [r["errors"]])
+	var always_error := PackedStringArray()
+	for e: String in r["errors"]:
+		if not StringRules.ENFORCE or e.begins_with("[L-4]") or e.begins_with("[L-5]") or e.begins_with("[L-7]"):
+			always_error.append(e)
+	check(always_error.is_empty(), "the repo has no always-error string-lint findings: %s" % [always_error])
 	var warns := Array(r["warnings"])
-	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "pre-migration literals are reported as warnings")
 	# T13's declaration commit classified every pre-M9 field, so L-2 is
-	# silent from here on (the coverage rule itself: test_coverage_flags_unclassified_field).
+	# silent from here on in either mode (the coverage rule itself:
+	# test_coverage_flags_unclassified_field).
 	check(not warns.any(func(w: String) -> bool: return w.begins_with("[L-2]")), "every text field is classified")
-	# Catalog freshness (L-1) is not asserted here: until T13 regenerates the
-	# catalog, later branches add Loc calls without --write (R06.2). The only
-	# freshness gate is test_catalog_up_to_date, skipped while ENFORCE is off.
-	var errs := Array(r["errors"])
-	check(not errs.any(func(e: String) -> bool: return e.begins_with("[L-1]")), "a stale catalog is never an error in warn mode")
+	if StringRules.ENFORCE:
+		return
+	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "pre-migration literals are reported as warnings")
 
 
 func test_module_quiet_outside_a_full_pass() -> void:
