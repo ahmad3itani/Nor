@@ -1,5 +1,38 @@
 # REDLINE Changelog
 
+## 0.9.0-m9: Endgame / Steam / Accessibility (Act I scope)
+
+Bible §36 M9: "achievements, leaderboards/ghosts where viable, NG+, The Null, settings, localization readiness and demo flow." Act I scope, started before the §44 playtest because the user asked (D-140). Report: `M9_ENDGAME_REPORT.md`. Decisions D-140..D-169.
+
+### Platform services
+- **`Platform` autoload + local backend** (D-141): achievements, lifetime and profile stats, rich presence, a leaderboard mirror and a cloud-save hook. The Steam adapter slot is documented only (`PLATFORM_SERVICES.md`); no networking anywhere (CrossRules X-4, build.py PY-NET).
+- **30 Act I achievements** (`data/achievements/`) with a toast (collapses at 4+), an Achievements menu (title + journal), a Records page, retroactive unlocks (D-143), spoiler guards (`reveal_when`) and a dev page. No grind (D-146); achievements never read Settings (D-144).
+
+### Challenges, boards, ghosts, speedrun
+- **16 Act I challenges**: boss rematches (Collector, Krail, each also No Hit), four time trials, movement-only, no-hit, Pulse Pit style and endurance, and the Deep Rig (below). Local top-10 boards, personal-best and rig (developer) ghosts, run HUD, fast reset, result card, the Relay training-rig terminal (D-169) and a title entry. One run director (`Challenges`) over `ProfileSandbox` (D-147).
+- Medals on a data ladder (Clear, Bronze, Silver, Gold, Redline), distinct from style ranks; assists and reduced hitstop are neutral tags (D-149, D-150).
+- **Campaign speedrun timer** (IGT in physics frames) with milestone and room splits (D-152).
+
+### NG+ and the Deep Rig
+- **NG+** (D-153): carries the kit, archives the cleared save, optional enemy/hazard/boss remix as data (economy-neutral), short skip holds for known scenes, shard husks and 25 % stash refills.
+- **The Deep Rig** (the Null, D-154): 3 lore-free strata (Static Lane, Breaker Run, The Floor with a Krail variant) and a descent, ranked on the Clear–Redline ladder; `null_depth_reached` is now produced.
+
+### Settings and accessibility
+- Catalog-driven settings, full keyboard/pad rebinding with conflicts (swap/move), glyph families, vibration (rumble output), high contrast, colour-blind palettes + always-on shape cues, background dim, UI scale with scrolling menus, aim/damage/reactor assists, the jump hold option, generous checkpoints, map hint strength, UI volume, pause over dialogue (D-159), text auto-advance, the adaptive assist suggestion (D-160), a one-time Comfort & accessibility link on the title (D-168).
+- Backspace backs out of menus (`ui_back`, D-158); P is a second pause key.
+
+### Localization readiness
+- `Loc` runtime, PO catalog (`locale/redline.pot`) with `ExtractStrings --check` (a gate since T13), a generated `en_XA` pseudo-locale, the font chain + glyph coverage, StringRules L-1..L-9, the Language setting (D-162..D-164).
+
+### Demo and builds
+- **Undercity demo** as a feature tag (D-165): border barriers, end card, isolated user dir, recording off by default, the demo's own achievement list (DM-4).
+- **Checked-in `export_presets.cfg`** (Windows/Linux/macOS/Web × full/demo, D-166, reverses K-34) and `tools/build/build.py` (`--check`, `--smoke`, deterministic zips, manifest).
+
+### Tooling
+- Validator rule modules (PL, CH, NU, RM, SE, AC, L, DM, EX) and **CrossRules X-1..X-10** (id namespaces, menu parity, EventBus→Playtest coverage, network ban, raw scans, SCAN_DIRS coverage, flag readers, never-shame words, knowledge lint over M9 text, code flags).
+- Dev console **Endgame & build** hub; `GhostBake --check`; **`CaptureTour --tour=endgame`** (52 shots in a `TourSandbox`, exits 1 on a missing shot); PlaytestAnalyzer endgame lines; cross-area tests (`test_m9_cross`, `test_zz_user_dir_clean`).
+- Plan repair rounds 3–5 (verified at c2731ff and b84f677): 70, 69 and 46 review findings resolved; see the plan's repair_log.
+
 ## 0.8.0-m8: Narrative Integration (systems + Act I)
 
 Bible §36 M8: "cinematics, memory scenes, NPC arcs, endings and world-state changes." Scope (D-105, FLAG): the narrative systems are built fully and integrated into Act I; Acts II–V and the finale are not built, so the endings are a complete framework reachable only through the dev Ending theatre. Report: `M8_NARRATIVE_REPORT.md`. Decisions D-105..D-139.

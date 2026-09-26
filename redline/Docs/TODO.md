@@ -7,21 +7,43 @@
 - [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
 
+## M9 (endgame / accessibility): humans
+- [ ] Confirm or overrule the M9 flags: D-140 (Act I scope, before §44), D-142 (one profile, global settings), D-144, D-146, D-148 (challenge set, no weapon mastery), D-149 (neutral tags, medal ladder), D-150 (rig ghosts, medal ratios), D-153 (NG+ after Act I, no player restore of the archive), D-154 (the Deep Rig after Act I, 'Deep Rig' name, pars), D-155, D-156, D-157 (rumble on by default, settings global), D-158 (ui_* fixed), D-160, D-161, D-162 (source-text msgids), D-163 (memory mark stand-ins •/◊ vs D-114/D-120), D-164, D-165 (Undercity demo, CTA copy), D-166 (release settings, bundle ids), D-168, D-169 (the training rig until Bramm).
+- [ ] Approve or replace the demo CTA copy and the bundle ids before any public build (D-165, D-166).
+- [ ] Manual checks the headless gate cannot do: a Web build (stem render stall K-M9-W1, sample audio sliders, IndexedDB saves), Windows and macOS exports (unsigned: SmartScreen / Gatekeeper), real pads for rumble and PlayStation/Nintendo names.
+- [ ] Look at the endgame tour frames (`M9_ENDGAME_REPORT.md`) and the pseudo-locale layout.
+
+## M9 follow-ups
+- [ ] **Advanced Circuit builds challenge** (kit-based, 9 capacity) after §44 shows which builds players use (D-140).
+- [ ] **Weapon mastery challenges** with Act II weapons after §44 data (D-148).
+- [ ] Player-facing 'Restore cleared save (cycle N)…' title row, if §44 players ask (D-153, R09.15).
+- [ ] Retune medals, Deep Rig pars and remix values in data after §44 (D-150, D-154).
+- [ ] A Krail rig ghost once a bot (or a human run) beats him; a Security Station ghost (D-150).
+- [ ] Strip non-demo content from the demo pck (a demo-aware map index + `exclude_filter`, K-M9-D1).
+- [ ] Web: render music stems one layer per frame on nothreads builds if the stall is confirmed (K-M9-W1).
+- [ ] `MusicDirector.gd:119` compares a display string (`district_name`); compare ids (L-8, K-M9-L2).
+- [ ] Settings should load its redirected `_path` itself instead of BuildInfo's post-boot reload (K-M9-D2).
+- [ ] `TitleMenu.open_menu`/`close_menu` should call `_apply_look()`: after UI size or high contrast changes on the title's quick page, the title keeps its old theme (K-M9-U1).
+- [ ] `test_group_notice_silent_on_load` should load `tests/fixtures/save_v3_slice.json` + act1_complete instead of a hand-made save (T04 review).
+- [ ] Crouch/slide hold-toggle and a dark-on-light high-contrast variant (D-157, D-161) after §44 / final art.
+- [ ] Record style-rank reachability evidence for style_s / style_redline (`AchievementRules.STYLE_EVIDENCE`, PL-6 warning).
+- [ ] Some existing suites leave empty temp folders in user:// (`test_zz_user_dir_clean` judges files only); clean them in their teardowns.
+
 ## M8 (narrative integration): humans
 - [ ] Confirm or overrule the M8 flags: D-105 (scope, and M8 before §44), D-108 (hold-to-skip; repeat intros never lock), D-109 (Rook's name), D-110 (six settings pulled forward from M9), D-113 (the surfaced first-rest memory), D-114 (memory timeline order), D-115 (memory blue / red on redacted shapes), D-118 (Rook's choice labels; the choice sits after the card), D-120 (pending tick), D-129 (ending thresholds and Act I links), D-130 (Redline needs The Null), D-131 (the Act I boundary and card), D-134 (arc canon), D-135 (pacing), D-136 (no pause menu over dialogue), D-137 (placeholder ending text), D-138 (gallery in the journal, not Sera), D-139 (the story needs the Undercity campaign start).
 - [ ] **Rook's name decision** (D-109): covers `data/npcs/orr.tres` dialogue `orr_report` ("And Rook - don't go up that tower tired."), the on-air choice wording, the Krail / Wake PA designation "Fourteen", the pronoun in `mf_undercity_01`, and `data/playtest/playtest_config.tres` `curious_world` ("I'm curious about Veyra and Rook."). Then update `test_content_validator.gd:test_knowledge_lint_warns`, which pins the single orr.tres warning.
 - [ ] Review the canon commitments before Act II writing (D-134, D-137; A3's "Later act" notes are non-binding).
 - [ ] The manual first-time windowed run (the M8 gate, not automatable here): Wake → Relay → Krail → card; the opening plays; first-view intros skip only with a 0.8 s hold (a tap advances a line); a Krail/Collector retry keeps control; journal/dev replays skip with a 0.4 s hold; the close then the card; the §44 survey button. With a pad: every menu (pause incl. "Skip scene", Subtitles & scenes, the journal gallery and People, DevConsole Story pages, the vignette pause panel) works with A/B; Orr's choice on D-pad Up only moves the cursor while E confirms; the first Anchor rest shows the "[E]" cue.
 - [ ] Look at the story tour (`CaptureTour --tour=story`) against the Art Bible, especially the Relay's cyan budget (K-M8-10).
-- [ ] **Smoke-test an exported build** (memory, arc, ending and card data through `DataDir` `.remap` scans, K-M8-22) before the playtest.
+- [x] **Smoke-test an exported build** (K-M8-22): automated for Linux by `python3 -B tools/build/build.py --smoke` (BuildProbe counts every DataDir scan). Windows, macOS and Web stay manual.
 
 ## M8 follow-ups
 - [ ] **Act V finale** calls `EndingResolver.resolve` + `EndingDirector.play` (D-126).
 - [ ] **Remove the future-flag gate at Act V**: drop the "needs a future flag" rule and each `future_flags.tres` entry as its act lands (D-127).
-- [ ] **M9: cross-profile endings, NG+.**
+- [x] **M9: cross-profile endings, NG+.** NG+ built (T09, D-153); cross-profile endings deferred (D-142: one profile).
 - [ ] **Raise the ending epilogue thresholds** (Release `memories_remembered` 24, planned arc stages) when later arcs exist (D-129).
-- [ ] **M9: text auto-advance setting** (cut from M8, D-110).
-- [ ] **M9: pause menu over DialogueBox and choice mode** (D-136): MenuHost opens PauseMenu while a box is open, PauseMenu restores the prior paused state, the boxes ignore input while a menu is open. Vignettes already have their own pause panel.
+- [x] **M9: text auto-advance setting** (cut from M8, D-110). Built: the Subtitles setting (T03 R03.12) with DialogueBox (T11 R11.9) and SequencePlayer/memory (T09 R09.9) consumers.
+- [x] **M9: pause menu over DialogueBox and choice mode** (D-136): built in T11 (D-159). MenuHost opens PauseMenu while a box is open, PauseMenu restores the prior paused state, the boxes ignore input while a menu is open. Vignettes already have their own pause panel.
 - [ ] Memory replay and translation may move to **Sera, the Relay archivist** (§13, D-138).
 - [ ] Data fix: `chart_lowlight`'s reward `map_lens` overwrites Nix's shop counter (K-M8-27).
 - [ ] `SliceEndTrigger`: add the `CinematicMode.theatre` guard `SequenceTrigger` has (K-M8-28).
@@ -42,7 +64,7 @@
 - [ ] Escape Tunnel pistol lesson: widen the diagonal hit band and sweep it in a test (K-61).
 - [ ] Power Block: a respawn near the L0 entrance (K-62).
 - [ ] Chase, scanner, clamp and tracker numbers still in code: move them to their data resources (K-63).
-- [ ] **Boss Assist** (M9): an Assist-mode option for bosses (slower telegraphs or more pips), announced, never silent (§23).
+- [x] **Boss Assist** (M9): 'more pips' is built as `damage_assist` with the bosses-only scope (T11). Slower telegraphs stay deferred (D-157, §23 note).
 - [ ] **`timing_assist` setting** (not built, D-073): an announced option that scales pursuer speed and shutter clocks. §23 forbids silent difficulty changes.
 - [ ] **Rising-flood pursuer** (deferred): a second `PursuerData` style for a later district.
 - [ ] Deferred mechanics, build them when a room needs one (D-078): PowerJunction, LaserGrid, SecurityCamera, AlarmSystem, MovingPlatform, CollapsingPlatform (also CoreConduit, RadioTerminal, the OnboardingValidator, the Shaft Sentinel mini-boss, RouteBot `await`).
@@ -106,7 +128,7 @@
 - [ ] Enemy body blocking or a "shove" (D-024).
 - [ ] Pool projectiles and particles if profiling on real hardware shows spikes. The 11 ms max happens on respawn.
 - [ ] Parry (bible §8, midgame) and executions. Healing injectors and an elite (Enforcer) arrived in M3.
-- [ ] Use `score_multiplier` once challenge scoring exists (M9).
+- [x] Use `score_multiplier` once challenge scoring exists (M9): closed by `pit_endurance` (T10 R10.3).
 
 ## M1 gate (humans)
 - [ ] Playtest the Movement Lab with keyboard **and** a controller (Xbox or PlayStation layout). Use the checklist in `M1_MOVEMENT_REPORT.md`.
