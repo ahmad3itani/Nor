@@ -108,7 +108,7 @@ Godot's built-in pseudolocalization is not used: it mangles `{action}` placehold
 - Line timing reads the displayed (translated) text times `LocaleInfo.reading_scale`; the pacing budgets stay on the English source (D-164).
 
 ## For translators
-1. Create the file: `ExtractStrings -- --merge --new=<code>` writes `locale/<code>.po` with the right header and every entry.
+1. Create the file: `ExtractStrings -- --merge --new=<code>` writes `locale/<code>.po` with the right header and every entry. The code must already have a `LocaleInfo` row in `data/l10n/locales.tres` (step 1 of "Adding a language"); an empty or unknown code is refused with exit 1, as is any file that cannot be written.
 2. Translate `msgstr` only. Keep every `{placeholder}` and `%` spec (you may reorder them). Keep line breaks where the English has them. The `#.` lines tell you where the text appears, who says it and the length limit ("max 40 chars"); stay within about 1.4× of it.
 3. Entries marked `#, fuzzy` carry an older translation whose English changed: check it, then remove the `fuzzy` flag. The game ignores fuzzy entries (it shows English until you confirm).
 4. `#~` entries at the end are translations whose English was removed; they are kept for reference and ignored by the game.
@@ -120,4 +120,4 @@ Godot's built-in pseudolocalization is not used: it mangles `{action}` placehold
 3. Fonts: the default font covers Latin, Greek and Cyrillic, and has no CJK or Arabic. No font is bundled in M9 (D-163). For another script add an OFL font under `assets/fonts/` and list it in `font_paths` (a new dependency, §37.9); `system_fonts` help desktop builds only and never count for coverage. L-7 lists every glyph the chain lacks.
 4. CJK and Thai need ICU line-break data: set `internationalization/locale/include_text_server_data = true` in the export presets and check the size cost.
 5. Right-to-left scripts are documented only in M9: menus mirror through `layout_direction`, but the hand-drawn HUD, map tooltips, subtitle speaker labels and the typewriter reveal (by code point, not grapheme) need a pass first.
-6. Run `--stats`, the localization tests and a CaptureTour with `--locale=<code>`; fix what overflows (shorten or wrap; an ellipsis is the last resort).
+6. Run `--stats` and the localization tests, then play the menus and HUD with `godot res://Main.tscn -- --locale=<code>`; fix what overflows (shorten or wrap; an ellipsis is the last resort). *Pending:* a CaptureTour `--locale=<code>` pass (screenshots of every screen in one locale) is not implemented yet; it is planned for the final localization pass.
