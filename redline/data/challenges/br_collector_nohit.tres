@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_collector.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "br_collector_nohit"
+group = 1
+title = "Collector Drone — No Hit"
+description = "The Collector Drone without taking a single hit."
+locked_hint = "Defeat the Collector Drone."
+unlock_when = "flag:collector_drone_defeated"
+reveal_when = "flag:collector_drone_intro_seen"
+sort_order = 2
+start_room = "res://world/rooms/undercity/CollectorBay.tscn"
+start_entry = &"from_lift"
+kit = ExtResource("2_kit")
+start_on = 2
+end_on = 1
+boss_id = "collector_drone"
+fail_on_damage = true
+medal_thresholds = PackedInt32Array(4680, 3330, 2640, 1950)
+dev_bot = &"boss_blade"
+dev_ghost = "res://data/challenges/ghosts/br_collector_nohit.ghost"

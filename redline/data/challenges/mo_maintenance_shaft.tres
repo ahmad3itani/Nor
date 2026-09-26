@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_undercity_mid.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "mo_maintenance_shaft"
+group = 3
+title = "Maintenance Shaft — Movement Only"
+description = "Climb the shaft to the top door. No swings, no shots."
+locked_hint = "Defeat the Collector Drone."
+unlock_when = "flag:collector_drone_defeated"
+sort_order = 1
+start_room = "res://world/rooms/undercity/MaintenanceShaft.tscn"
+start_entry = &"from_medical"
+kit = ExtResource("2_kit")
+start_on = 0
+end_on = 0
+finish_exit_target = "res://world/rooms/undercity/FirstPursuit.tscn"
+fail_on_attack = true
+medal_thresholds = PackedInt32Array(2670, 1890, 1500, 1110)
+dev_bot = &"route"
+dev_route = [["run", 530], ["jump", 530], ["jump", 450], ["jump", 530], ["jump", 450], ["jump", 370], ["run", 100], ["jump", 100], ["jump", 180], ["jump", 100], ["jump", 180], ["jump", 262], ["run", 488], ["jump", 488], ["jump", 408], ["jump", 488], ["jump", 408], ["jump", 488], ["run", 600], ["exit", 1]]
+dev_ghost = "res://data/challenges/ghosts/mo_maintenance_shaft.ghost"

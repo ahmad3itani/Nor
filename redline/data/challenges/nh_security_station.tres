@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_lowlight_scanners.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "nh_security_station"
+group = 3
+title = "Security Station — No Hit"
+description = "Through the live scanners to the roof door without a hit."
+locked_hint = "Finish the Rainline chase."
+unlock_when = "flag:chase_rainline_done"
+sort_order = 2
+start_room = "res://world/rooms/lowlight/SecurityStation.tscn"
+start_entry = &"from_power"
+kit = ExtResource("2_kit")
+start_on = 0
+end_on = 0
+finish_exit_target = "res://world/rooms/lowlight/RainlineChase.tscn"
+fail_on_damage = true
+medal_thresholds = PackedInt32Array(3600, 2550, 2040, 1500)
+dev_bot = &"none"
+dev_route = [["runjump", 60, 150], ["run", 180], ["slide", 240], ["run", 295], ["dodge", 295], ["runjump", 380, 480], ["run", 614], ["slide", 700], ["run", 855], ["dodge", 855], ["runjump", 956, 1070], ["run", 1140], ["jump", 1140], ["jump", 1200], ["jump", 1140], ["jump", 1080], ["run", 789], ["dodge", 789], ["run", 570], ["slide", 480], ["run", 370], ["jump", 320], ["jump", 250], ["jump", 320], ["jump", 390], ["run", 440], ["attack", 1], ["run", 1210], ["exit", 1]]

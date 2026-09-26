@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_lowlight.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "tt_neon_roofs"
+group = 2
+title = "Neon Roofs"
+description = "Across the roofs to the Power Block door."
+locked_hint = "Finish the Rainline chase."
+unlock_when = "flag:chase_rainline_done"
+sort_order = 3
+start_room = "res://world/rooms/lowlight/NeonRoofs.tscn"
+start_entry = &"from_stack"
+kit = ExtResource("2_kit")
+start_on = 0
+end_on = 0
+finish_exit_target = "res://world/rooms/lowlight/PowerBlock.tscn"
+medal_thresholds = PackedInt32Array(2760, 1950, 1560, 1140)
+dev_bot = &"route"
+dev_route = [["run", 370], ["runjump", 396, 520], ["slidejump", 762, 900], ["run", 1150], ["runjump", 1176, 1300], ["run", 1430], ["jump", 1430], ["jump", 1520], ["dodgejump", 1600, 1774], ["run", 1830], ["run", 1990], ["runjump", 1996, 2130], ["run", 2400], ["exit", 1]]
+dev_ghost = "res://data/challenges/ghosts/tt_neon_roofs.ghost"

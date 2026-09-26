@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_lowlight_rainline.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "tt_rainline"
+group = 2
+title = "Rainline Chase"
+description = "The Rainline with the Sweeper behind you, to the Bell Tower door."
+locked_hint = "Finish the Rainline chase."
+unlock_when = "flag:chase_rainline_done"
+reveal_when = "flag:chase_rainline_done"
+sort_order = 4
+start_room = "res://world/rooms/lowlight/RainlineChase.tscn"
+start_entry = &"from_security"
+kit = ExtResource("2_kit")
+start_on = 0
+end_on = 0
+finish_exit_target = "res://world/rooms/lowlight/BellTower.tscn"
+medal_thresholds = PackedInt32Array(4470, 3180, 2520, 1860)
+dev_bot = &"route"
+dev_route = [["run", 790], ["runjump", 796, 900], ["runjump", 1036, 1160], ["run", 1200], ["slide", 1300], ["slidejump", 1420, 1560], ["run", 1690], ["runjump", 1696, 1790], ["run", 1830], ["slide", 1930], ["run", 2210], ["jump", 2270], ["run", 2330], ["runjump", 2436, 2560], ["runjump", 2696, 2800], ["run", 2940], ["runjump", 3196, 3320], ["runjump", 3492, 3600], ["run", 4120], ["exit", 1]]
+dev_ghost = "res://data/challenges/ghosts/tt_rainline.ghost"

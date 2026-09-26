@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_undercity_late.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "tt_escape_tunnel"
+group = 2
+title = "Escape Tunnel"
+description = "From the bay door up to the Relay mouth."
+locked_hint = "Meet Orr at the Relay."
+unlock_when = "flag:met_orr"
+sort_order = 2
+start_room = "res://world/rooms/undercity/EscapeTunnel.tscn"
+start_entry = &"from_bay"
+kit = ExtResource("2_kit")
+start_on = 0
+end_on = 0
+finish_exit_target = "res://world/rooms/lowlight/Relay.tscn"
+medal_thresholds = PackedInt32Array(3120, 2220, 1770, 1290)
+dev_bot = &"route"
+dev_route = [["run", 200], ["run", 222], ["shoot", 1, "diag"], ["run", 200], ["run", 222], ["shoot", 1, "diag"], ["run", 200], ["run", 222], ["shoot", 1, "diag"], ["run", 672], ["jump", 730], ["run", 832], ["jump", 890], ["attack", 3], ["run", 992], ["jump", 1050], ["run", 1152], ["jump", 1210], ["attack", 3], ["run", 1312], ["jump", 1370], ["run", 1930], ["exit", 1]]
+dev_ghost = "res://data/challenges/ghosts/tt_escape_tunnel.ghost"

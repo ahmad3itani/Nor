@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChallengeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeData.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/challenges/kits/kit_krail.tres" id="2_kit"]
+
+[resource]
+script = ExtResource("1_data")
+id = "br_krail"
+group = 1
+title = "Warden Krail — Rematch"
+description = "Warden Krail again, from the bell stair. The clamp is live."
+locked_hint = "Defeat Warden Krail."
+unlock_when = "flag:warden_krail_defeated"
+reveal_when = "flag:warden_krail_intro_seen"
+sort_order = 3
+start_room = "res://world/rooms/lowlight/WardenTower.tscn"
+start_entry = &"from_bell"
+kit = ExtResource("2_kit")
+start_on = 2
+end_on = 1
+boss_id = "warden_krail"
+medal_thresholds = PackedInt32Array(8640, 6120, 4860, 3600)
+dev_bot = &"none"

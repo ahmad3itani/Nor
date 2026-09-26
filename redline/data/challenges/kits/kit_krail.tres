@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ChallengeKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://challenges/ChallengeKit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+melee = "pulse_blade"
+ranged = "service_pistol"
+core_shards = 3
+set_flags = PackedStringArray("collector_drone_defeated", "got_service_pistol", "met_orr_radio", "orr_radio_after", "met_orr", "met_mara", "met_nix", "met_vell", "quest_dead_air_started", "quest_chart_started", "repeater_market", "repeater_stack", "repeater_bell", "dead_air_reported", "dead_air_complete", "lowlight_power_rerouted", "orr_rainline_line", "map_charted_lowlight", "chart_lowlight_reported", "chart_lowlight_complete")
+clear_flags = PackedStringArray("warden_krail_defeated", "unlocked_dash")
