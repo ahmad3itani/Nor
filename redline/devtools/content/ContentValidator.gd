@@ -719,7 +719,113 @@ func report() -> String:
 		var count := func(k: String) -> int: return items.filter(func(i: Dictionary) -> bool: return i["kind"] == k).size()
 		lines.append("| %s | %d | %d | %d | %d | %s |" % [room, count.call("fragment"), count.call("core_shard"), count.call("wall"), count.call("scrap"),
 			", ".join(PackedStringArray(items.map(func(i: Dictionary) -> String: return i["id"])))])
+	lines.append("")
+	lines.append_array(story_report())
 	return "\n".join(lines) + "\n"
+
+
+## "## Story" (M8): the narrative content at a glance, a review artifact for
+## the milestone report (ValidateContent -- --out=...).
+func story_report() -> PackedStringArray:
+	var future := _future_set()
+	var md: PackedStringArray = ["## Story", ""]
+	md.append("### Sequences")
+	md.append("")
+	md.append("| Sequence | Played by | First view s / budget | Repeat s / budget | Steps | Flags set |")
+	md.append("|---|---|---|---|---|---|")
+	for path in _sorted_paths("sequences"):
+		var seq := story["sequences"][path] as SequenceData
+		var by: String = "theatre only" if seq.theatre_only else ", ".join(PackedStringArray(sequence_refs.get(seq.id, ["**nothing**"])))
+		# The repeat budget only binds boss intros (seen flag *_intro_seen).
+		var repeat := "%.1f" % seq.nominal_seconds(false)
+		if seq.effective_seen_flag().ends_with("_intro_seen"):
+			repeat += " / %.1f" % seq.repeat_budget_seconds
+		md.append("| %s | %s | %.1f / %.0f | %s | %d | %s |" % [seq.id, by, seq.nominal_seconds(true), seq.budget_seconds,
+			repeat, seq.steps.size(), ", ".join(PackedStringArray(seq.content_flags().get("produces", [])))])
+	md.append("")
+	md.append("### Memories")
+	md.append("")
+	md.append("| Memory | Source | Act | Slot | Beats | Detail | Unlock | Placed in |")
+	md.append("|---|---|---|---|---|---|---|---|")
+	var mems: Array = story["scenes"].values()
+	mems.sort_custom(func(a: MemorySceneData, b: MemorySceneData) -> bool: return [a.act, a.timeline_slot] < [b.act, b.timeline_slot])
+	for sc: MemorySceneData in mems:
+		var fragment := sc.source == MemorySceneData.Source.FRAGMENT and sc.fragment != null
+		var unlock := ("pickup %s" % sc.fragment.id) if fragment else (sc.unlock_condition if sc.unlock_condition != "" else "always")
+		md.append("| %s | %s | %d | %d | %d | %s | %s | %s |" % [sc.id, "fragment" if sc.source == MemorySceneData.Source.FRAGMENT else "surfaced",
+			sc.act, sc.timeline_slot, sc.beats.size(), "yes" if sc.has_detail() else "no", _cell(unlock),
+			placed_fragments.get(sc.fragment.id, "—") if fragment else "—"])
+	md.append("")
+	md.append("### Arcs")
+	md.append("")
+	md.append("| NPC | Spine stages | Reactions | Act I top stage | Planned top stage | Threads |")
+	md.append("|---|---|---|---|---|---|")
+	for path in _sorted_paths("arcs"):
+		var a := story["arcs"][path] as NpcArc
+		var planned: Variant = future.planned_arc_stages.get(a.index_flag())
+		md.append("| %s | %s | %s | %d | %s | %s |" % [a.npc_id, ", ".join(PackedStringArray(a.stages.map(func(st: NpcArcStage) -> String: return st.id if st else "?"))),
+			", ".join(PackedStringArray(a.reactions.map(func(st: NpcArcStage) -> String: return st.id if st else "?"))), a.stages.size(),
+			str(planned) if planned != null else "—", ", ".join(a.threads)])
+	md.append("")
+	md.append("### Endings")
+	md.append("")
+	md.append("| Ending | Priority | Hidden | Choice | Story | Memories | People | Reachable now |")
+	md.append("|---|---|---|---|---|---|---|---|")
+	var ends: Array = story["endings"].values()
+	ends.sort_custom(func(a: EndingData, b: EndingData) -> bool: return a.id < b.id)
+	for e: EndingData in ends:
+		var reachable := not Array(e.all_conditions()).any(func(c: String) -> bool: return future.is_future_condition(c))
+		md.append("| %s | %d | %s | %s | %s | %s | %s | %s |" % [e.id, e.priority, "yes" if e.hidden else "no",
+			_tagged([e.choice_condition], future), _tagged(e.requires, future), _tagged([e.requires_memories], future),
+			_tagged(e.requires_arcs, future), "reachable now: YES (needs a future flag)" if reachable else "reachable now: no"])
+	md.append("")
+	for path in _sorted_paths("acts"):
+		var act := story["acts"][path] as ActData
+		md.append("### Act %s card (%s, up to %d lines)" % [ActData.roman(act.act), act.name, act.max_standing])
+		md.append("")
+		md.append("| # | Condition | Line |")
+		md.append("|---|---|---|")
+		for i in act.standing.size():
+			var l := act.standing[i]
+			if l:
+				md.append("| %d | %s | %s |" % [i + 1, _cell(l.condition if l.condition != "" else "always (fallback)"), _cell(l.text)])
+		md.append("")
+	md.append("### Future flags")
+	md.append("")
+	md.append("| Flag | Act | Note | Read by |")
+	md.append("|---|---|---|---|")
+	for fe in future.entries:
+		if fe == null:
+			continue
+		var readers := PackedStringArray()
+		for where: String in consumers.get(fe.flag, []):
+			if not readers.has(where.get_file()):
+				readers.append(where.get_file())
+		md.append("| %s | %d | %s | %s |" % [fe.flag, fe.act, _cell(fe.note), ", ".join(readers) if not readers.is_empty() else "—"])
+	md.append("")
+	return md
+
+
+func _sorted_paths(kind: String) -> Array:
+	var paths: Array = (story[kind] as Dictionary).keys()
+	paths.sort()
+	return paths
+
+
+## Conditions for a report cell, each future flag tagged with its act.
+static func _tagged(conds: Array, future: FutureFlagSet) -> String:
+	var out := PackedStringArray()
+	for c: String in conds:
+		if c == "":
+			continue
+		var act := future.act_of(c.trim_prefix("!").get_slice(":", 1)) if future.is_future_condition(c) else 0
+		out.append("%s (Act %d)" % [c, act] if act > 0 else c)
+	return _cell(", ".join(out)) if not out.is_empty() else "—"
+
+
+## Markdown table cell text (no pipes, no line breaks).
+static func _cell(text: String) -> String:
+	return text.replace("|", "\\|").replace("\n", " ")
 
 
 static func _files(dir: String, exts: Array) -> PackedStringArray:
