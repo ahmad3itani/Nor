@@ -101,7 +101,7 @@ func test_ex7_macos() -> void:
 func test_macos_version_matches_config_version() -> void:
 	var cfg := _cfg()
 	var numeric := ExportRules._numeric(str(ProjectSettings.get_setting("application/config/version")))
-	check(numeric == "0.8.0", "numeric config/version at this merge (%s)" % numeric)
+	check(numeric == "0.9.0", "numeric config/version at this merge (%s)" % numeric)
 	for n: String in ["macOS", "macOS Demo"]:
 		var o := _sec(cfg, n) + ".options"
 		check(cfg.get_value(o, "application/short_version") == numeric and cfg.get_value(o, "application/version") == numeric,
