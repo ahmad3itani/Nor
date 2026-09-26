@@ -364,21 +364,52 @@ static func medal_warnings(ch: ChallengeData) -> PackedStringArray:
 # --- CH-9: waves (duck-typed, R08.13) -----------------------------------------------
 
 static func _check_waves(ch: ChallengeData, tag: String, out: Dictionary) -> void:
+	for e in wave_errors(ch, tag):
+		out["errors"].append(e)
+
+
+## CH-9 for Pulse Pit waves, duck-typed (R08.13) so this file never names
+## T10's classes. D2 §2.3 shapes the set as `waves: Array[Array]` of entries
+## with `enemy_scene`; R08.13 wrote `entries` / `scene`. Both are read.
+static func wave_errors(ch: ChallengeData, tag: String) -> PackedStringArray:
+	var errs := PackedStringArray()
 	if ch.waves == null:
-		return
-	var entries: Variant = ch.waves.get("entries")
-	if not entries is Array:
-		return
-	for entry: Variant in entries:
-		if not entry is Object:
-			continue
-		var scene_path := str((entry as Object).get("scene"))
+		return errs
+	for entry in wave_entries(ch.waves):
+		var scene_path := _prop_str(entry, "enemy_scene")
+		if scene_path == "":
+			scene_path = _prop_str(entry, "scene")
 		if scene_path == "" or not ResourceLoader.exists(scene_path):
-			out["errors"].append("[CH-9] %s: wave scene '%s' does not exist" % [tag, scene_path])
+			errs.append("[CH-9] %s: wave scene '%s' does not exist" % [tag, scene_path])
 			continue
 		var packed := load(scene_path) as PackedScene
 		var node := packed.instantiate() if packed else null
 		if not node is Enemy:
-			out["errors"].append("[CH-9] %s: wave scene %s is not an Enemy root" % [tag, scene_path])
+			errs.append("[CH-9] %s: wave scene %s is not an Enemy root" % [tag, scene_path])
 		if node:
 			node.free()
+	return errs
+
+
+## Every entry object of a wave set: `waves` (an Array of Arrays, or a flat
+## Array) first, then `entries`.
+static func wave_entries(waves: Object) -> Array[Object]:
+	var out: Array[Object] = []
+	var outer: Variant = waves.get("waves")
+	if not outer is Array:
+		outer = waves.get("entries")
+	if not outer is Array:
+		return out
+	for item: Variant in outer:
+		if item is Array:
+			for entry: Variant in item:
+				if entry is Object:
+					out.append(entry)
+		elif item is Object:
+			out.append(item)
+	return out
+
+
+static func _prop_str(o: Object, prop: String) -> String:
+	var v: Variant = o.get(prop)
+	return "" if v == null else str(v)

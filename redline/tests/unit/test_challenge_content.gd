@@ -124,13 +124,14 @@ func test_unlocks_fresh_locked_act1_preset_unlocked() -> void:
 	check(not ChallengeLibrary.rig_open(), "the rig is closed on a fresh profile")
 	StoryPresets.apply("act1_complete")
 	check(ChallengeLibrary.rig_open(), "the Act I close opens the rig")
-	# The M8 presets predate the chase flag: the Rainline unlocks read it.
+	# Nothing reads chase_rainline_done: it is set only on an armed chase, so a
+	# player who walked in from the far end (or an old save that took the
+	# lift) would never unlock the Lowlight runs. They unlock on Krail's
+	# defeat instead, which the rig's own opening already implies.
 	for ch in _all():
-		var needs_chase := ch.unlock_when == "flag:chase_rainline_done"
-		check(ChallengeLibrary.unlocked(ch) != needs_chase, "%s after the act1_complete preset: unlocked %s" % [ch.id, ChallengeLibrary.unlocked(ch)])
-	Game.set_flag("chase_rainline_done")
-	for ch in _all():
-		check(ChallengeLibrary.unlocked(ch), "%s unlocks once Act I and the chase are done" % ch.id)
+		check(ch.unlock_when != "flag:chase_rainline_done", "%s does not unlock on the chase flag" % ch.id)
+		check(ChallengeLibrary.unlocked(ch), "%s unlocks with the act1_complete preset alone" % ch.id)
+	check(not Game.has_flag("chase_rainline_done"), "the preset has no chase flag (the case this guards)")
 
 
 func test_every_exit_finish_resolves() -> void:
@@ -145,14 +146,39 @@ func test_every_exit_finish_resolves() -> void:
 
 
 func test_boss_rematch_collector_times_within_2_frames_of_bake() -> void:
+	# A normal rematch through the harness (not GhostBake.bake): the run starts
+	# like any player's, the walk-in and BossBot blade are bound here, and the
+	# recorded value must land within 2 frames of the shipped rig ghost.
 	var ch := _ch("br_collector")
 	var shipped := GhostCodec.load_file(ch.dev_ghost)
 	check(shipped != null, "the Collector rig ghost ships")
 	if shipped == null:
 		return
-	var r: Dictionary = await GhostBake.bake(get_tree(), ch)
-	check(bool(r["ok"]), "the BossBot blade rematch finishes: %s" % r["failure"])
-	check(absi(int(r["frames"]) - shipped.frames) <= 2, "rematch %d frames, bake %d" % [r["frames"], shipped.frames])
+	var saved := GhostBake.pin_settings()
+	check(await h.start(ch), "the Collector rematch starts")
+	var room := h.room()
+	var arena: BossArena = null
+	if room:
+		for n in room.find_children("*", "BossArena", true, false):
+			if (n as BossArena).boss_id == ch.boss_id:
+				arena = n as BossArena
+	check(arena != null and arena.boss != null, "the Collector arena is live")
+	if arena == null or arena.boss == null:
+		GhostBake.restore_settings(saved)
+		return
+	var walk := ScriptedInputSource.new()
+	room.player.input_source = walk
+	walk.move_x = 1 if arena.global_position.x + 32.0 > room.player.global_position.x else -1
+	check(await h.until(func() -> bool: return Challenges.clock.running, GhostBake.WALK_LIMIT), "walking in starts the fight")
+	var bot := BossBot.new(get_tree(), room.player, arena.boss, "blade")
+	var res: Dictionary = await bot.run(GhostBake.BOSS_SECONDS)
+	check(bool(res.get("won", false)), "BossBot blade wins the rematch (%s)" % [res])
+	await h.until(func() -> bool: return Challenges.phase() != Challenges.Phase.RUNNING, 30)
+	GhostBake.restore_settings(saved)
+	var r := Challenges.last_result
+	check(int(r.get("outcome", -1)) == ChallengeData.Outcome.FINISHED, "a finished rematch (%s)" % [r])
+	var value := int(r.get("value", -1))
+	check(absi(value - shipped.frames) <= 2, "rematch %d frames, rig ghost %d" % [value, shipped.frames])
 
 
 func test_krail_rematch_arms_and_ends_on_defeat() -> void:
@@ -267,3 +293,35 @@ func test_silver_floor_warns() -> void:
 	check(w.size() == 2, "a Silver under the floor and a Gold 1 s off Redline warn twice (%s)" % [w])
 	check(Array(w).any(func(s: String) -> bool: return s.begins_with("[CH-15]")), "CH-15 names the Silver floor")
 	check(Array(w).any(func(s: String) -> bool: return s.begins_with("[CH-13]")), "CH-13 names the Gold gap")
+
+
+## A duck-typed stand-in for T10's WaveSet / WaveEntry (D2 §2.3 field names).
+static func _wave_set(scenes: Array, legacy: bool = false) -> Resource:
+	var entry_src := GDScript.new()
+	entry_src.source_code = "extends Resource\nvar %s: String = \"\"\n" % ("scene" if legacy else "enemy_scene")
+	entry_src.reload()
+	var set_src := GDScript.new()
+	set_src.source_code = "extends Resource\nvar %s: Array = []\n" % ("entries" if legacy else "waves")
+	set_src.reload()
+	var entries: Array = []
+	for p: String in scenes:
+		var e: Resource = entry_src.new()
+		e.set("scene" if legacy else "enemy_scene", p)
+		entries.append(e)
+	var ws: Resource = set_src.new()
+	ws.set("entries" if legacy else "waves", entries if legacy else [entries])
+	return ws
+
+
+func test_waves_check_reads_wave_entries() -> void:
+	var ch := _ch("tt_neon_roofs").duplicate(true) as ChallengeData
+	ch.waves = _wave_set(["res://enemies/variants/Needle.tscn"])
+	check(ChallengeRules.wave_errors(ch, "fx").is_empty(), "an Enemy wave scene passes: %s" % [ChallengeRules.wave_errors(ch, "fx")])
+	ch.waves = _wave_set(["res://world/rooms/lowlight/Relay.tscn"])
+	var errs := ChallengeRules.wave_errors(ch, "fx")
+	check(errs.size() == 1 and errs[0].begins_with("[CH-9]") and errs[0].contains("not an Enemy root"), "a non-Enemy wave scene raises CH-9: %s" % [errs])
+	ch.waves = _wave_set(["res://nope/Missing.tscn"])
+	errs = ChallengeRules.wave_errors(ch, "fx")
+	check(errs.size() == 1 and errs[0].contains("does not exist"), "a missing wave scene raises CH-9: %s" % [errs])
+	ch.waves = _wave_set(["res://world/rooms/lowlight/Relay.tscn"], true)
+	check(ChallengeRules.wave_errors(ch, "fx").size() == 1, "the R08.13 entries/scene shape is read too")
