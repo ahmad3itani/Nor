@@ -9,7 +9,7 @@
 
 ## M8 (narrative integration): humans
 - [ ] Confirm or overrule the M8 flags: D-105 (scope, and M8 before §44), D-108 (hold-to-skip; repeat intros never lock), D-109 (Rook's name), D-110 (six settings pulled forward from M9), D-113 (the surfaced first-rest memory), D-114 (memory timeline order), D-115 (memory blue / red on redacted shapes), D-118 (Rook's choice labels; the choice sits after the card), D-120 (pending tick), D-129 (ending thresholds and Act I links), D-130 (Redline needs The Null), D-131 (the Act I boundary and card), D-134 (arc canon), D-135 (pacing), D-136 (no pause menu over dialogue), D-137 (placeholder ending text), D-138 (gallery in the journal, not Sera), D-139 (the story needs the Undercity campaign start).
-- [ ] **Rook's name decision** (D-109): covers `data/npcs/orr.tres:75` ("And Rook - don't go up that tower tired."), the on-air choice wording, the Krail / Wake PA designation "Fourteen", the pronoun in `mf_undercity_01`, and `data/playtest/playtest_config.tres` `curious_world` ("I'm curious about Veyra and Rook."). Then update `test_content_validator.gd:test_knowledge_lint_warns`, which pins the single orr.tres warning.
+- [ ] **Rook's name decision** (D-109): covers `data/npcs/orr.tres` dialogue `orr_report` ("And Rook - don't go up that tower tired."), the on-air choice wording, the Krail / Wake PA designation "Fourteen", the pronoun in `mf_undercity_01`, and `data/playtest/playtest_config.tres` `curious_world` ("I'm curious about Veyra and Rook."). Then update `test_content_validator.gd:test_knowledge_lint_warns`, which pins the single orr.tres warning.
 - [ ] Review the canon commitments before Act II writing (D-134, D-137; A3's "Later act" notes are non-binding).
 - [ ] The manual first-time windowed run (the M8 gate, not automatable here): Wake → Relay → Krail → card; the opening plays; first-view intros skip only with a 0.8 s hold (a tap advances a line); a Krail/Collector retry keeps control; journal/dev replays skip with a 0.4 s hold; the close then the card; the §44 survey button. With a pad: every menu (pause incl. "Skip scene", Subtitles & scenes, the journal gallery and People, DevConsole Story pages, the vignette pause panel) works with A/B; Orr's choice on D-pad Up only moves the cursor while E confirms; the first Anchor rest shows the "[E]" cue.
 - [ ] Look at the story tour (`CaptureTour --tour=story`) against the Art Bible, especially the Relay's cyan budget (K-M8-10).
@@ -25,9 +25,9 @@
 - [ ] Memory replay and translation may move to **Sera, the Relay archivist** (§13, D-138).
 - [ ] Data fix: `chart_lowlight`'s reward `map_lens` overwrites Nix's shop counter (K-M8-27).
 - [ ] `SliceEndTrigger`: add the `CinematicMode.theatre` guard `SequenceTrigger` has (K-M8-28).
-- [ ] Guard the other `take_damage` paths (`ChaseDirector` catch, `Room._pit_fall`, `PlayerCombat._check_hazards`) with `cinematic_lock` before any locking sequence plays over a chase, pit or hazard (K-M8-25).
 - [ ] `CombatHud`: a hint-queue flush for capture tours (K-M8-29).
-- [ ] `MusicDirector`: clear the MEMORY state on an in-play abort path if one is ever added (K-M8-30).
+- [ ] CaptureTour `_story_act_card`: write `Game.state.flags` directly to clear `dead_air_complete` (as `test_act1_card_header_and_standing` does) and rebuild the card, so `st_act1_card_menu_no_dead_air` shows the "still deaf" line (K-M8-37).
+- [ ] Human review of the three canon seeds in M8 hidden details and radio lines (`mem_first_rest` welded doors, `mf_lowlight_02` second dressing, `relay_board` "a whole city in there"), with their neutral swaps (D-134).
 - [ ] Final art: the italic narration face (a `FontVariation` slant on the fallback font today), the memory tableau shapes, the ending cards (D-026).
 - [ ] If first-view skips exceed 50% in §44 data, cut the opening to its two lines (D-135).
 

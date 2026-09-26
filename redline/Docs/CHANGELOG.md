@@ -58,7 +58,19 @@ Bible §36 M8: "cinematics, memory scenes, NPC arcs, endings and world-state cha
 - Report: a **Story** section (first-view skip rates with a > 50% warning, memories, arc beats, the Orr split, endings, standing lines) and a "Median min minus cinematic_s" column in the Undercity timeline.
 
 ### Tests
-- 600 automated tests (185 new), 0 failed. New files: `test_m8_foundation_engine`, `test_m8_foundation_ui`, `test_sequences`, `test_act1_sequences`, `test_memory_scenes`, `test_npc_arcs`, `test_world_state`, `test_endings`, `test_story_telemetry`, `test_story_tools`.
+- 607 automated tests (192 new, 7 of them from the audit repair), 0 failed. New files: `test_m8_foundation_engine`, `test_m8_foundation_ui`, `test_sequences`, `test_act1_sequences`, `test_memory_scenes`, `test_npc_arcs`, `test_world_state`, `test_endings`, `test_story_telemetry`, `test_story_tools`.
+
+### Audit repair
+- **Knowledge lint coverage (D-132).** It now reads every map-marker label (map notes included), arc journal notes (the journal People page), NPC names and speaker labels, as D-132 claimed.
+- **An aborted Act I close puts its flags back (D-106).** A Save & Quit after the close set `act1_complete` (under its fade) used to keep it, and the arc stages it enters, while the close and card replayed.
+- **Triggers retry** when another play owns Cinematics (a bark, a refused close) instead of waiting for Rook to walk out and back in.
+- **A locking scene owns Rook fully:** pits, chase catches, spikes and burnout do no damage under the lock (K-M8-25), and the pause menu hides Map while locked.
+- **The interact prompt comes back** after a scene, dialogue or menu without stepping off and on again.
+- **Memories:** the Anchor saves again after its rest memories (their flags survive a quit); an aborted playback emits `memory_playback_aborted`, so the music leaves MEMORY and the Anchor drops its follow-up (K-M8-30).
+- **Scene timing is data:** `data/cinematics/cinematic_config.tres` (`CinematicConfig`) holds the skip gate times, letterbox, typing rate, line auto-time formula, choice arm delay and trigger retry (D-108; values unchanged).
+- **Exit hygiene:** `ValidateContent` and the test run exit with no leaked resources again (static story caches cleared at exit; `StoryPresets` no longer casts to its own class; no reference cycle in the arc test helper; BossArena drops coroutine locals before its timers).
+- **Content:** Orr's Relay arrival cites the open door only if the player heard him promise it, and no longer repeats the radio's "friendly. Mostly."; his `orr_report` crates line agrees with the M8 opening ("meant to carry you out in"); Vell's Relay sign keys on Krail's defeat (a world fact), not her arc stage (D-123); future flags for the M9 postgame read "M9 postgame", not "Act 9".
+- **Docs:** README and `project.godot` describe M8; D-134 flags three canon seeds in hidden details and radio text; D-135's heading gives the built ~73 s; the §42 sentence in the M8 report is corrected; line-number references to `orr.tres` became dialogue ids; the CONTENT_PIPELINE line-time formula includes its 2–7 s clamp.
 
 ## 0.7.0-m7: District Production, batch 1 (Act I: Undercity + Lowlight)
 

@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Version | `0.8.0-m8` |
-| Tests | 600 automated (185 new in M8: 171 in ten new test files, 14 in existing ones), 0 failed |
+| Tests | 607 automated (192 new in M8, 7 of them from the audit repair), 0 failed |
 | Content gate | `ValidateContent` 0 errors, 10 warnings: the future-flag summary, the one expected knowledge-lint hit (`orr.tres` "Rook", D-109) and the 8 pre-existing "read only by code" flags. Every room generator matches its scene (`--check`) |
 | Tours and perf | `CaptureTour` movement 7, combat 5, slice 33, ui 13, undercity 17 and story 51 shots, all clean. `PerfProbe` (headless CPU, fight load): Relay avg 0.71 ms, p99 1.36 ms; Warden Tower avg 1.08 ms, p99 1.73 ms |
 | Save | No new `GameState` key, schema still 3; all M8 state is flags (D-116) |
@@ -48,6 +48,7 @@ Screenshots from `CaptureTour --tour=story` (51 shots, list in §3). The tour st
 - **A JSON round trip turns ints into floats,** which re-fired flag signals on load; `set_flag` now ignores numerically equal writes (D-116).
 - **A legacy (v3) save** gets `act1_complete` on load and would have lost Orr's legacy radio call; the post-Act-I radio rule also needs `met_orr_radio` (D-123).
 - **Canon guards:** the Act I close's band line shares no sentence with Execution Order 7-R (test-enforced), the Cell Four marks are the tapper's, never Rook's own hand, and no Act I text ties memories to the Core (D-115, D-134).
+- **The post-build audit** found the knowledge lint skipping map labels, journal notes and speaker labels; an aborted Act I close keeping `act1_complete`; triggers that gave up while another play ran; direct damage under a locking scene; a hidden interact prompt after scenes; memory flags not saved after a rest; hard-coded scene timings; and leaked resources at exit. All are fixed (CHANGELOG "Audit repair"); three canon seeds in hidden details and radio text are now flagged in D-134.
 
 ## 3. CaptureTour --tour=story (51 PNGs)
 Run: `xvfb-run -a -s "-screen 0 1600x900x24" godot --fixed-fps 60 --rendering-driver opengl3 res://devtools/CaptureTour.tscn -- --out=/abs/dir --tour=story`. It plays each Act I scene, the memories and the endings, then applies each story preset (`data/dev/story_presets.tres`) for the Relay and room shots.
@@ -63,15 +64,15 @@ Run: `xvfb-run -a -s "-screen 0 1600x900x24" godot --fixed-fps 60 --rendering-dr
 | Endings | `st_ending_<sever/crown/release/redline>_title` and `_credits` |
 | Tools and settings | `st_ending_theatre_page`, `st_inspector`, `st_settings_subtitles` |
 
-Seen while reviewing the shots: `st_act1_card_menu_no_dead_air` is byte-identical to `st_act1_card_menu` (the tour's `set_flag("dead_air_complete", false)` is re-derived by `QuestTracker`, so the "still deaf" line never shows, K-M8-37). Queued HUD hints from applying a preset ("QUEST COMPLETE — Chart Lowlight") show in the Relay shots (K-M8-29). The four `_credits` shots are identical by design (one credits roll).
+Seen while reviewing the shots: `st_act1_card_menu_no_dead_air` is byte-identical to `st_act1_card_menu` (the tour's `set_flag("dead_air_complete", false)` is re-derived by `QuestTracker`, so the "still deaf" line never shows, K-M8-37). Queued HUD hints from applying a preset ('QUEST COMPLETE — Dead Air', 'QUEST COMPLETE — Chart Lowlight', 'CIRCUIT ACQUIRED — Longline') can show in the room and Relay shots (K-M8-29). The four `_credits` shots are identical by design (one credits roll).
 
 ## 4. Act I first-time pacing
-Nominal first views at subtitle speed Normal (the `ValidateContent` story table): the opening 17.0 s, the Collector intro 8.2 s, the Relay arrival 11.7 s, the Krail intro 12.6 s and the Act I close 23.2 s. That is **about +73 s of locked scenes** on a first campaign run (the plan estimated ~75 s), plus **about 20–30 s** for the first-rest memory at `uc_lift`. **Repeat boss intros cost 0 s of control** (non-locking 0.8 s overlays), and every scene can be skipped with a hold. Against M7's estimates (Relay at 19.5 / 28.25 / 37 min, Dash at 43 / 59.5 / 76) the opening, the Collector intro, the arrival and the first-rest memory move the Relay arrival about 1 min later on a first run, and Dash about 1.2 min later: the low end of the Relay estimate gets slightly less early, and every §42 band still holds. Subtitle speed Slower doubles line time (opt-in, K-M8-18). The §44 report measures it: first-view skip rates per scene, `cinematic_s`, and the timeline's "minus cinematic_s" column (D-135: if first-view skips pass 50%, cut the opening to its two lines).
+Nominal first views at subtitle speed Normal (the `ValidateContent` story table): the opening 17.0 s, the Collector intro 8.2 s, the Relay arrival 11.7 s, the Krail intro 12.6 s and the Act I close 23.2 s. That is **about +73 s of locked scenes** on a first campaign run (the plan estimated ~75 s), plus **about 20–30 s** for the first-rest memory at `uc_lift`. **Repeat boss intros cost 0 s of control** (non-locking 0.8 s overlays), and every scene can be skipped with a hold. Against M7's estimates (Relay at 19.5 / 28.25 / 37 min, Dash at 43 / 59.5 / 76) the opening, the Collector intro, the arrival and the first-rest memory move the Relay arrival about 1 min later on a first run, and Dash about 1.2 min later: the low and mid Relay estimates and the low Dash estimate stay below their §42 bands, as accepted in M7 (D-083); M8 moves them about 1 min closer. Subtitle speed Slower doubles line time (opt-in, K-M8-18). The §44 report measures it: first-view skip rates per scene, `cinematic_s`, and the timeline's "minus cinematic_s" column (D-135: if first-view skips pass 50%, cut the opening to its two lines).
 
 ## 5. Flagged decisions (please confirm or overrule)
 - **D-105** Scope: systems + Act I integration, endings unreachable until Act V. **Process flag:** M8 started before the §44 playtest (CLAUDE.md: "Do not start … any later district or milestone unless the user asks"), because you asked.
 - **D-108** Skip is always a hold and a tap only advances; repeat boss intros never take control instead of being "skippable" (§17).
-- **D-109** M8 never names Rook, but `orr.tres:75` does ("And Rook - don't go up that tower tired.") while `mf_lowlight_04` says he came in without a name. The on-air choice, the "Fourteen" designation, a pronoun in `mf_undercity_01` and the §44 survey's `curious_world` question all hang on the same decision. **Needs a human.**
+- **D-109** M8 never names Rook, but `orr.tres` dialogue `orr_report` does ("And Rook - don't go up that tower tired.") while `mf_lowlight_04` says he came in without a name. The on-air choice, the "Fourteen" designation, a pronoun in `mf_undercity_01` and the §44 survey's `curious_world` question all hang on the same decision. **Needs a human.**
 - **D-110** Six settings pulled forward from M9's accessibility menu; text auto-advance stays M9.
 - **D-113** The surfaced first-rest memory invents a companion and a bridge and is not recovered from the city.
 - **D-114** The memory timeline order (it implies the Core predates the arrest).
@@ -97,11 +98,12 @@ Nominal first views at subtitle speed Normal (the `ValidateContent` story table)
 - Acts II–V, the finale and Ironworks start only when you ask, ideally after the playtest.
 
 ## 7. Known issues
-K-M8-1 to K-M8-37 in `KNOWN_ISSUES.md`. In short:
+K-M8-1 to K-M8-39 in `KNOWN_ISSUES.md`. In short:
 - First-time pacing grows (K-M8-1); a pad player who holds A 0.8 s still skips a first view (K-M8-2); Subtitle speed Slower doubles line time (K-M8-18).
 - No pause menu while a DialogueBox conversation or Orr's choice is open; the tree is paused, so nothing progresses (K-M8-19, D-136).
 - Exported builds must be smoke-tested for `.remap` scans (K-M8-22).
-- Other `take_damage` paths (chase catch, pits, hazards) are not gated by `cinematic_lock`; no Act I scene plays over one (K-M8-25). `SliceEndTrigger` has no theatre guard (K-M8-28).
+- `SliceEndTrigger` has no theatre guard (K-M8-28). (The ungated `take_damage` paths, K-M8-25, and the unhandled memory abort, K-M8-30, were fixed in the audit repair.)
+- Arc props show what Rook has heard, so they appear on the first talk after the event; Mara's bench lamp stays lit after she moves to the door (K-M8-38, K-M8-39).
 - `chart_lowlight`'s reward `map_lens` overwrites Nix's shop counter (pre-existing, K-M8-27).
 - Tour artefacts: queued HUD hints in Relay shots (K-M8-29) and the identical no-Dead-Air card shot (K-M8-37).
-- Headless exits still print engine leak noise; the exit code is 0 (K-M8-32, K-60).
+- The test run's exit prints only the pre-M8 noise again (K-60); `ValidateContent` exits clean (K-M8-32, fixed in the audit repair).

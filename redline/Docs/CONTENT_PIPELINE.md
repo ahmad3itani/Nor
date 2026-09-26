@@ -128,7 +128,7 @@ Everything below is data. All story state is flags, bool or int only (D-116); no
 1. Create `data/sequences/<id>.tres` (`SequenceData`): `id`, `room` (needed for actor lookups), `steps`, `seen_flag` (defaults to `seen_seq_<id>`), `lock_input`, `repeat_locks_input`, `hide_hud`, `letterbox`, `budget_seconds`, `repeat_budget_seconds`, `theatre_only`. Steps live in `cinematics/steps/`: `SeqLine` (speaker from `data/sequences/speakers.tres`, "" = narration), `SeqWait`, `SeqFade`, `SeqLetterbox`, `SeqCamera`, `SeqActorMove`/`Face`/`Flash`, `SeqRookPose`, `SeqShake`, `SeqSfx`, `SeqMusic`, `SeqFlag`, `SeqMark`, `SeqTitleCard`, `SeqCredits`.
 2. Play it from a room with `sequence_trigger(...)` (`play_when` conditions, `autoplay`, `require_spawn`, `once`), a `BossArena.intro_sequence`, or an `ActData.close_sequence`. A player-reachable sequence that nothing plays is a warning.
 3. Rules the linter enforces:
-   - the first view fits `budget_seconds` and the repeat view `repeat_budget_seconds`; a line costs 1.0 s + 0.065 s per character at subtitle speed Normal;
+   - the first view fits `budget_seconds` and the repeat view `repeat_budget_seconds`; a line costs 1.0 s + 0.065 s per character, clamped to 2–7 s, at subtitle speed Normal (`CinematicConfig.line_seconds`; every scene timing lives in `data/cinematics/cinematic_config.tres`);
    - only `SeqFlag` sets flags, and `only_when` never reads a flag a later step sets;
    - actors are `@` ids (`@boss`, `@arena` need a BossArena room) or `Interactables/NPC_<id>` where `<id>` is an NPC profile; **never Rook** (Act I sequences never move him, D-109);
    - a non-locking sequence (barks, repeat boss intros) cannot use camera, pose, letterbox or fade;

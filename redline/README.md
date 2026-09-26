@@ -43,7 +43,7 @@ circuits/    CircuitData (declarative stat modifiers)
 progression/ GameState, ItemCatalog, shops, lore data, SliceStats
 quests/      QuestData, QuestTracker (flag-derived)
 dialogue/    NpcProfile, dialogue rules, NpcArc + ArcTracker (M8)
-cinematics/  SequenceData, SequencePlayer, steps/, SkipGate, SpeakerTable, CinematicMode (M8)
+cinematics/  SequenceData, SequencePlayer, steps/, SkipGate, SpeakerTable, CinematicMode, CinematicConfig (M8)
 story/       ActData, EndingData, EndingResolver, EndingDirector, FutureFlagSet, KnowledgeLint (M8)
 interactables/ Interactable, pickups, caches, breakable walls, NPCs, repeaters, switches
 bosses/      BossArena, Warden Krail, Collector Drone
@@ -52,7 +52,7 @@ playtest/    PlaytestSession, PlaytestConfig, PlaytestVariant, SurveyQuestion, P
 player/      controller/ (Player, config, input, FSM), states/, combat/, reactor/, style/, animation/, abilities/
 enemies/     base/ (Enemy, EnemyData, EnemyBehavior, EncounterDirector), modules/ (EnemyBrain + modules), variants/*.tscn
 world/       rooms/ (Room, labs, undercity/*.tscn, lowlight/*.tscn), templates/ (room templates, metrics), map/ (world map data, fog, index), anchors/, transitions/, districts/, props/, hazards/ (spikes, scanners, chase), camera/, graybox/
-data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, playtest/, world/, sequences/, memories/, arcs/, endings/, story/, dev/, catalog.tres
+data/        movement/, camera/, weapons/, enemies/, combat/, reactor/, style/, audio/, circuits/, shops/, npcs/, quests/, lore/, districts/, playtest/, world/, sequences/, cinematics/, memories/, arcs/, endings/, story/, dev/, catalog.tres
 ui/          debug/ (overlay, tuning panel), hud/, menus/, dialogue/, map/, cinematic/, memory/
 vfx/         dust, hit sparks, slash arcs, sprite sheets (SpriteSheetSpec, SpriteActor)
 assets/      exported art (Art Bible §9; empty until final art)
