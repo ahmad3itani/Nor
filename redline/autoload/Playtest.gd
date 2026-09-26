@@ -297,6 +297,12 @@ func _on_room_entered(_district: String, _room_name: String) -> void:
 	var room := SceneRouter.current_room as Room
 	if room == null or not room.world_room:
 		return
+	# M9 (D2): challenge rooms stay out of the §44 timelines. Clearing _room
+	# means leaving the challenge room logs no second room_exit for the last
+	# world room.
+	if Challenges.active():
+		_room = ""
+		return
 	_room = SceneRouter.current_room_path.get_file().get_basename()
 	_room_since = _t
 	var entry := String(room.active_spawn().spawn_id) if not room.spawns.is_empty() else ""
@@ -311,7 +317,8 @@ func _end_room(reason: String) -> void:
 
 func _on_player_spawned(p: Node2D) -> void:
 	_player = p as Player
-	if session and variant and _player:
+	# Records must not depend on the A/B arm: no variant inside a run (M9).
+	if session and variant and _player and not Challenges.active():
 		variant.apply_to_player(_player)
 
 
@@ -507,6 +514,8 @@ func _meta(kind: String) -> Dictionary:
 		"window": [DisplayServer.window_get_size().x, DisplayServer.window_get_size().y],
 		"physics_hz": Engine.physics_ticks_per_second,
 		"settings": _settings_snapshot(),
+		"build_kind": BuildInfo.kind(),
+		"locale": Loc.locale(),
 	}
 
 

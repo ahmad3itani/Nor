@@ -21,6 +21,9 @@ func _run() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--filter="):
 			filter = arg.trim_prefix("--filter=")
+	# A fresh CI machine has no settings.cfg: no test may write the real
+	# settings file through the title's first-run path (M9).
+	Settings.first_run = false
 	var files := DirAccess.get_files_at(TEST_DIR)
 	files.sort()
 	for file in files:
@@ -49,6 +52,7 @@ func _run() -> void:
 			await suite.after_each()
 			# No scene (sequence, memory) or cinematic mode leaks into the next test.
 			CinematicMode.teardown()
+			_reset_m9_state()
 			var ok := suite.failures.size() == before
 			if not ok:
 				failed += 1
@@ -58,3 +62,15 @@ func _run() -> void:
 		suite.queue_free()
 	print("\n%d tests, %d failed" % [total, failed])
 	get_tree().quit(1 if failed > 0 else 0)
+
+
+## M9 global state no test may leak into the next: the platform store and its
+## headless opt-in, a forced run or demo, the demo bypass, the sandbox leave
+## guard and the tour store sandbox.
+func _reset_m9_state() -> void:
+	Platform.reset_after_tests()
+	Challenges.reset_for_tests()
+	BuildInfo.set_force_demo(-1)
+	BuildInfo.force_allowed.clear()
+	DemoGate.dev_bypass = false
+	AtomicJson.remove_tree("user://tour_sandbox")

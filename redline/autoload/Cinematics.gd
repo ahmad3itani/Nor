@@ -57,6 +57,19 @@ func _exit_tree() -> void:
 	SubtitleStyle.clear_cache()
 	WorldMapIndex.clear_cache()
 	SliceStats.clear_cache()
+	# M9 static caches (T01 lands every line once; later tasks never edit
+	# this file). Classes that do not exist yet are called by path.
+	BuildInfo.clear_cache()
+	Loc.clear_cache()
+	RemixLibrary.clear_cache()
+	UiTheme.clear_cache()
+	NewGamePlus.clear_cache()
+	for p: String in ["platform/AchievementLibrary", "platform/StatCatalog", "challenges/ChallengeLibrary",
+			"challenges/RankLadder", "challenges/ChallengeConfig", "accessibility/Palette",
+			"input/InputBindings", "input/RebindCatalog"]:
+		var path := "res://%s.gd" % p
+		if ResourceLoader.exists(path):
+			(load(path) as GDScript).call("clear_cache")
 
 
 ## Plays `seq` and returns when control is back. In INSTANT mode the result is

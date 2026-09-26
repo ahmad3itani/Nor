@@ -55,13 +55,73 @@ var cinematic_skip_hold: bool = true
 ## Memory vignettes play when resting at an Anchor (off = journal only).
 var memories_at_anchors: bool = true
 
+## --- M9 contract keys (T01) ---
+# Declared here with their final names and defaults so every M9 system can
+# compile against them; T03 makes Settings catalog-driven (SettingDef data)
+# and loads/saves them under the same names. Not persisted yet.
+## [audio] Menu and UI sounds.
+var ui_volume: float = 0.8
+## [accessibility] High-contrast UI and world cues.
+var high_contrast: bool = false
+## [accessibility] 0 Off / 1 Red-green / 2 Blue-yellow (shape cues + palette).
+var colorblind_mode: int = 0
+## [accessibility] 0 Off / 1 Some / 2 Strong dimming of the backdrop.
+var background_dim: int = 0
+## [accessibility] 0 100 % / 1 125 % / 2 150 % UI scale.
+var ui_scale: int = 0
+## [accessibility] 0 Off / 1 On: scene lines advance on their own (D-110).
+var text_auto_advance: int = 0
+## [assist] 0 Off / 1 Light / 2 Strong aim cone.
+var aim_assist: int = 0
+## [assist] 0 Off / 1 Bosses reduced / 2 All reduced / 3 All greatly reduced.
+var damage_assist: int = 0
+## [assist] Burnout (Core overheat) costs health.
+var burnout_hurts: bool = true
+## [assist] Respawn at the last room entry instead of the last Anchor.
+var generous_checkpoints: bool = false
+## [assist] 0 Hold for height / 1 Always full height (never tagged, D-149).
+var jump_hold_mode: int = 0
+## [assist] 0 Minimal / 1 Standard / 2 Guided map hints.
+var map_hints: int = 1
+## [assist] Offer assists after repeated deaths (§23: offered, never applied).
+var assist_suggestions: bool = true
+## [input] 0 Auto / 1 Xbox / 2 PlayStation / 3 Nintendo prompts.
+var pad_glyphs: int = 0
+## [input] action -> saved events (T03 InputBindings).
+var bindings: Dictionary = {}
+## [ui] Achievement toasts on screen.
+var achievement_toasts: bool = true
+## [ui] Display language code ("" = automatic).
+var locale: String = ""
+## [challenges] 0 Off / 1 Challenges / 2 Campaign too.
+var speedrun_timer: int = 0
+## [challenges] Ghost shown in runs (0 Off / 1 Personal best / 2 Developer).
+var challenge_ghost: int = 1
+## [challenges] Fast reset needs a hold (no accidental restarts).
+var fast_reset_hold: bool = true
+## Session only (never saved): no settings.cfg existed at boot, so the title
+## offers the comfort & accessibility row once (D-168).
+var first_run: bool = false
+
 var _path: String = SETTINGS_PATH
 ## Session-only subtitle size from `--subtitle-size=N` (captures, -1 = none).
 ## Never saved, so SettingsMenu.close_menu cannot persist a CLI value.
 var _subtitle_size_override: int = -1
+## Session-only locale from `--locale=` (T06); never saved.
+var _locale_override: String = ""
+
+## Properties snapshot()/apply_defaults()/restore() skip: session-only state
+## that is never a stored setting (R01.22).
+const _SESSION_ONLY := ["_path", "_subtitle_size_override", "_locale_override", "first_run"]
+## key -> default, read once from a fresh instance of this script, so the
+## declarations above stay the only place a default is written.
+static var _defaults: Dictionary = {}
 
 
 func _ready() -> void:
+	# Debug demos move saves, platform files and settings before any store
+	# loads (T05 fills it; Settings is the second autoload).
+	BuildInfo.apply_demo_dirs()
 	load_settings()
 	var arg := parse_subtitle_size_arg(OS.get_cmdline_user_args())
 	if arg >= 0:
@@ -85,6 +145,8 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	_path = path
 	var cfg := ConfigFile.new()
 	if cfg.load(path) != OK:
+		if path == SETTINGS_PATH:
+			first_run = true
 		return
 	screen_shake_scale = cfg.get_value("accessibility", "screen_shake_scale", screen_shake_scale)
 	hitstop_scale = cfg.get_value("accessibility", "hitstop_scale", hitstop_scale)
@@ -127,3 +189,44 @@ func save_settings() -> Error:
 	cfg.set_value("accessibility", "cinematic_skip_hold", cinematic_skip_hold)
 	cfg.set_value("accessibility", "memories_at_anchors", memories_at_anchors)
 	return cfg.save(_path)
+
+
+## Every stored setting's current value (catalog keys only, never the
+## session-only fields). CaptureTour and tests put it back with restore().
+func snapshot() -> Dictionary:
+	var out := {}
+	for k: String in _default_values():
+		var v: Variant = get(k)
+		out[k] = v.duplicate(true) if v is Dictionary else v
+	return out
+
+
+## Every stored setting back to its declared default (session fields untouched).
+func apply_defaults() -> void:
+	restore(_default_values())
+
+
+func restore(d: Dictionary) -> void:
+	for k: String in d:
+		if _SESSION_ONLY.has(k):
+			continue
+		var v: Variant = d[k]
+		set(k, v.duplicate(true) if v is Dictionary else v)
+
+
+## The M9 assists in use, as neutral tags for records (D-149). T03/T11 fill it.
+func active_assists() -> PackedStringArray:
+	return PackedStringArray()
+
+
+func _default_values() -> Dictionary:
+	if _defaults.is_empty():
+		var fresh: Node = (get_script() as GDScript).new()
+		for p in fresh.get_property_list():
+			var k: String = p["name"]
+			if (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0 or _SESSION_ONLY.has(k) or k == "_defaults":
+				continue
+			var v: Variant = fresh.get(k)
+			_defaults[k] = v.duplicate(true) if v is Dictionary else v
+		fresh.free()
+	return _defaults

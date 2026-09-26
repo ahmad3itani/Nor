@@ -13,6 +13,16 @@ const FONT_SIZE := 7
 static var _theme: Theme
 
 
+## stub: T03 fills it (drops the cached theme when high contrast or the UI
+## scale changes).
+static func invalidate() -> void:
+	pass
+
+
+static func clear_cache() -> void:
+	invalidate()
+
+
 static func get_theme() -> Theme:
 	if _theme:
 		return _theme

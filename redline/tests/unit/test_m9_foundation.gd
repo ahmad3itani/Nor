@@ -134,3 +134,143 @@ func test_x3_scan_clean_today() -> void:
 		var listed := unrecorded.has(sig) and str(unrecorded[sig]).strip_edges() != ""
 		check(connected or listed, "EventBus.%s is neither recorded nor listed in UNRECORDED_SIGNALS" % sig)
 		check(not (connected and unrecorded.has(sig)), "%s is recorded AND listed as unrecorded" % sig)
+
+
+# --- Stubs, autoloads, directories (T01c) --------------------------------------------
+
+## Every M9 directory a later task names exists (with a .gdkeep), so no
+## literal res:// path to it is ever a broken reference.
+const M9_DIRS := ["platform", "challenges", "accessibility", "input", "l10n", "release", "locale",
+	"world/rooms/challenge", "world/challenge", "world/remix", "data/achievements", "data/challenges",
+	"data/challenges/kits", "data/challenges/splits", "data/challenges/ghosts", "data/challenges/waves",
+	"data/platform", "data/settings", "data/input", "data/accessibility", "data/l10n", "data/release",
+	"data/ngplus", "data/remix", "ui/menus/dev", "devtools/content/rules", "devtools/dev_actions", "devtools/l10n"]
+const STUBS := ["res://autoload/Platform.gd", "res://autoload/Challenges.gd", "res://release/BuildInfo.gd",
+	"res://release/DemoGate.gd", "res://release/BuildProbe.gd", "res://l10n/Loc.gd",
+	"res://progression/NewGamePlus.gd", "res://world/remix/RemixLibrary.gd", "res://progression/AtomicJson.gd"]
+## save_fields.settings_keys_new: key -> default.
+const SETTINGS_CONTRACT := {
+	"ui_volume": 0.8, "high_contrast": false, "colorblind_mode": 0, "background_dim": 0, "ui_scale": 0,
+	"aim_assist": 0, "damage_assist": 0, "burnout_hurts": true, "generous_checkpoints": false, "jump_hold_mode": 0,
+	"map_hints": 1, "assist_suggestions": true, "pad_glyphs": 0, "bindings": {}, "achievement_toasts": true,
+	"locale": "", "speedrun_timer": 0, "challenge_ghost": 1, "fast_reset_hold": true, "text_auto_advance": 0,
+}
+
+
+func test_m9_dirs_exist() -> void:
+	for d: String in M9_DIRS:
+		check(DirAccess.dir_exists_absolute("res://" + d), "res://%s exists" % d)
+
+
+func test_stub_scripts_load_and_are_inert() -> void:
+	for path: String in STUBS:
+		var s := load(path) as GDScript
+		check(s != null and s.can_instantiate(), "%s loads" % path)
+	for path: String in ["res://autoload/Platform.gd", "res://autoload/Challenges.gd"]:
+		# An autoload's script must not declare a class_name (4.3 parse error).
+		check((load(path) as GDScript).get_global_name() == "", "%s declares no class_name" % path)
+	check(not Platform.is_unlocked("x") and Platform.unlocked_ids().is_empty() and not Platform.earning_allowed(), "Platform is inert")
+	check(not Challenges.active() and Challenges.current_id() == "" and not Challenges.finishing(), "Challenges is inert")
+	check(BuildInfo.kind() == "full" and not BuildInfo.is_demo() and BuildInfo.room_allowed("res://x.tscn"), "full build")
+	BuildInfo.set_force_demo(1)
+	check(BuildInfo.is_demo() and BuildInfo.kind() == "demo", "force_demo seam")
+	BuildInfo.set_force_demo(-1)
+	check(Loc.t("Hello") == "Hello" and Loc.f("A {x}", {"x": "B"}) == "A B", "Loc returns the source")
+	check(Loc.tn("{n} run", "{n} runs", 2) == "2 runs" and Loc.tn("{n} run", "{n} runs", 1) == "1 run", "Loc.tn plural")
+	check(NewGamePlus.cycle_label(0) == "" and NewGamePlus.cycle_label(1) == "NG+" and NewGamePlus.cycle_label(3) == "NG+3", "cycle labels")
+	check(NewGamePlus.cycle_of({"flags": {"ng_cycle": 2.0}}) == 2, "cycle_of casts JSON floats")
+	check(RemixLibrary.apply(Node.new(), "res://x.tscn") == 0, "no remix ops")
+	check(BuildProbe.info()["kind"] == "full", "build probe info")
+
+
+func test_settings_contract_keys_exist() -> void:
+	for k: String in SETTINGS_CONTRACT:
+		check(k in Settings, "Settings.%s exists" % k)
+	var snap := Settings.snapshot()
+	Settings.apply_defaults()
+	for k: String in SETTINGS_CONTRACT:
+		check(k in Settings and Settings.get(k) == SETTINGS_CONTRACT[k], "Settings.%s defaults to %s" % [k, SETTINGS_CONTRACT[k]])
+	check(Settings.active_assists().is_empty(), "no assists in use")
+	check(not snap.has("_path") and not snap.has("first_run") and not snap.has("_locale_override")
+		and not snap.has("_subtitle_size_override"), "snapshot skips session-only fields")
+	Settings.restore(snap)
+
+
+func test_settings_snapshot_restore_roundtrip() -> void:
+	var snap := Settings.snapshot()
+	var path := Settings._path
+	Settings.ui_scale = 2
+	Settings.locale = "en_XA"
+	Settings.high_contrast = true
+	Settings.subtitle_size = 2
+	Settings.apply_defaults()
+	check(Settings.ui_scale == 0 and Settings.locale == "" and not Settings.high_contrast and Settings.subtitle_size == 0, "defaults applied")
+	check(Settings._path == path, "apply_defaults keeps the session path")
+	Settings.restore(snap)
+	check(Settings.snapshot() == snap, "restore puts every key back")
+
+
+func test_ui_cancel_has_backspace() -> void:
+	var keys: Array[int] = []
+	var pad_b := false
+	for ev in InputMap.action_get_events(&"ui_cancel"):
+		if ev is InputEventKey:
+			keys.append((ev as InputEventKey).physical_keycode)
+		elif ev is InputEventJoypadButton and (ev as InputEventJoypadButton).button_index == JOY_BUTTON_B:
+			pad_b = true
+	check(KEY_ESCAPE in keys and KEY_BACKSPACE in keys and pad_b, "ui_cancel lists Esc, Backspace and pad B (%s)" % [keys])
+	var pause_keys: Array[int] = []
+	for ev in InputMap.action_get_events(&"pause"):
+		if ev is InputEventKey:
+			pause_keys.append((ev as InputEventKey).physical_keycode)
+	check(KEY_ESCAPE in pause_keys and KEY_P in pause_keys, "pause has Esc and P (%s)" % [pause_keys])
+
+
+func test_playtest_challenge_room_clears_room() -> void:
+	_record()
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	check(Playtest._room == "WorldA", "a world room is tracked (%s)" % Playtest._room)
+	var enters := _events("room_enter").size()
+	Challenges.force_active = true
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	check(Playtest._room == "", "a challenge room clears the tracked room")
+	check(_events("room_enter").size() == enters, "no room_enter inside a run")
+	var exits := _events("room_exit").size()
+	Challenges.force_active = false
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	check(_events("room_exit").size() == exits, "leaving the challenge room logs no second room_exit")
+	check(_events("room_enter").size() == enters + 1, "back in the world: room_enter again")
+
+
+func test_world_transition_frames_keep_leaving_room() -> void:
+	_record()
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	EventBus.room_leaving.emit(SceneRouter.current_room)
+	EventBus.hint_requested.emit("between rooms", 1.0)
+	var hints: Array = _events("hint")
+	check(not hints.is_empty() and hints[-1]["room"] == "WorldA", "an event between room_leaving and room_entered keeps the leaving room (%s)" % [hints])
+	var exits: Array = _events("room_exit")
+	check(exits.size() == 1 and exits[0]["room"] == "WorldA", "one room_exit for the leaving room")
+
+
+func test_playtest_variant_skipped_in_run() -> void:
+	Settings.playtest_variant = "strong_slide_jump"
+	Settings.playtest_recording = true
+	Playtest.dir = TEST_DIR
+	Playtest.allow_headless = true
+	Playtest.begin_session("new")
+	check(Playtest.variant != null and not Playtest.variant.movement_overrides.is_empty(), "a variant with overrides is active")
+	Challenges.force_active = true
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	var p := (SceneRouter.current_room as Room).player
+	check(p.config.resource_path != "", "inside a run the player keeps the shipped movement config")
+	Challenges.force_active = false
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	p = (SceneRouter.current_room as Room).player
+	check(p.config.resource_path == "", "outside a run the variant applies (a copy)")
