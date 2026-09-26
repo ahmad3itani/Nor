@@ -98,6 +98,8 @@ static func toast_node() -> AchievementToast:
 
 ## "backend: local · store: <path> · presence: <text> · 3/30 unlocked".
 static func summary() -> String:
-	return "backend: %s · store: %s · presence: %s · %d/%d unlocked%s" % [Platform.backend.backend_id(),
-		ProjectSettings.globalize_path(Platform.store_dir), Platform.presence_text(), Platform.unlocked_ids().size(),
-		AchievementLibrary.count(), "" if Platform.active() else " · platform off"]
+	# Counts first, the machine-dependent store path last: the dev page shows
+	# this on one clipped line, so its height never depends on the path.
+	return "%d/%d unlocked%s · backend: %s · presence: %s · store: %s" % [Platform.unlocked_ids().size(),
+		AchievementLibrary.count(), "" if Platform.active() else " · platform off", Platform.backend.backend_id(),
+		Platform.presence_text(), ProjectSettings.globalize_path(Platform.store_dir)]

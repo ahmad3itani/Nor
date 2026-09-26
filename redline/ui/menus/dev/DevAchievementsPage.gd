@@ -8,7 +8,13 @@ extends RefCounted
 
 
 static func build(c: DevConsole) -> void:
-	c.add_label(AchievementDevActions.summary(), UiTheme.MUTED, UiTheme.FONT_SIZE - 2)
+	# One clipped line (full text in the tooltip): wrapped, the store path and
+	# presence text pushed the page past 270 px on some machines and stores.
+	var summary := c.add_label(AchievementDevActions.summary(), UiTheme.MUTED, UiTheme.FONT_SIZE - 2)
+	summary.autowrap_mode = TextServer.AUTOWRAP_OFF
+	summary.clip_text = true
+	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	summary.tooltip_text = summary.text
 	var rows: Array = []
 	rows.append(["Unlock all achievements", func() -> void:
 		var n := AchievementDevActions.unlock_all()
