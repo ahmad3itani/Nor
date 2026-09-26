@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="LocaleTable" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://l10n/LocaleTable.gd" id="1_table"]
+[ext_resource type="Script" path="res://l10n/LocaleInfo.gd" id="2_info"]
+
+[sub_resource type="Resource" id="Resource_en"]
+script = ExtResource("2_info")
+code = "en"
+language = "en"
+endonym = "English"
+enabled = true
+dev_only = false
+rtl = false
+min_font_size = 7
+reading_scale = 1.0
+font_paths = PackedStringArray()
+system_fonts = PackedStringArray()
+plural_forms = "nplurals=2; plural=(n != 1);"
+coverage_sample = ""
+
+[sub_resource type="Resource" id="Resource_en_XA"]
+script = ExtResource("2_info")
+code = "en_XA"
+language = "xa"
+endonym = "Pseudo (en_XA)"
+enabled = true
+dev_only = true
+rtl = false
+min_font_size = 7
+reading_scale = 1.0
+font_paths = PackedStringArray()
+system_fonts = PackedStringArray()
+plural_forms = "nplurals=2; plural=(n != 1);"
+coverage_sample = ""
+
+[resource]
+script = ExtResource("1_table")
+rows = Array[ExtResource("2_info")]([SubResource("Resource_en"), SubResource("Resource_en_XA")])

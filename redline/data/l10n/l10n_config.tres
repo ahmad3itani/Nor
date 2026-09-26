@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="L10nConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://l10n/L10nConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+resource_dirs = PackedStringArray("res://data")
+scene_dirs = PackedStringArray("res://world/rooms", "res://bosses", "res://ui", "res://world/rooms/challenge")
+code_dirs = PackedStringArray("res://autoload", "res://bosses", "res://cinematics", "res://interactables", "res://player", "res://progression", "res://quests", "res://story", "res://ui", "res://world", "res://l10n", "res://platform", "res://challenges", "res://release", "res://accessibility", "res://input")
+code_exempt = PackedStringArray("res://ui/debug/", "res://ui/menus/DevConsole.gd", "res://ui/menus/MomentMenu.gd", "res://ui/menus/SurveyMenu.gd", "res://devtools/", "res://playtest/", "res://tests/", "res://ui/menus/dev/", "res://devtools/dev_actions/")
+literal_sinks = PackedStringArray("add_label(", "add_button(", "draw_string(", "draw_multiline_string(", "_draw_centered(", "hint_requested.emit(", "interact_prompt_changed.emit(", "show_line(", "show_title(", ".text = ", "show_toast(")
+pseudo_ratio_short = 0.5
+pseudo_ratio_long = 0.35
+pseudo_short_len = 12
+pseudo_min_pad = 2
+pseudo_prefix = "["
+pseudo_suffix = "]"
+pseudo_pad_char = "~"
+pseudo_map = {
+"A": "Á",
+"C": "Ç",
+"D": "Ď",
+"E": "É",
+"G": "Ğ",
+"H": "Ĥ",
+"I": "Í",
+"J": "Ĵ",
+"K": "Ķ",
+"L": "Ĺ",
+"N": "Ñ",
+"O": "Ó",
+"R": "Ŕ",
+"S": "Š",
+"T": "Ť",
+"U": "Ú",
+"W": "Ŵ",
+"Y": "Ý",
+"Z": "Ž",
+"a": "á",
+"c": "ç",
+"d": "ď",
+"e": "é",
+"g": "ğ",
+"h": "ĥ",
+"i": "í",
+"j": "ĵ",
+"k": "ķ",
+"l": "ĺ",
+"n": "ñ",
+"o": "ó",
+"r": "ŕ",
+"s": "š",
+"t": "ť",
+"u": "ú",
+"w": "ŵ",
+"y": "ý",
+"z": "ž"
+}
+over_length_warn_ratio = 1.4
+text_field_pattern = "(^|_)(text|label|labels|title|name|names|description|hint|note|tagline|heading|lines|subtitle|verb|question|choices|speaker|giver|line|body|cta)$"
