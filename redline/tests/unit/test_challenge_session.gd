@@ -290,6 +290,15 @@ func test_unlock_not_recorded_in_theatre_or_tainted() -> void:
 	check(not Challenges.records.ever_unlocked("fx_trial"), "not during a run")
 	Challenges.force_active = false
 	Game.set_flag("collector_drone_defeated", false)
+	# A dev flag sandbox (DevActions.satisfy_ending) holds recording while
+	# its fabricated flags are live.
+	var restore := FlagSandbox.begin()
+	ChallengeLibrary.recording_holds += 1
+	Game.set_flag("collector_drone_defeated")
+	check(not Challenges.records.ever_unlocked("fx_trial"), "not inside a held flag sandbox")
+	ChallengeLibrary.recording_holds -= 1
+	restore.call()
+	check(not Game.has_flag("collector_drone_defeated") and not Challenges.records.ever_unlocked("fx_trial"), "the restore records nothing")
 	Game.set_flag("collector_drone_defeated")
 	check(Challenges.records.ever_unlocked("fx_trial"), "recorded in real play")
 
@@ -304,8 +313,18 @@ func test_pause_during_finish_delay() -> void:
 	await press_action(&"pause", 2)
 	await get_tree().process_frame
 	check(not host.pause.is_open(), "no pause menu in the finish beat")
+	# R04.22: the card goes through open_when_free; with a screen open it
+	# waits in the queue and pause stays refused until it is shown.
+	check(host.open(&"settings"), "a blocker opens in the beat")
+	var queued := func() -> bool:
+		return host._queued.any(func(q: Array) -> bool: return q[0] == &"challenge_result")
 	check(await h.until(func() -> bool: return Challenges.phase() == Challenges.Phase.FINISHED, 90), "the card is requested after the delay")
-	check(not Challenges.finishing(), "the window closes once the card is requested")
+	check(queued.call(), "the card is queued in open_when_free (%s)" % [host._queued])
+	check(Challenges.finishing() and not MenuHost.can_open(&"pause", false, false), "pause stays refused while it waits")
+	host.settings.close_menu()
+	await physics_frames(3)
+	check(not queued.call(), "drained once the blocker closed")
+	check(not Challenges.finishing(), "the window closes once the card is shown")
 	check(MenuHost.can_open(&"pause", false, false), "pause opens again")
 	check(h.player().cinematic_lock, "the player stays frozen until the card or a retry")
 

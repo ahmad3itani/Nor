@@ -21,6 +21,8 @@ enum Phase { IDLE, STARTING, RUNNING, FINISHING, FINISHED, LEAVING }
 
 const LOC_FIELDS := {}
 const TAG_HITSTOP := "hitstop_reduced"
+## Frames between checks for an owed group-open notice.
+const OWED_CHECK_FRAMES := 6
 ## Assist tags a forced Core makes moot (the kit sets the mode, D-149).
 const REACTOR_TAGS := ["reactor_assist", "no_burnout"]
 
@@ -70,6 +72,9 @@ var _death_timer: Timer
 var _card_timer: Timer
 ## A live unlock notice check is queued for the end of the frame.
 var _notice_pending: bool = false
+## A live group-open notice was blocked by a passing state (see _announce).
+var _notice_owed: bool = false
+var _owed_tick: int = 0
 
 
 func _ready() -> void:
@@ -381,6 +386,8 @@ func _on_player_spawned(p: Node2D) -> void:
 func _physics_process(_delta: float) -> void:
 	if session == null:
 		campaign.tick()
+		if _notice_owed:
+			_poll_owed_notice()
 		return
 	if _phase == Phase.RUNNING and not SceneRouter.transitioning:
 		_tick_run()
@@ -991,26 +998,50 @@ func _flush_notice() -> void:
 
 ## Unlocks never record from fabricated states (R04.19) or the sandbox.
 func _unlock_blocked() -> bool:
-	return CinematicMode.theatre or active() or Game.held_profile != null or Game.state.dev_tainted
+	return ChallengeLibrary.recording_blocked()
 
 
 ## Marks groups that opened at the rig; `show` = a live change in play.
+## A live notice held back by a passing block (the Act I close sets
+## act1_complete under its locking scene, a menu, the pause, a lab room) is
+## owed: the groups stay unannounced and the notice shows once free play
+## resumes (_poll_owed_notice). Tours (quiet_notices) drop it for good, and
+## a load or reset marks everything silently.
 func _announce(show: bool) -> void:
 	if not ChallengeLibrary.rig_open():
+		_notice_owed = false
 		return
 	var fresh: Array[int] = []
 	for g in ChallengeLibrary.unlocked_groups():
 		if not records.group_announced(g):
 			fresh.append(g)
 	if fresh.is_empty():
+		_notice_owed = false
 		return
+	var speak := show and not quiet_notices
+	if speak and not _notice_allowed():
+		_notice_owed = true
+		return
+	_notice_owed = false
 	var titles := PackedStringArray()
 	for g in fresh:
 		records.mark_group_announced(g)
 		titles.append(Loc.t(ChallengeLibrary.group_title(g)))
-	if show and _notice_allowed():
+	if speak:
 		EventBus.hint_requested.emit(Loc.f("New at the Relay training rig: {group}", {"group": ", ".join(titles)}),
 			ChallengeConfig.shared().suggest_new_group_hint_s)
+
+
+## An owed notice shows on the first free-play frame (checked every few
+## frames outside runs).
+func _poll_owed_notice() -> void:
+	_owed_tick += 1
+	if _owed_tick < OWED_CHECK_FRAMES:
+		return
+	_owed_tick = 0
+	if _unlock_blocked() or not _notice_allowed():
+		return
+	_announce(true)
 
 
 func _notice_allowed() -> bool:
@@ -1067,6 +1098,8 @@ func reset_for_tests() -> void:
 	_pending_return = false
 	_reset_on_load = false
 	_notice_pending = false
+	_notice_owed = false
+	_owed_tick = 0
 	_end_session()
 	_reset_down = false
 	_reset_hold = 0
@@ -1077,4 +1110,5 @@ func reset_for_tests() -> void:
 	campaign = CampaignClock.new()
 	_wire_campaign()
 	ChallengeLibrary.data_dir = ChallengeLibrary.DEFAULT_DIR
+	ChallengeLibrary.recording_holds = 0
 	ChallengeLibrary.clear_cache()

@@ -17,6 +17,12 @@ const DEFAULT_DIR := "res://data/challenges"
 ## Test seam (R04.22): tests point it at res://tests/fixtures/challenges.
 static var data_dir: String = DEFAULT_DIR
 
+## Open holds on unlock recording (R04.19): a dev flag sandbox
+## (FlagSandbox, DevActions.satisfy_ending) adds one while its fabricated
+## flags are live and removes it on restore. Only callers that opt in hold
+## it (FlagSandbox itself does not yet).
+static var recording_holds: int = 0
+
 static var _all: Array[ChallengeData] = []
 static var _dir_loaded: String = ""
 
@@ -129,16 +135,23 @@ static func _with_state(s: GameState, fn: Callable) -> bool:
 
 ## Records every challenge whose condition holds on the profile now. Returns
 ## the newly recorded ids. Never from fabricated states (R04.19): not in
-## theatre, not on a dev-tainted profile, not during a run.
+## theatre, not on a dev-tainted profile, not during a run, not while a flag
+## sandbox holds recording.
 static func record_unlocks() -> PackedStringArray:
 	var out := PackedStringArray()
-	if CinematicMode.theatre or Challenges.active() or Game.held_profile != null or Game.state.dev_tainted:
+	if recording_blocked():
 		return out
 	for ch in all():
 		if not Challenges.records.ever_unlocked(ch.id) and Game.check_condition(ch.unlock_when):
 			Challenges.records.record_unlock(ch.id)
 			out.append(ch.id)
 	return out
+
+
+## Whether the profile's flags may be fabricated or the sandbox is live.
+static func recording_blocked() -> bool:
+	return CinematicMode.theatre or Challenges.active() or Game.held_profile != null or Game.state.dev_tainted \
+		or recording_holds > 0
 
 
 ## Groups with at least one unlocked challenge.
