@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AccessPalette" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://accessibility/AccessPalette.gd" id="1_pal"]
+
+[resource]
+script = ExtResource("1_pal")
+id = &"tritan"
+simulations = PackedStringArray("tritan")
+colors = {
+&"danger": Color(1, 0.231372549, 0.309803922, 1),
+&"warning": Color(1, 0.560784314, 0.721568627, 1),
+&"info": Color(0.349019608, 0.878431373, 0.909803922, 1),
+&"heal": Color(0.949019608, 0.949019608, 0.949019608, 1),
+&"currency": Color(1, 0.82745098, 0.419607843, 1),
+&"accent": Color(0.909803922, 0.156862745, 0.235294118, 1),
+&"safe": Color(0.909803922, 0.156862745, 0.235294118, 1)
+}
+min_state_distance = 0.1

@@ -21,7 +21,7 @@ const HC_MUTED := Color("c8c2d6")
 ## Disabled rows in high contrast read as struck, not only dimmer.
 const DISABLED_PREFIX := "— "
 
-## "hc:scale_index" -> Theme.
+## "hc:scale_index:palette_mode" -> Theme.
 static var _themes: Dictionary = {}
 static var _font: Font = null
 
@@ -98,10 +98,13 @@ static func label_color(c: Color) -> Color:
 
 static func get_theme() -> Theme:
 	var hc := high_contrast()
-	var key := "%s:%d" % [hc, scale_index()]
+	# The accent comes from the colour-blind palette (T12, D4 §7.3), so the
+	# palette mode is part of the key.
+	var key := "%s:%d:%d" % [hc, scale_index(), Palette.mode()]
 	if _themes.has(key):
 		return _themes[key]
 	var t := Theme.new()
+	var accent := Palette.color(&"accent")
 	t.default_font_size = font_size()
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = PANEL
@@ -109,13 +112,13 @@ static func get_theme() -> Theme:
 	normal.content_margin_left = 5
 	var focus := normal.duplicate() as StyleBoxFlat
 	focus.bg_color = Color(0.18, 0.06, 0.1, 1.0)
-	focus.border_color = ACCENT
+	focus.border_color = accent
 	focus.set_border_width_all(0)
 	focus.border_width_left = 2
 	if hc:
 		# Focus is a filled accent bar with borders on both sides, so it
 		# reads without colour vision.
-		focus.bg_color = ACCENT
+		focus.bg_color = accent
 		focus.border_color = HC_TEXT
 		focus.border_width_right = 2
 	var disabled := normal.duplicate() as StyleBoxFlat
@@ -132,7 +135,7 @@ static func get_theme() -> Theme:
 	t.set_constant("line_spacing", "Label", 0)
 	var panel := StyleBoxFlat.new()
 	panel.bg_color = Color(BG.r, BG.g, BG.b, 1.0) if hc else BG
-	panel.border_color = ACCENT
+	panel.border_color = accent
 	panel.border_width_top = 1
 	panel.set_content_margin_all(6)
 	t.set_stylebox("panel", "PanelContainer", panel)

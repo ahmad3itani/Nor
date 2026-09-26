@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AccessPalette" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://accessibility/AccessPalette.gd" id="1_pal"]
+
+[resource]
+script = ExtResource("1_pal")
+id = &"default"
+simulations = PackedStringArray()
+colors = {
+&"danger": Color(1, 0.231372549, 0.309803922, 1),
+&"warning": Color(1, 0.811764706, 0.349019608, 1),
+&"info": Color(0.349019608, 0.878431373, 0.909803922, 1),
+&"heal": Color(0.490196078, 1, 0.603921569, 1),
+&"currency": Color(1, 0.82745098, 0.419607843, 1),
+&"accent": Color(0.909803922, 0.156862745, 0.235294118, 1),
+&"safe": Color(0.909803922, 0.156862745, 0.235294118, 1),
+&"scanner_full": Color(0.909803922, 0.160784314, 0.239215686, 1),
+&"chase_warning": Color(1, 0.83, 0.42, 1),
+&"chase_danger": Color(1, 0.23, 0.31, 1),
+&"collector_warning": Color(1, 0.62, 0.2, 1),
+&"ammo": Color(1, 0.88627451, 0.541176471, 1),
+&"map_gate": Color(0.498039216, 0.843137255, 1, 1),
+&"map_note": Color(0.623529412, 0.847058824, 1, 1)
+}
+min_state_distance = 0.1

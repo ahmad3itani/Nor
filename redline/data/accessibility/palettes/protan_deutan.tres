@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AccessPalette" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://accessibility/AccessPalette.gd" id="1_pal"]
+
+[resource]
+script = ExtResource("1_pal")
+id = &"protan_deutan"
+simulations = PackedStringArray("protan", "deutan")
+colors = {
+&"danger": Color(1, 0.415686275, 0.101960784, 1),
+&"warning": Color(0.941176471, 0.894117647, 0.258823529, 1),
+&"info": Color(0.337254902, 0.705882353, 0.91372549, 1),
+&"heal": Color(0.337254902, 0.705882353, 0.91372549, 1),
+&"currency": Color(1, 0.82745098, 0.419607843, 1),
+&"accent": Color(1, 0.415686275, 0.101960784, 1),
+&"safe": Color(1, 0.415686275, 0.101960784, 1)
+}
+min_state_distance = 0.1
