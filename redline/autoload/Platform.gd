@@ -122,9 +122,11 @@ func run_pass_allowed() -> bool:
 # --- Store and queries ---
 
 ## The live store: loaded on first access, reloaded (never flushed across)
-## when store_dir changed since it was loaded (R02.5).
+## when store_dir changed since it was loaded (R02.5). A dirty old store is
+## first written to its own dir, never the new one.
 func store() -> LocalStore:
 	if _store == null or _store.dir != store_dir:
+		_persist_old_store()
 		_store = LocalStore.new()
 		_store.load_from(store_dir, config.store_file, config.store_version)
 		_flush_timer = 0.0
@@ -205,16 +207,29 @@ func flush() -> void:
 			backend.set_stat(def.api(), _store.lifetime_value(def.id), def.is_int())
 	backend.store_stats()
 	if _store.dirty:
-		_save()
+		# The loaded store, in its own dir: never a fresh load of a changed
+		# store_dir (R02.5).
+		_flush_timer = 0.0
+		_write(_store)
 
 
 func _save() -> void:
 	_flush_timer = 0.0
 	if not active():
 		return
-	var s := store()
+	_write(store())
+
+
+func _write(s: LocalStore) -> void:
 	s.presence = {"key": presence.key, "text": presence.text} if presence.key != "" else {}
 	s.save()
+
+
+## Before a store_dir swap: the loaded store's unsaved lifetime stats go to
+## its own dir (a real display's play time would otherwise be dropped).
+func _persist_old_store() -> void:
+	if _store != null and _store.dirty and active():
+		_write(_store)
 
 
 ## SaveManager calls this after every successful profile write (cloud hook):
@@ -298,6 +313,9 @@ func dev_reset_all() -> void:
 
 
 func reset_for_tests(dir: String) -> void:
+	# Flush the real store first (CaptureTour runs with a display): its
+	# unsaved lifetime stats belong in its own dir.
+	_persist_old_store()
 	store_dir = dir
 	allow_headless = true
 

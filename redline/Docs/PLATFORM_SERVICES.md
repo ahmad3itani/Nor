@@ -30,7 +30,7 @@ Gameplay never calls `Platform`. The trackers only listen to EventBus (the Playt
 | `config`, `backend`, `stats`, `achievements`, `presence` | The config resource, the backend and the three child trackers. |
 | `active()` | Files may be written: `allow_headless` or a real display. |
 | `earning_allowed()` | `active()`, not `CinematicMode.theatre`, not `Challenges.active()`, and not a dev-tainted profile (unless `dev_allow_tainted`), D-145. |
-| `lifetime_allowed()`, `run_pass_allowed()` | The challenge feat whitelist and the in-run pass (below). |
+| `lifetime_allowed()`, `run_pass_allowed()` | The challenge feat whitelist and the in-run pass (below). Theatre blocks them only outside a run (the Ending): a challenge run keeps theatre on until its restore, which comes after `challenge_finished`. |
 | `store()` | The lazy `LocalStore`. |
 | `is_unlocked(id)`, `unlocked_ids()`, `unlock_record(id)` | Unlock state; a record is `{t: unix seconds, profile: int}`. |
 | `stat(id, lifetime = true)`, `profile_stat(id)` | Lifetime or this profile's value. During a run the profile value reads the held profile, never the sandbox. |
@@ -63,7 +63,7 @@ Achievement unlocks are announced on `EventBus.achievement_unlocked(achievement_
 - Sections a build does not know are kept and written back. A newer `store_version` is kept with a warning.
 - Challenge records are not here. They live in `<store_dir>/records.json` (T04's RecordStore), and personal-best ghosts live in `<store_dir>/ghosts/`.
 - Per-profile stat values live in `GameState.stats` (an optional key, no schema bump, D-087/D-090).
-- **Lazy loading (R02.5):** the store loads on first access, not in `_ready`, and remembers the dir it came from. If `store_dir` changed since then (demo user dirs, tests), the next access drops the in-memory copy and reloads from the new dir. Nothing is ever flushed across dirs.
+- **Lazy loading (R02.5):** the store loads on first access, not in `_ready`, and remembers the dir it came from. If `store_dir` changed since then (demo user dirs, tests), the next access first writes a dirty in-memory copy to its own dir (when `active()`), then reloads from the new dir. `reset_for_tests()` does the same before it swaps. Nothing is ever written to the new dir by the swap.
 
 ## Headless gating
 

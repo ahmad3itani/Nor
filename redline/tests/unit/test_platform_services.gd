@@ -173,6 +173,21 @@ func test_store_reloads_when_store_dir_changes() -> void:
 	check(Platform.is_unlocked("probe_a") and not Platform.is_unlocked("probe_b"), "back in A: A's state only")
 
 
+func test_dir_swap_writes_a_dirty_store_to_its_own_dir() -> void:
+	Platform.reset_for_tests(TEST_DIR)
+	Platform.store().set_lifetime(&"chase_clean", 3.0)
+	Platform.store_dir = DIR_B
+	Platform.flush()
+	check(not FileAccess.file_exists(_file(DIR_B)), "a flush across the swap never writes the new dir")
+	check(float(AtomicJson.read(_file(TEST_DIR))["lifetime"]["chase_clean"]) == 3.0, "the dirty store went to its own dir")
+	Platform.store_dir = TEST_DIR
+	Platform.store().set_lifetime(&"chase_clean", 5.0)
+	Platform.reset_for_tests(DIR_B)
+	check(float(AtomicJson.read(_file(TEST_DIR))["lifetime"]["chase_clean"]) == 5.0, "reset_for_tests saves the old store first")
+	check(Platform.stat(&"chase_clean") == 0.0, "the new dir starts empty")
+	check(not FileAccess.file_exists(_file(DIR_B)), "and is not written by the swap")
+
+
 func test_unlock_global_across_new_game() -> void:
 	Platform.reset_for_tests(TEST_DIR)
 	_use([_ach("probe_a", ["flag:t02_probe"])])
@@ -222,7 +237,14 @@ func test_earning_blocked_when_theatre_tainted_or_challenge_active() -> void:
 	Game.state.dev_tainted = false
 	Challenges.force_active = true
 	check(not Platform.earning_allowed() and Platform.lifetime_allowed(), "a run blocks earning, not lifetime feats")
+	CinematicMode.theatre = true
+	check(Platform.lifetime_allowed() and Platform.run_pass_allowed(), "a run's own theatre does not block lifetime feats")
 	Challenges.force_active = false
+	Challenges.force_finishing = true
+	check(Platform.lifetime_allowed(), "nor while the run is finishing")
+	Challenges.force_finishing = false
+	check(not Platform.lifetime_allowed(), "the Ending theatre blocks lifetime feats")
+	CinematicMode.theatre = false
 	# Blocked passes run once earning is allowed again.
 	_use([_ach("probe_a", ["flag:t02_probe"])])
 	CinematicMode.theatre = true
