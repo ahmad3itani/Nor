@@ -233,6 +233,47 @@ func test_demo_first_run_follows_demo_settings_file() -> void:
 	AtomicJson.remove_tree(dir)
 
 
+## The boot order of a redirected demo (debug --demo, Web): Settings._ready
+## calls apply_demo_dirs() and then load_settings() with its default path,
+## which puts _path back to the full game's settings.cfg. is_node_ready() is
+## already true inside _ready, so boot is told apart by the frame count; the
+## one-shot `ready` hook then loads the demo's own file (review, T05).
+func test_boot_order_ends_on_demo_settings() -> void:
+	var s := (load("res://autoload/Settings.gd") as GDScript).new() as Node
+	s.name = "BuildInfoBootSettings"
+	BuildInfo.force_autoloads["Settings"] = s
+	BuildInfo.force_boot = 1
+	BuildInfo.force_demo = 1
+	BuildInfo._config = null
+	check(BuildInfo.redirects_dirs(), "a forced debug demo redirects")
+	get_tree().root.add_child(s)  # _ready: apply_demo_dirs(), then load_settings()
+	check(s.get("_path") == BuildInfo.DEMO_SETTINGS_PATH, "ends on the demo settings file (%s)" % s.get("_path"))
+	check(bool(s.get("first_run")) == not FileAccess.file_exists(BuildInfo.DEMO_SETTINGS_PATH),
+		"first_run follows the demo file")
+	if not FileAccess.file_exists(BuildInfo.DEMO_SETTINGS_PATH):
+		check(not bool(s.get("playtest_recording")), "demo recording default (D-039)")
+	check(s.ready.get_connections().is_empty(), "one-shot hook gone")
+	BuildInfo._restore_dirs()
+	BuildInfo.force_autoloads.clear()
+	s.queue_free()
+
+
+## After boot (the dev console, tests) no ready hook is left behind: the
+## redirect of _path already stands.
+func test_runtime_force_demo_connects_no_ready_hook() -> void:
+	var s := (load("res://autoload/Settings.gd") as GDScript).new() as Node
+	s.name = "BuildInfoRuntimeSettings"
+	get_tree().root.add_child(s)
+	BuildInfo.force_autoloads["Settings"] = s
+	BuildInfo.force_boot = 0
+	BuildInfo.set_force_demo(1)
+	check(s.get("_path") == BuildInfo.DEMO_SETTINGS_PATH, "redirected directly")
+	check(s.ready.get_connections().is_empty(), "no ready hook at runtime")
+	BuildInfo._restore_dirs()
+	BuildInfo.force_autoloads.clear()
+	s.queue_free()
+
+
 ## clear_cache (Cinematics._exit_tree) drops a redirect still waiting for an
 ## autoload that never entered the tree, and its root hook.
 func test_clear_cache_drops_pending_hook() -> void:

@@ -43,6 +43,11 @@ static var _applied: Array = []
 ## node name -> [[property, value, only_if]].
 static var _pending: Dictionary = {}
 static var _pending_hook: Callable = Callable()
+## Test seam: -1 = boot is before the first processed frame, 0 = not boot,
+## 1 = boot (a test simulating the autoload order at runtime).
+static var force_boot: int = -1
+## Test seam: autoload name -> node standing in for it (a fresh Settings).
+static var force_autoloads: Dictionary = {}
 
 
 static func is_demo() -> bool:
@@ -159,7 +164,10 @@ static func set_force_demo(v: int) -> void:
 	if v < 0:
 		force_web = -1
 		force_feature_tag = false
+		force_boot = -1
 	_restore_dirs()
+	if v < 0:
+		force_autoloads.clear()
 	if is_demo():
 		apply_demo_dirs()
 	# By path, not the class name: Settings (the second autoload) compiles
@@ -205,9 +213,13 @@ static func apply_demo_dirs() -> void:
 ## settings.cfg. Once Settings is ready, a demo whose path was put back loads
 ## its own file from the defaults instead. A no-op when Settings honours the
 ## redirected _path itself.
+## is_node_ready() cannot tell boot apart: it is already true inside _ready
+## (Godot 4.3 clears it before NOTIFICATION_READY). Boot is the frame the
+## autoloads enter the tree (no frame processed yet); `ready` is emitted
+## right after Settings._ready returns, so a hook connected there fires.
 static func _reload_settings_after_boot() -> void:
 	var s := _autoload("Settings")
-	if s == null or s.is_node_ready():
+	if s == null or not _in_boot():
 		return
 	s.ready.connect(func() -> void:
 		if redirects_dirs() and s.get("_path") != DEMO_SETTINGS_PATH:
@@ -281,7 +293,16 @@ static func _drop_pending_hook() -> void:
 	_pending_hook = Callable()
 
 
+static func _in_boot() -> bool:
+	if force_boot >= 0:
+		return force_boot == 1
+	return Engine.get_process_frames() == 0
+
+
 static func _autoload(node_name: String) -> Node:
+	if force_autoloads.has(node_name):
+		var n: Variant = force_autoloads[node_name]
+		return n as Node if is_instance_valid(n) else null
 	var tree := Engine.get_main_loop() as SceneTree
 	return tree.root.get_node_or_null(node_name) if tree else null
 
