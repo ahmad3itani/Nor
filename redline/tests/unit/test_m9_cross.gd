@@ -14,9 +14,13 @@ const M9_MENUS := {"achievements": "res://ui/menus/AchievementsMenu.gd", "challe
 	"ng_plus": "res://ui/menus/NgPlusMenu.gd", "settings": "res://ui/menus/SettingsMenu.gd",
 	"assist_suggest": "res://ui/menus/AssistSuggestMenu.gd", "demo_end": "res://ui/menus/DemoEndMenu.gd"}
 
+## SettingsMenu saves on close: to a temp file, never the real settings.cfg.
+const TEMP_SETTINGS := "user://test_m9_cross_settings.cfg"
+
 var h: H
 var _extras: Array[Node] = []
 var _settings: Dictionary = {}
+var _settings_path: String = ""
 
 
 func before_each() -> void:
@@ -25,6 +29,8 @@ func before_each() -> void:
 	ChallengeLibrary.data_dir = ChallengeLibrary.DEFAULT_DIR
 	ChallengeLibrary.clear_cache()
 	_settings = Settings.snapshot()
+	_settings_path = Settings._path
+	Settings._path = TEMP_SETTINGS
 	_extras.clear()
 
 
@@ -41,6 +47,8 @@ func after_each() -> void:
 	if BuildInfo.force_demo != -1:
 		BuildInfo.set_force_demo(-1)
 	Settings.restore(_settings)
+	Settings._path = _settings_path
+	Settings.remove_settings_files(TEMP_SETTINGS)
 	InputBindings.apply(Settings.bindings)
 	var toast := AchievementDevActions.toast_node()
 	if toast:

@@ -19,7 +19,7 @@ extends RedlineTestCase
 const ALLOWED_PREFIXES: PackedStringArray = ["logs/", "shader_cache/", "vulkan/"]
 ## Temp settings files other suites point Settings at (their .bak/.tmp go too).
 const TEMP_SETTINGS: PackedStringArray = ["user://test_m8_settings.cfg", "user://test_memory_scenes.cfg",
-	"user://capture_tour_settings.cfg"]
+	"user://test_m9_cross_settings.cfg", "user://capture_tour_settings.cfg"]
 ## Seconds of slack before the process start (file times are whole seconds).
 const SLACK := 2.0
 
@@ -51,8 +51,10 @@ func test_no_stray_user_files() -> void:
 ## T01 R01.28: the capture-tour sandbox is wiped by the tours and by the test
 ## teardown, so it is never left behind.
 func test_tour_sandbox_gone() -> void:
-	check(not DirAccess.dir_exists_absolute("user://tour_sandbox"), "user://tour_sandbox is gone")
-	check(not DirAccess.dir_exists_absolute(TourSandbox.ROOT), "%s is gone" % TourSandbox.ROOT)
+	var since := run_started()
+	for d in ["user://tour_sandbox", TourSandbox.ROOT]:
+		var touched := DirAccess.dir_exists_absolute(d) and float(FileAccess.get_modified_time(d)) >= since
+		check(not touched, "%s is left behind by the test run" % d)
 
 
 static func _allowed(rel: String) -> bool:

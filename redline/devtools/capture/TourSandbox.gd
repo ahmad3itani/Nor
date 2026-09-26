@@ -56,6 +56,11 @@ static func begin(root: String = ROOT) -> Dictionary:
 
 ## Puts back everything begin() changed and wipes the sandbox root.
 static func end(snap: Dictionary) -> void:
+	# A playtest session the tour started writes into the sandbox until it
+	# ends: end it first, or its last flush recreates the wiped root.
+	var playtest := _autoload("Playtest")
+	if playtest and playtest.has_method("is_recording") and playtest.call("is_recording"):
+		playtest.call("end_session", "capture")
 	# A demo session the tour started (not one it found) goes first: its
 	# settle step puts the router gate and the barriers back to the full game.
 	if DemoDevActions.demo_session_on() and not bool(snap.get("demo_session", false)):

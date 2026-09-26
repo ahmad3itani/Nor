@@ -5,7 +5,13 @@ extends RedlineTestCase
 var map: WorldMapData
 
 
+## Anchor rests save the profile: never into the developer's real saves
+## (M9 T14, test_zz_user_dir_clean).
+const TEMP_SAVES := "user://test_world_map_saves"
+
+
 func before_each() -> void:
+	SaveManager.save_dir = TEMP_SAVES
 	Game.new_game()
 	map = Game.world_map
 
@@ -13,6 +19,8 @@ func before_each() -> void:
 func after_each() -> void:
 	Game.world_map = Game.WORLD_MAP
 	Game.new_game()
+	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
+	AtomicJson.remove_tree(TEMP_SAVES)
 
 
 func test_every_slice_room_is_on_the_map_once() -> void:
