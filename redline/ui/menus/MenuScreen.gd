@@ -28,6 +28,10 @@ static var open_count: int = 0
 const PAUSE_OWNERS := &"tree_pause_owners"
 
 var _panel: PanelContainer
+## This menu is counted in open_count. Kept apart from `visible`: Journal and
+## the dev console hide an open menu while a memory plays, and a screen freed
+## while hidden must still give its count back.
+var _counted: bool = false
 var _body: VBoxContainer
 var _opened_frame: int = -1
 ## MenuHost.context at open time; screens read ctx, never MenuHost.context, after open.
@@ -109,8 +113,9 @@ func is_open() -> bool:
 
 
 func open_menu() -> void:
-	if not visible:
+	if not _counted:
 		open_count += 1
+		_counted = true
 		_was_paused = get_tree().paused
 	visible = true
 	_opened_frame = Engine.get_process_frames()
@@ -121,10 +126,12 @@ func open_menu() -> void:
 
 
 func close_menu() -> void:
-	if not visible:
+	if not visible and not _counted:
 		return
 	visible = false
-	open_count = maxi(open_count - 1, 0)
+	if _counted:
+		_counted = false
+		open_count = maxi(open_count - 1, 0)
 	get_tree().paused = _was_paused and pause_owned(get_tree())
 	closed.emit()
 
@@ -140,8 +147,10 @@ static func pause_owned(tree: SceneTree) -> bool:
 
 
 func _exit_tree() -> void:
-	# A screen freed while open (tests, quit) must not leave the count up.
-	if visible:
+	# A screen freed while open, or open but hidden (tests, quit, a memory
+	# playing over the journal), must not leave the count up.
+	if _counted:
+		_counted = false
 		open_count = maxi(open_count - 1, 0)
 		visible = false
 

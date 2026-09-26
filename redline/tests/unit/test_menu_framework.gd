@@ -192,7 +192,15 @@ func test_open_count() -> void:
 	a.open_menu()
 	a.free()
 	check(MenuScreen.open_count == base, "a screen freed while open does not leak the count")
-	b.queue_free()
+	# Journal / DevConsole hide an open menu while a memory plays.
+	b.open_menu()
+	b.visible = false
+	b.open_menu()
+	check(MenuScreen.open_count == base + 1, "re-showing a hidden open menu does not double count")
+	b.visible = false
+	b.free()
+	check(MenuScreen.open_count == base, "a screen freed while hidden does not leak the count")
+	get_tree().paused = false
 
 
 func test_content_height_detects_overflow() -> void:
