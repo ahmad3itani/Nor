@@ -415,3 +415,10 @@ func test_dm4_unearnable_demo_achievement() -> void:
 	check(_has(r["errors"], ["[DM-4]", "fx_krail", "cannot be earned"]), "a Lowlight flag is unearnable: %s" % r["errors"])
 	check(_has(r["errors"], ["[DM-4]", "fx_missing", "does not exist"]), "an unknown id: %s" % r["errors"])
 	check(_has(r["warnings"], ["[DM-4]", "fx_uc", "add it to demo.tres"]), "earnable but unlisted warns: %s" % r["warnings"])
+	# A style-rank target without STYLE_EVIDENCE is not promised by a demo.
+	var style := _ach("fx_style")
+	style.stat_id = AchievementRules.RANK_STAT
+	style.stat_target = 99
+	c.achievements = PackedStringArray(["fx_style"])
+	r = DemoRules.achievement_check(c, v, [style] as Array[AchievementData], DemoRules.scope(c), "fx_demo.tres")
+	check(_has(r["errors"], ["[DM-4]", "fx_style", "style rank 99"]), "an unproven style rank is unearnable: %s" % r["errors"])

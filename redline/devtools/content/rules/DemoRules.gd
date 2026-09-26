@@ -146,6 +146,10 @@ static func unearnable_reason(a: AchievementData, v: ContentValidator, sc: Dicti
 			return why
 	if a.stat_id != &"":
 		var id := String(a.stat_id)
+		# A style-rank target needs recorded reachability evidence before a
+		# demo may promise it (PL-6; M9 audit: style_s / style_redline).
+		if a.stat_id == AchievementRules.RANK_STAT and not AchievementRules.STYLE_EVIDENCE.has(int(a.stat_target)):
+			return "no scripted run is known to reach style rank %d (PL-6 STYLE_EVIDENCE)" % int(a.stat_target)
 		var need: String = STAT_NEEDS.get(id, "")
 		for prefix in ["boss_nohit_", "boss_time_"]:
 			if id.begins_with(prefix):
