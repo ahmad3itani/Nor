@@ -41,17 +41,27 @@ static func return_point() -> Dictionary:
 	return {"room": path, "entry": StringName(entry)}
 
 
-static func grant_open() -> void:
-	if DevActions.available():
-		Game.state.dev_tainted = true
-		Game.set_flag(OPEN_FLAG)
+## False mid-run: Game.state is then the run's sandbox, which the restore
+## throws away, so the flag and the taint would never reach the profile.
+static func flags_editable() -> bool:
+	return DevActions.available() and Game.held_profile == null
+
+
+static func grant_open() -> bool:
+	if not flags_editable():
+		return false
+	Game.state.dev_tainted = true
+	Game.set_flag(OPEN_FLAG)
+	return true
 
 
 ## Sets or clears the depth flag (the redline ending reads it; D-154).
-static func set_depth(on: bool) -> void:
-	if DevActions.available():
-		Game.state.dev_tainted = true
-		Game.set_flag(DEPTH_FLAG, on)
+static func set_depth(on: bool) -> bool:
+	if not flags_editable():
+		return false
+	Game.state.dev_tainted = true
+	Game.set_flag(DEPTH_FLAG, on)
+	return true
 
 
 ## Clears every Deep Rig board (bests, stage bests, attempts).
