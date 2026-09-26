@@ -54,6 +54,8 @@ func after_each() -> void:
 	Playtest.dir = Playtest.DIR
 	Settings.playtest_recording = _saved_recording
 	Settings.playtest_variant = _saved_variant
+	Game.held_profile = null
+	Game.onboarding = Game.ONBOARDING
 	for dir in [TEST_DIR, SAVE_DIR]:
 		AtomicJson.remove_tree(dir)
 	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
@@ -179,7 +181,9 @@ func test_stub_scripts_load_and_are_inert() -> void:
 	check(Loc.tn("{n} run", "{n} runs", 2) == "2 runs" and Loc.tn("{n} run", "{n} runs", 1) == "1 run", "Loc.tn plural")
 	check(NewGamePlus.cycle_label(0) == "" and NewGamePlus.cycle_label(1) == "NG+" and NewGamePlus.cycle_label(3) == "NG+3", "cycle labels")
 	check(NewGamePlus.cycle_of({"flags": {"ng_cycle": 2.0}}) == 2, "cycle_of casts JSON floats")
-	check(RemixLibrary.apply(Node.new(), "res://x.tscn") == 0, "no remix ops")
+	var inst := Node.new()
+	check(RemixLibrary.apply(inst, "res://x.tscn") == 0, "no remix ops")
+	inst.free()
 	check(BuildProbe.info()["kind"] == "full", "build probe info")
 
 
@@ -274,3 +278,113 @@ func test_playtest_variant_skipped_in_run() -> void:
 	await physics_frames(2)
 	p = (SceneRouter.current_room as Room).player
 	check(p.config.resource_path == "", "outside a run the variant applies (a copy)")
+
+
+# --- Game, Room, SceneRouter, BossArena seams (T01d) ---------------------------------
+
+func test_held_profile_redirects_save() -> void:
+	var profile := GameState.new()
+	profile.scrap_banked = 77
+	Game.state.scrap_banked = 5  # the sandbox run state
+	Game.held_profile = profile
+	check(Game.save_game() == OK, "saved")
+	Game.held_profile = null
+	var data := SaveManager.load_profile(1)
+	check(int(data.get("scrap_banked", -1)) == 77, "the file holds the held profile, never the sandbox (%s)" % data.get("scrap_banked"))
+	check(Game.save_game() == OK and int(SaveManager.load_profile(1).get("scrap_banked", -1)) == 5, "without a held profile the live state saves")
+
+
+func test_null_open_derived_on_load_and_flag() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SAVE_V3))
+	(raw["flags"] as Dictionary)["act1_complete"] = true
+	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+	var f := FileAccess.open(SaveManager.profile_path(1), FileAccess.WRITE)
+	f.store_string(JSON.stringify(raw))
+	f.close()
+	check(Game.load_game(1), "fixture loads")
+	check(Game.has_flag("null_open"), "a pre-M9 save past Act I derives null_open on load")
+	Game.new_game()
+	check(not Game.has_flag("null_open"), "a new game has no null_open")
+	Game.set_flag("act1_complete", false)
+	check(not Game.has_flag("null_open"), "a false source flag derives nothing")
+	Game.set_flag("act1_complete", true)
+	check(Game.has_flag("null_open"), "setting act1_complete sets null_open")
+
+
+func test_death_override_handles_death() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	var room := SceneRouter.current_room as Room
+	var calls: Array = []
+	room.death_override = func(p: Player) -> bool:
+		calls.append(p)
+		return true
+	var deaths := Game.state.deaths
+	room.player.combat.take_damage(999, Vector2.ZERO, 0.0, false, "test")
+	await physics_frames(90)
+	check(calls.size() == 1, "the override saw the death once (%d)" % calls.size())
+	check(Game.state.deaths == deaths, "no Game.on_player_death")
+	check(SceneRouter.current_room == room and not SceneRouter.transitioning, "no respawn transition")
+
+
+func test_leave_capture_suppressed() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(3)
+	var room := SceneRouter.current_room as Room
+	Game.state.health = -1
+	room.player.combat.health = 1
+	Game.suppress_leave_capture = true
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	check(Game.state.health == -1, "a suppressed leave never captures the player (%d)" % Game.state.health)
+	Game.suppress_leave_capture = false
+	(SceneRouter.current_room as Room).player.combat.health = 2
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	check(Game.state.health == 2, "a normal leave captures (%d)" % Game.state.health)
+
+
+func test_scene_router_demo_refusal_emits() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	var seen: Array = []
+	var on_boundary := func(from: String, to: String) -> void: seen.append([from, to])
+	EventBus.demo_boundary_reached.connect(on_boundary)
+	BuildInfo.force_allowed["res://tests/fixtures/WorldB.tscn"] = false
+	SceneRouter.transition_to("res://tests/fixtures/WorldB.tscn")
+	check(not SceneRouter.transitioning, "the refused transition never starts")
+	check(seen == [[ROOM_A, "res://tests/fixtures/WorldB.tscn"]], "demo_boundary_reached(from, to) (%s)" % [seen])
+	DemoGate.dev_bypass = true
+	SceneRouter.transition_to("res://tests/fixtures/WorldB.tscn")
+	check(SceneRouter.transitioning, "the dev bypass walks past the boundary")
+	while SceneRouter.transitioning:
+		await get_tree().process_frame
+	check(SceneRouter.current_room_path == "res://tests/fixtures/WorldB.tscn", "bypassed room loaded")
+	EventBus.demo_boundary_reached.disconnect(on_boundary)
+
+
+func test_boss_arena_id_of_matches_playtest() -> void:
+	_record()
+	SceneRouter.goto_room("res://tests/fixtures/boss_collector_arena.tscn")
+	await physics_frames(2)
+	var arena := SceneRouter.current_room.find_children("*", "BossArena", true, false)[0] as BossArena
+	check(arena.boss != null, "the fixture has a boss")
+	check(BossArena.id_of(arena.boss) == arena.boss_id and arena.boss_id != "", "id_of finds the arena's boss_id")
+	var stray := Node2D.new()
+	check(BossArena.id_of(stray) == "", "an unknown boss has no id")
+	stray.free()
+	EventBus.boss_started.emit(arena.boss, "TEST")
+	var starts: Array = _events("boss_start")
+	check(not starts.is_empty() and starts[-1]["id"] == arena.boss_id, "Playtest records the same id (%s)" % [starts])
+
+
+func test_start_campaign_sets_igt_complete() -> void:
+	Game.new_game()
+	check(not Game.state.igt_complete, "new_game alone leaves igt_complete false")
+	for enforce in [true, false]:
+		var c := (Game.ONBOARDING as OnboardingConfig).duplicate() as OnboardingConfig
+		c.enforce = enforce
+		Game.onboarding = c
+		Game.start_campaign()
+		check(Game.state.igt_complete, "start_campaign sets igt_complete (enforce %s)" % enforce)
+	Game.onboarding = Game.ONBOARDING

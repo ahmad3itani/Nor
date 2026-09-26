@@ -37,6 +37,19 @@ var released: bool = false
 var _reward: Node2D
 
 
+## The boss_id of the arena in the current room that runs this boss ("" when
+## none does), so bosses are told apart by id rather than banner title
+## (Playtest, M9 platform stats and challenges).
+static func id_of(boss: Node2D) -> String:
+	var room := SceneRouter.current_room
+	if room == null or boss == null:
+		return ""
+	for n in room.find_children("*", "BossArena", true, false):
+		if (n as BossArena).boss == boss:
+			return (n as BossArena).boss_id
+	return ""
+
+
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = CombatLayers.PLAYER_BODY

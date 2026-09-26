@@ -37,6 +37,9 @@ var current_attack: AttackData
 ## Horizontal speed when the current swing started (Momentum Coil).
 var attack_start_speed: float = 0.0
 var _kills_since_heal: int = 0
+## M9 damage assist carry (T11 writes, CombatHud draws): the fraction of a
+## pip taken but not yet removed.
+var damage_carry: float = 0.0
 
 @onready var player: Player = get_parent()
 

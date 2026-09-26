@@ -180,7 +180,11 @@ func test_start_campaign_noop_when_not_enforced() -> void:
 	Game.onboarding = off
 	Game.state.scrap_banked = 77
 	Game.start_campaign()
-	check(Game.state.to_dict() == GameState.new().to_dict(), "start_campaign without enforce must equal new_game()")
+	# M9: the title New Game marks the profile for campaign IGT in both modes
+	# (igt_complete); everything else equals new_game().
+	var expected := GameState.new()
+	expected.igt_complete = true
+	check(Game.state.to_dict() == expected.to_dict(), "start_campaign without enforce must equal new_game() (+ igt_complete)")
 	check(Game.campaign_start_room() == Game.START_ROOM and Game.campaign_start_entry() == Game.START_ENTRY, "legacy start is the Relay")
 
 

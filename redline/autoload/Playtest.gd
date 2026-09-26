@@ -83,7 +83,7 @@ func _ready() -> void:
 	EventBus.weapon_granted.connect(func(id: String) -> void: _event("weapon_granted", {"id": id}))
 	EventBus.loadout_changed.connect(func() -> void: _event("loadout", _loadout()))
 	EventBus.hint_requested.connect(func(text: String, _s: float) -> void: _event("hint", {"text": text}))
-	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void: _event("boss_start", {"boss": title, "id": _boss_id_of(b)}))
+	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void: _event("boss_start", {"boss": title, "id": BossArena.id_of(b)}))
 	EventBus.boss_phase_changed.connect(func(_b: Node2D, phase: int) -> void: _event("boss_phase", {"phase": phase}))
 	EventBus.boss_defeated.connect(func(id: String) -> void: _event("boss_defeated", {"boss": id}))
 	EventBus.slice_completed.connect(_on_slice_completed)
@@ -357,18 +357,6 @@ func _is_calibration_beam(id: String) -> bool:
 		return false
 	var dmg: Variant = (data as Object).get("damage")
 	return dmg != null and int(dmg) == 0
-
-
-## The boss_id of the arena in the current room that runs this boss ("" when
-## none does), so bosses are told apart by id rather than banner title.
-func _boss_id_of(b: Node2D) -> String:
-	var room := SceneRouter.current_room
-	if room == null or b == null:
-		return ""
-	for n in room.find_children("*", "BossArena", true, false):
-		if (n as BossArena).boss == b:
-			return (n as BossArena).boss_id
-	return ""
 
 
 func _cause() -> String:

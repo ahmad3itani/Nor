@@ -32,6 +32,13 @@ var active_spawn_index: int = 0
 ## called again next frame until it does. Anything but true (including no
 ## return value) falls through to the normal pit.
 var pit_override: Callable
+## M9 (D-147): mirrors pit_override. Called with the player on death;
+## returning true means the run director handled it (no Game.on_player_death,
+## no scrap drop, no respawn transition).
+var death_override: Callable
+## M9 generous checkpoints (T11): 0 = the room entry is a valid respawn,
+## 1 = never (one-shot sequences, chase rooms).
+@export var respawn_policy: int = 0
 
 
 func _ready() -> void:
@@ -99,7 +106,7 @@ func _on_loadout_changed() -> void:
 
 
 func _on_room_leaving(room: Node) -> void:
-	if room == self and is_instance_valid(player):
+	if room == self and is_instance_valid(player) and not Game.suppress_leave_capture:
 		Game.capture_from_player(player)
 
 
@@ -132,6 +139,8 @@ func _pit_fall() -> void:
 
 ## Near-instant restart (bible §7): a short beat to read what killed you.
 func _on_player_died() -> void:
+	if death_override.is_valid() and death_override.call(player) == true:
+		return
 	var delay := player.combat.config.respawn_delay
 	if world_room:
 		Game.on_player_death(SceneRouter.current_room_path, player.last_safe_position)

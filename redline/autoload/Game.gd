@@ -21,6 +21,20 @@ var onboarding: OnboardingConfig = ONBOARDING
 var quests: QuestTracker
 ## M8 character arcs (D-117): enters arc stages from flags, sibling of quests.
 var arcs: ArcTracker
+## D-147: while Challenges owns a sandbox state, saves write this (the
+## untouched profile), never the sandbox.
+var held_profile: GameState = null
+## M9: set by Challenges around sandbox swaps so the leaving room never writes
+## its player into the wrong GameState. Only Challenges sets or clears it.
+var suppress_leave_capture: bool = false
+## M9 session entry (T11 generous checkpoints fills the logic): the first
+## room entry of this play session. Cleared on new_game and load_game.
+var _session_entry_room: String = ""
+var _session_entry_id: StringName = &""
+
+## D-154: a flag set whenever its source flag holds (derived flag -> source).
+## Retroactive for old saves (load_game) and live (set_flag).
+const DERIVED_FLAGS := {"null_open": "act1_complete"}
 
 
 func _ready() -> void:
@@ -58,6 +72,8 @@ func set_ability(ability: StringName, unlocked: bool) -> void:
 func new_game() -> void:
 	state = GameState.new()
 	abilities = PlayerAbilities.new()
+	_session_entry_room = ""
+	_session_entry_id = &""
 	EventBus.game_state_reset.emit()
 
 
@@ -65,6 +81,8 @@ func new_game() -> void:
 ## is live (unarmed, Core readout hidden), otherwise exactly new_game().
 func start_campaign() -> void:
 	new_game()
+	# M9: only a title New Game counts for campaign IGT bests (both modes).
+	state.igt_complete = true
 	if not onboarding.enforce:
 		return
 	state.owned_weapons.assign(onboarding.start_owned_weapons)
@@ -94,6 +112,13 @@ func load_game(p_profile: int = 1) -> bool:
 	# schema bump: flags need none (D-087/D-090).
 	if state.flags.get("slice_end_seen", false) and not state.flags.get("act1_complete", false):
 		state.flags["act1_complete"] = true
+	# M9 derived flags (D-154): null_open follows act1_complete, also for
+	# saves from before M9. Before game_state_reset, like the line above.
+	for derived: String in DERIVED_FLAGS:
+		if state.flags.get(DERIVED_FLAGS[derived], false) and not state.flags.get(derived, false):
+			state.flags[derived] = true
+	_session_entry_room = ""
+	_session_entry_id = &""
 	abilities = PlayerAbilities.new()
 	for key: String in state.abilities:
 		if key in abilities:
@@ -103,7 +128,7 @@ func load_game(p_profile: int = 1) -> bool:
 
 
 func save_game() -> Error:
-	return SaveManager.save_profile(profile_id, state.to_dict())
+	return SaveManager.save_profile(profile_id, (held_profile if held_profile != null else state).to_dict())
 
 
 func has_save(p_profile: int = 1) -> bool:
@@ -145,6 +170,12 @@ func set_flag(id: String, value: Variant = true) -> void:
 		return
 	state.flags[id] = value
 	EventBus.flag_changed.emit(id, value)
+	# D-154: a source flag turning on sets its derived flags.
+	if not bool(value):
+		return
+	for derived: String in DERIVED_FLAGS:
+		if DERIVED_FLAGS[derived] == id and not has_flag(derived):
+			set_flag(derived)
 
 
 func has_flag(id: String) -> bool:
@@ -394,15 +425,24 @@ func note_room_entry(path: String, entry: StringName) -> void:
 
 ## Anchor first, then the pre-Anchor entry, then the slice start.
 func respawn_room() -> String:
-	if state.last_anchor_room != "":
-		return state.last_anchor_room
-	return state.last_entry_room if state.last_entry_room != "" else START_ROOM
+	return respawn_room_for(state)
 
 
 func respawn_entry() -> StringName:
-	if state.last_anchor_room != "":
-		return StringName(state.last_anchor_id) if state.last_anchor_id != "" else START_ENTRY
-	return StringName(state.last_entry_id) if state.last_entry_room != "" else START_ENTRY
+	return respawn_entry_for(state)
+
+
+## The same rule for any state (the title peeks at a save without loading it).
+func respawn_room_for(s: GameState) -> String:
+	if s.last_anchor_room != "":
+		return s.last_anchor_room
+	return s.last_entry_room if s.last_entry_room != "" else START_ROOM
+
+
+func respawn_entry_for(s: GameState) -> StringName:
+	if s.last_anchor_room != "":
+		return StringName(s.last_anchor_id) if s.last_anchor_id != "" else START_ENTRY
+	return StringName(s.last_entry_id) if s.last_entry_room != "" else START_ENTRY
 
 
 # --- Map and transit (bible §20, M5) ----------------------------------------------------

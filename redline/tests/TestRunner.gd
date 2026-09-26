@@ -73,4 +73,5 @@ func _reset_m9_state() -> void:
 	BuildInfo.set_force_demo(-1)
 	BuildInfo.force_allowed.clear()
 	DemoGate.dev_bypass = false
+	Game.suppress_leave_capture = false
 	AtomicJson.remove_tree("user://tour_sandbox")

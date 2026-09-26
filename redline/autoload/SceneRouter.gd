@@ -29,6 +29,9 @@ func register_fade(rect: ColorRect) -> void:
 
 func goto_room(scene_path: String, entry: StringName = &"", carry: Dictionary = {}) -> Node:
 	assert(world_root != null, "SceneRouter.world_root not registered")
+	if not BuildInfo.room_allowed(scene_path) and not DemoGate.dev_bypass:
+		push_error("SceneRouter: %s is outside the demo" % scene_path)
+		return null
 	var packed := load(scene_path) as PackedScene
 	if packed == null:
 		push_error("SceneRouter: cannot load room %s" % scene_path)
@@ -41,6 +44,8 @@ func goto_room(scene_path: String, entry: StringName = &"", carry: Dictionary = 
 	pending_carry = carry
 	current_room_path = scene_path
 	current_room = packed.instantiate()
+	# D-153: NG+ remix ops (0 unless a remix is active), before _ready runs.
+	RemixLibrary.apply(current_room, scene_path)
 	world_root.add_child(current_room)
 	pending_entry = &""
 	pending_carry = {}
@@ -50,6 +55,11 @@ func goto_room(scene_path: String, entry: StringName = &"", carry: Dictionary = 
 
 ## Fade out, swap rooms, fade in. Safe to call from physics callbacks.
 func transition_to(scene_path: String, entry: StringName = &"", carry: Dictionary = {}) -> void:
+	# Demo builds: an exit into content outside the demo opens the end card
+	# (MenuHost) instead of loading the room.
+	if not BuildInfo.room_allowed(scene_path) and not DemoGate.dev_bypass:
+		EventBus.demo_boundary_reached.emit(current_room_path, scene_path)
+		return
 	if transitioning:
 		return
 	transitioning = true
