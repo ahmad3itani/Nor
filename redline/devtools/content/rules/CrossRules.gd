@@ -13,7 +13,10 @@ extends RefCounted
 ##   X-4  no networking, storefront SDK, JavaScriptBridge or OS.shell_open in
 ##        ANY script under res:// (only tests/fixtures and .godot skipped);
 ##        comments and string literals are stripped first (§29, §37.7, the
-##        local-only rule). build.py PY-NET is the Python side (T05).
+##        local-only rule), but ClassDB.instantiate("<network class>") is
+##        caught on the literal. OS.execute/create_process are banned outside
+##        res://tests. Every .tscn/.tres is scanned for network node/resource
+##        types and embedded GDScript. build.py PY-NET is the Python side (T05).
 ##   X-5  raw folder scans (DirAccess.open / get_files_at /
 ##        get_directories_at) only in ALLOWED_RAW_SCANS: exported builds list
 ##        .remap names, so content scans go through DataDir (K-M8-22)
@@ -51,7 +54,22 @@ const RAW_SCAN_PATTERN := "DirAccess\\.(open|get_files_at|get_directories_at)\\b
 ## Banned in code (comments and string literals stripped first, X-4).
 const NET_PATTERNS: PackedStringArray = ["\\bSteam\\.", "\\bHTTPRequest\\b", "\\bHTTPClient\\b", "\\bStreamPeerTCP\\b",
 	"\\bStreamPeerTLS\\b", "\\bPacketPeerUDP\\b", "\\bWebSocket", "\\bENet", "\\bMultiplayerPeer\\b",
-	"\\bJavaScriptBridge\\b", "\\bOS\\.shell_open\\b", "\\bTCPServer\\b", "\\bUDPServer\\b", "\\bUPNP\\b"]
+	"\\bJavaScriptBridge\\b", "\\bOS\\.shell_open\\b", "\\bTCPServer\\b", "\\bUDPServer\\b", "\\bUPNP\\b",
+	"\\bWebRTC", "\\bPacketPeerDTLS\\b", "\\bDTLSServer\\b", "\\bPacketPeerStream\\b"]
+## Shelling out (curl, a browser) is networking by another name. Tests run the
+## Python generators' --check this way (never exported), so res://tests is
+## exempt from these alone.
+const NET_PROCESS_PATTERNS: PackedStringArray = ["\\bOS\\.execute(_with_pipe)?\\b", "\\bOS\\.create_process\\b",
+	"\\bOS\\.create_instance\\b"]
+const NET_PROCESS_ALLOWED_DIRS: PackedStringArray = ["res://tests"]
+## ClassDB.instantiate("<banned class>") hides the class in a string literal,
+## so it runs on the comment-free line before strings are stripped.
+const NET_CLASSDB := "ClassDB\\.(instantiate|can_instantiate)\\(\\s*[\"'](HTTP\\w*|WebSocket\\w*|WebRTC\\w*|PacketPeer\\w*|StreamPeer(TCP|TLS)|TCPServer|UDPServer|DTLSServer|ENet\\w*|UPNP\\w*|JavaScriptBridge|MultiplayerPeer\\w*)[\"']"
+## A scene or resource declaring a network node or resource by type (X-4).
+const NET_SCENE_TYPE := "^\\[(node|sub_resource|ext_resource)\\b[^\\]]*\\btype=\"(HTTPRequest|HTTPClient|WebSocket\\w*|WebRTC\\w*|PacketPeer\\w*|StreamPeerTCP|StreamPeerTLS|TCPServer|UDPServer|DTLSServer|ENet\\w*|UPNP\\w*|MultiplayerPeer\\w*|\\w*MultiplayerPeer|JavaScriptBridge)\""
+## Embedded GDScript in a scene or resource escapes the .gd scan: banned
+## outright (every script ships as its own .gd file).
+const NET_EMBEDDED_SCRIPT := "^\\[sub_resource\\b[^\\]]*\\btype=\"GDScript\""
 ## Needs the string literal ("Steam"), so it runs on the comment-free line.
 const NET_SINGLETON := "Engine\\.get_singleton\\(\\s*\"Steam\"\\s*\\)"
 ## X-4 skips these (fixtures may hold banned text on purpose).
@@ -192,29 +210,60 @@ static func unrecorded_signals(eventbus_text: String, playtest_text: String, unr
 static func network_violations() -> PackedStringArray:
 	var out := PackedStringArray()
 	for path in project_scripts(NET_SKIP_DIRS):
-		for hit in scan_network(FileAccess.get_file_as_string(path)):
+		var allow_process := _has_prefix(path, NET_PROCESS_ALLOWED_DIRS, "/")
+		for hit in scan_network(FileAccess.get_file_as_string(path), allow_process):
 			out.append("%s: %s" % [path, hit])
+	for path in ContentValidator._files("res://", ["tscn", "tres"]):
+		var p := path.replace("res:///", "res://")
+		if _has_prefix(p, NET_SKIP_DIRS, "/"):
+			continue
+		for hit in scan_network_resource(FileAccess.get_file_as_string(p)):
+			out.append("%s: %s" % [p, hit])
 	return out
 
 
-## "line N: <pattern>" for every banned symbol in code.
-static func scan_network(text: String) -> PackedStringArray:
+## "line N: <pattern>" for every banned symbol in code. `allow_process` lets
+## OS.execute and friends through (tests only).
+static func scan_network(text: String, allow_process: bool = false) -> PackedStringArray:
 	var out := PackedStringArray()
+	var pats := NET_PATTERNS.duplicate()
+	if not allow_process:
+		pats.append_array(NET_PROCESS_PATTERNS)
 	var res: Array[RegEx] = []
-	for p in NET_PATTERNS:
+	for p in pats:
 		res.append(RegEx.create_from_string(p))
 	var singleton := RegEx.create_from_string(NET_SINGLETON)
+	var classdb := RegEx.create_from_string(NET_CLASSDB)
 	var lines := text.split("\n")
 	for i in lines.size():
 		var code := strip_comment(lines[i])
 		if singleton.search(code) != null:
 			out.append("line %d: %s" % [i + 1, NET_SINGLETON])
 			continue
+		if classdb.search(code) != null:
+			out.append("line %d: ClassDB.instantiate of a network class" % (i + 1))
+			continue
 		var bare := strip_strings(code)
 		for j in res.size():
 			if res[j].search(bare) != null:
-				out.append("line %d: %s" % [i + 1, NET_PATTERNS[j]])
+				out.append("line %d: %s" % [i + 1, pats[j]])
 				break
+	return out
+
+
+## "line N: ..." for a network node/resource type or an embedded GDScript in
+## a .tscn/.tres text (X-4: the .gd scan cannot see either).
+static func scan_network_resource(text: String) -> PackedStringArray:
+	var out := PackedStringArray()
+	var typed := RegEx.create_from_string(NET_SCENE_TYPE)
+	var embedded := RegEx.create_from_string(NET_EMBEDDED_SCRIPT)
+	var lines := text.split("\n")
+	for i in lines.size():
+		var m := typed.search(lines[i])
+		if m != null:
+			out.append("line %d: network type %s" % [i + 1, m.get_string(2)])
+		elif embedded.search(lines[i]) != null:
+			out.append("line %d: embedded GDScript (ship scripts as .gd files)" % (i + 1))
 	return out
 
 

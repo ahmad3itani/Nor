@@ -341,6 +341,16 @@ func test_x4_network_class_fails() -> void:
 	check(not CrossRules.scan_network("var s = Engine.get_singleton(\"Steam\")").is_empty(), "the storefront singleton")
 	check(not CrossRules.scan_network("JavaScriptBridge.eval(x)").is_empty(), "JavaScriptBridge")
 	check(CrossRules.scan_network("# HTTPRequest in a comment\nvar p := [\"HTTPRequest\", \"Steam.\"]").is_empty(), "comments and strings are not calls")
+	check(not CrossRules.scan_network("var p := WebRTCPeerConnection.new()").is_empty(), "WebRTC")
+	check(not CrossRules.scan_network("var d := PacketPeerDTLS.new()").is_empty(), "DTLS")
+	check(not CrossRules.scan_network("OS.execute(\"curl\", [url])").is_empty(), "OS.execute outside tests")
+	check(not CrossRules.scan_network("OS.create_process(\"curl\", [])").is_empty(), "OS.create_process")
+	check(CrossRules.scan_network("OS.execute(\"sh\", [])", true).is_empty(), "tests may run the generators")
+	check(not CrossRules.scan_network("var r = ClassDB.instantiate(\"HTTPRequest\")").is_empty(), "ClassDB.instantiate of a network class")
+	check(CrossRules.scan_network("var r = ClassDB.instantiate(\"Node2D\")").is_empty(), "ClassDB.instantiate of a plain class passes")
+	check(not CrossRules.scan_network_resource("[node name=\"Net\" type=\"HTTPRequest\" parent=\".\"]").is_empty(), "a network node in a scene")
+	check(not CrossRules.scan_network_resource("[sub_resource type=\"GDScript\" id=\"x\"]").is_empty(), "an embedded script")
+	check(CrossRules.scan_network_resource("[node name=\"A\" type=\"Area2D\" parent=\".\"]").is_empty(), "a plain node passes")
 	check(CrossRules.network_violations().is_empty(), "the whole project is clean: %s" % CrossRules.network_violations())
 
 
