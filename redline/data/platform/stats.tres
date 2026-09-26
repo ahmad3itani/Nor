@@ -1,0 +1,218 @@
+[gd_resource type="Resource" script_class="StatCatalog" load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://platform/StatDef.gd" id="1_def"]
+[ext_resource type="Script" path="res://platform/StatCatalog.gd" id="2_cat"]
+
+[sub_resource type="Resource" id="s00"]
+script = ExtResource("1_def")
+id = &"play_time"
+kind = 0
+label = "Time played"
+format = 1
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s01"]
+script = ExtResource("1_def")
+id = &"deaths"
+kind = 0
+label = "Deaths"
+format = 0
+lifetime = true
+profile = true
+shown = false
+
+[sub_resource type="Resource" id="s02"]
+script = ExtResource("1_def")
+id = &"kills"
+kind = 0
+label = "Enemies defeated"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s03"]
+script = ExtResource("1_def")
+id = &"kills_environmental"
+kind = 0
+label = "Environment takedowns"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s04"]
+script = ExtResource("1_def")
+id = &"kills_aerial"
+kind = 0
+label = "Aerial takedowns"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s05"]
+script = ExtResource("1_def")
+id = &"perfect_dodges"
+kind = 0
+label = "Perfect dodges"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s06"]
+script = ExtResource("1_def")
+id = &"best_style_rank"
+kind = 1
+label = "Best style rank"
+format = 2
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s07"]
+script = ExtResource("1_def")
+id = &"bosses_defeated"
+kind = 0
+label = "Bosses defeated"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s08"]
+script = ExtResource("1_def")
+id = &"boss_nohit_collector_drone"
+kind = 0
+label = "Collector Drone, untouched"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s09"]
+script = ExtResource("1_def")
+id = &"boss_nohit_warden_krail"
+kind = 0
+label = "Warden Krail, untouched"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s10"]
+script = ExtResource("1_def")
+id = &"boss_time_collector_drone"
+kind = 2
+label = "Fastest Collector Drone"
+format = 1
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s11"]
+script = ExtResource("1_def")
+id = &"boss_time_warden_krail"
+kind = 2
+label = "Fastest Warden Krail"
+format = 1
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s12"]
+script = ExtResource("1_def")
+id = &"chase_clean"
+kind = 0
+label = "Clean getaways"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s13"]
+script = ExtResource("1_def")
+id = &"chase_best_rainline"
+kind = 2
+label = "Fastest Rainline chase"
+format = 1
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s14"]
+script = ExtResource("1_def")
+id = &"clamp_boss_staggers"
+kind = 0
+label = "Grid Clamp staggers"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s15"]
+script = ExtResource("1_def")
+id = &"shutter_close_calls"
+kind = 0
+label = "Shutter close calls"
+format = 0
+lifetime = true
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s16"]
+script = ExtResource("1_def")
+id = &"act1_clear_time"
+kind = 2
+label = "Fastest Act I"
+format = 1
+lifetime = true
+profile = false
+shown = true
+
+[sub_resource type="Resource" id="s17"]
+script = ExtResource("1_def")
+id = &"memory_details_found"
+kind = 3
+label = "Memory details found"
+format = 0
+lifetime = false
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s18"]
+script = ExtResource("1_def")
+id = &"anchors_rested"
+kind = 3
+label = "Anchors rested at"
+format = 0
+lifetime = false
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s19"]
+script = ExtResource("1_def")
+id = &"secrets_found"
+kind = 3
+label = "Secrets found"
+format = 0
+lifetime = false
+profile = true
+shown = true
+
+[sub_resource type="Resource" id="s20"]
+script = ExtResource("1_def")
+id = &"challenge_silver_medals"
+kind = 0
+label = "Silver medals or better"
+format = 0
+lifetime = true
+profile = false
+shown = true
+
+[resource]
+script = ExtResource("2_cat")
+stats = Array[ExtResource("1_def")]([SubResource("s00"), SubResource("s01"), SubResource("s02"), SubResource("s03"), SubResource("s04"), SubResource("s05"), SubResource("s06"), SubResource("s07"), SubResource("s08"), SubResource("s09"), SubResource("s10"), SubResource("s11"), SubResource("s12"), SubResource("s13"), SubResource("s14"), SubResource("s15"), SubResource("s16"), SubResource("s17"), SubResource("s18"), SubResource("s19"), SubResource("s20")])
