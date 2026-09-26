@@ -464,6 +464,42 @@ msgstr "[Šéçŕéťš fóúñď~~~~~]"
 msgid "Silver medals or better"
 msgstr "[Šíĺvéŕ méďáĺš óŕ béťťéŕ~~~~~~~~~]"
 
+#: data/release/demo.tres
+msgid "DEMO"
+msgstr "[ĎÉMÓ~~]"
+
+#: data/release/demo.tres
+msgid "Demo  —  The Undercity"
+msgstr "[Ďémó  —  Ťĥé Úñďéŕçíťý~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "END OF THE DEMO"
+msgstr "[ÉÑĎ ÓF ŤĤÉ ĎÉMÓ~~~~~~]"
+
+#: data/release/demo.tres
+msgid "You made it out of the Undercity. The Relay is just ahead."
+msgstr "[Ýóú máďé íť óúť óf ťĥé Úñďéŕçíťý. Ťĥé Ŕéĺáý íš ĵúšť áĥéáď.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "Some secrets open only with an ability from later in the game."
+msgstr "[Šómé šéçŕéťš ópéñ óñĺý ŵíťĥ áñ ábíĺíťý fŕóm ĺáťéŕ íñ ťĥé ğámé.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "The full Act I continues in Lowlight: the Relay and its people, the Rainline chase, Warden Krail and the Dash."
+msgstr "[Ťĥé fúĺĺ Áçť Í çóñťíñúéš íñ Ĺóŵĺíğĥť: ťĥé Ŕéĺáý áñď íťš péópĺé, ťĥé Ŕáíñĺíñé çĥášé, Ŵáŕďéñ Ķŕáíĺ áñď ťĥé Ďášĥ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "If you want to follow REDLINE, wishlist it and tell us what you thought."
+msgstr "[Íf ýóú ŵáñť ťó fóĺĺóŵ ŔÉĎĹÍÑÉ, ŵíšĥĺíšť íť áñď ťéĺĺ úš ŵĥáť ýóú ťĥóúğĥť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "Keep exploring the Undercity"
+msgstr "[Ķéép éxpĺóŕíñğ ťĥé Úñďéŕçíťý~~~~~~~~~~]"
+
+#: data/release/demo.tres
+msgid "Save and quit to title"
+msgstr "[Šávé áñď qúíť ťó ťíťĺé~~~~~~~~]"
+
 #: data/settings/catalog.tres
 msgid "Change these any time. They never lock content or achievements."
 msgstr "[Çĥáñğé ťĥéšé áñý ťímé. Ťĥéý ñévéŕ ĺóçķ çóñťéñť óŕ áçĥíévéméñťš.~~~~~~~~~~~~~~~~~~~~~~~]"
@@ -1083,6 +1119,18 @@ msgstr "[ÑÓ ĤÍŤ~~~]"
 #: ui/hud/RunTimerHud.gd
 msgid "NO ATTACKS"
 msgstr "[ÑÓ ÁŤŤÁÇĶŠ~~~~~]"
+
+#: ui/menus/DemoEndMenu.gd
+msgid "Keep exploring"
+msgstr "[Ķéép éxpĺóŕíñğ~~~~~]"
+
+#: ui/menus/DemoEndMenu.gd
+msgid "Time {time}"
+msgstr "[Ťímé {time}~~~]"
+
+#: ui/menus/DemoEndMenu.gd
+msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}"
+msgstr "[Šéçŕéťš {found} / {total}    Mémóŕý fŕáğméñťš {frags} / {frag_total}~~~~~~~~~~~~~]"
 
 #: ui/menus/PauseMenu.gd
 msgid "PAUSED"

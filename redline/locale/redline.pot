@@ -865,6 +865,69 @@ msgstr ""
 msgid "Silver medals or better"
 msgstr ""
 
+#. key: data/release/demo.tres::title_tag
+#. DemoConfig
+#. max 12 chars
+#: data/release/demo.tres
+msgid "DEMO"
+msgstr ""
+
+#. key: data/release/demo.tres::title_subtitle
+#. DemoConfig
+#. max 60 chars
+#: data/release/demo.tres
+msgid "Demo  —  The Undercity"
+msgstr ""
+
+#. key: data/release/demo.tres::end_header
+#. DemoConfig
+#. max 40 chars
+#: data/release/demo.tres
+msgid "END OF THE DEMO"
+msgstr ""
+
+#. key: data/release/demo.tres::end_lines[0]
+#. DemoConfig
+#. max 90 chars
+#: data/release/demo.tres
+msgid "You made it out of the Undercity. The Relay is just ahead."
+msgstr ""
+
+#. key: data/release/demo.tres::secrets_note
+#. DemoConfig
+#. max 90 chars
+#: data/release/demo.tres
+msgid "Some secrets open only with an ability from later in the game."
+msgstr ""
+
+#. key: data/release/demo.tres::cta_lines[0]
+#. DemoConfig
+#. max 110 chars
+#: data/release/demo.tres
+msgid "The full Act I continues in Lowlight: the Relay and its people, the Rainline chase, Warden Krail and the Dash."
+msgstr ""
+
+#. key: data/release/demo.tres::cta_lines[1]
+#. DemoConfig
+#. max 110 chars
+#: data/release/demo.tres
+msgid "If you want to follow REDLINE, wishlist it and tell us what you thought."
+msgstr ""
+
+#. key: data/release/demo.tres::keep_label
+#. DemoConfig
+#. max 40 chars
+#: data/release/demo.tres
+msgid "Keep exploring the Undercity"
+msgstr ""
+
+#. key: data/release/demo.tres::quit_label
+#. DemoConfig
+#. max 40 chars
+#: data/release/demo.tres
+msgid "Save and quit to title"
+msgstr ""
+
 #. key: data/settings/catalog.tres::assist_header
 #. SettingsCatalog
 #. max 120 chars
@@ -1931,6 +1994,23 @@ msgstr ""
 #. key: ui/hud/RunTimerHud.gd::Loc.t
 #: ui/hud/RunTimerHud.gd
 msgid "NO ATTACKS"
+msgstr ""
+
+#. key: ui/menus/DemoEndMenu.gd::Loc.t
+#: ui/menus/DemoEndMenu.gd
+msgid "Keep exploring"
+msgstr ""
+
+#. key: ui/menus/DemoEndMenu.gd::Loc.f
+#. placeholders: {time}
+#: ui/menus/DemoEndMenu.gd
+msgid "Time {time}"
+msgstr ""
+
+#. key: ui/menus/DemoEndMenu.gd::Loc.f
+#. placeholders: {found} {frag_total} {frags} {total}
+#: ui/menus/DemoEndMenu.gd
+msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}"
 msgstr ""
 
 #. key: ui/menus/PauseMenu.gd::Loc.t

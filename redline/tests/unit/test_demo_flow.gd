@@ -528,20 +528,14 @@ func test_demo_gate_idle_during_challenge() -> void:
 
 
 ## A challenge whose run crosses the border is dropped from the demo's list.
-## The fixture is written at runtime (its ChallengeData script lands with the
-## challenge runtime, T04). Without that runtime there is nothing to check; once
-## it exists, every seam this test needs must too, or the test fails (it must
-## never degrade to a silent pass after the merge).
+## The fixture is written at runtime from the challenge runtime's ChallengeData
+## script. Every seam this test needs must exist, or the test fails (it must
+## never degrade to a silent pass).
 func test_demo_blocked_fixture_absent_in_demo() -> void:
 	var lib_path := "res://challenges/%s.gd" % "ChallengeLibrary"
 	var data_path := "res://challenges/%s.gd" % "ChallengeData"
 	var has_lib := ResourceLoader.exists(lib_path)
 	var has_data := ResourceLoader.exists(data_path)
-	# MERGE CHECK (T04 -> main, T14 checklist): once the challenge runtime is on
-	# main, delete this skip branch so a missing or moved runtime fails here.
-	if not has_lib and not has_data:
-		print("  (skipped: the challenge runtime is not on this branch; must run after the T04 merge)")
-		return
 	check(has_lib and has_data, "ChallengeLibrary and ChallengeData land together")
 	if not (has_lib and has_data):
 		return
@@ -615,19 +609,20 @@ func test_debug_demo_leaves_user_saves_untouched() -> void:
 ## their dir changes), so a debug demo shows none of the full game's unlocks.
 func test_force_demo_reloads_stores_from_demo_dir() -> void:
 	Platform.reset_after_tests()
+	# Seed a full-game unlock in memory only: headless and allow_headless is
+	# off, so nothing is written to user://platform (reset_after_tests drops it).
+	var seeded := "demo_test_seeded_unlock"
+	check(Platform.store().unlock(seeded, 1, 1), "seeded a full-game unlock in memory")
+	check(Platform.is_unlocked(seeded), "the full game shows the seeded unlock")
 	BuildInfo.set_force_demo(1)
 	check(Platform.store_dir == BuildInfo.DEMO_PLATFORM_DIR, "Platform reads user://demo/platform (%s)" % Platform.store_dir)
-	# While Platform is the T01 stub this proves little (it never unlocks);
-	# the T02 merge seeds a full-game unlock here (see open problems).
+	check(not Platform.is_unlocked(seeded), "the full game's unlock is not shown in the demo")
 	check(Platform.unlocked_ids().is_empty(), "no full-game unlocks in the demo")
-	var records := "res://challenges/%s.gd" % "RecordStore"
-	if ResourceLoader.exists(records):
-		var rs := load(records) as GDScript
-		check(rs.has_method("dir"), "RecordStore exposes dir() (update this test if T04 renamed it)")
-		if rs.has_method("dir"):
-			check(str(rs.call("dir")).begins_with(BuildInfo.DEMO_PLATFORM_DIR), "RecordStore follows Platform.store_dir")
+	check(Challenges.records.path().begins_with(BuildInfo.DEMO_PLATFORM_DIR + "/"),
+		"RecordStore follows Platform.store_dir (%s)" % Challenges.records.path())
 	BuildInfo.set_force_demo(-1)
 	check(Platform.store_dir == BuildInfo.DEFAULT_PLATFORM_DIR, "back to user://platform")
+	Platform.reset_after_tests()
 
 
 # --- Validator rules (DemoRules DM-1..DM-3, DM-5..DM-8) ----------------------------------
