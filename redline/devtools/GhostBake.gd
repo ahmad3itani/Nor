@@ -180,12 +180,17 @@ static func restore_settings(saved: Dictionary) -> void:
 ## and no live run. Returns {ok, frames, ghost: GhostData, failure, outcome,
 ## fade_null}. The run is quit afterwards (the profile comes back) and the
 ## run room is removed.
-static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false) -> Dictionary:
+##
+## replay: instead of a bot, feed that ghost's recorded input track back
+## (the determinism proof: the same inputs must give the same run).
+static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false, replay: GhostData = null) -> Dictionary:
 	var r := {"ok": false, "frames": -1, "ghost": null, "failure": "", "outcome": -1,
 		"fade_null": SceneRouter.get("_fade") == null}
 	var bot_kind := ch.dev_bot if ch else &"none"
 	if pacify and bot_kind == &"none" and not ch.dev_route.is_empty():
 		bot_kind = &"route"
+	if replay != null:
+		bot_kind = &"replay"
 	if ch == null or bot_kind == &"none":
 		r["failure"] = "no bot"
 		return r
@@ -220,6 +225,8 @@ static func bake(tree: SceneTree, ch: ChallengeData, pacify: bool = false) -> Di
 				why = await _run_route(tree, room.player, ch.dev_route)
 			&"boss_blade", &"boss_pistol":
 				why = await _run_boss(tree, room, ch, "blade" if bot_kind == &"boss_blade" else "pistol")
+			&"replay":
+				why = await _run_replay(tree, room.player, replay)
 			_:
 				why = "unknown dev_bot %s" % bot_kind
 		var outcome := int(Challenges.last_result.get("outcome", -1)) if Challenges.phase() != Challenges.Phase.RUNNING else -1
@@ -269,6 +276,38 @@ static func _run_route(tree: SceneTree, player: Player, route: Array) -> String:
 			bot.input.move_x = dir
 		await tree.physics_frame
 	return "never reached the finish line"
+
+
+## Replays a ghost's input track and waits for the run to end.
+static func _run_replay(tree: SceneTree, player: Player, g: GhostData) -> String:
+	var src := ReplaySource.new()
+	src.track = input_track(g)
+	player.input_source = src
+	for i in g.frames + HOLD_LIMIT:
+		if Challenges.phase() != Challenges.Phase.RUNNING:
+			return ""
+		await tree.physics_frame
+	return "the replay never finished the run"
+
+
+## The input bits of every sample of `g`, in order.
+static func input_track(g: GhostData) -> PackedInt32Array:
+	var out := PackedInt32Array()
+	for i in g.sample_count():
+		out.append(int(g.sample(i).get("input", 1)))
+	return out
+
+
+## Feeds a recorded input track back, one frame per physics sample (a
+## future "watch replay" mode starts here, D2 §4.1). Past the end: idle.
+class ReplaySource extends PlayerInputSource:
+	var track: PackedInt32Array = PackedInt32Array()
+	var index: int = 0
+
+	func sample(_config: PlayerMovementConfig) -> PlayerInputFrame:
+		var bits := track[index] if index < track.size() else 1
+		index += 1
+		return GhostCodec.decode_input(bits)
 
 
 ## Boss bot: walk toward the arena until the fight starts (the clock starts
