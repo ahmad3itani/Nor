@@ -200,6 +200,31 @@ func test_walking_into_border_opens_card_and_never_pits() -> void:
 	card.close_menu()
 
 
+## The dev row "Teleport to the border" lands next to the gap, not in the
+## trigger: the card opens only when the player walks into the border.
+func test_dev_teleport_to_border_does_not_open_card() -> void:
+	BuildInfo.set_force_demo(1)
+	var host := await _boot_main(TUNNEL)
+	var card := host.screen(&"demo_end")
+	DemoDevActions.teleport_to_border()
+	for i in 240:
+		await get_tree().physics_frame
+		if not SceneRouter.transitioning and i > 10:
+			break
+	await physics_frames(5)
+	var room := SceneRouter.current_room as Room
+	check(SceneRouter.current_room_path == TUNNEL and not SceneRouter.transitioning, "arrived in the tunnel")
+	check(_barriers(room).size() == 1, "the border is walled")
+	var b := _barriers(room)[0] as DemoBarrier
+	var local := b.to_local(room.player.global_position)
+	check(not b.trigger_rect().has_point(local), "the arrival is outside the trigger (%s)" % local)
+	check(local.x > -64.0, "landed at from_relay, next to the gap (%s)" % local)
+	check(not card.is_open(), "the card waits for the walk into the border")
+	await _walk(room.player, 1, 240, func() -> bool: return card.is_open())
+	check(card.is_open(), "walking into the border opens it")
+	card.close_menu()
+
+
 func test_keep_exploring_unpauses_and_card_reopens_on_reentry() -> void:
 	BuildInfo.set_force_demo(1)
 	var host := await _boot_main(TUNNEL)
@@ -512,6 +537,8 @@ func test_demo_blocked_fixture_absent_in_demo() -> void:
 	var data_path := "res://challenges/%s.gd" % "ChallengeData"
 	var has_lib := ResourceLoader.exists(lib_path)
 	var has_data := ResourceLoader.exists(data_path)
+	# MERGE CHECK (T04 -> main, T14 checklist): once the challenge runtime is on
+	# main, delete this skip branch so a missing or moved runtime fails here.
 	if not has_lib and not has_data:
 		print("  (skipped: the challenge runtime is not on this branch; must run after the T04 merge)")
 		return
@@ -558,6 +585,8 @@ func test_debug_demo_leaves_user_saves_untouched() -> void:
 	var demo_before := FileAccess.get_file_as_bytes(demo) if FileAccess.file_exists(demo) else PackedByteArray()
 	var real_existed := FileAccess.file_exists(real)
 	var demo_existed := FileAccess.file_exists(demo)
+	var dir_existed := DirAccess.dir_exists_absolute(BuildInfo.DEMO_SAVE_DIR)
+	var files_before := DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR) if dir_existed else PackedStringArray()
 	BuildInfo.set_force_demo(1)
 	Game.start_campaign()
 	check(Game.save_game() == OK, "saved")
@@ -566,13 +595,19 @@ func test_debug_demo_leaves_user_saves_untouched() -> void:
 		and (not real_existed or FileAccess.get_file_as_bytes(real) == real_before), "user://saves is unchanged")
 	BuildInfo.set_force_demo(-1)
 	check(SaveManager.save_dir == SaveManager.DEFAULT_SAVE_DIR, "the full game's save dir is back")
-	# Put the developer's own demo save back as it was.
+	# Put the developer's own demo save back as it was, and remove only the
+	# files this test created (the save and its .bak/.tmp siblings): other
+	# demo profiles and backups in user://demo/saves stay.
 	if demo_existed:
 		var f := FileAccess.open(demo, FileAccess.WRITE)
 		f.store_buffer(demo_before)
 		f.close()
-	else:
-		AtomicJson.remove_tree(BuildInfo.DEMO_SAVE_DIR)
+	for name: String in DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR):
+		if not name in files_before:
+			DirAccess.remove_absolute(BuildInfo.DEMO_SAVE_DIR + "/" + name)
+	if not dir_existed and DirAccess.get_files_at(BuildInfo.DEMO_SAVE_DIR).is_empty() \
+			and DirAccess.get_directories_at(BuildInfo.DEMO_SAVE_DIR).is_empty():
+		DirAccess.remove_absolute(BuildInfo.DEMO_SAVE_DIR)
 	SaveManager.save_dir = SAVE_DIR
 
 
