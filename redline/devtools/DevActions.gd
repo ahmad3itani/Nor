@@ -41,6 +41,8 @@ static func teleport(room_path: String, entry: String) -> void:
 ## transit, every room visited and fully explored, every Anchor on the line.
 static func unlock_all() -> void:
 	var st := Game.state
+	# M9 (D-145): a fabricated profile never earns achievements.
+	st.dev_tainted = true
 	for w in Game.catalog.weapons:
 		if not st.owned_weapons.has(String(w.id)):
 			st.owned_weapons.append(String(w.id))
@@ -124,12 +126,9 @@ static func quick_boss_restart(boss_id: String = "warden_krail") -> void:
 	SceneRouter.transition_to(target[0], target[1])
 
 
+## Export-safe scan (K-M8-22): exported builds list .tscn.remap files.
 static func enemy_scenes() -> PackedStringArray:
-	var out := PackedStringArray()
-	for f in DirAccess.get_files_at(VARIANT_DIR):
-		if f.ends_with(".tscn"):
-			out.append("%s/%s" % [VARIANT_DIR, f])
-	return out
+	return DataDir.list_scenes(VARIANT_DIR)
 
 
 ## Spawns an enemy 90 px in front of Rook in the current room.
@@ -319,6 +318,7 @@ static func play_memory(id: String) -> void:
 
 static func grant_all_fragments() -> void:
 	if available():
+		Game.state.dev_tainted = true
 		MemoryLibrary.dev_grant_all_fragments()
 
 
@@ -333,6 +333,7 @@ static func arc_summary() -> String:
 
 static func force_arc_stage(npc: String, stage: String) -> void:
 	if available() and Game.arcs:
+		Game.state.dev_tainted = true
 		Game.arcs.force_stage(npc, stage)
 
 
@@ -343,6 +344,7 @@ static func reset_arcs() -> void:
 
 static func apply_story_preset(id: String) -> void:
 	if available():
+		Game.state.dev_tainted = true
 		StoryPresets.apply(id)
 
 

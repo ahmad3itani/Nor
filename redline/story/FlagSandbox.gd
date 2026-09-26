@@ -5,7 +5,7 @@ extends RefCounted
 ## so switches, NPC posts, quests, arcs and the HUD re-read the profile. The
 ## Ending theatre plays inside one, so a dev replay never marks the profile.
 ##
-## Only flags and play time are covered: a theatre ending locks input and
+## Only flags, play time and the dev taint (M9, D-145) are covered: a theatre ending locks input and
 ## Rook ignores hits, so nothing else can change during one (K-E6).
 
 ## How many sandboxes were opened (tests prove a real ending play takes none).
@@ -16,6 +16,7 @@ static func begin() -> Callable:
 	begin_count += 1
 	var flags: Dictionary = Game.state.flags.duplicate(true)
 	var play_time: float = Game.state.play_time_sec
+	var tainted: bool = Game.state.dev_tainted
 	var state := Game.state
 	return func() -> void:
 		# A new game or load inside the sandbox replaced the state: never
@@ -24,6 +25,7 @@ static func begin() -> Callable:
 			return
 		Game.state.flags = flags.duplicate(true)
 		Game.state.play_time_sec = play_time
+		Game.state.dev_tainted = tainted
 		EventBus.game_state_reset.emit()
 
 
@@ -37,13 +39,20 @@ static func begin() -> Callable:
 ##    already hold a number;
 ## 3. the counters last: memories_remembered, every arc_<npc>_stage at its
 ##    Act I top, every mem_seen_<scene>, and every shop upgrade at least 1.
+##
+## M9: the profile is dev-tainted (no achievements, D-145), and M9 system
+## flags are never written by the produced-flag loop: ng_* and demo_*, every
+## null_* flag, and every flag only challenge data produces. null_open still
+## ends up true, derived from act1_complete by the preset (D-154).
 static func apply_act1_max_state() -> void:
+	Game.state.dev_tainted = true
 	StoryPresets.apply("act1_complete")
 	var ints := _int_flags()
 	var future := FutureFlagSet.shared()
-	var produced := ContentValidator.new().run().produced
+	var v := ContentValidator.new().run(true)
+	var produced := v.produced
 	for f: String in produced:
-		if future.has_flag(f) or ints.has(f) or f.begins_with("talks_"):
+		if future.has_flag(f) or ints.has(f) or f.begins_with("talks_") or _m9_system_flag(f, v):
 			continue
 		var cur: Variant = Game.state.flags.get(f)
 		if typeof(cur) == TYPE_INT or typeof(cur) == TYPE_FLOAT:
@@ -61,6 +70,14 @@ static func apply_act1_max_state() -> void:
 		var cur: Variant = Game.state.flags.get(f)
 		if (typeof(cur) != TYPE_INT and typeof(cur) != TYPE_FLOAT) or Game.flag_int(f) < 1:
 			Game.set_flag(f, maxi(Game.flag_int(f), 1))
+
+
+## M9 system flags the Act I max state never sets itself.
+static func _m9_system_flag(f: String, v: ContentValidator) -> bool:
+	if f.begins_with("ng_") or f.begins_with("demo_") or f.begins_with("null_"):
+		return true
+	var paths: Array = v.producers.get(f, [])
+	return not paths.is_empty() and paths.all(func(p: String) -> bool: return p.begins_with("res://data/challenges/"))
 
 
 ## Flags that hold numbers: memories_remembered, arc_<npc>_stage and every

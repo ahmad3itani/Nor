@@ -9,23 +9,41 @@ extends RefCounted
 const SCAN_DIRS: PackedStringArray = ["res://autoload", "res://bosses", "res://circuits", "res://combat",
 	"res://data", "res://devtools", "res://dialogue", "res://enemies", "res://interactables", "res://player",
 	"res://playtest", "res://progression", "res://quests", "res://ui", "res://vfx", "res://weapons", "res://world",
-	"res://audio", "res://cinematics", "res://story"]
-const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight", "res://world/rooms/undercity"]
+	"res://audio", "res://cinematics", "res://story",
+	# M9
+	"res://platform", "res://challenges", "res://release", "res://accessibility", "res://input", "res://l10n"]
+const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight", "res://world/rooms/undercity",
+	"res://world/rooms/challenge"]
+## Room folders whose world rooms are never on the world map (M9 challenge
+## and Null rooms: sandboxed, reached from the Challenges menu only).
+const OFF_MAP_DIRS: PackedStringArray = ["res://world/rooms/challenge"]
 ## District room folders only (no labs/backdrops in res://world/rooms): what
 ## SliceStats, the playtest report and the world tests iterate.
 const WORLD_ROOM_DIRS: PackedStringArray = ["res://world/rooms/lowlight", "res://world/rooms/undercity"]
-## Menu ids MenuHost knows besides shop_<id>.
-const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map", "dev"]
+## Menu ids MenuHost knows besides shop_<id> (the same list as MenuHost.IDS).
+const MENU_IDS: PackedStringArray = ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map",
+	"dev", "achievements", "challenges", "challenge_result", "ng_plus", "assist_suggest", "demo_end"]
 ## Flags set by code rather than data (kept here so the flag lint knows them).
 ## act1_complete: Game.load_game derives it for pre-M8 saves that passed the
 ## Act I end (the act1_close sequence also sets it in data).
+## M9: null_open (Game.DERIVED_FLAGS, from act1_complete, D-154), demo_build
+## and demo_end_seen (T05, demo builds).
 const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow", "slice_end_seen", "core_hud_hidden",
-	"act1_complete"]
+	"act1_complete", "null_open", "demo_build", "demo_end_seen"]
 ## Flags only there for bookkeeping; never "unused".
 ## M8 story bookkeeping (seen sequences, memories viewed, endings seen, arc
 ## stages/beats, threads) is read by code (trackers, journal, dev tools).
 const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_", "seen_seq_", "mem_seen_", "mem_detail_",
-	"ending_seen_", "arc_", "arcbeat_", "thread_"]
+	"ending_seen_", "arc_", "arcbeat_", "thread_",
+	# M9: Null sandbox bookkeeping and NG+ carry flags.
+	"null_", "ng_"]
+## M9 validator rule modules (devtools/content/rules/<Name>.gd), run when the
+## file exists: `static func run(v: ContentValidator) -> void` appends
+## "[<RULE-ID>] ..." to v.errors / v.warnings; an optional
+## `static func report(v: ContentValidator) -> String` adds a report section;
+## `const REGISTERS_FLAGS := true` makes it run in flags-only passes too.
+const RULE_MODULES: PackedStringArray = ["PlatformRules", "AchievementRules", "ChallengeRules", "NullRules", "RemixRules",
+	"SettingsRules", "AccessRules", "StringRules", "DemoRules", "ExportRules", "CrossRules"]
 ## Metrics a `count:<metric>:<n>` condition may name (Game.count_metric).
 const COUNT_METRICS: PackedStringArray = ["fragments", "shards", "circuits", "secrets"]
 ## Bible §18: the four endings, exactly (D-126).
@@ -62,19 +80,72 @@ const MEMORY_CONFIG_TEXT: PackedStringArray = ["title_label", "card_body_anchor"
 var placed_fragments: Dictionary = {}
 ## Room text shown in play: [path, what, text] (HintTrigger lines).
 var room_text: Array = []
+## Text other areas show the player ([path, what, text]), registered by M9
+## rule modules through add_shown_text (CrossRules X-9 lints it).
+var extra_shown_text: Array = []
 var _require_on_map: bool = true
 
 
-func run() -> ContentValidator:
-	scan_references()
+## flags_only = true (FlagSandbox, story tests): just the flag graph. No
+## reference scan, no art pass, and only the rule modules that register
+## flags (`const REGISTERS_FLAGS := true`).
+func run(flags_only: bool = false) -> ContentValidator:
+	if not flags_only:
+		scan_references()
 	validate_resources()
 	validate_rooms()
 	validate_story()
+	validate_m9(flags_only)
 	validate_flags()
+	if flags_only:
+		return self
 	var art := ArtValidator.new().run()
 	errors.append_array(art.errors)
 	warnings.append_array(art.warnings)
 	return self
+
+
+## Runs every M9 rule module that exists (see RULE_MODULES). Before
+## validate_flags, so modules can register producers and consumers.
+func validate_m9(flags_only: bool = false) -> void:
+	for m in _rule_modules():
+		if flags_only and not m.get_script_constant_map().get("REGISTERS_FLAGS", false):
+			continue
+		m.call("run", self)
+
+
+func _rule_modules() -> Array[GDScript]:
+	var out: Array[GDScript] = []
+	for n in RULE_MODULES:
+		var path := "res://devtools/content/rules/%s.gd" % n
+		if ResourceLoader.exists(path):
+			var g := load(path) as GDScript
+			if g:
+				out.append(g)
+	return out
+
+
+# --- Public helpers for the M9 rule modules --------------------------------------
+
+func add_producer(flag: String, where: String) -> void:
+	_produce(flag, where)
+
+
+func add_consumer(flag: String, where: String) -> void:
+	_consume(flag, where)
+
+
+func consume_condition(expr: String, where: String) -> void:
+	_consume_condition(expr, where)
+
+
+## A room scene instance (the caller frees it), or null with an error.
+func instantiate_room(path: String) -> Node:
+	return _instantiate_room(path, true)
+
+
+func add_shown_text(path: String, what: String, text: String) -> void:
+	extra_shown_text.append([path, what, text])
 
 
 ## Test API: validate one room scene plus the flag graph it builds, without
@@ -272,7 +343,7 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 		errors.append("%s: no DistrictTheme" % tag)
 	if room.district_name == "" or room.room_name == "":
 		errors.append("%s: missing district/room name" % tag)
-	if _require_on_map and Game.world_map.room(id) == null:
+	if _require_on_map and not _off_map(path) and Game.world_map.room(id) == null:
 		errors.append("%s: not on the world map (data/world/world_map.tres)" % tag)
 	var spawns := {}
 	var defaults := 0
@@ -352,6 +423,13 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 ##     no room argument, so it never collides with a node's content_errors;
 ##     "WARN: ..." entries become warnings, the rest errors.
 ## Messages are tagged "<file name>: <message>".
+static func _off_map(path: String) -> bool:
+	for d in OFF_MAP_DIRS:
+		if path.begins_with(d + "/"):
+			return true
+	return false
+
+
 func _check_protocol(n: Node, room: Room, tag: String, path: String) -> void:
 	if n.has_method("content_errors"):
 		for e: String in n.content_errors(room):
@@ -624,6 +702,7 @@ func _shown_text(lint: KnowledgeLint) -> Array:
 				if a.standing[i]:
 					out.append([path, "act %d standing %d" % [a.act, i], a.standing[i].text])
 	out.append_array(room_text)
+	out.append_array(extra_shown_text)
 	return out
 
 
@@ -741,6 +820,12 @@ func report() -> String:
 			", ".join(PackedStringArray(items.map(func(i: Dictionary) -> String: return i["id"])))])
 	lines.append("")
 	lines.append_array(story_report())
+	for m in _rule_modules():
+		if m.get_script_method_list().any(func(d: Dictionary) -> bool: return d["name"] == "report"):
+			var section := str(m.call("report", self))
+			if section != "":
+				lines.append("")
+				lines.append(section)
 	return "\n".join(lines) + "\n"
 
 

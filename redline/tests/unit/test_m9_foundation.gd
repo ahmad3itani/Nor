@@ -701,3 +701,81 @@ func test_capture_session_wipes_tour_sandbox() -> void:
 	tour.restore_session(snap)
 	check(not DirAccess.dir_exists_absolute("user://tour_sandbox"), "restore leaves no user://tour_sandbox")
 	CinematicMode.set_mode(CinematicMode.Mode.INSTANT)
+
+
+# --- ContentValidator, FlagSandbox, DevActions (T01f) --------------------------------
+
+func test_menu_host_registry_ids_match_validator() -> void:
+	check(Array(MenuHost.IDS) == Array(ContentValidator.MENU_IDS), "MenuHost.IDS == ContentValidator.MENU_IDS")
+	for id: StringName in MenuHost.M9_SCREENS:
+		check(MenuHost.IDS.has(String(id)), "M9 screen %s is a known id" % id)
+
+
+func test_rule_modules_absent_is_ok() -> void:
+	var v := ContentValidator.new()
+	var before := v.errors.size()
+	v.validate_m9()
+	v.validate_m9(true)
+	check(v.errors.size() == before and v.warnings.is_empty(), "no modules, no findings (%s)" % [v.errors])
+	check(ContentValidator.RULE_MODULES.size() == 11, "eleven rule module slots")
+
+
+func test_m9_dirs_exist_and_validator_clean() -> void:
+	for d: String in M9_DIRS:
+		check(DirAccess.dir_exists_absolute("res://" + d), "res://%s exists" % d)
+	var v := ContentValidator.new()
+	v.scan_references()
+	var missing := Array(v.errors).filter(func(e: String) -> bool: return e.begins_with("broken reference"))
+	check(missing.is_empty(), "no broken res:// reference: %s" % [missing])
+	for d in ["res://platform", "res://challenges", "res://release", "res://accessibility", "res://input", "res://l10n"]:
+		check(ContentValidator.SCAN_DIRS.has(d), "%s is scanned" % d)
+	check(ContentValidator._off_map("res://world/rooms/challenge/NullFloor.tscn") and not ContentValidator._off_map("res://world/rooms/lowlight/Relay.tscn"),
+		"challenge rooms are off the world map")
+
+
+func test_validator_public_helpers() -> void:
+	var v := ContentValidator.new()
+	v.add_producer("m9_test_flag", "res://x/a.tres")
+	v.add_consumer("m9_test_flag", "res://x/b.tres")
+	v.consume_condition("flag:m9_other", "res://x/c.tres")
+	check(v.producers["m9_test_flag"] == ["res://x/a.tres"] and v.consumed.has("m9_other"), "producers and consumers registered")
+	v.add_shown_text("res://x/d.tres", "test", "shown line")
+	check(v.extra_shown_text == [["res://x/d.tres", "test", "shown line"]], "shown text registered")
+	var room := v.instantiate_room(ROOM_A)
+	check(room is Room, "instantiate_room")
+	room.free()
+
+
+func test_dev_taint_set_by_unlock_all() -> void:
+	check(not Game.state.dev_tainted, "a new game is clean")
+	DevActions.unlock_all()
+	check(Game.state.dev_tainted, "unlock_all taints the profile (D-145)")
+	Game.new_game()
+	DevActions.apply_story_preset("act1_complete")
+	check(Game.state.dev_tainted, "a story preset taints")
+	Game.new_game()
+	DevActions.apply_endgame_state()
+	check(Game.state.dev_tainted and Game.has_flag("act1_complete") and Game.has_flag("null_open"), "endgame state: Act I complete, null_open derived")
+
+
+func test_satisfy_ending_does_not_taint() -> void:
+	var restore := DevActions.satisfy_ending("crown")
+	check(not Game.state.dev_tainted, "satisfy_ending runs in a FlagSandbox and does not taint")
+	restore.call()
+
+
+func test_flag_sandbox_restores_dev_tainted() -> void:
+	var restore := FlagSandbox.begin()
+	Game.state.dev_tainted = true
+	restore.call()
+	check(not Game.state.dev_tainted, "the sandbox puts the taint back")
+
+
+func test_act1_max_state_leaves_ng_demo_unset() -> void:
+	FlagSandbox.apply_act1_max_state()
+	check(Game.state.dev_tainted, "the max state is dev-tainted")
+	check(Game.has_flag("null_open"), "null_open is derived from act1_complete (D-154)")
+	check(not Game.state.flags.has("ng_cycle"), "no ng_cycle")
+	for f: String in Game.state.flags:
+		check(not f.begins_with("ng_") and not f.begins_with("demo_"), "M9 system flag %s set" % f)
+		check(not f.begins_with("null_") or f == "null_open", "null flag %s set" % f)
