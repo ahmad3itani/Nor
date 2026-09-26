@@ -62,6 +62,9 @@ func _ready() -> void:
 	_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_canvas.draw.connect(_draw_overlay)
 	add_child(_canvas)
+	# Everything is stored as source and translated at draw: a language
+	# switch only needs a redraw (the typewriter count clamps in substr).
+	EventBus.locale_changed.connect(func(_code: String) -> void: _redraw())
 
 
 func letterbox(show: bool, seconds: float) -> Tween:
@@ -92,6 +95,9 @@ func fade(to_alpha: float, seconds: float, color: Color = FADE_COLOR) -> Tween:
 	return _fade_tween
 
 
+## Takes the SOURCE text (D-162): the overlay translates at draw, so a
+## language switch re-renders the line on screen (SeqLine paces the line on
+## its displayed length, D-164).
 func show_line(speaker_label: String, color: Color, text: String, narration: bool) -> void:
 	line_on = true
 	line_speaker = "" if narration else speaker_label
@@ -116,6 +122,7 @@ func clear_line() -> void:
 	_redraw()
 
 
+## Source text, translated at draw (arena titles included).
 func show_title(title: String, subtitle: String) -> void:
 	title_on = true
 	title_text = title
@@ -202,25 +209,33 @@ func _draw_title(view: Vector2) -> void:
 	var fs := SubtitleStyle.font_size()
 	# The title grows with the Subtitle size setting (§24), 16 px at size 7.
 	var ts := roundi(TITLE_SIZE * fs / 7.0)
-	_canvas.draw_string_outline(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, 2, Color.BLACK)
-	_canvas.draw_string(f, Vector2(0, y), title_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, Color.WHITE)
+	var title := Loc.t(title_text)
+	_canvas.draw_string_outline(f, Vector2(0, y), title, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, 2, Color.BLACK)
+	_canvas.draw_string(f, Vector2(0, y), title, HORIZONTAL_ALIGNMENT_CENTER, view.x, ts, Color.WHITE)
 	if subtitle_text != "":
-		_canvas.draw_string_outline(f, Vector2(0, y + fs + 8), subtitle_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, 1, Color.BLACK)
-		_canvas.draw_string(f, Vector2(0, y + fs + 8), subtitle_text, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, TITLE_SUB_COLOR)
+		var sub := Loc.t(subtitle_text)
+		_canvas.draw_string_outline(f, Vector2(0, y + fs + 8), sub, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, 1, Color.BLACK)
+		_canvas.draw_string(f, Vector2(0, y + fs + 8), sub, HORIZONTAL_ALIGNMENT_CENTER, view.x, fs, TITLE_SUB_COLOR)
 
 
 ## The box is sized for the whole line, so it does not grow while typing.
 func _draw_line(view: Vector2, bar: float) -> void:
 	var width := minf(LINE_MAX_WIDTH, view.x - 32.0)
-	var lines := SubtitleStyle.line_count(line_text, width - SubtitleStyle.PAD_X * 2)
+	var text := shown_line()
+	var lines := SubtitleStyle.line_count(text, width - SubtitleStyle.PAD_X * 2)
 	var h := float(SubtitleStyle.text_y() + lines * SubtitleStyle.line_spacing() + 4)
 	var y := view.y - BARK_BOTTOM_OFFSET - h
 	if letterbox_on:
 		y = view.y - bar + (float(bar_height()) - h) * 0.5
 		y = minf(y, view.y - 3.0 - h)
-	var shown := line_text if visible_chars < 0 else line_text.substr(0, visible_chars)
+	var shown := text if visible_chars < 0 else text.substr(0, visible_chars)
 	var rect := Rect2(Vector2((view.x - width) * 0.5, y), Vector2(width, h))
-	SubtitleStyle.draw_line(_canvas, rect, "" if line_narration else line_speaker, shown, line_color, true)
+	SubtitleStyle.draw_line(_canvas, rect, "" if line_narration else Loc.t(line_speaker), shown, line_color, true)
+
+
+## The current line as displayed (the typewriter's full length).
+func shown_line() -> String:
+	return Loc.t(line_text)
 
 
 func _draw_prompt(view: Vector2) -> void:

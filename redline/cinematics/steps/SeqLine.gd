@@ -30,10 +30,12 @@ func run(p: SequencePlayer) -> void:
 	var ov := p.overlay()
 	var who := SpeakerTable.lookup(speaker_id)
 	if is_instance_valid(ov):
+		# The overlay keeps the source and translates at draw (D-162).
 		ov.show_line(who.get("label", speaker_id), who.get("color", Color.WHITE), text, who.get("narration", false))
 	if blip != &"":
 		AudioManager.play_sfx(blip)
-	await p.pace_line(text.length(), nominal_seconds() * SubtitleStyle.time_scale(), hold_for_input)
+	var shown := Loc.t(text)
+	await p.pace_line(shown.length(), displayed_seconds(shown) * SubtitleStyle.time_scale(), hold_for_input)
 	# No finish() on abort (R3-1): the overlay may show a newer play's line.
 	if not p.aborted(): finish(p)
 
@@ -59,5 +61,14 @@ func validate(v: SequenceValidation) -> PackedStringArray:
 	return out
 
 
+## The D-135 budget time: always the English source (validators, budgets).
 func nominal_seconds() -> float:
 	return seconds if seconds > 0.0 else auto_seconds(text)
+
+
+## D-164: the time a reader gets for the line as displayed (`shown` is the
+## translated text) times the locale's reading scale. In English this is
+## nominal_seconds() exactly, so every sequence timing stays byte-stable.
+func displayed_seconds(shown: String) -> float:
+	var base := seconds if seconds > 0.0 else auto_seconds(shown)
+	return base * Loc.info().reading_scale

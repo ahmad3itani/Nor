@@ -182,7 +182,7 @@ func _process(delta: float) -> void:
 func _process_beat(delta: float, tap: bool) -> void:
 	_beat_time += delta
 	var b := _scene.beats[_beat]
-	var n := float(b.text.length())
+	var n := float(Loc.t(b.text).length())
 	_shown = minf(_shown + cfg.chars_per_second * delta, n)
 	if tap:
 		# A tap first completes the line (never skips unread text), then
@@ -197,7 +197,8 @@ func _process_beat(delta: float, tap: bool) -> void:
 
 
 func _auto_seconds(b: MemoryBeat) -> float:
-	var base := cfg.auto_advance_base + b.text.length() * cfg.auto_advance_per_char
+	# D-164: time for the text as displayed, times the locale reading scale.
+	var base := (cfg.auto_advance_base + Loc.t(b.text).length() * cfg.auto_advance_per_char) * Loc.info().reading_scale
 	return base * SubtitleStyle.time_scale() / maxf(CinematicMode.auto_speed, 0.01)
 
 
@@ -337,7 +338,7 @@ func _process_panel() -> void:
 
 func _panel_rows() -> PackedStringArray:
 	var size_name: String = cfg.size_names[clampi(Settings.subtitle_size, 0, cfg.size_names.size() - 1)]
-	return PackedStringArray([cfg.pause_resume, cfg.pause_skip, cfg.pause_size % size_name])
+	return PackedStringArray([Loc.t(cfg.pause_resume), Loc.t(cfg.pause_skip), Loc.f(cfg.pause_size, {"size": Loc.t(size_name)})])
 
 
 # --- Test and tooling accessors ---
@@ -380,7 +381,7 @@ func cue_visible() -> bool:
 	if _phase != Phase.BEAT or _panel_open or _scene == null:
 		return false
 	var b := _scene.beats[_beat]
-	return _beat_time >= b.min_seconds and _shown >= b.text.length()
+	return _beat_time >= b.min_seconds and _shown >= Loc.t(b.text).length()
 
 
 func skip_prompt_visible() -> bool:
@@ -415,8 +416,8 @@ func _draw_ui() -> void:
 	_ui.draw_rect(Rect2(0, view.y - lb, view.x, lb), Color.BLACK)
 	if _phase == Phase.TITLE:
 		var a := clampf(_phase_time * 3.0, 0.0, 1.0)
-		_ui.draw_string(font, Vector2(0, view.y * 0.5 - 8), cfg.title_label, HORIZONTAL_ALIGNMENT_CENTER, view.x, 7, Color(MEMORY_BLUE, a))
-		_ui.draw_string(font, Vector2(0, view.y * 0.5 + 6), _scene.display_title(), HORIZONTAL_ALIGNMENT_CENTER, view.x, 9, Color(MEMORY_BLUE, a))
+		_ui.draw_string(font, Vector2(0, view.y * 0.5 - 8), Loc.t(cfg.title_label), HORIZONTAL_ALIGNMENT_CENTER, view.x, 7, Color(MEMORY_BLUE, a))
+		_ui.draw_string(font, Vector2(0, view.y * 0.5 + 6), Loc.t(_scene.display_title()), HORIZONTAL_ALIGNMENT_CENTER, view.x, 9, Color(MEMORY_BLUE, a))
 	elif _phase == Phase.BEAT:
 		_draw_subtitle(view, font)
 	if skip_prompt_visible():
@@ -432,17 +433,20 @@ func _draw_ui() -> void:
 func _draw_subtitle(view: Vector2, font: Font) -> void:
 	var b := _scene.beats[_beat]
 	var width := view.x - 48.0
-	var h := SubtitleStyle.box_height(b.text, width)
+	var text := Loc.t(b.text)
+	var h := SubtitleStyle.box_height(text, width)
 	var box := Rect2(24, view.y - 16 - h, width, h)
-	SubtitleStyle.draw_line(_ui, box, b.speaker, b.text.substr(0, int(_shown)), MEMORY_BLUE)
+	SubtitleStyle.draw_line(_ui, box, Loc.t(b.speaker), text.substr(0, int(_shown)), MEMORY_BLUE)
 	var fs := SubtitleStyle.font_size()
 	if cue_visible() and int(Time.get_ticks_msec() / 400) % 2 == 0:
+		# l10n: ignore(key glyph in brackets)
 		_ui.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))
 	if _detail_show > 0.0 and _scene.has_detail():
-		var lines := SubtitleStyle.line_count(_scene.detail_text, width)
+		var detail := Loc.t(_scene.detail_text)
+		var lines := SubtitleStyle.line_count(detail, width)
 		var y := box.position.y - 4.0 - (lines - 1) * SubtitleStyle.line_spacing()
 		var c := Color(MUTED_BLUE, clampf(_detail_show * 2.0, 0.0, 1.0))
-		SubtitleStyle.draw_text(_ui, font, Vector2(24, y), _scene.detail_text, width, fs, c)
+		SubtitleStyle.draw_text(_ui, font, Vector2(24, y), detail, width, fs, c)
 
 
 func _draw_panel(view: Vector2, font: Font) -> void:
@@ -452,7 +456,7 @@ func _draw_panel(view: Vector2, font: Font) -> void:
 	var r := Rect2((view.x - w) * 0.5, (view.y - h) * 0.5, w, h)
 	_ui.draw_rect(r, UiTheme.BG)
 	_ui.draw_rect(Rect2(r.position, Vector2(w, 1)), UiTheme.ACCENT)
-	_ui.draw_string(font, r.position + Vector2(6, 11), cfg.pause_title, HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE + 1, UiTheme.ACCENT)
+	_ui.draw_string(font, r.position + Vector2(6, 11), Loc.t(cfg.pause_title), HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE + 1, UiTheme.ACCENT)
 	for i in rows.size():
 		var row := Rect2(r.position.x + 4, r.position.y + 16 + i * 12, w - 8, 11)
 		var focused := i == _panel_index

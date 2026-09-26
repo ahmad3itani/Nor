@@ -713,7 +713,7 @@ func test_journal_replay_and_remember_now() -> void:
 	check(_button(j, cfg.gallery_button) != null, "Memories… button once a memory is seen")
 	Game.state.memory_fragments.append("mf_lowlight_02")
 	j.rebuild()
-	check(_labels(j).has(cfg.remembered_line % [0, 1]), "line reads 0 / 1: %s" % [_labels(j)])
+	check(_labels(j).has(cfg.remembered_line.format({"seen": 0, "total": 1})), "line reads 0 / 1: %s" % [_labels(j)])
 	_button(j, cfg.gallery_button).pressed.emit()
 	var replay := _button(j, "%s %s" % [cfg.glyph_seen, "Count the Last One"])
 	check(replay != null, "the seen memory is a replay row")
@@ -729,7 +729,7 @@ func test_journal_replay_and_remember_now() -> void:
 	check(_of("requested").size() == 2 and _of("requested")[1][2] == &"journal_first", "Remember now source is journal_first")
 	check(j.visible, "the journal is back after playback")
 	_button(j, cfg.back_label).pressed.emit()
-	check(_labels(j).has(cfg.remembered_line % [1, 1]), "line reads 1 / 1: %s" % [_labels(j)])
+	check(_labels(j).has(cfg.remembered_line.format({"seen": 1, "total": 1})), "line reads 1 / 1: %s" % [_labels(j)])
 	j.close_menu()
 
 
@@ -753,7 +753,7 @@ func test_journal_fits_viewport() -> void:
 	check(longest != null, "the Undercity memory is listed")
 	if longest:
 		longest.grab_focus()
-	check(Array(_labels(j)).any(func(t: String) -> bool: return t == cfg.detail_line % MemoryLibrary.scene("mf_undercity_01").detail_text), "the focused card shows its found detail: %s" % [_labels(j)])
+	check(Array(_labels(j)).any(func(t: String) -> bool: return t == cfg.detail_line.format({"detail": MemoryLibrary.scene("mf_undercity_01").detail_text})), "the focused card shows its found detail: %s" % [_labels(j)])
 	check(_button(j, cfg.glyph_pending) != null and _button(j, cfg.glyph_pending).text.contains(cfg.pending_hint), "pending rows carry the hint")
 	h = await menu_height(j)
 	check(h <= 270.0, "journal gallery is %.0f px tall (max 270)" % h)

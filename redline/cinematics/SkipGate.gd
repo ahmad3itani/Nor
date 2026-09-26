@@ -169,8 +169,8 @@ func progress_ratio() -> float:
 func prompt_text() -> String:
 	var glyph := InputGlyphs.label(&"cinematic_skip")
 	if Settings.cinematic_skip_hold or _progress > 0.0:
-		return "Hold [%s] to skip" % glyph
-	return "[%s] again to skip" % glyph
+		return Loc.f("Hold [{key}] to skip", {"key": glyph})
+	return Loc.f("[{key}] again to skip", {"key": glyph})
 
 
 ## Feeds the gate from the live Input state.

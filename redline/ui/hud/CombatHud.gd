@@ -18,7 +18,7 @@ extends CanvasLayer
 ##   compact layout below COMPACT_WIDTH that lifts the boss bar to the top so
 ##   nothing overlaps at 125 % and 150 %.
 ##
-## Localization (D5 §3.4, §4.2, D-161): the HUD stores SOURCE text (room and
+## Localization (D5 §3.4, §4.2, D-162): the HUD stores SOURCE text (room and
 ## district names, the boss title, the fragment) and translates in _draw, so a
 ## language switch shows on the next frame. Hints and the interact prompt
 ## arrive display-ready from their emitters; the hint queue is dropped on a

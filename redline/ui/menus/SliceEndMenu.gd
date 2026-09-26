@@ -31,7 +31,7 @@ func rebuild() -> void:
 	# fragments recovered.
 	var recovered := Game.state.memory_fragments.size()
 	if recovered >= 1:
-		add_label(MemoryLibrary.config().remembered_line % [MemoryLibrary.remembered_fragment_count(), recovered])
+		add_label(Loc.f(MemoryLibrary.config().remembered_line, {"seen": MemoryLibrary.remembered_fragment_count(), "total": recovered}))
 	add_label(Loc.t("Dead Air: complete") if Game.has_flag("dead_air_complete") else Loc.t("Dead Air: unfinished"), UiTheme.MUTED)
 	var standing := ActLibrary.standing_lines(act)
 	if not standing.is_empty():

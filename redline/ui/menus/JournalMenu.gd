@@ -85,7 +85,7 @@ func _build_memories_section() -> void:
 	add_label(Loc.t("MEMORIES"), UiTheme.ACCENT)
 	var recovered := Game.state.memory_fragments.size()
 	if recovered >= 1:
-		add_label(cfg.remembered_line % [MemoryLibrary.remembered_fragment_count(), recovered])
+		add_label(Loc.f(cfg.remembered_line, {"seen": MemoryLibrary.remembered_fragment_count(), "total": recovered}))
 	if _listed_scenes().is_empty():
 		add_label(Loc.t(cfg.empty_text), UiTheme.MUTED)
 	else:
@@ -170,7 +170,7 @@ func _build_gallery() -> void:
 		var in_act := MemoryLibrary.all_scenes().filter(func(s: MemorySceneData) -> bool: return s.act == act)
 		if not listed.any(func(s: MemorySceneData) -> bool: return s.act == act):
 			continue
-		add_label(cfg.gallery_title % cfg.act_name(act), UiTheme.ACCENT, UiTheme.FONT_SIZE + 1)
+		add_label(Loc.f(cfg.gallery_title, {"act": cfg.act_name(act)}), UiTheme.ACCENT, UiTheme.FONT_SIZE + 1)
 		add_label(_strip(in_act), Color("9fd8ff"))
 		for s: MemorySceneData in in_act:
 			if not listed.has(s):
@@ -217,7 +217,7 @@ func _show_card(id: String) -> void:
 		return
 	_card.text = shown_card_text(s)
 	if MemoryLibrary.is_detail_found(id):
-		_detail.text = cfg.detail_line % s.detail_text
+		_detail.text = Loc.f(cfg.detail_line, {"detail": Loc.t(s.detail_text)})
 	elif s.has_detail():
 		_detail.text = Loc.t(cfg.detail_unfound_text)
 	else:

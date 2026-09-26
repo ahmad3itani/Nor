@@ -40,6 +40,14 @@ msgstr "[Ŕúñ óvéŕ: ĥíť ťáķéñ~~~~~~~]"
 msgid "Run over: attack used"
 msgstr "[Ŕúñ óvéŕ: áťťáçķ úšéď~~~~~~~~]"
 
+#: cinematics/SkipGate.gd
+msgid "Hold [{key}] to skip"
+msgstr "[Ĥóĺď [{key}] ťó šķíp~~~~~~]"
+
+#: cinematics/SkipGate.gd
+msgid "[{key}] again to skip"
+msgstr "[[{key}] áğáíñ ťó šķíp~~~~~~]"
+
 #: data/accessibility/accessibility_config.tres
 msgid "The Core ran dry a few times."
 msgstr "[Ťĥé Çóŕé ŕáñ ďŕý á féŵ ťíméš.~~~~~~~~~~~]"
@@ -1345,8 +1353,8 @@ msgid "Another memory is waiting."
 msgstr "[Áñóťĥéŕ mémóŕý íš ŵáíťíñğ.~~~~~~~~~~]"
 
 #: data/memories/memory_config.tres
-msgid "Fragments remembered %d / %d"
-msgstr "[Fŕáğméñťš ŕémémbéŕéď %d / %d~~~~~~~~~]"
+msgid "Fragments remembered {seen} / {total}"
+msgstr "[Fŕáğméñťš ŕémémbéŕéď {seen} / {total}~~~~~~~~~]"
 
 #: data/memories/memory_config.tres
 msgid "Memories…"
@@ -1357,16 +1365,16 @@ msgid "No memories recovered."
 msgstr "[Ñó mémóŕíéš ŕéçóvéŕéď.~~~~~~~~]"
 
 #: data/memories/memory_config.tres
-msgid "MEMORIES  —  ACT %s"
-msgstr "[MÉMÓŔÍÉŠ  —  ÁÇŤ %s~~~~~~]"
+msgid "MEMORIES  —  ACT {act}"
+msgstr "[MÉMÓŔÍÉŠ  —  ÁÇŤ {act}~~~~~~]"
 
 #: data/memories/memory_config.tres
 msgid "— rest at an Anchor to remember"
 msgstr "[— ŕéšť áť áñ Áñçĥóŕ ťó ŕémémbéŕ~~~~~~~~~~~]"
 
 #: data/memories/memory_config.tres
-msgid "Detail: %s"
-msgstr "[Ďéťáíĺ: %s~~~~]"
+msgid "Detail: {detail}"
+msgstr "[Ďéťáíĺ: {detail}~~~~]"
 
 #: data/memories/memory_config.tres
 msgid "Something else was there."
@@ -1389,8 +1397,8 @@ msgid "Skip memory"
 msgstr "[Šķíp mémóŕý~~~~~~]"
 
 #: data/memories/memory_config.tres
-msgid "Subtitle size: %s"
-msgstr "[Šúbťíťĺé šížé: %s~~~~~~]"
+msgid "Subtitle size: {size}"
+msgstr "[Šúbťíťĺé šížé: {size}~~~~~~]"
 
 #: data/memories/memory_config.tres data/settings/pages/subtitles.tres
 msgid "Small"
@@ -2859,6 +2867,10 @@ msgstr "[Ťŕáíñíñğ ŕíğ~~~~~~]"
 #: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
 msgid "Use"
 msgstr "[Úšé~~]"
+
+#: ui/dialogue/DialogueBox.gd
+msgid "[{key}] choose"
+msgstr "[[{key}] çĥóóšé~~~~~]"
 
 #: ui/hud/AchievementToast.gd
 msgid "{n} ACHIEVEMENT UNLOCKED"

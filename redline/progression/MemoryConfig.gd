@@ -47,14 +47,14 @@ const LOC_EXEMPT := ["glyph_seen", "glyph_pending", "glyph_locked", "glyph_gap",
 ## HUD hint after a rest that left memories pending (max_per_rest cap).
 @export var more_waiting_hint: String = "Another memory is waiting."
 ## Journal main page.
-@export var remembered_line: String = "Fragments remembered %d / %d"
+@export var remembered_line: String = "Fragments remembered {seen} / {total}"
 @export var gallery_button: String = "Memories…"
 @export var empty_text: String = "No memories recovered."
 ## Journal gallery.
-@export var gallery_title: String = "MEMORIES  —  ACT %s"
+@export var gallery_title: String = "MEMORIES  —  ACT {act}"
 @export var act_names: PackedStringArray = PackedStringArray(["I", "II", "III", "IV", "V"])
 @export var pending_hint: String = "— rest at an Anchor to remember"
-@export var detail_line: String = "Detail: %s"
+@export var detail_line: String = "Detail: {detail}"
 @export var detail_unfound_text: String = "Something else was there."
 @export var back_label: String = "Back"
 ## Timeline strip glyphs: remembered, recovered but not remembered, not yet
@@ -67,7 +67,7 @@ const LOC_EXEMPT := ["glyph_seen", "glyph_pending", "glyph_locked", "glyph_gap",
 @export var pause_title: String = "PAUSED"
 @export var pause_resume: String = "Resume"
 @export var pause_skip: String = "Skip memory"
-@export var pause_size: String = "Subtitle size: %s"
+@export var pause_size: String = "Subtitle size: {size}"
 @export var size_names: PackedStringArray = PackedStringArray(["Small", "Medium", "Large"])
 
 

@@ -59,6 +59,7 @@ static var open_instance: DialogueBox = null
 
 func _ready() -> void:
 	layer = 70
+	EventBus.locale_changed.connect(_on_locale_changed)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_root = Control.new()
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -126,11 +127,12 @@ func _process(delta: float) -> void:
 		_root.queue_redraw()
 		return
 	var line := _current_line()
-	shown_chars = minf(shown_chars + CHARS_PER_SECOND * delta, line.text.length())
+	var n := shown_text().length()
+	shown_chars = minf(shown_chars + CHARS_PER_SECOND * delta, n)
 	# Ignore the press that opened the box.
 	if Engine.get_process_frames() != _opened_frame and _advance_pressed():
-		if shown_chars < line.text.length():
-			shown_chars = line.text.length()
+		if shown_chars < n:
+			shown_chars = n
 		else:
 			advance()
 	elif _auto_advance_due(line, delta):
@@ -142,12 +144,14 @@ func _process(delta: float) -> void:
 ## On, a fully typed line waits AccessibilityConfig's reading time (scaled
 ## like subtitles) and moves on. Never while choosing (choices always wait).
 func _auto_advance_due(line: DialogueLine, delta: float) -> bool:
-	if Settings.text_auto_advance != 1 or _choosing or shown_chars < line.text.length():
+	var n := Loc.t(line.text).length()
+	if Settings.text_auto_advance != 1 or _choosing or shown_chars < n:
 		_auto_wait = 0.0
 		return false
 	_auto_wait += delta
 	var cfg := Settings.config()
-	var wait := (cfg.auto_advance_seconds(line.text.length()) if cfg else 3.0) * SubtitleStyle.time_scale()
+	# D-164: readers need time for what they see (the displayed length).
+	var wait := (cfg.auto_advance_seconds(n) if cfg else 3.0) * SubtitleStyle.time_scale() * Loc.info().reading_scale
 	return _auto_wait >= wait
 
 
@@ -158,7 +162,7 @@ func _line_opened() -> void:
 	shown_chars = 0.0
 	_auto_wait = 0.0
 	if _known_in_new_game_plus():
-		shown_chars = float(_current_line().text.length())
+		shown_chars = float(shown_text().length())
 
 
 func _known_in_new_game_plus() -> bool:
@@ -208,7 +212,7 @@ func _enter_choice_mode() -> void:
 	_selected = 0
 	_choice_shown_ms = Time.get_ticks_msec()
 	_released.clear()
-	shown_chars = _current_line().text.length()
+	shown_chars = shown_text().length()
 
 
 ## True once a fresh confirm press may pick: the arm time has passed (real
@@ -277,11 +281,28 @@ func choose(i: int) -> void:
 ## (the same E / A the conversation used to advance).
 func choice_footer() -> String:
 	var glyph := InputGlyphs.label(&"jump") if InputGlyphs.using_pad else InputGlyphs.label(&"interact")
-	return "[%s] choose" % glyph
+	return Loc.f("[{key}] choose", {"key": glyph})
 
 
 func _current_line() -> DialogueLine:
 	return _lines[mini(line_index, _lines.size() - 1)]
+
+
+## The current line as the player reads it (D-162: the box keeps the source
+## DialogueLine and translates at display, so a locale switch re-renders it).
+func shown_text() -> String:
+	return Loc.t(_current_line().text) if dialogue != null else ""
+
+
+## A language switch mid-line: the same line re-renders from its source; the
+## typewriter keeps its place, clamped to the new length.
+func _on_locale_changed(_code: String) -> void:
+	if dialogue == null:
+		return
+	shown_chars = minf(shown_chars, shown_text().length())
+	if _choosing:
+		shown_chars = shown_text().length()
+	_root.queue_redraw()
 
 
 func _close() -> void:
@@ -318,7 +339,7 @@ func abort() -> void:
 func line_count() -> int:
 	if dialogue == null:
 		return 0
-	return SubtitleStyle.line_count(_current_line().text, _box_width() - SubtitleStyle.PAD_X * 2)
+	return SubtitleStyle.line_count(shown_text(), _box_width() - SubtitleStyle.PAD_X * 2)
 
 
 ## The box rect for the current line: sized from the full line (so it never
@@ -326,7 +347,7 @@ func line_count() -> int:
 ## adds one row per option under the text.
 func box_rect() -> Rect2:
 	var view := _root.size
-	var h := SubtitleStyle.box_height(_current_line().text, _box_width())
+	var h := SubtitleStyle.box_height(shown_text(), _box_width())
 	if _choosing:
 		h += dialogue.choices.size() * SubtitleStyle.line_spacing()
 	return Rect2(24, view.y - 16 - h, _box_width(), h)
@@ -350,17 +371,19 @@ func _draw_box() -> void:
 		_root.draw_rect(Rect2(box.position, Vector2(box.size.x, 1)), SubtitleStyle.ACCENT)
 	var line := _current_line()
 	if SubtitleStyle.show_label():
-		var speaker := line.speaker if line.speaker != "" else _npc_name
+		var speaker := Loc.upper(line.speaker if line.speaker != "" else _npc_name)
 		var lpos := box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.label_y())
 		if SubtitleStyle.outline():
-			_root.draw_string_outline(font, lpos, speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
-		_root.draw_string(font, lpos, speaker.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT)
-	var text := line.text.substr(0, int(shown_chars))
+			_root.draw_string_outline(font, lpos, speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
+		_root.draw_string(font, lpos, speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT)
+	var full := shown_text()
+	var text := full.substr(0, int(shown_chars))
 	SubtitleStyle.draw_text(_root, font, box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.text_y()), text, box.size.x - SubtitleStyle.PAD_X * 2, fs, Color.WHITE)
 	if _choosing:
 		_draw_choices(box, font, fs)
 		return
-	if shown_chars >= line.text.length() and int(Time.get_ticks_msec() / 400) % 2 == 0:
+	if shown_chars >= full.length() and int(Time.get_ticks_msec() / 400) % 2 == 0:
+		# l10n: ignore(key glyph in brackets)
 		_root.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))
 
 
@@ -372,7 +395,7 @@ func _draw_choices(box: Rect2, font: Font, fs: int) -> void:
 	for i in dialogue.choices.size():
 		var selected := i == _selected
 		var y := box.position.y + SubtitleStyle.text_y() + (rows + i) * spacing
-		var text := ("> " if selected else "  ") + dialogue.choices[i].label
+		var text := ("> " if selected else "  ") + Loc.t(dialogue.choices[i].label)
 		var pos := Vector2(box.position.x + SubtitleStyle.PAD_X, y)
 		if SubtitleStyle.outline():
 			_root.draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)

@@ -23,7 +23,7 @@ func rebuild() -> void:
 		return
 	var room := SceneRouter.current_room as Room
 	if room:
-		# Room names stay source in the room (D-161); translated here, at display.
+		# Room names stay source in the room (D-162); translated here, at display.
 		add_label(Loc.f("{district}  —  {room}", {"district": Loc.t(room.district_name), "room": Loc.t(room.room_name)}), UiTheme.MUTED)
 	add_button(Loc.t("Resume"), close_menu)
 	if Cinematics.can_skip():

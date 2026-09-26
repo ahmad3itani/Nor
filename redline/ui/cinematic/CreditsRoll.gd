@@ -54,7 +54,7 @@ func _draw() -> void:
 		if y < -row_height or y > view.y + row_height:
 			continue
 		var r: Dictionary = _rows[i]
-		var text: String = r["text"]
+		var text := Loc.t(str(r["text"]))
 		if text == "":
 			continue
 		var color := HEADING_COLOR if r["heading"] else Color.WHITE

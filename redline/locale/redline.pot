@@ -58,6 +58,18 @@ msgstr ""
 msgid "Run over: attack used"
 msgstr ""
 
+#. key: cinematics/SkipGate.gd::Loc.f
+#. placeholders: {key}
+#: cinematics/SkipGate.gd
+msgid "Hold [{key}] to skip"
+msgstr ""
+
+#. key: cinematics/SkipGate.gd::Loc.f
+#. placeholders: {key}
+#: cinematics/SkipGate.gd
+msgid "[{key}] again to skip"
+msgstr ""
+
 #. key: data/accessibility/accessibility_config.tres::rules[0].text
 #. AssistRule
 #. max 90 chars
@@ -2630,9 +2642,9 @@ msgstr ""
 
 #. key: data/memories/memory_config.tres::remembered_line
 #. MemoryConfig
-#. max 48 chars · placeholders: %d
+#. max 48 chars · placeholders: {seen} {total}
 #: data/memories/memory_config.tres
-msgid "Fragments remembered %d / %d"
+msgid "Fragments remembered {seen} / {total}"
 msgstr ""
 
 #. key: data/memories/memory_config.tres::gallery_button
@@ -2651,9 +2663,9 @@ msgstr ""
 
 #. key: data/memories/memory_config.tres::gallery_title
 #. MemoryConfig
-#. max 32 chars · placeholders: %s
+#. max 32 chars · placeholders: {act}
 #: data/memories/memory_config.tres
-msgid "MEMORIES  —  ACT %s"
+msgid "MEMORIES  —  ACT {act}"
 msgstr ""
 
 #. key: data/memories/memory_config.tres::pending_hint
@@ -2665,9 +2677,9 @@ msgstr ""
 
 #. key: data/memories/memory_config.tres::detail_line
 #. MemoryConfig
-#. max 60 chars · placeholders: %s
+#. max 60 chars · placeholders: {detail}
 #: data/memories/memory_config.tres
-msgid "Detail: %s"
+msgid "Detail: {detail}"
 msgstr ""
 
 #. key: data/memories/memory_config.tres::detail_unfound_text
@@ -2716,9 +2728,9 @@ msgstr ""
 
 #. key: data/memories/memory_config.tres::pause_size
 #. MemoryConfig
-#. max 32 chars · placeholders: %s
+#. max 32 chars · placeholders: {size}
 #: data/memories/memory_config.tres
-msgid "Subtitle size: %s"
+msgid "Subtitle size: {size}"
 msgstr ""
 
 #. key: data/memories/memory_config.tres::size_names[0]
@@ -5349,6 +5361,12 @@ msgstr ""
 #. max 16 chars
 #: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
 msgid "Use"
+msgstr ""
+
+#. key: ui/dialogue/DialogueBox.gd::Loc.f
+#. placeholders: {key}
+#: ui/dialogue/DialogueBox.gd
+msgid "[{key}] choose"
 msgstr ""
 
 #. key: ui/hud/AchievementToast.gd::Loc.tn
