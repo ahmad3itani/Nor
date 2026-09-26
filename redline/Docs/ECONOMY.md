@@ -1,4 +1,4 @@
-# REDLINE Economy (M5, audited in M7)
+# REDLINE Economy (M5, audited in M7, NG+ in M9)
 
 Bible §12: "Scrap (common), Core Shards (major upgrades), Memory Fragments (story/endings), Mastery Tokens (challenges). **Avoid currency bloat.**" The slice uses Scrap, Core Shards and Memory Fragments. Mastery Tokens wait for challenges (M9).
 
@@ -67,6 +67,27 @@ The audit's full output after D5b:
 3. After that, raise sinks (new stock in a later district) or flag it in DECISIONS rather than cut more enemies.
 
 If coverage ever passes 85%, halve the Undercity stashes (180 → 90) first, then lower the Collector's drop to 60.
+
+## NG+ and remix (M9)
+
+NG+ (D-153) keeps weapons, Circuits, upgrades, banked Scrap and found Core Shards, and starts the world over. `EconomyAudit.compute(true)` is the NG+ audit: the remix applied to every room (`RemixLibrary.apply`), plain stashes counted as taken, secret stashes refilled at `NgPlusConfig.secret_scrap_scale` = **0.25** (`data/ngplus/ng_plus.tres`, R09.2).
+
+| Source | First run `compute(false)` | NG+ with remix `compute(true)` |
+|---|---|---|
+| Enemies, first clear | 332 | 332 |
+| Bosses | 230 | 230 |
+| Quests | 250 | 250 |
+| Wall stashes | 400 | 400 |
+| Scrap stashes | 560 | 122 (secret stashes × 0.25) |
+| **One-time** | **1,772** | **1,334** |
+| One full re-clear | 332 | 332 |
+| Stock coverage (sinks 2,230) | 79% | 60% |
+
+By district in NG+: Undercity 227 one-time (26 in stashes), Lowlight 857 (96 in stashes), the Relay 0.
+
+**The remix Scrap rule** (T09 R09.11): remix EnemyData files have `scrap_drop = 0`, but a SET or SWAP replacement spawns with the replaced enemy's drop, and only ADDed enemies drop nothing. So remix on pays exactly what remix off pays (the enemy rows above are identical), and the K-49 re-clear headroom is untouched. `RemixRules` RM-1..RM-8 lint the ops; `test_economy` checks both audits. Carried Scrap and kits mean an NG+ player can already buy most stock; the refill only keeps secrets worth finding.
+
+Challenges, the Deep Rig and the Pulse Pit pay no Scrap and grant nothing (their enemies are Scrap-free `*_null` / kit states in a sandbox, D-147); medals and records are the reward (D-148). Mastery Tokens (§12) are still not built.
 
 ## Other currencies
 - **Core Shards** (5): each adds +1 Circuit capacity (4 → 9). Never sold. Three are Dash revisits (`cs_alley_dash`, `cs_smuggler_dash`, `cs_uc_tunnel_dash`), so capacity before Krail is at most 6. See `CIRCUITS.md`.

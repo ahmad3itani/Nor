@@ -1,4 +1,4 @@
-# REDLINE Playtest Kit (M4, updated for M7 and M8)
+# REDLINE Playtest Kit (M4, updated for M7, M8 and M9)
 
 This is how to run the bible §44 vertical-slice test with real people and turn their sessions into a decision. Bible §36 M4 says: "Playtest and measure deaths, completion time, confusion, favorite mechanics, control complaints and performance. **Change design before scaling.**"
 
@@ -17,7 +17,11 @@ The game records and summarises most of this by itself. What it can't do is find
 
 ## 2. Build the game for testers
 - **Easiest:** testers run it from the Godot 4.3 editor (open `redline/project.godot`, press F5). That's fine for in-person sessions.
-- **Exported build:** in the Godot editor, go to *Project → Export*, add a preset (Windows Desktop, Linux or macOS), install the 4.3 export templates when prompted, and export. `export_presets.cfg` is gitignored on purpose because it can hold signing credentials.
+- **Exported build (M9, D-166):** `export_presets.cfg` is checked in (8 presets: Windows, Linux, macOS universal and Web nothreads, each full and demo). Install the Godot 4.3.stable export templates (`~/.local/share/godot/export_templates/4.3.stable`), then from `redline/`:
+  - `python3 -B tools/build/build.py --check`: the preset invariants and the no-network check on the tools (needs no Godot).
+  - `python3 -B tools/build/build.py --godot /path/to/godot --targets linux,windows,macos,web --kinds full --gzip-web`: release builds (dev console off, D-059) as zips with `HOW_TO_PLAY.txt` in `build/`, plus `build/manifest.json` with sizes. Add `--kinds full,demo` for the Undercity demo (D-165), `--smoke` to run the Linux builds headless with `--print-build-info` (data scans, locales, ghosts, user dir).
+  - **Credentials never go in `export_presets.cfg`.** Signing keys and passwords belong in `.godot/export_credentials.cfg` (never committed); ExportRules EX-5 and `build.py --check` refuse credential-like options. Builds are unsigned (Windows) or ad-hoc (macOS): testers click "Run anyway" / right-click → Open (the HOW_TO_PLAY text says so).
+  - Web: serve the unzipped folder over HTTP (see `SERVE_NOTES.txt` in the zip); Esc may leave fullscreen, so P also pauses and Backspace backs out of menus.
 - Check that the title screen shows **"Playtest recording ON"** with the save folder.
 
 ## 3. Settings before each session

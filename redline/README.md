@@ -4,7 +4,7 @@ A high-speed 2D pixel-art action platformer set in the megacity of Veyra, built 
 **Movement is life. Violence buys time. Curiosity reveals the truth.**
 
 - Design source of truth: [`Docs/DESIGN_BIBLE.md`](Docs/DESIGN_BIBLE.md)
-- Current milestone: **M8 Narrative Integration** (systems + Act I, D-105; [`Docs/M8_NARRATIVE_REPORT.md`](Docs/M8_NARRATIVE_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md) "Story content"): skippable scripted sequences (the opening, boss intros, the Relay arrival, the Act I close), playable memory vignettes, NPC arcs, world-state changes and the endings framework (the four endings play only in the dev Ending theatre until Act V exists). Before that: **M7 District Production, batch 1** ([`Docs/M7_DISTRICT_REPORT.md`](Docs/M7_DISTRICT_REPORT.md), districts: [`DISTRICTS`](Docs/DISTRICTS.md)): Act I, the new **00 Undercity** opening and the completed **01 Lowlight**. Before that: **M6 Content Pipeline** ([`Docs/M6_CONTENT_PIPELINE_REPORT.md`](Docs/M6_CONTENT_PIPELINE_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md)): validator, room templates, enemy modules, art pipeline, dev console. Before that: **M5 World Framework** ([`Docs/M5_WORLD_FRAMEWORK_REPORT.md`](Docs/M5_WORLD_FRAMEWORK_REPORT.md), [`ECONOMY`](Docs/ECONOMY.md)): map, transit, Nix, NPC/world state, economy audit. **M4 Validation:** the playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
+- Current milestone: **M9 Endgame / Steam / Accessibility** at Act I scope (D-140; [`Docs/M9_ENDGAME_REPORT.md`](Docs/M9_ENDGAME_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md) "Endgame content"): 30 achievements, 16 challenges with local boards, personal-best and rig ghosts and a speedrun timer, NG+ with an optional remix, the Deep Rig strata, catalog-driven settings with full rebinding and the §24 accessibility options, localization readiness (PO catalog, en_XA pseudo-locale), an Undercity demo and checked-in export presets with `tools/build/build.py`. Platform services have a local backend only: no Steam SDK, no networking ([`PLATFORM_SERVICES`](Docs/PLATFORM_SERVICES.md), [`LOCALIZATION`](Docs/LOCALIZATION.md)). Before that: **M8 Narrative Integration** (systems + Act I, D-105; [`Docs/M8_NARRATIVE_REPORT.md`](Docs/M8_NARRATIVE_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md) "Story content"): skippable scripted sequences (the opening, boss intros, the Relay arrival, the Act I close), playable memory vignettes, NPC arcs, world-state changes and the endings framework (the four endings play only in the dev Ending theatre until Act V exists). Before that: **M7 District Production, batch 1** ([`Docs/M7_DISTRICT_REPORT.md`](Docs/M7_DISTRICT_REPORT.md), districts: [`DISTRICTS`](Docs/DISTRICTS.md)): Act I, the new **00 Undercity** opening and the completed **01 Lowlight**. Before that: **M6 Content Pipeline** ([`Docs/M6_CONTENT_PIPELINE_REPORT.md`](Docs/M6_CONTENT_PIPELINE_REPORT.md), how-to: [`CONTENT_PIPELINE`](Docs/CONTENT_PIPELINE.md)): validator, room templates, enemy modules, art pipeline, dev console. Before that: **M5 World Framework** ([`Docs/M5_WORLD_FRAMEWORK_REPORT.md`](Docs/M5_WORLD_FRAMEWORK_REPORT.md), [`ECONOMY`](Docs/ECONOMY.md)): map, transit, Nix, NPC/world state, economy audit. **M4 Validation:** the playtest tooling is built; the playtest itself needs external testers: see [`Docs/PLAYTEST_KIT.md`](Docs/PLAYTEST_KIT.md) and [`Docs/M4_VALIDATION_REPORT.md`](Docs/M4_VALIDATION_REPORT.md). The slice being tested: [`Docs/M3_VERTICAL_SLICE_REPORT.md`](Docs/M3_VERTICAL_SLICE_REPORT.md), [`Docs/M2_COMBAT_REPORT.md`](Docs/M2_COMBAT_REPORT.md) and [`Docs/M1_MOVEMENT_REPORT.md`](Docs/M1_MOVEMENT_REPORT.md).
 - **All art and audio are placeholders** (D-026). Final assets must follow [`Docs/ART_BIBLE.md`](Docs/ART_BIBLE.md).
 - Project logs: [`DECISIONS`](Docs/DECISIONS.md) · [`CHANGELOG`](Docs/CHANGELOG.md) · [`TODO`](Docs/TODO.md) · [`KNOWN_ISSUES`](Docs/KNOWN_ISSUES.md) · [`CIRCUITS`](Docs/CIRCUITS.md)
 
@@ -25,18 +25,27 @@ godot --headless --fixed-fps 60 res://tests/TestRunner.tscn  # exit code 0 = all
 | Scene | Purpose |
 |---|---|
 | `devtools/MovementProbe.tscn` (headless) | Measures jump, slide, dodge and dash distances for every tuning preset |
-| `devtools/CaptureTour.tscn` (needs a display, e.g. `xvfb-run`) | Scripted screenshot tour: `-- --out=/abs/dir [--tour=movement\|combat\|slice\|undercity\|ui\|story]` |
+| `devtools/CaptureTour.tscn` (needs a display, e.g. `xvfb-run`) | Scripted screenshot tour: `-- --out=/abs/dir [--tour=movement\|combat\|slice\|undercity\|ui\|story\|endgame] [--only=a,c,n,s,l,d,v]` |
+| `devtools/GhostBake.tscn` (headless) | Bakes and checks the challenges' rig ghosts: `-- --challenge=<id>\|all [--check]` |
+| `devtools/l10n/ExtractStrings.tscn` (headless) | String catalog: `-- --write` / `--check` / `--merge` / `--stats` |
+| `tools/build/build.py` (Python 3) | Release builds from `export_presets.cfg`: `--check`, `--targets`, `--kinds full,demo`, `--gzip-web`, `--smoke` |
 | `devtools/PerfProbe.tscn` (headless) | CPU cost per frame under fight load: `-- [--room=res://… --at=x:y,x:y]` (Combat Lab by default) |
 | `devtools/RouteBot.gd` (used by `test_slice_routes`, `test_undercity_routes`, `test_lowlight_m7_routes`) | Plays a room with scripted input to prove its route is traversable |
 | `devtools/content/ValidateContent.tscn` (headless) | Content + art validation (M8 adds the Story report: sequences, arcs, endings, memories, knowledge lint); exit code 1 on errors |
 | `devtools/StoryTestKit.gd` (used by the M8 story tests and `--tour=story`) | Story helpers: flag sandbox, story-state presets, the Act I max state |
-| ` (backquote) in game | Dev console: teleport, spawn, boss restart, unlock-all, inspector, hitboxes, perf graph; **Story…** pages (sequence, memory and ending theatres, story-state presets, arcs, sequence inspector) |
+| ` (backquote) in game | Dev console: teleport, spawn, boss restart, unlock-all, inspector, hitboxes, perf graph; **Story…** pages (sequence, memory and ending theatres, story-state presets, arcs, sequence inspector); **Endgame & build…** (achievements, challenges, the Null, NG+, accessibility, locale, demo) |
 | `tools/roomgen/` (Python 3) | Room generators: `lowlight.py` (pre-M7 rooms), one `uc_*.py` / `ll_*.py` per M7 room, `fixtures_*.py` for test fixtures (`--check` for drift) |
 | `devtools/PlaytestReport.tscn` (headless) | Builds the playtest report + heatmaps: `-- --in=<sessions dir> --out=<report dir>` |
 
 ## Layout
 ```
-autoload/    EventBus, Settings, Game, SaveManager, AudioManager, SceneRouter, InputGlyphs, MusicDirector, Cinematics, Playtest
+autoload/    EventBus, Settings, Game, SaveManager, AudioManager, SceneRouter, InputGlyphs, MusicDirector, Cinematics, Platform, Challenges, Playtest
+platform/    platform services: backends, local store, achievements, stats, presence (M9)
+challenges/  challenge data, clocks, records, ghosts, rank ladder (M9)
+accessibility/ assists, palettes, colour vision, haptics, assist advisor (M9)
+input/       rebinding and glyph families (M9)
+l10n/        Loc runtime, PO tools, pseudo-locale (M9); locale/ holds the catalogs
+release/     BuildInfo, demo gate and barriers, build probe (M9)
 combat/      AttackData, ProjectileData, HitInfo, Hurtbox, Projectile, queries, layers
 weapons/     WeaponData
 circuits/    CircuitData (declarative stat modifiers)
@@ -59,6 +68,6 @@ assets/      exported art (Art Bible §9; empty until final art)
 tools/       roomgen (Python 3 room generator, dev only)
 tests/       TestRunner + unit/test_*.gd + fixtures/
 devtools/    lab controllers, movement probe, perf probe, capture tour, route bot, content/ validators, dev actions
-Docs/        bible, Art Bible, M1–M8 reports, districts, content pipeline, playtest kit, Circuits, Economy, decision/changelog/todo/issue logs
+Docs/        bible, Art Bible, M1–M9 reports, districts, content pipeline, playtest kit, Circuits, Economy, decision/changelog/todo/issue logs
 ```
 Folders from the bible's architecture that later milestones will fill are kept with `.gitkeep`.
