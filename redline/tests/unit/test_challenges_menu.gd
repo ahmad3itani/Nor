@@ -130,7 +130,9 @@ func test_list_locked_rows_focusable_with_hint() -> void:
 	row.grab_focus()
 	await get_tree().process_frame
 	check(row.has_focus(), "a pad user can focus the locked row to read it")
-	check(_has(_texts(m), "Profile 1 · medals 0 / 40"), "header counts 10 challenges × 4 medals: %s" % [_texts(m)])
+	# Ten Act I challenges plus the two Pulse Pit challenges (T10); the Deep
+	# Rig stays out of the tally while null_open is unset.
+	check(_has(_texts(m), "Profile 1 · medals 0 / 48"), "header counts 12 challenges × 4 medals: %s" % [_texts(m)])
 
 
 func test_locked_rows_masked_until_revealed() -> void:
@@ -138,7 +140,7 @@ func test_locked_rows_masked_until_revealed() -> void:
 	var texts := _texts(m)
 	check(not _has(texts, "Collector") and not _has(texts, "Krail") and not _has(texts, "Rainline"),
 		"no boss or set piece is named before its reveal: %s" % [texts])
-	check(Array(texts).count("???") == 10, "every locked, unrevealed row reads ??? (%s)" % [texts])
+	check(Array(texts).count("???") == 12, "every locked, unrevealed row reads ??? (%s)" % [texts])
 	check(_has(texts, "Boss Rematch") and _has(texts, "Time Trial") and _has(texts, "Nerve"), "the group names still show")
 	Game.set_flag("collector_drone_intro_seen")
 	m.rebuild()
@@ -288,7 +290,9 @@ func _terminal() -> ChallengeTerminal:
 
 
 func test_terminal_dark_until_unlocked() -> void:
-	Game.set_flag("act1_complete")
+	# The Pulse Pit (T10) unlocks on act1_complete itself, so the dark rig is
+	# the NG+ case: the rig is open on ng_cycle, nothing is unlocked yet.
+	Game.set_flag("ng_cycle", 1)
 	var room := await h.goto(RELAY, &"challenges")
 	var t := _terminal()
 	check(t != null, "the Relay has the training rig")
