@@ -115,3 +115,117 @@ func test_note_marker_secret_guard() -> void:
 	var v := ContentValidator.new().check_room("res://tests/fixtures/scaffold_m8_note_bad.tscn", false)
 	check(v.errors.size() == 1 and v.errors[0].begins_with("room scaffold_m8_note_bad: MapMarker1: NOTE 'Something here' is within 96 px"),
 		"expected exactly one NOTE-near-secret error: %s" % v.errors)
+
+
+# --- M8 T10: cross-area story rules, knowledge lint, the Story report ----------
+
+## The full shipped pass, run once for the tests that read it.
+static var _shipped: ContentValidator = null
+
+
+func _shipped_run() -> ContentValidator:
+	if _shipped == null:
+		_shipped = ContentValidator.new().run()
+	return _shipped
+
+
+func _has(list: PackedStringArray, needles: Array) -> bool:
+	return Array(list).any(func(e: String) -> bool: return needles.all(func(n: String) -> bool: return e.contains(n)))
+
+
+func _knowledge(list: PackedStringArray) -> Array:
+	return Array(list).filter(func(w: String) -> bool: return w.begins_with("knowledge lint"))
+
+
+func _line(text: String) -> DialogueLine:
+	var l := DialogueLine.new()
+	l.text = text
+	return l
+
+
+func test_future_flag_rules() -> void:
+	var v := ContentValidator.new()
+	v.check_resource(FutureFlagSet.shared(), FutureFlagSet.PATH)
+	# A room switch reading a future flag (Act I content must never read one).
+	var room := (load("res://tests/fixtures/WorldA.tscn") as PackedScene).instantiate() as Room
+	var sw := WorldStateSwitch.new()
+	sw.name = "FutureSwitch"
+	sw.visible_when = "flag:act5_finale_reached"
+	room.add_child(sw)
+	v._check_world_room(room, "res://tests/fixtures/WorldA.tscn", {})
+	room.free()
+	# Real content producing a future flag: found through `producers`, although
+	# `produced` keeps the first producer (future_flags.tres).
+	var d := DialogueData.new()
+	d.id = "test_future_setter"
+	d.lines = [_line("Choose.")] as Array[DialogueLine]
+	d.set_flags = PackedStringArray(["finale_choice_sever"])
+	v.check_resource(d, "res://data/test/x.tres")
+	check(v.produced.get("finale_choice_sever") == "future_flags.tres", "produced keeps the declaration first: %s" % v.produced.get("finale_choice_sever"))
+	v.validate_story()
+	check(_has(v.errors, ["act5_finale_reached", "WorldA.tscn", "read by"]), "a room reading a future flag is an error: %s" % v.errors)
+	check(_has(v.errors, ["finale_choice_sever", "res://data/test/x.tres", "remove it from future_flags.tres"]),
+		"a second producer of a future flag is an error: %s" % v.errors)
+	# Shipped content: clean, and one summary warning.
+	var shipped := _shipped_run()
+	check(shipped.errors.is_empty(), "shipped content has errors: %s" % shipped.errors)
+	var summary := Array(shipped.warnings).filter(func(w: String) -> bool: return w.contains("future flags declared"))
+	check(summary.size() == 1 and String(summary[0]).begins_with("%d future flags declared (Acts II-V/M9)" % FutureFlagSet.shared().flags().size()),
+		"exactly one future-flag summary warning: %s" % [summary])
+
+
+func test_memory_cross_checks() -> void:
+	var v := ContentValidator.new()
+	var lonely := MemoryFragmentData.new()
+	lonely.id = "mf_test_lonely"
+	lonely.title = "Lonely"
+	lonely.text = "Nobody remembers this one."
+	v.check_resource(lonely, "res://data/lore/mf_test_lonely.tres")
+	for i in 2:
+		var sc := MemorySceneData.new()
+		sc.id = "mem_test_slot_%d" % i
+		sc.source = MemorySceneData.Source.SURFACED
+		sc.title = "Slot %d" % i
+		sc.act = 1
+		sc.timeline_slot = 9900
+		v.check_resource(sc, "res://data/memories/mem_test_slot_%d.tres" % i)
+	v.validate_story()
+	check(_has(v.errors, ["mf_test_lonely", "0 memory scenes"]), "a fragment without a scene is an error: %s" % v.errors)
+	check(_has(v.errors, ["timeline_slot 9900 is already used by mem_test_slot_0"]), "a duplicate timeline_slot is an error: %s" % v.errors)
+	# A mem_seen_ read for a scene that does not exist.
+	v._consume("mem_seen_nowhere", "res://data/test/y.tres")
+	v.validate_story()
+	check(_has(v.errors, ["mem_seen_nowhere", "no memory scene"]), "mem_seen_<id> must name a scene: %s" % v.errors)
+
+
+func test_knowledge_lint_warns() -> void:
+	var v := ContentValidator.new()
+	var d := DialogueData.new()
+	d.id = "test_lint"
+	d.lines = [_line("The Null is down there."), _line("Maybe the Pulse is listening."), _line("Old research notes."),
+		_line("Wake up, Rook.")] as Array[DialogueLine]
+	v.check_resource(d, "res://data/npcs/test_lint.tres")
+	var exempt := d.duplicate(true) as DialogueData
+	v.check_resource(exempt, "res://data/endings/test_lint.tres")
+	v.validate_story()
+	var found := _knowledge(v.warnings)
+	for term in ["The Null", "Pulse is", "research", "Rook"]:
+		check(found.any(func(w: String) -> bool: return w.contains("test_lint.tres") and w.contains("'%s'" % term)), "'%s' warns: %s" % [term, found])
+	check(found.size() == 4, "one warning per hit, none from data/endings: %s" % [found])
+	check(not _has(v.errors, ["knowledge"]), "the knowledge lint never errors")
+	# Shipped: exactly one, orr.tres 'Rook' (D-109 open; update this test when
+	# D-109 decides who names him).
+	var shipped := _knowledge(_shipped_run().warnings)
+	check(shipped.size() == 1 and String(shipped[0]).contains("orr.tres") and String(shipped[0]).contains("'Rook'"),
+		"shipped knowledge warnings must be exactly orr.tres 'Rook': %s" % [shipped])
+
+
+func test_story_report_section() -> void:
+	var md := _shipped_run().report()
+	check(md.contains("## Story"), "report has a Story section")
+	for section in ["### Sequences", "### Memories", "### Arcs", "### Endings", "### Act I card", "### Future flags"]:
+		check(md.contains(section), "Story section has %s" % section)
+	for id in ContentValidator.ENDING_IDS:
+		var rows := Array(md.split("\n")).filter(func(l: String) -> bool: return l.begins_with("| %s |" % id) and l.contains("reachable now: no"))
+		check(rows.size() == 1, "ending %s has one 'reachable now: no' row" % id)
+	check(md.contains("flag:finale_choice_sever (Act 5)"), "future flags tagged with their act")
