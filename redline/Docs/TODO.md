@@ -8,7 +8,7 @@
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
 
 ## M9 (endgame / accessibility): humans
-- [ ] Confirm or overrule the M9 flags: D-140 (Act I scope, before §44), D-142 (one profile, global settings), D-144, D-146, D-148 (challenge set, no weapon mastery), D-149 (neutral tags, medal ladder), D-150 (rig ghosts, medal ratios), D-153 (NG+ after Act I, no player restore of the archive), D-154 (the Deep Rig after Act I, 'Deep Rig' name, pars), D-155, D-156, D-157 (rumble on by default, settings global), D-158 (ui_* fixed), D-160, D-161, D-162 (source-text msgids), D-163 (memory mark stand-ins •/◊ vs D-114/D-120), D-164, D-165 (Undercity demo, CTA copy), D-166 (release settings, bundle ids), D-168, D-169 (the training rig until Bramm).
+- [ ] Confirm or overrule the M9 flags: D-140 (Act I scope, before §44), D-141 (no storefront adapter built; Steam stays a documented slot), D-142 (one profile, global settings), D-144, D-146 (incl. style_s / style_redline without reachability evidence, K-M9-S1), D-148 (challenge set, no weapon mastery), D-149 (neutral tags, medal ladder), D-150 (rig ghosts, medal ratios), D-153 (NG+ after Act I, no player restore of the archive), D-154 (the Deep Rig after Act I, 'Deep Rig' name, pars), D-155, D-156, D-157 (rumble on by default, settings global), D-158 (ui_* fixed), D-160, D-161, D-162 (source-text msgids), D-163 (memory mark stand-ins •/◊ vs D-114/D-120), D-164, D-165 (Undercity demo, CTA copy), D-166 (release settings, bundle ids), D-168, D-169 (the training rig until Bramm).
 - [ ] Approve or replace the demo CTA copy and the bundle ids before any public build (D-165, D-166).
 - [ ] Manual checks the headless gate cannot do: a Web build (stem render stall K-M9-W1, sample audio sliders, IndexedDB saves), Windows and macOS exports (unsigned: SmartScreen / Gatekeeper), real pads for rumble and PlayStation/Nintendo names.
 - [ ] Look at the endgame tour frames (`M9_ENDGAME_REPORT.md`) and the pseudo-locale layout.
@@ -19,15 +19,17 @@
 - [ ] Player-facing 'Restore cleared save (cycle N)…' title row, if §44 players ask (D-153, R09.15).
 - [ ] Retune medals, Deep Rig pars and remix values in data after §44 (D-150, D-154).
 - [ ] A Krail rig ghost once a bot (or a human run) beats him; a Security Station ghost (D-150).
-- [ ] Strip non-demo content from the demo pck (a demo-aware map index + `exclude_filter`, K-M9-D1).
+- [ ] Strip non-demo content from the demo pck (a demo-aware map index + `exclude_filter`, K-M9-5).
 - [ ] Web: render music stems one layer per frame on nothreads builds if the stall is confirmed (K-M9-W1).
 - [ ] `MusicDirector.gd:119` compares a display string (`district_name`); compare ids (L-8, K-M9-L2).
 - [ ] Settings should load its redirected `_path` itself instead of BuildInfo's post-boot reload (K-M9-D2).
 - [ ] `TitleMenu.open_menu`/`close_menu` should call `_apply_look()`: after UI size or high contrast changes on the title's quick page, the title keeps its old theme (K-M9-U1).
 - [ ] `test_group_notice_silent_on_load` should load `tests/fixtures/save_v3_slice.json` + act1_complete instead of a hand-made save (T04 review).
 - [ ] Crouch/slide hold-toggle and a dark-on-light high-contrast variant (D-157, D-161) after §44 / final art.
-- [ ] Record style-rank reachability evidence for style_s / style_redline (`AchievementRules.STYLE_EVIDENCE`, PL-6 warning).
-- [ ] Some suites leave files or empty folders in their own `user://test_*` temp dirs (`test_challenge_rules`, `test_l10n_edge`, `test_world_framework`; reported by `test_zz_user_dir_clean`); clean them in their teardowns. Move the older capture tours into `TourSandbox` after re-taking the pixel baseline (K-M9-T4).
+- [ ] Record style-rank reachability evidence for style_s / style_redline (`AchievementRules.STYLE_EVIDENCE`, PL-6 warning), then list them in `data/release/demo.tres` again (DM-4, K-M9-S1).
+- [ ] Move fast reset, ghost-mode cycling and the unlock/group-open notices out of `autoload/Challenges.gd` into `challenges/` helpers (D-147, §37.4).
+- [x] Suites clean their own `user://test_*` temp dirs, and `test_zz_user_dir_clean` fails on leftovers (M9 audit repair).
+- [ ] Move the older capture tours into `TourSandbox` after re-taking the pixel baseline (K-M9-T4).
 
 ## M8 (narrative integration): humans
 - [ ] Confirm or overrule the M8 flags: D-105 (scope, and M8 before §44), D-108 (hold-to-skip; repeat intros never lock), D-109 (Rook's name), D-110 (six settings pulled forward from M9), D-113 (the surfaced first-rest memory), D-114 (memory timeline order), D-115 (memory blue / red on redacted shapes), D-118 (Rook's choice labels; the choice sits after the card), D-120 (pending tick), D-129 (ending thresholds and Act I links), D-130 (Redline needs The Null), D-131 (the Act I boundary and card), D-134 (arc canon), D-135 (pacing), D-136 (no pause menu over dialogue), D-137 (placeholder ending text), D-138 (gallery in the journal, not Sera), D-139 (the story needs the Undercity campaign start).

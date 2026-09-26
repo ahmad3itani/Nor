@@ -12,7 +12,7 @@ A high-speed 2D pixel-art action platformer set in the megacity of Veyra, built 
 - Godot **4.3** or newer, the standard build (no .NET needed). No third-party addons.
 
 ## Run
-Open `project.godot` in the Godot editor and press **F5**. The game boots to the title screen: **New Game** starts the Act I campaign unarmed in the Undercity (Wake), then the Relay and Lowlight up to Warden Krail. Debug builds also list **Slice (Relay start)**, the pre-M7 slice with the full kit. The Movement and Combat Labs are listed there too (**F12** cycles the labs). Controls are in the three reports, and **F1** shows the debug overlay.
+Open `project.godot` in the Godot editor and press **F5**. The game boots to the title screen: **New Game** starts the Act I campaign unarmed in the Undercity (Wake), then the Relay and Lowlight up to Warden Krail. Debug builds also have a **Labs & dev starts…** page on the title: **Slice (Relay start)**, the pre-M7 slice with the full kit, and the Movement and Combat Labs (**F12** cycles the labs). Controls are in the three reports, and **F1** shows the debug overlay.
 
 ## Test
 ```bash
@@ -34,7 +34,7 @@ godot --headless --fixed-fps 60 res://tests/TestRunner.tscn  # exit code 0 = all
 | `devtools/content/ValidateContent.tscn` (headless) | Content + art validation (M8 adds the Story report: sequences, arcs, endings, memories, knowledge lint); exit code 1 on errors |
 | `devtools/StoryTestKit.gd` (used by the M8 story tests and `--tour=story`) | Story helpers: flag sandbox, story-state presets, the Act I max state |
 | ` (backquote) in game | Dev console: teleport, spawn, boss restart, unlock-all, inspector, hitboxes, perf graph; **Story…** pages (sequence, memory and ending theatres, story-state presets, arcs, sequence inspector); **Endgame & build…** (achievements, challenges, the Null, NG+, accessibility, locale, demo) |
-| `tools/roomgen/` (Python 3) | Room generators: `lowlight.py` (pre-M7 rooms), one `uc_*.py` / `ll_*.py` per M7 room, `fixtures_*.py` for test fixtures (`--check` for drift) |
+| `tools/roomgen/` (Python 3) | Room generators: `lowlight.py` (pre-M7 rooms), one `uc_*.py` / `ll_*.py` per M7 room, `fixtures_*.py` for test fixtures, the M9 challenge rooms `null_*.py` / `ch_*.py` and the NG+ remix data `remix_act1.py` (`--check` for drift) |
 | `devtools/PlaytestReport.tscn` (headless) | Builds the playtest report + heatmaps: `-- --in=<sessions dir> --out=<report dir>` |
 
 ## Layout

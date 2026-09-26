@@ -30,8 +30,9 @@ Bible §36 M9: "achievements, leaderboards/ghosts where viable, NG+, The Null, s
 
 ### Tooling
 - Validator rule modules (PL, CH, NU, RM, SE, AC, L, DM, EX) and **CrossRules X-1..X-10** (id namespaces, menu parity, EventBus→Playtest coverage, network ban, raw scans, SCAN_DIRS coverage, flag readers, never-shame words, knowledge lint over M9 text, code flags).
-- Dev console **Endgame & build** hub; `GhostBake --check`; **`CaptureTour --tour=endgame`** (52 shots in a `TourSandbox`, exits 1 on a missing shot); PlaytestAnalyzer endgame lines; cross-area tests (`test_m9_cross`, `test_zz_user_dir_clean`).
+- Dev console **Endgame & build** hub; `GhostBake --check`; **`CaptureTour --tour=endgame`** (51 shots in a `TourSandbox`, exits 1 on a missing shot); PlaytestAnalyzer endgame lines; cross-area tests (`test_m9_cross`, `test_zz_user_dir_clean`).
 - Plan repair rounds 3–5 (verified at c2731ff and b84f677): 70, 69 and 46 review findings resolved; see the plan's repair_log.
+- **M9 audit repair:** a redirected demo (Web, debug `--demo`) applies its saved bindings and language after a reload (they were loaded but never applied); X-4 also scans scenes/resources, WebRTC/DTLS, shelling out and `ClassDB.instantiate`; the Journal header drops its death count (§24); the NG+ confirm step opens on Back; HUD ammo pips start after a long (translated) weapon name; the dev Achievements page fits 270 px in any store state; CaptureTour no longer writes the developer's platform store; suites clean their `user://test_*` dirs and a clean user dir gets no `settings.cfg` from a test run; style_s / style_redline left the demo list until their ranks are proven reachable (DM-4, K-M9-S1); D-141 is flagged.
 
 ## 0.8.0-m8: Narrative Integration (systems + Act I)
 

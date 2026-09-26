@@ -86,7 +86,7 @@ Not districts: sandboxed challenge rooms in `world/rooms/challenge/` (off the wo
 - **Mechanic thesis:** Act I's movement and Grid grammar at tempo: pulsed scanner beams, dash gaps over shallow spike beds, and breaker clocks that only a Dash in the line makes standing.
 - **Visual thesis:** near-black, white-grey graybox, one red accent for goals and the depth mark, no weather (`data/districts/null.tres`).
 - **Enemy ecosystem:** the `*_null` tier (Needle, Hopper, Scout Drone with faster openers and bolts, no Scrap), placed as pressure inside set pieces and pacifiable by skill.
-- **Boss test:** Warden Krail's variant on the Warden Tower frame, "the same fight, answered faster" (`WardenKrailNull`: phase 2 at 90 %, telegraph 0.72 s ≥ the 0.6 s floor, Hopper summons, clamp rearm 6 s, 560 HP).
+- **Boss test:** Warden Krail's variant on the Warden Tower frame, "the same fight, answered faster" (`WardenKrailNull`: phase 2 at 90 %, phase-2 telegraph scale ×0.72 (≥ the ×0.6 floor, NU-4), Hopper summons, clamp rearm 6 s, 560 HP).
 - **D-155 exception:** a Scout Drone hovers over a breaker clock (NS2), the only place a shooter overlaps a timed shutter; the window keeps ≥ 0.35 s with one dodge (measured 0.62 s).
 - Measured at fixed 60 fps (pars are placeholders, D-154): Static Lane 11.63 s (par 40, redline 30), Breaker Run 12.00 s intended / 12.95 s expert line (par 50, redline 36; shutter margins NS1 0.45, NS2 0.62, NS3a 1.38, NS3b 0.72 s), The Floor harness kill 2.40 s after the intro (par 100, redline 70).
 - Departures from the D3 design: scanner modes LOW/HIGH, 48 px spike beds with bare 24 px ends (a miss costs a pip and never spirals), the landing beam at x 1610, NS1 at x 760 and NS2 at x 1400 (tuned by the route test).

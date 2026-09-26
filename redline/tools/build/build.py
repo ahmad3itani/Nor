@@ -100,7 +100,7 @@ USER_DIRS = {
 }
 BUDGET_WEB_GZ = 12 * 1024 * 1024
 BUDGET_DESKTOP_ZIP = 40 * 1024 * 1024
-BUDGET_MACOS_ZIP = 60 * 1024 * 1024  # universal: two architectures (measured 51-53 MB)
+BUDGET_MACOS_ZIP = 60 * 1024 * 1024  # universal: two architectures (measured 53.4 MB)
 
 
 # --- Godot cfg reading (values are Godot literals, not INI-safe) ------------------

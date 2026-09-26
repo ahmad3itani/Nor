@@ -91,6 +91,7 @@ This writes `REPORT.md` plus `heatmaps/<Room>.png`. The report contains:
 - controls;
 - **real frame times per room**;
 - **Story (M8):** per sequence the views, first views, first-view skip rate and median watched/nominal seconds (a warning when first-view skips pass 50%, D-135); memory scenes (first views, skips, median watch, details found, fragments never remembered); arc beats heard and the Orr on-air split; Act I complete; endings (dev theatre replays ignored); the Act I card's standing lines;
+- **Endgame (M9):** achievements earned per session, challenge attempts / resets by reason / finishes by medal against the Gold target, NG+ cycles and remix share, Deep Rig runs (restarts per stratum, ranks), players who rebound controls, assist suggestions (shown / applied / opened Settings / declined), the demo end card and language switches;
 - the variant comparison.
 
 **The Undercity timeline** gives the median minute of each §42 beat: Pulse Blade granted, first dodge, Maintenance Shaft entered (a proxy for the first composition, about 2–3 min early), first secret, first NPC (the Radio), First Pursuit entered, first Flow hint, Core HUD shown, first Anchor rest, rest at `uc_lift`, Collector fight started, Collector defeated, Relay reached. Which sessions count:
