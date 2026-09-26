@@ -5369,6 +5369,58 @@ msgstr ""
 msgid "ACHIEVEMENT"
 msgstr ""
 
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {title}
+#: ui/hud/CombatHud.gd
+msgid "MEMORY FRAGMENT  —  {title}"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {key} {prompt}
+#: ui/hud/CombatHud.gd
+msgid "[{key}] {prompt}"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.t
+#: ui/hud/CombatHud.gd
+msgid "STAGGERED"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {banked} {unbanked}
+#: ui/hud/CombatHud.gd
+msgid "SCRAP {banked} +{unbanked}"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {banked}
+#: ui/hud/CombatHud.gd
+msgid "SCRAP {banked}"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {n}
+#: ui/hud/CombatHud.gd
+msgid "STYLE {n}"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.t
+#: ui/hud/CombatHud.gd
+msgid "CORE ONLINE"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {n}
+#: ui/hud/CombatHud.gd
+msgid "CORE {n}  FLOW"
+msgstr ""
+
+#. key: ui/hud/CombatHud.gd::Loc.f
+#. placeholders: {n}
+#: ui/hud/CombatHud.gd
+msgid "CORE {n}"
+msgstr ""
+
 #. key: ui/hud/RunTimerHud.gd::Loc.f
 #. placeholders: {time}
 #: ui/hud/RunTimerHud.gd

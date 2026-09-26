@@ -2874,6 +2874,42 @@ msgstr "[Šéé ťĥém íñ ťĥé Ĵóúŕñáĺ.~~~~~~~~~]"
 msgid "ACHIEVEMENT"
 msgstr "[ÁÇĤÍÉVÉMÉÑŤ~~~~~~]"
 
+#: ui/hud/CombatHud.gd
+msgid "MEMORY FRAGMENT  —  {title}"
+msgstr "[MÉMÓŔÝ FŔÁĞMÉÑŤ  —  {title}~~~~~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "[{key}] {prompt}"
+msgstr "[[{key}] {prompt}~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "STAGGERED"
+msgstr "[ŠŤÁĞĞÉŔÉĎ~~~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "SCRAP {banked} +{unbanked}"
+msgstr "[ŠÇŔÁP {banked} +{unbanked}~~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "SCRAP {banked}"
+msgstr "[ŠÇŔÁP {banked}~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "STYLE {n}"
+msgstr "[ŠŤÝĹÉ {n}~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "CORE ONLINE"
+msgstr "[ÇÓŔÉ ÓÑĹÍÑÉ~~~~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "CORE {n}  FLOW"
+msgstr "[ÇÓŔÉ {n}  FĹÓŴ~~~~~~]"
+
+#: ui/hud/CombatHud.gd
+msgid "CORE {n}"
+msgstr "[ÇÓŔÉ {n}~~~]"
+
 #: ui/hud/RunTimerHud.gd
 msgid "IGT {time}"
 msgstr "[ÍĞŤ {time}~~]"

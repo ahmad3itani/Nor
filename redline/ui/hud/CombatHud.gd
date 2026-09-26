@@ -17,6 +17,13 @@ extends CanvasLayer
 ##   anchored element is placed from the scaled view size (layout()), with a
 ##   compact layout below COMPACT_WIDTH that lifts the boss bar to the top so
 ##   nothing overlaps at 125 % and 150 %.
+##
+## Localization (D5 §3.4, §4.2, D-161): the HUD stores SOURCE text (room and
+## district names, the boss title, the fragment) and translates in _draw, so a
+## language switch shows on the next frame. Hints and the interact prompt
+## arrive display-ready from their emitters; the hint queue is dropped on a
+## switch (queued lines were composed in the old language). Rank letters are
+## exempt (D-163).
 
 const FONT_SIZE := 6
 const PIP := Vector2(6, 6)
@@ -52,6 +59,7 @@ const HINT_MIN_SECONDS := 2.0
 const HINT_QUEUE_MAX := 2
 var _hint_shown: float = 0.0
 var _hint_queue: Array[Array] = []
+## Source district and room names of the entry banner (translated at draw).
 var _banner: String = ""
 var _banner_sub: String = ""
 var _banner_time: float = 0.0
@@ -59,8 +67,12 @@ const BANNER_SECONDS := 2.6
 const LORE_SECONDS := 8.0
 var _lore_title: String = ""
 var _lore_text: String = ""
+## The fragment the card shows: _lore_title/_lore_text are recomposed from it
+## in the current language (on the event and on a locale switch).
+var _lore_frag: MemoryFragmentData
 var _lore_time: float = 0.0
 var _boss: Enemy
+## Source title (the boss_started identity payload); translated at draw.
 var _boss_title: String = ""
 ## Onboarding (bible §42): the Core readout stays hidden until the first Flow
 ## Zone explains it (flag core_hud_hidden), then fills in and names itself.
@@ -112,20 +124,35 @@ func _ready() -> void:
 	EventBus.memory_fragment_found.connect(func(f: Resource) -> void:
 		var frag := f as MemoryFragmentData
 		if frag:
-			# M8 (D-112): the card names the memory and where it surfaces; the
-			# vignette is the reveal, so the full text no longer shows here.
-			var cfg := MemoryLibrary.config()
-			_lore_title = "MEMORY FRAGMENT  —  " + frag.title
-			_lore_text = cfg.card_body_anchor if Settings.memories_at_anchors else cfg.card_body_journal
+			_lore_frag = frag
+			_compose_lore()
 			_lore_time = LORE_SECONDS)
+	EventBus.locale_changed.connect(_on_locale_changed)
 	EventBus.flag_changed.connect(_on_flag_changed)
 	EventBus.game_state_reset.connect(_sync_core_hidden)
 	EventBus.game_state_reset.connect(clear_hints)
 	_sync_core_hidden()
 	EventBus.room_entered.connect(func(district: String, room_name: String) -> void:
-		_banner = district.to_upper()
+		_banner = district
 		_banner_sub = room_name
 		_banner_time = BANNER_SECONDS if district != "" else 0.0)
+
+
+## M8 (D-112): the card names the memory and where it surfaces; the vignette
+## is the reveal, so the full text does not show here.
+func _compose_lore() -> void:
+	if _lore_frag == null:
+		return
+	var cfg := MemoryLibrary.config()
+	_lore_title = Loc.f("MEMORY FRAGMENT  —  {title}", {"title": Loc.t(_lore_frag.title)})
+	_lore_text = Loc.t(cfg.card_body_anchor if Settings.memories_at_anchors else cfg.card_body_journal)
+
+
+## A language switch: the card is recomposed, and queued hints (composed in
+## the old language) are dropped; the one on screen runs out.
+func _on_locale_changed(_code: String) -> void:
+	_compose_lore()
+	_hint_queue.clear()
 
 
 ## Snap to the profile without the reveal (new game, load).
@@ -233,7 +260,7 @@ func _draw_hud() -> void:
 		return
 	if _player == null or not is_instance_valid(_player):
 		return
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font()
 	var view := _root.size
 	var lay := layout(view)
 	var base: Vector2 = lay["base"]
@@ -262,7 +289,7 @@ func _draw_hud() -> void:
 	var y := base.y + 21
 	if w:
 		var ammo := int(combat.ammo.get(w.id, 0))
-		_root.draw_string(font, Vector2(base.x, y), w.display_name.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("c9c3d6"))
+		_root.draw_string(font, Vector2(base.x, y), Loc.upper(w.display_name), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color("c9c3d6"))
 		var ax := base.x + 62
 		var ammo_col := Palette.color(&"ammo")
 		for i in w.ammo_max:
@@ -282,14 +309,12 @@ func _draw_hud() -> void:
 
 	# Scrap (banked + unbanked, unbanked shown dimmer).
 	var st := Game.state
-	var scrap_text := "SCRAP %d" % st.scrap_banked
-	if st.scrap_unbanked > 0:
-		scrap_text += " +%d" % st.scrap_unbanked
+	var scrap_text := scrap_label(st.scrap_banked, st.scrap_unbanked)
 	_root.draw_string(font, Vector2(base.x + 92 + 50, base.y + 21), scrap_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Palette.color(&"currency"))
 
 	# Contextual prompt and hints (bottom centre).
 	if _prompt != "":
-		var t := "[%s] %s" % [InputGlyphs.label(&"interact"), _prompt]
+		var t := Loc.f("[{key}] {prompt}", {"key": InputGlyphs.label(&"interact"), "prompt": _prompt})
 		_draw_centered(font, t, lay["prompt_y"], FONT_SIZE + 1, Color.WHITE)
 	if _hint_time > 0.0:
 		var c := Color(1, 1, 1, clampf(_hint_time * 2.0, 0.0, 1.0))
@@ -312,7 +337,7 @@ func _draw_hud() -> void:
 	if _boss and is_instance_valid(_boss) and not _boss.is_dead():
 		var bar_r: Rect2 = lay["boss_bar"]
 		var bw := bar_r.size.x
-		_draw_centered(font, _boss_title, bar_r.position.y - 3, FONT_SIZE, Color.WHITE)
+		_draw_centered(font, Loc.t(_boss_title), bar_r.position.y - 3, FONT_SIZE, Color.WHITE)
 		_root.draw_rect(bar_r, DIM)
 		var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
 		_root.draw_rect(Rect2(bar_r.position, Vector2(bw * f, 4)), red)
@@ -320,15 +345,15 @@ func _draw_hud() -> void:
 			_root.draw_rect(bar_r, HC_OUTLINE, false, 1.0)
 		_root.draw_rect(Rect2(bar_r.position + Vector2(bw * 0.5, -1), Vector2(1, 6)), Color.WHITE)
 		if _boss.ai == Enemy.AI.STAGGER:
-			_draw_centered(font, "STAGGERED", bar_r.end.y + 8, FONT_SIZE - 1, Color("ffcf5a"))
+			_draw_centered(font, Loc.t("STAGGERED"), bar_r.end.y + 8, FONT_SIZE - 1, Color("ffcf5a"))
 	elif _boss and (not is_instance_valid(_boss) or _boss.is_dead()):
 		_boss = null
 
 	# Room banner on entry.
 	if _banner_time > 0.0:
 		var a := clampf(minf(_banner_time, BANNER_SECONDS - _banner_time) * 3.0, 0.0, 1.0)
-		_draw_centered(font, _banner, lay["banner_y"], 12, Color(red, a))
-		_draw_centered(font, _banner_sub, lay["banner_y"] + 14, 7, Color(1, 1, 1, a))
+		_draw_centered(font, Loc.upper(_banner), lay["banner_y"], 12, Color(red, a))
+		_draw_centered(font, Loc.t(_banner_sub), lay["banner_y"] + 14, 7, Color(1, 1, 1, a))
 
 	# Style rank (top right).
 	var meter := _player.style.meter
@@ -343,7 +368,7 @@ func _draw_hud() -> void:
 	var mbar := Rect2(pos + Vector2(0, 4), Vector2(62, 2))
 	_root.draw_rect(mbar, DIM)
 	_root.draw_rect(Rect2(mbar.position, Vector2(mbar.size.x * meter.rank_progress(), 2)), col)
-	_root.draw_string(font, pos + Vector2(0, 12), "STYLE %d" % int(meter.points), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color("c9c3d6"))
+	_root.draw_string(font, pos + Vector2(0, 12), style_label(int(meter.points)), HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE - 1, Color("c9c3d6"))
 
 
 ## One pip or tick: the draw ops from pip_ops().
@@ -411,6 +436,26 @@ static func layout(view: Vector2) -> Dictionary:
 	return out
 
 
+## "SCRAP 12" / "SCRAP 12 +3" (unbanked) in the current language.
+static func scrap_label(banked: int, unbanked: int) -> String:
+	if unbanked > 0:
+		return Loc.f("SCRAP {banked} +{unbanked}", {"banked": banked, "unbanked": unbanked})
+	return Loc.f("SCRAP {banked}", {"banked": banked})
+
+
+static func style_label(points: int) -> String:
+	return Loc.f("STYLE {n}", {"n": points})
+
+
+## "CORE 64", "CORE 64  FLOW" or "CORE ONLINE" (the first reveal).
+static func core_label(charge: int, in_flow: bool, online: bool) -> String:
+	if online:
+		return Loc.t("CORE ONLINE")
+	if in_flow:
+		return Loc.f("CORE {n}  FLOW", {"n": charge})
+	return Loc.f("CORE {n}", {"n": charge})
+
+
 ## The box a centred line of text covers (baseline y).
 static func text_rect(font: Font, text: String, y: float, size: int, view: Vector2) -> Rect2:
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
@@ -442,7 +487,7 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], bar.position + Vector2(bar.size.x + 4, 5), FONT_SIZE))
 	var y := base.y + 21
 	if content.has("weapon"):
-		var r := _left_text_rect(font, String(content["weapon"]).to_upper(), Vector2(base.x, y), FONT_SIZE)
+		var r := _left_text_rect(font, Loc.upper(String(content["weapon"])), Vector2(base.x, y), FONT_SIZE)
 		r = r.merge(Rect2(base.x + 62, y - 5, int(content.get("ammo_max", 0)) * 4, 5))
 		out["weapon"] = r.merge(Rect2(base.x + 116, y - 6, 18, 7))
 	if content.has("scrap"):
@@ -456,14 +501,14 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		var r := bar_r.merge(text_rect(font, content["boss_title"], bar_r.position.y - 3, FONT_SIZE, view))
 		r = r.merge(Rect2(bar_r.position + Vector2(bar_r.size.x * 0.5, -1), Vector2(1, 6)))
 		if content.get("staggered", false):
-			r = r.merge(text_rect(font, "STAGGERED", bar_r.end.y + 8, FONT_SIZE - 1, view))
+			r = r.merge(text_rect(font, Loc.t("STAGGERED"), bar_r.end.y + 8, FONT_SIZE - 1, view))
 		out["boss"] = r
 	if content.has("rank"):
 		var pos: Vector2 = lay["rank"]
 		var rank: String = content["rank"]
 		var size := 16 if rank.length() <= 3 else 11
 		var r := _left_text_rect(font, rank, pos, size).merge(Rect2(pos + Vector2(0, 4), Vector2(62, 2)))
-		out["rank"] = r.merge(_left_text_rect(font, "STYLE 9999", pos + Vector2(0, 12), FONT_SIZE - 1))
+		out["rank"] = r.merge(_left_text_rect(font, style_label(9999), pos + Vector2(0, 12), FONT_SIZE - 1))
 	if content.has("banner"):
 		var r := text_rect(font, content["banner"], lay["banner_y"], 12, view)
 		out["banner"] = r.merge(text_rect(font, content.get("banner_sub", ""), lay["banner_y"] + 14, 7, view))
@@ -487,10 +532,8 @@ func _draw_core(font: Font, base: Vector2) -> void:
 	_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)
 	if UiTheme.high_contrast():
 		_root.draw_rect(bar, HC_OUTLINE, false, 1.0)
-	var core_label := "CORE %d%s" % [int(reactor.charge), "  FLOW" if reactor.in_flow() else ""]
-	if _core_online > 0.0:
-		core_label = "CORE ONLINE"
-	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), core_label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
+	var label := core_label(int(reactor.charge), reactor.in_flow(), _core_online > 0.0)
+	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
 
 
 func _draw_centered(font: Font, text: String, y: float, size: int, color: Color) -> void:
