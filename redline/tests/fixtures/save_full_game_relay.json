@@ -1,0 +1,48 @@
+{
+	"abilities": {
+		"dash": true
+	},
+	"anchors_rested": [
+		"res://world/rooms/lowlight/Relay.tscn|relay"
+	],
+	"collected": {
+
+	},
+	"core_shards": 0,
+	"deaths": 0,
+	"dropped_scrap": {
+
+	},
+	"equipped_circuits": [],
+	"flags": {
+		"emergency_loop_spent": false,
+		"met_orr": true,
+		"shortcut_bell_lift": true,
+		"warden_krail_defeated": true
+	},
+	"health": -1,
+	"injectors": -1,
+	"last_anchor_id": "relay",
+	"last_anchor_room": "res://world/rooms/lowlight/Relay.tscn",
+	"map_explored": {
+
+	},
+	"map_pins": [],
+	"melee_weapon": "pulse_blade",
+	"memory_fragments": [],
+	"owned_circuits": [],
+	"owned_weapons": [
+		"pulse_blade",
+		"service_pistol",
+		"scattergun",
+		"split_katars",
+		"heavy_revolver"
+	],
+	"play_time_sec": 0,
+	"ranged_weapon": "service_pistol",
+	"reactor_charge": -1,
+	"schema_version": 3,
+	"scrap_banked": 0,
+	"scrap_unbanked": 0,
+	"visited_rooms": []
+}
