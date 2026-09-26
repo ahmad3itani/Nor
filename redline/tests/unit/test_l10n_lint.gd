@@ -133,9 +133,9 @@ func test_enforce_false_reports_warnings_only() -> void:
 	# silent from here on in either mode (the coverage rule itself:
 	# test_coverage_flags_unclassified_field).
 	check(not warns.any(func(w: String) -> bool: return w.begins_with("[L-2]")), "every text field is classified")
-	if StringRules.ENFORCE:
-		return
-	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "pre-migration literals are reported as warnings")
+	# T13's call-site commits migrated every pre-M9 literal, so L-3 is silent
+	# in either mode too (the rule itself: test_literal_lint).
+	check(not warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "no hard-coded literal is left: %s" % [warns])
 
 
 func test_module_quiet_outside_a_full_pass() -> void:

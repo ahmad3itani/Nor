@@ -450,7 +450,7 @@ func take_damage(amount: int, knockback: Vector2, hitstop_time: float, knock: bo
 		amount = health - 1
 		Game.set_flag("emergency_loop_spent")
 		AudioManager.play_sfx(&"perfect_dodge")
-		EventBus.hint_requested.emit("EMERGENCY LOOP", 1.5)
+		EventBus.hint_requested.emit(Loc.t("EMERGENCY LOOP"), 1.5)
 	health = maxi(health - amount, 0)
 	EventBus.player_damaged.emit(amount, health)
 	AudioManager.play_sfx(&"player_hurt")

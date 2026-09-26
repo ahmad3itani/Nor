@@ -69,7 +69,7 @@ func _on_body_entered(body: Node2D) -> void:
 			Game.set_flag("core_hud_hidden", false)
 			if first_entry_hint != "":
 				Game.set_flag("hint_first_flow")
-				EventBus.hint_requested.emit(first_entry_hint, 4.0)
+				EventBus.hint_requested.emit(Loc.t(first_entry_hint), 4.0)
 
 
 func _on_body_exited(body: Node2D) -> void:

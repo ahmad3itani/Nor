@@ -12,7 +12,7 @@ const LOC_FIELDS_EXTRA := {"used_text": 110}
 
 
 func _ready() -> void:
-	prompt_verb = "Pull lever"
+	prompt_verb = "Pull lever"  # l10n
 	super._ready()
 
 
@@ -24,7 +24,7 @@ func interact(_player: Player) -> void:
 	Game.set_flag(flag_id)
 	AudioManager.play_sfx(&"gate")
 	if used_text != "":
-		EventBus.hint_requested.emit(used_text, 3.0)
+		EventBus.hint_requested.emit(Loc.t(used_text), 3.0)
 	queue_redraw()
 
 

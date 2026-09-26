@@ -39,9 +39,9 @@ func _on_body_entered(body: Node2D) -> void:
 	if skip_when != "" and Game.check_condition(skip_when):
 		return
 	Game.set_flag("hint_" + hint_id)
-	var t := text
-	if action != &"":
-		t = t.replace("{action}", InputGlyphs.label(action))
+	# Display-ready (D-162): translated first, then {action} becomes the
+	# player's binding, so a translation may move the placeholder.
+	var t := Loc.f(text, {"action": InputGlyphs.label(action)}) if action != &"" else Loc.t(text)
 	EventBus.hint_requested.emit(t, seconds)
 
 

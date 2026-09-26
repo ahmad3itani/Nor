@@ -402,6 +402,7 @@ func _draw() -> void:
 		draw_rect(r.grow_individual(3, 0, 3, 0), Color(1, 1, 1, fa * _flash_left / FLASH_TIME))
 	if _trip_text_left > 0.0:
 		var rise := (1.0 - _trip_text_left / TRIP_TEXT_TIME) * 14.0
+		# l10n: ignore(world art stays English, K-M9-L3)
 		draw_string(ThemeDB.fallback_font, _trip_text_pos + Vector2(-18, -6 - rise), "TRIPPED",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 1, 1, minf(1.0, _trip_text_left * 3.0)))
 

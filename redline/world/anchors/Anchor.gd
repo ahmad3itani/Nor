@@ -13,7 +13,7 @@ var _pulse: float = 0.0
 
 
 func _ready() -> void:
-	prompt_verb = "Rest"
+	prompt_verb = "Rest"  # l10n
 	super._ready()
 
 
@@ -54,7 +54,7 @@ func _after_memories(_source: StringName) -> void:
 	# they set (mem_seen_*, details, arc stages they unlock) survive a quit.
 	Game.save_game()
 	if not MemoryLibrary.pending().is_empty():
-		EventBus.hint_requested.emit(MemoryLibrary.config().more_waiting_hint, 3.0)
+		EventBus.hint_requested.emit(Loc.t(MemoryLibrary.config().more_waiting_hint), 3.0)
 	EventBus.menu_requested.emit(&"loadout")
 
 

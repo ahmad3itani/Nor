@@ -327,7 +327,7 @@ func _arm(p: Player) -> void:
 	EventBus.camera_shake_requested.emit(WARN_SHAKE)
 	if not _warn_hint_shown and data.warn_hint != "":
 		_warn_hint_shown = true
-		EventBus.hint_requested.emit(data.warn_hint, HINT_SECONDS)
+		EventBus.hint_requested.emit(Loc.t(data.warn_hint), HINT_SECONDS)
 	var room := _room()
 	if room != null:
 		room.pit_override = _on_pit
@@ -402,7 +402,7 @@ func _catch(p: Player, source: String) -> void:
 	EventBus.chase_caught.emit(chase_id, idx)
 	if catches == 2 and not _repeat_hint_shown and data.repeat_hint != "":
 		_repeat_hint_shown = true
-		EventBus.hint_requested.emit(data.repeat_hint, HINT_SECONDS)
+		EventBus.hint_requested.emit(Loc.t(data.repeat_hint), HINT_SECONDS)
 
 
 ## Rook's centre inside end_area while the chase is live: done, at once.
@@ -572,11 +572,13 @@ func debug_draw(canvas: CanvasItem) -> void:
 	for i in range(1, path.size()):
 		var mid := (g[i - 1] + g[i]) * 0.5
 		var sc := speed_scale[i - 1] if i - 1 < speed_scale.size() else 1.0
+		# l10n: ignore(debug overlay)
 		canvas.draw_string(font, mid + Vector2(0, -4), "x%.2f" % sc, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, RED)
 	var cps := checkpoints()
 	for i in cps.size():
 		var at := to_global(cps[i].position)
 		canvas.draw_line(at, at + Vector2(0, -24), AMBER, 1.0)
+		# l10n: ignore(debug overlay)
 		canvas.draw_string(font, at + Vector2(2, -26), "CP%d (%d)" % [i + 1, i], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, AMBER)
 	canvas.draw_rect(Rect2(to_global(start_area.position), start_area.size), Color.GREEN, false, 1.0)
 	canvas.draw_rect(Rect2(to_global(end_area.position), end_area.size), Color.ORANGE, false, 1.0)
@@ -587,6 +589,7 @@ func debug_draw(canvas: CanvasItem) -> void:
 	if room != null and is_instance_valid(room.player):
 		var over := room.player.global_position + Vector2(-24, -48)
 		var min_text := "-" if not is_finite(min_lead_seen) else "%.0f" % min_lead_seen
+		# l10n: ignore(debug overlay)
 		canvas.draw_string(font, over, "%s lead %.0f min %s" % [state_name(), lead, min_text], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 
 

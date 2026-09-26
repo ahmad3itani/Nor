@@ -50,16 +50,16 @@ func evaluate(changed_flag: String = "") -> void:
 		var stage := q.current_stage()
 		var previous: int = _last_stage.get(q.id, -1)
 		if previous == -1:
-			EventBus.hint_requested.emit("NEW QUEST  —  %s" % q.title, 3.0)
+			EventBus.hint_requested.emit(Loc.f("NEW QUEST  —  {title}", {"title": Loc.t(q.title)}), 3.0)
 		if stage >= q.stages.size():
 			if not Game.has_flag(q.complete_flag):
 				_complete(q)
 		elif stage != previous and previous != -1:
-			EventBus.hint_requested.emit("%s  —  %s" % [q.title, q.stages[stage].description], 3.0)
+			EventBus.hint_requested.emit(Loc.f("{title}  —  {stage}", {"title": Loc.t(q.title), "stage": Loc.t(q.stages[stage].description)}), 3.0)
 		elif stage == previous and q.stages[stage].complete_flags.has(changed_flag):
 			var prog := q.stage_progress(stage)
 			if prog.y > 1 and prog.x > 0:
-				EventBus.hint_requested.emit("%s  %d/%d" % [q.title, prog.x, prog.y], 2.0)
+				EventBus.hint_requested.emit(Loc.f("{title}  {done}/{total}", {"title": Loc.t(q.title), "done": prog.x, "total": prog.y}), 2.0)
 		_last_stage[q.id] = stage
 		EventBus.quest_updated.emit(q)
 
@@ -74,4 +74,4 @@ func _complete(q: QuestData) -> void:
 	for f in q.reward_flags:
 		Game.set_flag(f)
 	AudioManager.play_sfx(&"quest_complete")
-	EventBus.hint_requested.emit("QUEST COMPLETE  —  %s" % q.title, 3.5)
+	EventBus.hint_requested.emit(Loc.f("QUEST COMPLETE  —  {title}", {"title": Loc.t(q.title)}), 3.5)

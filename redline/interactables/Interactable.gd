@@ -45,8 +45,9 @@ func can_interact(_player: Player) -> bool:
 	return true
 
 
+## Display-ready (D-162): interact_prompt_changed carries translated text.
 func prompt_text() -> String:
-	return prompt_verb
+	return Loc.t(prompt_verb)
 
 
 func interact(_player: Player) -> void:

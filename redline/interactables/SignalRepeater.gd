@@ -10,7 +10,7 @@ var _t: float = 0.0
 
 
 func _ready() -> void:
-	prompt_verb = "Realign repeater"
+	prompt_verb = "Realign repeater"  # l10n
 	super._ready()
 
 

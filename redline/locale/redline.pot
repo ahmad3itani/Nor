@@ -14,6 +14,18 @@ msgstr ""
 msgid "New at the Relay training rig: {group}"
 msgstr ""
 
+#. key: autoload/Game.gd::Loc.f
+#. placeholders: {name}
+#: autoload/Game.gd
+msgid "CIRCUIT ACQUIRED  —  {name}"
+msgstr ""
+
+#. key: autoload/Game.gd::Loc.f
+#. placeholders: {name}
+#: autoload/Game.gd
+msgid "WEAPON ACQUIRED  —  {name}"
+msgstr ""
+
 #. key: bosses/BossArena.gd::boss_title
 #. key: data/sequences/speakers.tres::labels[2]
 #. key: world/rooms/challenge/NullFloor.tscn::Triggers/BossArena.boss_title
@@ -2985,9 +2997,10 @@ msgstr ""
 #. key: data/npcs/nix.tres::verb
 #. key: data/npcs/orr.tres::verb
 #. key: data/npcs/vell.tres::verb
+#. key: interactables/NPC.gd::l10n
 #. NpcProfile
 #. max 16 chars
-#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres
+#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres interactables/NPC.gd
 msgid "Talk"
 msgstr ""
 
@@ -5336,9 +5349,9 @@ msgstr ""
 
 #. key: interactables/AbilityPickup.gd::hint_text
 #. AbilityPickup
-#. max 90 chars · placeholders: %s
+#. max 90 chars · placeholders: {action}
 #: interactables/AbilityPickup.gd
-msgid "DASH UNLOCKED  —  press [%s] to dash"
+msgid "DASH UNLOCKED  —  press [{action}] to dash"
 msgstr ""
 
 #. key: interactables/ChallengeTerminal.gd::Loc.t
@@ -5361,6 +5374,66 @@ msgstr ""
 #. max 16 chars
 #: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
 msgid "Use"
+msgstr ""
+
+#. key: interactables/Collectible.gd::Loc.t
+#: interactables/Collectible.gd
+msgid "CORE SHARD  —  Core Capacity +1"
+msgstr ""
+
+#. key: interactables/FlagSwitch.gd::l10n
+#: interactables/FlagSwitch.gd
+msgid "Pull lever"
+msgstr ""
+
+#. key: interactables/NPC.gd::Loc.f
+#. placeholders: {name} {verb}
+#: interactables/NPC.gd
+msgid "{verb}  —  {name}"
+msgstr ""
+
+#. key: interactables/ScrapCache.gd::Loc.tn
+#. placeholders: {n}
+#: interactables/ScrapCache.gd
+msgctxt "hint"
+msgid "Recovered {n} Scrap"
+msgid_plural "Recovered {n} Scrap"
+msgstr[0] ""
+msgstr[1] ""
+
+#. key: interactables/SignalRepeater.gd::l10n
+#: interactables/SignalRepeater.gd
+msgid "Realign repeater"
+msgstr ""
+
+#. key: player/combat/PlayerCombat.gd::Loc.t
+#: player/combat/PlayerCombat.gd
+msgid "EMERGENCY LOOP"
+msgstr ""
+
+#. key: quests/QuestTracker.gd::Loc.f
+#. placeholders: {title}
+#: quests/QuestTracker.gd
+msgid "NEW QUEST  —  {title}"
+msgstr ""
+
+#. key: quests/QuestTracker.gd::Loc.f
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {stage} {title}
+#: quests/QuestTracker.gd ui/menus/JournalMenu.gd
+msgid "{title}  —  {stage}"
+msgstr ""
+
+#. key: quests/QuestTracker.gd::Loc.f
+#. placeholders: {done} {title} {total}
+#: quests/QuestTracker.gd
+msgid "{title}  {done}/{total}"
+msgstr ""
+
+#. key: quests/QuestTracker.gd::Loc.f
+#. placeholders: {title}
+#: quests/QuestTracker.gd
+msgid "QUEST COMPLETE  —  {title}"
 msgstr ""
 
 #. key: ui/dialogue/DialogueBox.gd::Loc.f
@@ -5942,12 +6015,6 @@ msgstr ""
 #. key: ui/menus/JournalMenu.gd::Loc.t
 #: ui/menus/JournalMenu.gd
 msgid "Nothing yet. People at the Relay need help."
-msgstr ""
-
-#. key: ui/menus/JournalMenu.gd::Loc.f
-#. placeholders: {stage} {title}
-#: ui/menus/JournalMenu.gd
-msgid "{title}  —  {stage}"
 msgstr ""
 
 #. key: ui/menus/JournalMenu.gd::Loc.f
@@ -6584,6 +6651,11 @@ msgstr ""
 #. key: ui/settings/RebindCapture.gd::Loc.t
 #: ui/settings/RebindCapture.gd
 msgid "Waiting for a key."
+msgstr ""
+
+#. key: world/anchors/Anchor.gd::l10n
+#: world/anchors/Anchor.gd
+msgid "Rest"
 msgstr ""
 
 #. key: world/props/GhostActor.gd::Loc.t

@@ -66,7 +66,7 @@ func _on_body_entered(body: Node2D) -> void:
 			EventBus.memory_fragment_found.emit(fragment)
 		Kind.CORE_SHARD:
 			Game.state.core_shards += 1
-			EventBus.hint_requested.emit("CORE SHARD  —  Core Capacity +1", 3.0)
+			EventBus.hint_requested.emit(Loc.t("CORE SHARD  —  Core Capacity +1"), 3.0)
 	# After the counts change, so listeners (arcs, telemetry) read the new totals.
 	EventBus.collectible_taken.emit(persist_id, kind)
 	AudioManager.play_sfx(&"collect")

@@ -324,6 +324,7 @@ func debug_draw(canvas: CanvasItem) -> void:
 	var left: Vector2 = to_global.call(Vector2(position.x - w, config.floor_y))
 	var right: Vector2 = to_global.call(Vector2(position.x + w, config.floor_y))
 	canvas.draw_polyline(PackedVector2Array([apex, left, right, apex]), RED if state == State.LOCK else Color.YELLOW, 1.0)
+	# l10n: ignore(debug overlay)
 	canvas.draw_string(ThemeDB.fallback_font, apex + Vector2(8, 4), "%s %.2f" % [state_name(), lock_timer],
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 

@@ -186,6 +186,7 @@ func debug_draw(canvas: CanvasItem) -> void:
 	var r := hurtbox_rect()
 	canvas.draw_rect(r, Color(1.0, 0.7, 0.28, 0.9), false, 1.0)
 	var armed := "armed" if _since_trip >= rearm_time else "re-arming"
+	# l10n: ignore(debug overlay)
 	canvas.draw_string(ThemeDB.fallback_font, r.position + Vector2(0, -2), "%s %s x%d %s" % [breaker_id, circuit, trips, armed],
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color.WHITE)
 

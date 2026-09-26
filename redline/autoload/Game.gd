@@ -331,7 +331,8 @@ func grant_circuit(id: String) -> void:
 		return
 	state.owned_circuits.append(id)
 	var c := catalog.circuit(id)
-	EventBus.hint_requested.emit("CIRCUIT ACQUIRED  —  %s" % (c.display_name if c else id), 3.0)
+	# hint_requested carries display-ready text (D-162): composed here.
+	EventBus.hint_requested.emit(Loc.f("CIRCUIT ACQUIRED  —  {name}", {"name": Loc.t(c.display_name) if c else id}), 3.0)
 	EventBus.circuit_granted.emit(id)
 
 
@@ -351,7 +352,7 @@ func grant_weapon(id: String) -> void:
 		elif not melee and state.ranged_weapon == "":
 			state.ranged_weapon = id
 			EventBus.loadout_changed.emit()
-	EventBus.hint_requested.emit("WEAPON ACQUIRED  —  %s" % (w.display_name if w else id), 3.0)
+	EventBus.hint_requested.emit(Loc.f("WEAPON ACQUIRED  —  {name}", {"name": Loc.t(w.display_name) if w else id}), 3.0)
 	EventBus.weapon_granted.emit(id)
 
 

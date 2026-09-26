@@ -33,7 +33,7 @@ var _awaiting_heard: DialogueData = null
 
 
 func _ready() -> void:
-	prompt_verb = profile.verb if profile else "Talk"
+	prompt_verb = profile.verb if profile else "Talk"  # l10n
 	super._ready()
 	if Engine.is_editor_hint():
 		return
@@ -62,7 +62,7 @@ func can_interact(_player: Player) -> bool:
 
 
 func prompt_text() -> String:
-	return "%s  —  %s" % [prompt_verb, profile.display_name]
+	return Loc.f("{verb}  —  {name}", {"verb": Loc.t(prompt_verb), "name": Loc.t(profile.display_name)})
 
 
 func interact(_player: Player) -> void:

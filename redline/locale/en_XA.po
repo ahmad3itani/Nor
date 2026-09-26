@@ -12,6 +12,14 @@ msgstr ""
 msgid "New at the Relay training rig: {group}"
 msgstr "[Ñéŵ áť ťĥé Ŕéĺáý ťŕáíñíñğ ŕíğ: {group}~~~~~~~~~~~]"
 
+#: autoload/Game.gd
+msgid "CIRCUIT ACQUIRED  —  {name}"
+msgstr "[ÇÍŔÇÚÍŤ ÁÇQÚÍŔÉĎ  —  {name}~~~~~~~~]"
+
+#: autoload/Game.gd
+msgid "WEAPON ACQUIRED  —  {name}"
+msgstr "[ŴÉÁPÓÑ ÁÇQÚÍŔÉĎ  —  {name}~~~~~~~]"
+
 #: bosses/BossArena.gd data/sequences/speakers.tres world/rooms/challenge/NullFloor.tscn
 msgid "WARDEN KRAIL"
 msgstr "[ŴÁŔĎÉÑ ĶŔÁÍĹ~~~~~~]"
@@ -1536,7 +1544,7 @@ msgstr "[Ťĥéñ ĺéávé íť íñ ĥím. Ťĥé Çóĺĺéçťóŕ çáñ ť
 msgid "Black Market"
 msgstr "[Bĺáçķ Máŕķéť~~~~~~]"
 
-#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres
+#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres interactables/NPC.gd
 msgid "Talk"
 msgstr "[Ťáĺķ~~]"
 
@@ -2857,8 +2865,8 @@ msgid "{key} stays on {action}."
 msgstr "[{key} šťáýš óñ {action}.~~~~~~]"
 
 #: interactables/AbilityPickup.gd
-msgid "DASH UNLOCKED  —  press [%s] to dash"
-msgstr "[ĎÁŠĤ ÚÑĹÓÇĶÉĎ  —  pŕéšš [%s] ťó ďášĥ~~~~~~~~~~~~]"
+msgid "DASH UNLOCKED  —  press [{action}] to dash"
+msgstr "[ĎÁŠĤ ÚÑĹÓÇĶÉĎ  —  pŕéšš [{action}] ťó ďášĥ~~~~~~~~~~~~]"
 
 #: interactables/ChallengeTerminal.gd
 msgid "Training rig"
@@ -2867,6 +2875,49 @@ msgstr "[Ťŕáíñíñğ ŕíğ~~~~~~]"
 #: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
 msgid "Use"
 msgstr "[Úšé~~]"
+
+#: interactables/Collectible.gd
+msgid "CORE SHARD  —  Core Capacity +1"
+msgstr "[ÇÓŔÉ ŠĤÁŔĎ  —  Çóŕé Çápáçíťý +1~~~~~~~~~~~]"
+
+#: interactables/FlagSwitch.gd
+msgid "Pull lever"
+msgstr "[Púĺĺ ĺévéŕ~~~~~]"
+
+#: interactables/NPC.gd
+msgid "{verb}  —  {name}"
+msgstr "[{verb}  —  {name}~~~]"
+
+#: interactables/ScrapCache.gd
+msgctxt "hint"
+msgid "Recovered {n} Scrap"
+msgid_plural "Recovered {n} Scrap"
+msgstr[0] "[Ŕéçóvéŕéď {n} Šçŕáp~~~~~~]"
+msgstr[1] "[Ŕéçóvéŕéď {n} Šçŕáp~~~~~~]"
+
+#: interactables/SignalRepeater.gd
+msgid "Realign repeater"
+msgstr "[Ŕéáĺíğñ ŕépéáťéŕ~~~~~~]"
+
+#: player/combat/PlayerCombat.gd
+msgid "EMERGENCY LOOP"
+msgstr "[ÉMÉŔĞÉÑÇÝ ĹÓÓP~~~~~]"
+
+#: quests/QuestTracker.gd
+msgid "NEW QUEST  —  {title}"
+msgstr "[ÑÉŴ QÚÉŠŤ  —  {title}~~~~~]"
+
+#: quests/QuestTracker.gd ui/menus/JournalMenu.gd
+msgid "{title}  —  {stage}"
+msgstr "[{title}  —  {stage}~~~]"
+
+#: quests/QuestTracker.gd
+msgid "{title}  {done}/{total}"
+msgstr "[{title}  {done}/{total}~~]"
+
+#: quests/QuestTracker.gd
+msgid "QUEST COMPLETE  —  {title}"
+msgstr "[QÚÉŠŤ ÇÓMPĹÉŤÉ  —  {title}~~~~~~~]"
 
 #: ui/dialogue/DialogueBox.gd
 msgid "[{key}] choose"
@@ -3289,10 +3340,6 @@ msgstr "[QÚÉŠŤŠ~~~]"
 #: ui/menus/JournalMenu.gd
 msgid "Nothing yet. People at the Relay need help."
 msgstr "[Ñóťĥíñğ ýéť. Péópĺé áť ťĥé Ŕéĺáý ñééď ĥéĺp.~~~~~~~~~~~~~~~~]"
-
-#: ui/menus/JournalMenu.gd
-msgid "{title}  —  {stage}"
-msgstr "[{title}  —  {stage}~~~]"
 
 #: ui/menus/JournalMenu.gd
 msgid "{line}  ({done}/{total})"
@@ -3769,6 +3816,10 @@ msgstr "[Ŵáíťíñğ fóŕ á çóñťŕóĺĺéŕ búťťóñ.~~~~~~~~~~~~]"
 #: ui/settings/RebindCapture.gd
 msgid "Waiting for a key."
 msgstr "[Ŵáíťíñğ fóŕ á ķéý.~~~~~~~]"
+
+#: world/anchors/Anchor.gd
+msgid "Rest"
+msgstr "[Ŕéšť~~]"
 
 #: world/props/GhostActor.gd
 msgid "PB"

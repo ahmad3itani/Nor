@@ -28,7 +28,8 @@ func _on_body_entered(body: Node2D) -> void:
 	var amount := Game.recover_dropped_scrap()
 	AudioManager.play_sfx(&"scrap_recover")
 	HitSpark.spawn(get_parent(), global_position + Vector2(0, -10), Vector2.UP, Color("ffd36b"), 16, 100.0)
-	EventBus.hint_requested.emit("Recovered %d Scrap" % amount, 2.0)
+	# "hint" context: the plural entry is this hint's own (Scrap is a mass noun in English).
+	EventBus.hint_requested.emit(Loc.tn("Recovered {n} Scrap", "Recovered {n} Scrap", amount, {}, "hint"), 2.0)
 	queue_free()
 
 

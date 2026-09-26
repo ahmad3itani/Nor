@@ -9,7 +9,8 @@ const LOC_FIELDS := {"hint_text": 90}
 
 @export var ability: StringName = &"dash"
 @export var flag_id: String = "unlocked_dash"
-@export var hint_text: String = "DASH UNLOCKED  —  press [%s] to dash"
+## {action} becomes the binding of hint_action (a named placeholder, D5).
+@export var hint_text: String = "DASH UNLOCKED  —  press [{action}] to dash"
 @export var hint_action: StringName = &"dodge"
 
 var _t: float = 0.0
@@ -48,7 +49,7 @@ func _on_body_entered(body: Node2D) -> void:
 	AudioManager.play_sfx(&"ability_unlock")
 	EventBus.camera_shake_requested.emit(0.3)
 	HitSpark.spawn(get_parent(), global_position + Vector2(0, -12), Vector2.UP, Color("e8283c"), 24, 160.0)
-	EventBus.hint_requested.emit(hint_text % InputGlyphs.label(hint_action), 5.0)
+	EventBus.hint_requested.emit(Loc.f(hint_text, {"action": InputGlyphs.label(hint_action)}), 5.0)
 	queue_free()
 
 

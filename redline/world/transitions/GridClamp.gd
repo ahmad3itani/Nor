@@ -245,7 +245,7 @@ func _update_hint() -> void:
 	if Game.has_flag("hint_" + arm_hint_id):
 		return
 	Game.set_flag("hint_" + arm_hint_id)
-	EventBus.hint_requested.emit(arm_hint, timing.hint_seconds)
+	EventBus.hint_requested.emit(Loc.t(arm_hint), timing.hint_seconds)
 	for circuit in circuits:
 		for b in Breaker.on_circuit(get_tree(), circuit):
 			b.pulse(timing.hint_seconds)
