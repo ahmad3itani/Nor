@@ -2420,9 +2420,10 @@ msgid "Heavy attack"
 msgstr ""
 
 #. key: data/input/rebind_catalog.tres::actions[9].label
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
 #. RebindActionData
 #. max 32 chars
-#: data/input/rebind_catalog.tres
+#: data/input/rebind_catalog.tres ui/menus/LoadoutMenu.gd
 msgid "Ranged"
 msgstr ""
 
@@ -2449,9 +2450,10 @@ msgid "World"
 msgstr ""
 
 #. key: data/input/rebind_catalog.tres::actions[12].label
+#. key: ui/menus/PauseMenu.gd::Loc.t
 #. RebindActionData
 #. max 32 chars
-#: data/input/rebind_catalog.tres
+#: data/input/rebind_catalog.tres ui/menus/PauseMenu.gd
 msgid "Map"
 msgstr ""
 
@@ -2678,12 +2680,14 @@ msgstr ""
 #. key: data/memories/memory_config.tres::back_label
 #. key: ui/menus/AchievementsMenu.gd::Loc.t
 #. key: ui/menus/ChallengesMenu.gd::Loc.t
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
 #. key: ui/menus/NgPlusMenu.gd::Loc.t
 #. key: ui/menus/SettingsMenu.gd::Loc.t
 #. key: ui/menus/TitleMenu.gd::Loc.t
 #. MemoryConfig
 #. max 16 chars
-#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/JournalMenu.gd ui/menus/LoadoutMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
 msgid "Back"
 msgstr ""
 
@@ -5145,9 +5149,10 @@ msgid "Vell  —  Circuit Broker"
 msgstr ""
 
 #. key: data/story/act1.tres::name
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
 #. ActData
 #. max 32 chars
-#: data/story/act1.tres
+#: data/story/act1.tres ui/menus/SliceEndMenu.gd
 msgid "RUN"
 msgstr ""
 
@@ -5410,6 +5415,41 @@ msgstr ""
 msgid "NO ATTACKS"
 msgstr ""
 
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "Story"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "Exploration"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "People"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "Mastery"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "All"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "Unlocked"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::l10n
+#: ui/menus/AchievementsMenu.gd
+msgid "Locked"
+msgstr ""
+
 #. key: ui/menus/AchievementsMenu.gd::Loc.f
 #. placeholders: {n} {total}
 #: ui/menus/AchievementsMenu.gd
@@ -5534,7 +5574,9 @@ msgid "Descend again"
 msgstr ""
 
 #. key: ui/menus/ChallengeResultMenu.gd::Loc.t
-#: ui/menus/ChallengeResultMenu.gd
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#. key: ui/menus/ShopMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd ui/menus/LoadoutMenu.gd ui/menus/ShopMenu.gd
 msgid "Leave"
 msgstr ""
 
@@ -5806,7 +5848,8 @@ msgid "{top}: no hits, no deaths and a time at or under the stage's Redline time
 msgstr ""
 
 #. key: ui/menus/DemoEndMenu.gd::Loc.t
-#: ui/menus/DemoEndMenu.gd
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/DemoEndMenu.gd ui/menus/SliceEndMenu.gd
 msgid "Keep exploring"
 msgstr ""
 
@@ -5818,7 +5861,202 @@ msgstr ""
 
 #. key: ui/menus/JournalMenu.gd::Loc.t
 #: ui/menus/JournalMenu.gd
+msgid "JOURNAL"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "QUESTS"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "Nothing yet. People at the Relay need help."
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {stage} {title}
+#: ui/menus/JournalMenu.gd
+msgid "{title}  —  {stage}"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {done} {line} {total}
+#: ui/menus/JournalMenu.gd
+msgid "{line}  ({done}/{total})"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "People…"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
 msgid "Achievements…"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {deaths} {found} {scrap} {shards} {time} {total}
+#: ui/menus/JournalMenu.gd
+msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "Close"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "MEMORIES"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "PEOPLE"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {name} {note}
+#: ui/menus/JournalMenu.gd
+msgid "{name} — {note}"
+msgstr ""
+
+#. key: ui/menus/JournalMenu.gd::Loc.f
+#. placeholders: {glyph} {hint} {title}
+#: ui/menus/JournalMenu.gd
+msgid "{glyph} {title}  {hint}"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "ANCHOR  —  LOADOUT"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Rested. Health, injectors and Core restored. Progress saved."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "WEAPONS"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. placeholders: {melee} {ranged}
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee: {melee}    Ranged: {ranged}"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. placeholders: {kind} {mark} {name}
+#: ui/menus/LoadoutMenu.gd
+msgid "{mark} {name}  ({kind})"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee weapon. Select to equip."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Ranged weapon. Select to equip."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. placeholders: {max} {used}
+#: ui/menus/LoadoutMenu.gd
+msgid "CIRCUITS   capacity {used} / {max}"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "None yet. Vell at the Relay deals in Circuits."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. placeholders: {text}
+#: ui/menus/LoadoutMenu.gd
+msgid "{text}   (not enough capacity)"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. placeholders: {cost} {mark} {name}
+#: ui/menus/LoadoutMenu.gd
+msgid "{mark} {name}  [{cost}]"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Transit  »"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Travel to any Anchor you have rested at."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "Transit: Nix sells passes for the old lines."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "ANCHOR  —  TRANSIT"
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.t
+#: ui/menus/LoadoutMenu.gd
+msgid "No other Anchors on the line yet. Rest at one to add it."
+msgstr ""
+
+#. key: ui/menus/LoadoutMenu.gd::Loc.f
+#. key: ui/menus/PauseMenu.gd::Loc.f
+#. placeholders: {district} {room}
+#: ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
+msgid "{district}  —  {room}"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.t
+#: ui/menus/MapMenu.gd
+msgid "MAP"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.f
+#. placeholders: {close} {move} {pin} {zoom_in} {zoom_out}
+#: ui/menus/MapMenu.gd
+msgid "{move} move   [{zoom_out}]/[{zoom_in}] zoom   [{pin}] pin   [{close}] close"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.t
+#: ui/menus/MapMenu.gd
+msgid "Stick / D-pad"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.t
+#: ui/menus/MapMenu.gd
+msgid "Arrows / WASD"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.f
+#. placeholders: {district} {pct} {seen} {total}
+#: ui/menus/MapMenu.gd
+msgid "{district}: explored {pct}%, rooms {seen}/{total}"
+msgstr ""
+
+#. key: ui/menus/MapMenu.gd::Loc.f
+#. placeholders: {found} {line} {total}
+#: ui/menus/MapMenu.gd
+msgid "{line}, secrets {found}/{total}"
 msgstr ""
 
 #. key: ui/menus/NgPlusMenu.gd::Loc.t
@@ -5880,18 +6118,43 @@ msgstr ""
 
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd
-msgid "Restart"
+msgid "Skip scene"
 msgstr ""
 
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd
-msgid "Restart descent"
+msgid "Journal"
+msgstr ""
+
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/PauseMenu.gd
+msgid "Report a moment (playtest)"
+msgstr ""
+
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/PauseMenu.gd
+msgid "Playtest survey"
 msgstr ""
 
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #. key: ui/menus/TitleMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd ui/menus/TitleMenu.gd
 msgid "Settings"
+msgstr ""
+
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/PauseMenu.gd
+msgid "Save & Quit to Title"
+msgstr ""
+
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/PauseMenu.gd
+msgid "Restart"
+msgstr ""
+
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/PauseMenu.gd
+msgid "Restart descent"
 msgstr ""
 
 #. key: ui/menus/SettingsMenu.gd::Loc.t
@@ -5927,9 +6190,20 @@ msgid "{row} (set by this challenge)"
 msgstr ""
 
 #. key: ui/menus/SettingsMenu.gd::Loc.f
+#. placeholders: {label} {value}
+#: ui/menus/SettingsMenu.gd
+msgid "{label}: {value}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::Loc.f
 #. placeholders: {name}
 #: ui/menus/SettingsMenu.gd
 msgid "Controller: {name}"
+msgstr ""
+
+#. key: ui/menus/SettingsMenu.gd::l10n
+#: ui/menus/SettingsMenu.gd
+msgid "Confirm to change this action's bindings."
 msgstr ""
 
 #. key: ui/menus/SettingsMenu.gd::Loc.t
@@ -5992,6 +6266,11 @@ msgstr ""
 msgid "Remove mode: {v}"
 msgstr ""
 
+#. key: ui/menus/SettingsMenu.gd::l10n
+#: ui/menus/SettingsMenu.gd
+msgid "On: confirming a slot clears it. Every action keeps at least one."
+msgstr ""
+
 #. key: ui/menus/SettingsMenu.gd::Loc.f
 #. placeholders: {action}
 #: ui/menus/SettingsMenu.gd
@@ -6041,6 +6320,77 @@ msgstr ""
 msgid "Automatic ({language})"
 msgstr ""
 
+#. key: ui/menus/ShopMenu.gd::Loc.f
+#. placeholders: {n}
+#: ui/menus/ShopMenu.gd
+msgid "SCRAP  {n}"
+msgstr ""
+
+#. key: ui/menus/ShopMenu.gd::Loc.f
+#. placeholders: {name} {price}
+#: ui/menus/ShopMenu.gd
+msgid "{name}    {price}"
+msgstr ""
+
+#. key: ui/menus/ShopMenu.gd::Loc.t
+#: ui/menus/ShopMenu.gd
+msgid "OWNED"
+msgstr ""
+
+#. key: ui/menus/ShopMenu.gd::Loc.f
+#. placeholders: {name}
+#: ui/menus/ShopMenu.gd
+msgid "Circuit: {name}"
+msgstr ""
+
+#. key: ui/menus/ShopMenu.gd::Loc.f
+#. placeholders: {n} {text}
+#: ui/menus/ShopMenu.gd
+msgid "{text}  (uses {n} capacity)"
+msgstr ""
+
+#. key: ui/menus/ShopMenu.gd::Loc.t
+#: ui/menus/ShopMenu.gd
+msgid "Equip at an Anchor."
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.f
+#. placeholders: {act} {name}
+#: ui/menus/SliceEndMenu.gd
+msgid "ACT {act} COMPLETE  —  {name}"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Warden Krail is down. The Dash module hums in your chest, next to the Core."
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.f
+#. placeholders: {found} {frag_total} {frags} {shard_total} {shards} {total}
+#: ui/menus/SliceEndMenu.gd
+msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}    Core Shards {shards} / {shard_total}"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Dead Air: complete"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Dead Air: unfinished"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "WHERE THINGS STAND"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Three ledges were always just out of reach: the Flooded Alley, the Escape Tunnel, the Smuggler Route. Try them with the Dash."
+msgstr ""
+
 #. key: ui/menus/SliceEndMenu.gd::Loc.f
 #. placeholders: {cycle} {state}
 #: ui/menus/SliceEndMenu.gd
@@ -6060,6 +6410,32 @@ msgstr ""
 #. key: ui/menus/SliceEndMenu.gd::Loc.t
 #: ui/menus/SliceEndMenu.gd
 msgid "New: a training rig at the Relay, and New Game+ on the title."
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Thanks for playtesting! Two minutes of questions help more than anything else."
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Answer the playtest survey"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "Thanks for playtesting. Please answer the checklist in Docs/PLAYTEST_KIT.md."
+msgstr ""
+
+#. key: ui/menus/TitleMenu.gd::Loc.t
+#: ui/menus/TitleMenu.gd
+msgid "Movement is life. Violence buys time. Curiosity reveals the truth."
+msgstr ""
+
+#. key: ui/menus/TitleMenu.gd::Loc.f
+#. placeholders: {path}
+#: ui/menus/TitleMenu.gd
+msgid "Playtest recording ON: your run is saved to a local file only ({path}). Turn off in Settings."
 msgstr ""
 
 #. key: ui/menus/TitleMenu.gd::Loc.t

@@ -23,21 +23,22 @@ func rebuild() -> void:
 		return
 	var room := SceneRouter.current_room as Room
 	if room:
-		add_label("%s  —  %s" % [room.district_name, room.room_name], UiTheme.MUTED)
-	add_button("Resume", close_menu)
+		# Room names stay source in the room (D-161); translated here, at display.
+		add_label(Loc.f("{district}  —  {room}", {"district": Loc.t(room.district_name), "room": Loc.t(room.room_name)}), UiTheme.MUTED)
+	add_button(Loc.t("Resume"), close_menu)
 	if Cinematics.can_skip():
-		add_button("Skip scene", _skip_scene)
+		add_button(Loc.t("Skip scene"), _skip_scene)
 	if room and room.world_room and not dialogue_open():
 		# Same rule as MenuHost.can_open: a locking scene keeps the map shut.
 		if not Cinematics.locks_input():
-			add_button("Map", _open.bind(&"map"))
-		add_button("Journal", _open.bind(&"journal"))
+			add_button(Loc.t("Map"), _open.bind(&"map"))
+		add_button(Loc.t("Journal"), _open.bind(&"journal"))
 	if Playtest.is_recording():
-		add_button("Report a moment (playtest)", _open.bind(&"moment"))
+		add_button(Loc.t("Report a moment (playtest)"), _open.bind(&"moment"))
 		if (Playtest.session.data["survey"] as Dictionary).is_empty():
-			add_button("Playtest survey", _open.bind(&"survey"))
-	add_button("Settings", _open.bind(&"settings"))
-	add_button("Save & Quit to Title", _quit)
+			add_button(Loc.t("Playtest survey"), _open.bind(&"survey"))
+	add_button(Loc.t("Settings"), _open.bind(&"settings"))
+	add_button(Loc.t("Save & Quit to Title"), _quit)
 
 
 ## A challenge run: no Map, Journal or Save & Quit (the profile is held

@@ -17,16 +17,16 @@ func rebuild() -> void:
 	var keep := focused_index()
 	clear_body()
 	_entries.clear()
-	add_label(shop.title.to_upper(), UiTheme.ACCENT, UiTheme.FONT_SIZE + 1)
-	add_label("SCRAP  %d" % Game.state.total_scrap(), Color("ffd36b"))
+	add_label(Loc.upper(shop.title), UiTheme.ACCENT, UiTheme.FONT_SIZE + 1)
+	add_label(Loc.f("SCRAP  {n}", {"n": Game.state.total_scrap()}), Color("ffd36b"))
 	for item in shop.items:
 		if item.requires_flag != "" and not Game.has_flag(item.requires_flag):
 			continue
 		_entries.append(item)
 		var owned := is_owned(item)
-		var label := "%s    %s" % [item_name(item), "OWNED" if owned else "%d" % item_price(item)]
+		var label := Loc.f("{name}    {price}", {"name": item_name(item), "price": Loc.t("OWNED") if owned else str(item_price(item))})
 		add_button(label, _buy.bind(item), _describe.bind(item), not owned)
-	add_button("Leave", close_menu)
+	add_button(Loc.t("Leave"), close_menu)
 	_desc = add_label("", UiTheme.MUTED)
 	_desc.custom_minimum_size = Vector2(340, 30)
 	if _entries.size() > 0:
@@ -38,11 +38,11 @@ func item_name(item: ShopItem) -> String:
 	match item.kind:
 		ShopItem.Kind.CIRCUIT:
 			var c := Game.catalog.circuit(item.item_id) as CircuitData
-			return "Circuit: " + (c.display_name if c else item.item_id)
+			return Loc.f("Circuit: {name}", {"name": Loc.t(c.display_name) if c else item.item_id})
 		ShopItem.Kind.WEAPON:
 			var w := Game.catalog.weapon(item.item_id)
-			return w.display_name if w else item.item_id
-	return item.display_name
+			return Loc.t(w.display_name) if w else item.item_id
+	return Loc.t(item.display_name)
 
 
 func item_price(item: ShopItem) -> int:
@@ -67,11 +67,11 @@ func _describe(item: ShopItem) -> void:
 	match item.kind:
 		ShopItem.Kind.CIRCUIT:
 			var c := Game.catalog.circuit(item.item_id) as CircuitData
-			_desc.text = "%s  (uses %d capacity)" % [c.description, c.cost] if c else ""
+			_desc.text = Loc.f("{text}  (uses {n} capacity)", {"text": Loc.t(c.description), "n": c.cost}) if c else ""
 		ShopItem.Kind.WEAPON:
-			_desc.text = "Equip at an Anchor."
+			_desc.text = Loc.t("Equip at an Anchor.")
 		_:
-			_desc.text = item.description
+			_desc.text = Loc.t(item.description)
 
 
 ## Returns true if bought. Public so tests and scripted runs can buy directly.

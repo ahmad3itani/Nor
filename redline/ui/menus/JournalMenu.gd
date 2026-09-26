@@ -47,31 +47,34 @@ func rebuild() -> void:
 	if _mode == &"people":
 		_build_people()
 		return
-	add_label("JOURNAL", UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
-	add_label("QUESTS", UiTheme.ACCENT)
+	add_label(Loc.t("JOURNAL"), UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
+	add_label(Loc.t("QUESTS"), UiTheme.ACCENT)
 	var active := Game.quests.active_quests()
 	var done := Game.quests.completed_quests()
 	if active.is_empty() and done.is_empty():
-		add_label("Nothing yet. People at the Relay need help.", UiTheme.MUTED)
+		add_label(Loc.t("Nothing yet. People at the Relay need help."), UiTheme.MUTED)
 	for q in active:
 		var i := q.current_stage()
 		var prog := q.stage_progress(i) if i < q.stages.size() else Vector2i.ZERO
-		var tail := "  (%d/%d)" % [prog.x, prog.y] if prog.y > 1 else ""
-		add_label("• %s  —  %s%s" % [q.title, q.stages[i].description, tail])
+		var line := Loc.f("{title}  —  {stage}", {"title": Loc.t(q.title), "stage": Loc.t(q.stages[i].description)})
+		if prog.y > 1:
+			line = Loc.f("{line}  ({done}/{total})", {"line": line, "done": prog.x, "total": prog.y})
+		add_label("• " + line)
 	for q in done:
-		add_label("✓ %s" % q.title, UiTheme.MUTED)
+		add_label("✓ " + Loc.t(q.title), UiTheme.MUTED)
 	if not _people_arcs().is_empty():
-		add_button("People…", show_people)
+		add_button(Loc.t("People…"), show_people)
 	add_button(Loc.t("Achievements…"), open_achievements)
 	_build_memories_section()
 	var t := SliceStats.totals()
-	add_label("Secrets %d/%d    Core Shards %d    Scrap %d    Time %s    Deaths %d" % [
-		SliceStats.secrets_found(), (t["secret_ids"] as Array).size(), Game.state.core_shards,
-		Game.state.total_scrap(), SliceStats.format_time(Game.state.play_time_sec), Game.state.deaths], UiTheme.MUTED)
+	add_label(Loc.f("Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}", {
+		"found": SliceStats.secrets_found(), "total": (t["secret_ids"] as Array).size(), "shards": Game.state.core_shards,
+		"scrap": Game.state.total_scrap(), "time": SliceStats.format_time(Game.state.play_time_sec),
+		"deaths": Game.state.deaths}), UiTheme.MUTED)
 	var completion: String = load("res://ui/menus/MapMenu.gd").completion_text()
 	if completion != "":
 		add_label(completion, UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
-	add_button("Close", close_menu)
+	add_button(Loc.t("Close"), close_menu)
 	focus_index(0)
 
 
@@ -79,14 +82,14 @@ func rebuild() -> void:
 ## once a fragment is recovered) and the gallery button.
 func _build_memories_section() -> void:
 	var cfg := MemoryLibrary.config()
-	add_label("MEMORIES", UiTheme.ACCENT)
+	add_label(Loc.t("MEMORIES"), UiTheme.ACCENT)
 	var recovered := Game.state.memory_fragments.size()
 	if recovered >= 1:
 		add_label(cfg.remembered_line % [MemoryLibrary.remembered_fragment_count(), recovered])
 	if _listed_scenes().is_empty():
-		add_label(cfg.empty_text, UiTheme.MUTED)
+		add_label(Loc.t(cfg.empty_text), UiTheme.MUTED)
 	else:
-		add_button(cfg.gallery_button, show_gallery)
+		add_button(Loc.t(cfg.gallery_button), show_gallery)
 
 
 ## Scenes the gallery lists: remembered, or recovered and waiting. Scenes
@@ -139,10 +142,10 @@ func _people_arcs() -> Array[NpcArc]:
 
 
 func _build_people() -> void:
-	add_label("PEOPLE", UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
+	add_label(Loc.t("PEOPLE"), UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
 	for a in _people_arcs():
-		add_label("%s — %s" % [_display_name(a.npc_id), a.journal_note()], UiTheme.MUTED)
-	add_button("Back", show_main)
+		add_label(Loc.f("{name} — {note}", {"name": Loc.t(_display_name(a.npc_id)), "note": Loc.t(a.journal_note())}), UiTheme.MUTED)
+	add_button(Loc.t("Back"), show_main)
 	focus_index(0)
 
 
@@ -173,14 +176,15 @@ func _build_gallery() -> void:
 			if not listed.has(s):
 				continue
 			if MemoryLibrary.is_seen(s.id):
-				add_button("%s %s" % [cfg.glyph_seen, s.display_title()], _play.bind(s.id, &"journal"), _show_card.bind(s.id))
+				add_button(cfg.glyph_seen + " " + Loc.t(s.display_title()), _play.bind(s.id, &"journal"), _show_card.bind(s.id))
 			else:
-				add_button("%s %s  %s" % [cfg.glyph_pending, s.display_title(), cfg.pending_hint], _play.bind(s.id, &"journal_first"), _show_card.bind(s.id))
+				add_button(Loc.f("{glyph} {title}  {hint}", {"glyph": cfg.glyph_pending, "title": Loc.t(s.display_title()),
+					"hint": Loc.t(cfg.pending_hint)}), _play.bind(s.id, &"journal_first"), _show_card.bind(s.id))
 	if listed.is_empty():
-		add_label(cfg.empty_text, UiTheme.MUTED)
+		add_label(Loc.t(cfg.empty_text), UiTheme.MUTED)
 	_card = add_label("", UiTheme.TEXT, UiTheme.FONT_SIZE - 1)
 	_detail = add_label("", UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
-	add_button(cfg.back_label, show_main)
+	add_button(Loc.t(cfg.back_label), show_main)
 	focus_index(0)
 
 
@@ -211,13 +215,24 @@ func _show_card(id: String) -> void:
 		_card.text = ""
 		_detail.text = ""
 		return
-	_card.text = s.card_text()
+	_card.text = shown_card_text(s)
 	if MemoryLibrary.is_detail_found(id):
 		_detail.text = cfg.detail_line % s.detail_text
 	elif s.has_detail():
-		_detail.text = cfg.detail_unfound_text
+		_detail.text = Loc.t(cfg.detail_unfound_text)
 	else:
 		_detail.text = ""
+
+
+## MemorySceneData.card_text() in the current language: each beat is its own
+## catalog entry, so the beats are translated before they are joined.
+static func shown_card_text(s: MemorySceneData) -> String:
+	if s.source == MemorySceneData.Source.FRAGMENT and s.fragment:
+		return Loc.t(s.fragment.text)
+	var parts := PackedStringArray()
+	for b in s.beats:
+		parts.append(Loc.t(b.text))
+	return " ".join(parts)
 
 
 func _play(id: String, source: StringName) -> void:

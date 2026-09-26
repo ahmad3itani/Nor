@@ -15,7 +15,7 @@ func open_menu() -> void:
 func rebuild() -> void:
 	clear_body()
 	_panel.custom_minimum_size = Vector2(456, 0)
-	add_label("MAP", UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
+	add_label(Loc.t("MAP"), UiTheme.ACCENT, UiTheme.FONT_SIZE + 2)
 	view = MapView.new()
 	view.custom_minimum_size = Vector2(440, 176)
 	view.clip_contents = true
@@ -26,9 +26,10 @@ func rebuild() -> void:
 	view.setup(Game.world_map, Game.state, room_id, pos)
 	_hover = add_label("", UiTheme.TEXT, UiTheme.FONT_SIZE - 1)
 	view.hover_changed.connect(func(t: String) -> void: _hover.text = t)
-	add_label("%s move   [%s]/[%s] zoom   [%s] pin   [%s] close" % [
-		"Stick / D-pad" if InputGlyphs.using_pad else "Arrows / WASD", InputGlyphs.label(&"ranged"), InputGlyphs.label(&"grapple"),
-		InputGlyphs.label(&"jump"), InputGlyphs.label(&"map")], UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
+	add_label(Loc.f("{move} move   [{zoom_out}]/[{zoom_in}] zoom   [{pin}] pin   [{close}] close", {
+		"move": Loc.t("Stick / D-pad") if InputGlyphs.using_pad else Loc.t("Arrows / WASD"), "zoom_out": InputGlyphs.label(&"ranged"),
+		"zoom_in": InputGlyphs.label(&"grapple"), "pin": InputGlyphs.label(&"jump"), "close": InputGlyphs.label(&"map")}),
+		UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
 	add_label(completion_text(), UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
 
 
@@ -51,9 +52,10 @@ static func completion_text() -> String:
 					found += 1
 		if visited == 0:
 			continue
-		var line := "%s: explored %d%%, rooms %d/%d" % [map.district_names.get(d, d), roundi(100.0 * MapProgress.district_ratio(Game.state, map, d)), visited, rooms.size()]
+		var line := Loc.f("{district}: explored {pct}%, rooms {seen}/{total}", {"district": Loc.t(str(map.district_names.get(d, d))),
+			"pct": roundi(100.0 * MapProgress.district_ratio(Game.state, map, d)), "seen": visited, "total": rooms.size()})
 		if secrets > 0:
-			line += ", secrets %d/%d" % [found, secrets]
+			line = Loc.f("{line}, secrets {found}/{total}", {"line": line, "found": found, "total": secrets})
 		parts.append(line)
 	return "   ·   ".join(parts)
 

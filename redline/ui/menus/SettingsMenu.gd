@@ -219,14 +219,20 @@ func _row_text(d: SettingDef) -> String:
 	var label := Loc.t(d.label)
 	match d.action:
 		&"device":
-			return "%s: %s" % [label, Loc.t(d.choices[1] if _device == &"pad" else d.choices[0])]
+			return _pair(label, Loc.t(d.choices[1] if _device == &"pad" else d.choices[0]))
 		&"variant":
-			return "%s: %s" % [label, _variant_label()]
+			return _pair(label, _variant_label())
 		&"language":
-			return "%s: %s" % [label, _locale_name(Settings.effective_locale())]
+			return _pair(label, _locale_name(Settings.effective_locale()))
 	if d.kind == SettingDef.Kind.STEPS:
-		return "%s: %s" % [label, d.value_text(Settings.get(d.key))]
-	return "%s: %s" % [label, Loc.t(d.value_text(Settings.get(d.key)))]
+		return _pair(label, d.value_text(Settings.get(d.key)))
+	return _pair(label, Loc.t(d.value_text(Settings.get(d.key))))
+
+
+## One "Label: Value" row as a single template, so a language may change the
+## separator or the order.
+static func _pair(label: String, value: String) -> String:
+	return Loc.f("{label}: {value}", {"label": label, "value": value})
 
 
 func _add_action_rows() -> void:
@@ -241,8 +247,8 @@ func _add_action_rows() -> void:
 			if a == null or a.group != group:
 				continue
 			var shown := InputGlyphs.labels(a.action, _device)
-			add_button("%s: %s" % [Loc.t(a.label), shown], _open_action.bind(a.action, _button_count()),
-				_describe.bind("Confirm to change this action's bindings."))
+			add_button(_pair(Loc.t(a.label), shown), _open_action.bind(a.action, _button_count()),
+				_describe.bind("Confirm to change this action's bindings."))  # l10n
 	var reset_text := Loc.t("Reset keyboard controls…") if _device == &"key" else Loc.t("Reset controller controls…")
 	add_button(reset_text, func() -> void:
 		var prompt := Loc.t("Put every keyboard control back?") if _device == &"key" else Loc.t("Put every controller control back?")
@@ -268,7 +274,7 @@ func _build_action() -> void:
 		add_label(Loc.t("Left stick (fixed)"), UiTheme.MUTED)
 	add_option_row(Loc.f("Remove mode: {v}", {"v": Loc.t("On") if _remove_mode else Loc.t("Off")}),
 		_toggle_remove, _toggle_remove, _toggle_remove,
-		_describe.bind("On: confirming a slot clears it. Every action keeps at least one."))
+		_describe.bind("On: confirming a slot clears it. Every action keeps at least one."))  # l10n
 	add_button(Loc.f("Reset {action}", {"action": label}), func() -> void:
 		_notice = ""
 		_commit(InputBindings.reset(Settings.bindings, _detail_action, _device), _detail_action), _describe.bind(""))

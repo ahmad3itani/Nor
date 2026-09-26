@@ -54,11 +54,12 @@ func _main_page() -> void:
 	var tag := BuildInfo.title_tag()
 	# l10n: ignore(brand)
 	add_label("R E D L I N E" + ("  " + tag if tag != "" else ""), UiTheme.ACCENT, 16)
-	add_label("Movement is life. Violence buys time. Curiosity reveals the truth.", UiTheme.MUTED)
+	add_label(Loc.t("Movement is life. Violence buys time. Curiosity reveals the truth."), UiTheme.MUTED)
 	add_label(BuildInfo.title_subtitle(), UiTheme.MUTED)
 	# Be upfront about recording (M4): what, where, and how to turn it off.
 	if Playtest.recording_allowed():
-		add_label("Playtest recording ON: your run is saved to a local file only (%s). Turn off in Settings." % ProjectSettings.globalize_path(Playtest.dir), UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
+		add_label(Loc.f("Playtest recording ON: your run is saved to a local file only ({path}). Turn off in Settings.",
+			{"path": ProjectSettings.globalize_path(Playtest.dir)}), UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
 	var data := SaveManager.load_profile(1)
 	var rows := 0
 	_default_focus = -1

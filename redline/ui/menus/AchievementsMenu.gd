@@ -21,8 +21,8 @@ extends MenuScreen
 const LOC_FIELDS := {}
 const LOC_EXEMPT := []
 const STYLE_PATH := "res://data/style/default_style.tres"
-const CATEGORY_NAMES: PackedStringArray = ["Story", "Exploration", "People", "Mastery"]
-const FILTER_NAMES: PackedStringArray = ["All", "Unlocked", "Locked"]
+const CATEGORY_NAMES: PackedStringArray = ["Story", "Exploration", "People", "Mastery"]  # l10n
+const FILTER_NAMES: PackedStringArray = ["All", "Unlocked", "Locked"]  # l10n
 const MARK_DONE := "✓"
 const MARK_OPEN := "○"
 const NO_VALUE := "—"

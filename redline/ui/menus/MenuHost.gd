@@ -63,6 +63,7 @@ func _ready() -> void:
 			if s.has_signal("quit_to_title"):
 				s.connect("quit_to_title", quit_to_title.emit)
 	EventBus.menu_requested.connect(open)
+	EventBus.locale_changed.connect(_on_locale_changed)
 	EventBus.slice_completed.connect(func() -> void: open(BuildInfo.slice_card_id()))
 	EventBus.demo_boundary_reached.connect(func(_from: String, _to: String) -> void:
 		if has_screen(&"demo_end"):
@@ -98,6 +99,20 @@ static func can_open(action: StringName, tree_paused: bool, menu_open: bool) -> 
 		&"pause":
 			return not Challenges.finishing()
 	return true
+
+
+## A language switch (Settings' Language row, the dev Locale page) re-renders
+## every open screen, the title included, in the new language at once: the
+## font chain may change with the locale, so the look is re-applied too, and
+## focus stays on the same row (the Language row the player just changed).
+func _on_locale_changed(_code: String) -> void:
+	for c in get_children():
+		if c is MenuScreen and (c as MenuScreen).is_open():
+			var s := c as MenuScreen
+			var keep := s.focused_index()
+			s._apply_look()
+			s.rebuild()
+			s.focus_index(keep)
 
 
 func any_open() -> bool:

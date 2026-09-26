@@ -134,7 +134,7 @@ static func title_subtitle() -> String:
 	if is_demo() and c:
 		return Loc.t(c.title_subtitle)
 	var game := _autoload("Game")
-	return str(game.get("onboarding").get("title_subtitle")) if game else ""
+	return Loc.t(str(game.get("onboarding").get("title_subtitle"))) if game else ""
 
 
 ## The menu id slice_completed opens (the demo end card in an ACT_CLOSE demo).

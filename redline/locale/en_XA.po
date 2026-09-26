@@ -1228,7 +1228,7 @@ msgstr "[Çómbáť~~~]"
 msgid "Heavy attack"
 msgstr "[Ĥéávý áťťáçķ~~~~~~]"
 
-#: data/input/rebind_catalog.tres
+#: data/input/rebind_catalog.tres ui/menus/LoadoutMenu.gd
 msgid "Ranged"
 msgstr "[Ŕáñğéď~~~]"
 
@@ -1244,7 +1244,7 @@ msgstr "[Íñťéŕáçť / ťáĺķ~~~~~~]"
 msgid "World"
 msgstr "[Ŵóŕĺď~~~]"
 
-#: data/input/rebind_catalog.tres
+#: data/input/rebind_catalog.tres ui/menus/PauseMenu.gd
 msgid "Map"
 msgstr "[Máp~~]"
 
@@ -1372,7 +1372,7 @@ msgstr "[Ďéťáíĺ: %s~~~~]"
 msgid "Something else was there."
 msgstr "[Šóméťĥíñğ éĺšé ŵáš ťĥéŕé.~~~~~~~~~]"
 
-#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/JournalMenu.gd ui/menus/LoadoutMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
 msgid "Back"
 msgstr "[Báçķ~~]"
 
@@ -2744,7 +2744,7 @@ msgstr "[Máŕķš máp ŕóómš ťĥáť šťíĺĺ ĥíďé šóméťĥíñğ
 msgid "Vell  —  Circuit Broker"
 msgstr "[Véĺĺ  —  Çíŕçúíť Bŕóķéŕ~~~~~~~~~]"
 
-#: data/story/act1.tres
+#: data/story/act1.tres ui/menus/SliceEndMenu.gd
 msgid "RUN"
 msgstr "[ŔÚÑ~~]"
 
@@ -2907,6 +2907,34 @@ msgid "NO ATTACKS"
 msgstr "[ÑÓ ÁŤŤÁÇĶŠ~~~~~]"
 
 #: ui/menus/AchievementsMenu.gd
+msgid "Story"
+msgstr "[Šťóŕý~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Exploration"
+msgstr "[Éxpĺóŕáťíóñ~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "People"
+msgstr "[Péópĺé~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Mastery"
+msgstr "[Mášťéŕý~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "All"
+msgstr "[Áĺĺ~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Unlocked"
+msgstr "[Úñĺóçķéď~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Locked"
+msgstr "[Ĺóçķéď~~~]"
+
+#: ui/menus/AchievementsMenu.gd
 msgid "ACHIEVEMENTS  {n} / {total}"
 msgstr "[ÁÇĤÍÉVÉMÉÑŤŠ  {n} / {total}~~~~~~]"
 
@@ -2998,7 +3026,7 @@ msgstr "[{setting}: {value}  —  Ťúŕñ óñ~~~~~]"
 msgid "Descend again"
 msgstr "[Ďéšçéñď áğáíñ~~~~~]"
 
-#: ui/menus/ChallengeResultMenu.gd
+#: ui/menus/ChallengeResultMenu.gd ui/menus/LoadoutMenu.gd ui/menus/ShopMenu.gd
 msgid "Leave"
 msgstr "[Ĺéávé~~~]"
 
@@ -3194,7 +3222,7 @@ msgstr "[Šťýĺé: á ĥíğĥéŕ ávéŕáğé šťýĺé ŕáñķ éáŕñ�
 msgid "{top}: no hits, no deaths and a time at or under the stage's Redline time."
 msgstr "[{top}: ñó ĥíťš, ñó ďéáťĥš áñď á ťímé áť óŕ úñďéŕ ťĥé šťáğé'š Ŕéďĺíñé ťímé.~~~~~~~~~~~~~~~~~~~~~~~~~]"
 
-#: ui/menus/DemoEndMenu.gd
+#: ui/menus/DemoEndMenu.gd ui/menus/SliceEndMenu.gd
 msgid "Keep exploring"
 msgstr "[Ķéép éxpĺóŕíñğ~~~~~]"
 
@@ -3203,8 +3231,152 @@ msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}"
 msgstr "[Šéçŕéťš {found} / {total}    Mémóŕý fŕáğméñťš {frags} / {frag_total}~~~~~~~~~~~~~]"
 
 #: ui/menus/JournalMenu.gd
+msgid "JOURNAL"
+msgstr "[ĴÓÚŔÑÁĹ~~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "QUESTS"
+msgstr "[QÚÉŠŤŠ~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "Nothing yet. People at the Relay need help."
+msgstr "[Ñóťĥíñğ ýéť. Péópĺé áť ťĥé Ŕéĺáý ñééď ĥéĺp.~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "{title}  —  {stage}"
+msgstr "[{title}  —  {stage}~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "{line}  ({done}/{total})"
+msgstr "[{line}  ({done}/{total})~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "People…"
+msgstr "[Péópĺé…~~~~]"
+
+#: ui/menus/JournalMenu.gd
 msgid "Achievements…"
 msgstr "[Áçĥíévéméñťš…~~~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}"
+msgstr "[Šéçŕéťš {found}/{total}    Çóŕé Šĥáŕďš {shards}    Šçŕáp {scrap}    Ťímé {time}    Ďéáťĥš {deaths}~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "Close"
+msgstr "[Çĺóšé~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "MEMORIES"
+msgstr "[MÉMÓŔÍÉŠ~~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "PEOPLE"
+msgstr "[PÉÓPĹÉ~~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "{name} — {note}"
+msgstr "[{name} — {note}~~]"
+
+#: ui/menus/JournalMenu.gd
+msgid "{glyph} {title}  {hint}"
+msgstr "[{glyph} {title}  {hint}~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "ANCHOR  —  LOADOUT"
+msgstr "[ÁÑÇĤÓŔ  —  ĹÓÁĎÓÚŤ~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Rested. Health, injectors and Core restored. Progress saved."
+msgstr "[Ŕéšťéď. Ĥéáĺťĥ, íñĵéçťóŕš áñď Çóŕé ŕéšťóŕéď. Pŕóğŕéšš šávéď.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "WEAPONS"
+msgstr "[ŴÉÁPÓÑŠ~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee: {melee}    Ranged: {ranged}"
+msgstr "[Méĺéé: {melee}    Ŕáñğéď: {ranged}~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee"
+msgstr "[Méĺéé~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "{mark} {name}  ({kind})"
+msgstr "[{mark} {name}  ({kind})~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Melee weapon. Select to equip."
+msgstr "[Méĺéé ŵéápóñ. Šéĺéçť ťó éqúíp.~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Ranged weapon. Select to equip."
+msgstr "[Ŕáñğéď ŵéápóñ. Šéĺéçť ťó éqúíp.~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "CIRCUITS   capacity {used} / {max}"
+msgstr "[ÇÍŔÇÚÍŤŠ   çápáçíťý {used} / {max}~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "None yet. Vell at the Relay deals in Circuits."
+msgstr "[Ñóñé ýéť. Véĺĺ áť ťĥé Ŕéĺáý ďéáĺš íñ Çíŕçúíťš.~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "{text}   (not enough capacity)"
+msgstr "[{text}   (ñóť éñóúğĥ çápáçíťý)~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "{mark} {name}  [{cost}]"
+msgstr "[{mark} {name}  [{cost}]~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Transit  »"
+msgstr "[Ťŕáñšíť  »~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Travel to any Anchor you have rested at."
+msgstr "[Ťŕávéĺ ťó áñý Áñçĥóŕ ýóú ĥávé ŕéšťéď áť.~~~~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "Transit: Nix sells passes for the old lines."
+msgstr "[Ťŕáñšíť: Ñíx šéĺĺš páššéš fóŕ ťĥé óĺď ĺíñéš.~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "ANCHOR  —  TRANSIT"
+msgstr "[ÁÑÇĤÓŔ  —  ŤŔÁÑŠÍŤ~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd
+msgid "No other Anchors on the line yet. Rest at one to add it."
+msgstr "[Ñó óťĥéŕ Áñçĥóŕš óñ ťĥé ĺíñé ýéť. Ŕéšť áť óñé ťó áďď íť.~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/LoadoutMenu.gd ui/menus/PauseMenu.gd
+msgid "{district}  —  {room}"
+msgstr "[{district}  —  {room}~~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "MAP"
+msgstr "[MÁP~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "{move} move   [{zoom_out}]/[{zoom_in}] zoom   [{pin}] pin   [{close}] close"
+msgstr "[{move} móvé   [{zoom_out}]/[{zoom_in}] žóóm   [{pin}] píñ   [{close}] çĺóšé~~~~~~~~~~~~~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "Stick / D-pad"
+msgstr "[Šťíçķ / Ď-páď~~~~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "Arrows / WASD"
+msgstr "[Áŕŕóŵš / ŴÁŠĎ~~~~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "{district}: explored {pct}%, rooms {seen}/{total}"
+msgstr "[{district}: éxpĺóŕéď {pct}%, ŕóómš {seen}/{total}~~~~~~~~]"
+
+#: ui/menus/MapMenu.gd
+msgid "{line}, secrets {found}/{total}"
+msgstr "[{line}, šéçŕéťš {found}/{total}~~~~~~]"
 
 #: ui/menus/NgPlusMenu.gd
 msgid "NEW GAME+"
@@ -3251,16 +3423,36 @@ msgid "Start with the Dash: {state}"
 msgstr "[Šťáŕť ŵíťĥ ťĥé Ďášĥ: {state}~~~~~~~~]"
 
 #: ui/menus/PauseMenu.gd
+msgid "Skip scene"
+msgstr "[Šķíp šçéñé~~~~~]"
+
+#: ui/menus/PauseMenu.gd
+msgid "Journal"
+msgstr "[Ĵóúŕñáĺ~~~~]"
+
+#: ui/menus/PauseMenu.gd
+msgid "Report a moment (playtest)"
+msgstr "[Ŕépóŕť á móméñť (pĺáýťéšť)~~~~~~~~~~]"
+
+#: ui/menus/PauseMenu.gd
+msgid "Playtest survey"
+msgstr "[Pĺáýťéšť šúŕvéý~~~~~~]"
+
+#: ui/menus/PauseMenu.gd ui/menus/TitleMenu.gd
+msgid "Settings"
+msgstr "[Šéťťíñğš~~~~]"
+
+#: ui/menus/PauseMenu.gd
+msgid "Save & Quit to Title"
+msgstr "[Šávé & Qúíť ťó Ťíťĺé~~~~~~~]"
+
+#: ui/menus/PauseMenu.gd
 msgid "Restart"
 msgstr "[Ŕéšťáŕť~~~~]"
 
 #: ui/menus/PauseMenu.gd
 msgid "Restart descent"
 msgstr "[Ŕéšťáŕť ďéšçéñť~~~~~~]"
-
-#: ui/menus/PauseMenu.gd ui/menus/TitleMenu.gd
-msgid "Settings"
-msgstr "[Šéťťíñğš~~~~]"
 
 #: ui/menus/SettingsMenu.gd
 msgid "SETTINGS"
@@ -3287,8 +3479,16 @@ msgid "{row} (set by this challenge)"
 msgstr "[{row} (šéť bý ťĥíš çĥáĺĺéñğé)~~~~~~~~~]"
 
 #: ui/menus/SettingsMenu.gd
+msgid "{label}: {value}"
+msgstr "[{label}: {value}~~]"
+
+#: ui/menus/SettingsMenu.gd
 msgid "Controller: {name}"
 msgstr "[Çóñťŕóĺĺéŕ: {name}~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
+msgid "Confirm to change this action's bindings."
+msgstr "[Çóñfíŕm ťó çĥáñğé ťĥíš áçťíóñ'š bíñďíñğš.~~~~~~~~~~~~~~~]"
 
 #: ui/menus/SettingsMenu.gd
 msgid "Reset keyboard controls…"
@@ -3335,6 +3535,10 @@ msgid "Remove mode: {v}"
 msgstr "[Ŕémóvé móďé: {v}~~~~~]"
 
 #: ui/menus/SettingsMenu.gd
+msgid "On: confirming a slot clears it. Every action keeps at least one."
+msgstr "[Óñ: çóñfíŕmíñğ á šĺóť çĺéáŕš íť. Évéŕý áçťíóñ ķéépš áť ĺéášť óñé.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/SettingsMenu.gd
 msgid "Reset {action}"
 msgstr "[Ŕéšéť {action}~~~]"
 
@@ -3370,6 +3574,58 @@ msgstr "[Áúťó (ŕóťáťéš)~~~~~]"
 msgid "Automatic ({language})"
 msgstr "[Áúťómáťíç ({language})~~~~~~]"
 
+#: ui/menus/ShopMenu.gd
+msgid "SCRAP  {n}"
+msgstr "[ŠÇŔÁP  {n}~~~~]"
+
+#: ui/menus/ShopMenu.gd
+msgid "{name}    {price}"
+msgstr "[{name}    {price}~~]"
+
+#: ui/menus/ShopMenu.gd
+msgid "OWNED"
+msgstr "[ÓŴÑÉĎ~~~]"
+
+#: ui/menus/ShopMenu.gd
+msgid "Circuit: {name}"
+msgstr "[Çíŕçúíť: {name}~~~~~]"
+
+#: ui/menus/ShopMenu.gd
+msgid "{text}  (uses {n} capacity)"
+msgstr "[{text}  (úšéš {n} çápáçíťý)~~~~~~~]"
+
+#: ui/menus/ShopMenu.gd
+msgid "Equip at an Anchor."
+msgstr "[Éqúíp áť áñ Áñçĥóŕ.~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "ACT {act} COMPLETE  —  {name}"
+msgstr "[ÁÇŤ {act} ÇÓMPĹÉŤÉ  —  {name}~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Warden Krail is down. The Dash module hums in your chest, next to the Core."
+msgstr "[Ŵáŕďéñ Ķŕáíĺ íš ďóŵñ. Ťĥé Ďášĥ móďúĺé ĥúmš íñ ýóúŕ çĥéšť, ñéxť ťó ťĥé Çóŕé.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}    Core Shards {shards} / {shard_total}"
+msgstr "[Šéçŕéťš {found} / {total}    Mémóŕý fŕáğméñťš {frags} / {frag_total}    Çóŕé Šĥáŕďš {shards} / {shard_total}~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Dead Air: complete"
+msgstr "[Ďéáď Áíŕ: çómpĺéťé~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Dead Air: unfinished"
+msgstr "[Ďéáď Áíŕ: úñfíñíšĥéď~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "WHERE THINGS STAND"
+msgstr "[ŴĤÉŔÉ ŤĤÍÑĞŠ ŠŤÁÑĎ~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Three ledges were always just out of reach: the Flooded Alley, the Escape Tunnel, the Smuggler Route. Try them with the Dash."
+msgstr "[Ťĥŕéé ĺéďğéš ŵéŕé áĺŵáýš ĵúšť óúť óf ŕéáçĥ: ťĥé Fĺóóďéď Áĺĺéý, ťĥé Éšçápé Ťúññéĺ, ťĥé Šmúğğĺéŕ Ŕóúťé. Ťŕý ťĥém ŵíťĥ ťĥé Ďášĥ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
 #: ui/menus/SliceEndMenu.gd
 msgid "{cycle} complete. Remix {state}."
 msgstr "[{cycle} çómpĺéťé. Ŕémíx {state}.~~~~~~~]"
@@ -3385,6 +3641,26 @@ msgstr "[óff~~]"
 #: ui/menus/SliceEndMenu.gd
 msgid "New: a training rig at the Relay, and New Game+ on the title."
 msgstr "[Ñéŵ: á ťŕáíñíñğ ŕíğ áť ťĥé Ŕéĺáý, áñď Ñéŵ Ğámé+ óñ ťĥé ťíťĺé.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Thanks for playtesting! Two minutes of questions help more than anything else."
+msgstr "[Ťĥáñķš fóŕ pĺáýťéšťíñğ! Ťŵó míñúťéš óf qúéšťíóñš ĥéĺp móŕé ťĥáñ áñýťĥíñğ éĺšé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Answer the playtest survey"
+msgstr "[Áñšŵéŕ ťĥé pĺáýťéšť šúŕvéý~~~~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "Thanks for playtesting. Please answer the checklist in Docs/PLAYTEST_KIT.md."
+msgstr "[Ťĥáñķš fóŕ pĺáýťéšťíñğ. Pĺéášé áñšŵéŕ ťĥé çĥéçķĺíšť íñ Ďóçš/PĹÁÝŤÉŠŤ_ĶÍŤ.mď.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/TitleMenu.gd
+msgid "Movement is life. Violence buys time. Curiosity reveals the truth."
+msgstr "[Móvéméñť íš ĺífé. Víóĺéñçé búýš ťímé. Çúŕíóšíťý ŕévéáĺš ťĥé ťŕúťĥ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/TitleMenu.gd
+msgid "Playtest recording ON: your run is saved to a local file only ({path}). Turn off in Settings."
+msgstr "[Pĺáýťéšť ŕéçóŕďíñğ ÓÑ: ýóúŕ ŕúñ íš šávéď ťó á ĺóçáĺ fíĺé óñĺý ({path}). Ťúŕñ óff íñ Šéťťíñğš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
 
 #: ui/menus/TitleMenu.gd
 msgid "Comfort & accessibility"
