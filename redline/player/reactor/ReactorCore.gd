@@ -118,7 +118,10 @@ func _physics_process(delta: float) -> void:
 		if _burnout_timer >= config.burnout_interval:
 			_burnout_timer = 0.0
 			AudioManager.play_sfx(&"burnout")
-			player.combat.take_damage(1, Vector2.ZERO, 0.0, false, "burnout")
+			# The sfx, heartbeat, vignette and critical HUD stay either way,
+			# so the Core still teaches its rule without the punishment.
+			if burnout_enabled():
+				player.combat.take_damage(1, Vector2.ZERO, 0.0, false, "burnout")
 	else:
 		_burnout_timer = 0.0
 	if is_critical():
@@ -128,6 +131,15 @@ func _physics_process(delta: float) -> void:
 			_heartbeat_timer = lerpf(0.45, 0.9, charge / maxf(config.critical_threshold, 1.0))
 			AudioManager.play_sfx(&"heartbeat")
 	_emit()
+
+
+## Whether an empty Core costs health (D4 §8.3). A challenge kit that forces
+## a Core mode always burns (the Pulse Pit endurance run is about it);
+## otherwise the "Core burnout costs health" assist decides.
+static func burnout_enabled() -> bool:
+	if Challenges.forced_reactor_mode() >= 0:
+		return true
+	return Settings.burnout_hurts
 
 
 ## Runner's Debt: speed slows the drain, standing still speeds it up.

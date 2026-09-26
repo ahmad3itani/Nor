@@ -27,8 +27,10 @@ var held_profile: GameState = null
 ## M9: set by Challenges around sandbox swaps so the leaving room never writes
 ## its player into the wrong GameState. Only Challenges sets or clears it.
 var suppress_leave_capture: bool = false
-## M9 session entry (T11 generous checkpoints fills the logic): the first
-## room entry of this play session. Cleared on new_game and load_game.
+## M9 session entry (generous checkpoints, D4 §8.5): the latest room entry
+## (or EntryCheckpoint) of this play session. Session-only, never saved:
+## cleared on new_game, load_game and a sandbox restore, so Continue from the
+## title always starts at the Anchor.
 var _session_entry_room: String = ""
 var _session_entry_id: StringName = &""
 
@@ -420,19 +422,39 @@ func recover_dropped_scrap() -> int:
 ## mid-room EntryCheckpoint) is the respawn point, so an early death never
 ## sends a new player back to the title start. Ignored once an Anchor is set.
 func note_room_entry(path: String, entry: StringName) -> void:
+	# Generous checkpoints read this session entry; written before the D-063
+	# early return, so the saved pre-Anchor fields behave exactly as before.
+	_session_entry_room = path
+	_session_entry_id = entry
 	if state.last_anchor_room != "":
 		return
 	state.last_entry_room = path
 	state.last_entry_id = String(entry)
 
 
-## Anchor first, then the pre-Anchor entry, then the slice start.
+## Anchor first, then the pre-Anchor entry, then the slice start. With
+## "Respawn at room entrance" on (D4 §8.5), the session's last room entry
+## comes first, unless that room forbids it or a challenge run owns deaths.
 func respawn_room() -> String:
+	if generous_respawn_active():
+		return _session_entry_room
 	return respawn_room_for(state)
 
 
 func respawn_entry() -> StringName:
+	if generous_respawn_active():
+		return _session_entry_id
 	return respawn_entry_for(state)
+
+
+## Whether the next respawn uses the session entry. Anchors still bank, heal
+## and save; this only moves where Rook reappears (dropped Scrap stays at the
+## death point). Rooms whose entry sits inside a chase or a one-shot scene
+## say no through their respawn policy (WorldMapIndex).
+func generous_respawn_active() -> bool:
+	if not Settings.generous_checkpoints or _session_entry_room == "" or Challenges.active():
+		return false
+	return WorldMapIndex.respawn_policy(_session_entry_room) == 0
 
 
 ## The same rule for any state (the title peeks at a save without loading it).

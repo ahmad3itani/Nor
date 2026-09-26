@@ -20,6 +20,10 @@ static func room_info(room_path: String) -> Dictionary:
 		"bounds": inst.bounds, "name": inst.room_name, "district_name": inst.district_name,
 		"blocks": [], "anchors": [], "npcs": [], "gates": [], "exits": [], "secrets": [],
 		"bosses": [], "markers": [], "spawns": {},
+		# Generous checkpoints (D4 §8.5): 0 = the entry is a fair respawn,
+		# 1 = never. A chase room always says never (its entries sit inside
+		# the chase), so no scene edit is needed.
+		"respawn_policy": inst.respawn_policy,
 	}
 	for n in inst.find_children("*", "", true, false):
 		var p := local_pos(n, inst)
@@ -49,9 +53,20 @@ static func room_info(room_path: String) -> Dictionary:
 				"shown_when": m.shown_when, "pos": p})
 		elif n is SpawnMarker:
 			info["spawns"][String((n as SpawnMarker).spawn_id)] = p
+		elif n is ChaseDirector:
+			info["respawn_policy"] = 1
 	inst.free()
 	_cache[room_path] = info
 	return info
+
+
+## The room's generous-checkpoint policy (0 entry OK, 1 never). A path that
+## is not a room answers 1, so a bad entry never becomes a respawn point.
+static func respawn_policy(room_path: String) -> int:
+	if room_path == "" or not ResourceLoader.exists(room_path):
+		return 1
+	var info := room_info(room_path)
+	return int(info.get("respawn_policy", 1)) if not info.is_empty() else 1
 
 
 ## The scan is static (cached per scene), so presence is evaluated when the
