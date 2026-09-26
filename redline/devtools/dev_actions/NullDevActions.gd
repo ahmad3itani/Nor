@@ -54,7 +54,7 @@ static func set_depth(on: bool) -> void:
 		Game.set_flag(DEPTH_FLAG, on)
 
 
-## Clears every Deep Rig board, stage best and PB ghost.
+## Clears every Deep Rig board (bests, stage bests, attempts).
 static func clear_records() -> void:
 	if not DevActions.available():
 		return
@@ -62,12 +62,13 @@ static func clear_records() -> void:
 		Challenges.records.clear(ch.id)
 
 
-## One line for the page and the log.
+## One line for the page and the log (the profile's state, never the sandbox's).
 static func summary() -> String:
 	var parts := PackedStringArray()
-	parts.append("null_open %s" % ("yes" if Game.has_flag(OPEN_FLAG) else "no"))
-	parts.append("depth %s" % ("yes" if Game.has_flag(DEPTH_FLAG) else "no"))
-	parts.append("dash %s" % ("yes" if Game.abilities and Game.abilities.dash else "no"))
+	# The profile, also mid-run (the sandbox holds only the kit's state).
+	parts.append("null_open %s" % ("yes" if ChallengeLibrary.profile_holds("flag:" + OPEN_FLAG) else "no"))
+	parts.append("depth %s" % ("yes" if ChallengeLibrary.profile_holds("flag:" + DEPTH_FLAG) else "no"))
+	parts.append("dash %s" % ("yes" if ChallengeLibrary.profile_holds("ability:dash") else "no"))
 	for ch in challenges():
 		var best := Challenges.records.best(ch.id, Game.profile_id, ch.revision)
 		if not best.is_empty():

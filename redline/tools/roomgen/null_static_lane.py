@@ -15,7 +15,7 @@ and back to back, so the answer has to come at speed. Three sections:
   1530..: 200 (dash-jump), 130 (dodge-jump or a Dash), 200 (dash-jump). The
   pits are 48 px spike beds (a miss costs a pip; the 24 px ends are
   bare, so Rook always climbs out with one jump, never spirals). A steady
-  high beam at 1580, right after the last landing, turns the landing into
+  high beam at 1610, right after the last landing, turns the landing into
   a slide (or a Dash, which blurs past it).
 - C Flow fight (x 1700..2360): a Flow Zone at full drain over two Needles, a
   Scout Drone and a Watcher on a perch (the rig's tier: *_null data, no
@@ -54,7 +54,7 @@ s.scanner("nsl_low_2", 440, "low_null", top_y=-20, bottom_y=0, phase=0.8)
 s.scanner("nsl_full_1", 580, "full_null", top_y=-176, bottom_y=0)
 
 # --- B: the landing slide under a steady high beam ---
-s.scanner("nsl_high_2", 1580, "high", top_y=-176, bottom_y=0)
+s.scanner("nsl_high_2", 1610, "high", top_y=-176, bottom_y=0)
 
 # --- C Flow fight (optional; the Core drains and kills refill it) ---
 s.flow(1700, -300, 660, 300)

@@ -156,7 +156,7 @@ top_y = -176
 bottom_y = 0
 
 [node name="Scanner_nsl_high_2" type="Area2D" parent="Hazards"]
-position = Vector2(1580, 0)
+position = Vector2(1610, 0)
 script = ExtResource("scanner")
 beam_id = "nsl_high_2"
 data = ExtResource("level_scanner_high")
