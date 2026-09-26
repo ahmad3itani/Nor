@@ -62,6 +62,8 @@ func _exit_tree() -> void:
 	BuildInfo.clear_cache()
 	Loc.clear_cache()
 	RemixLibrary.clear_cache()
+	MenuHost.clear_cache()
+	DebugOverlay.clear_cache()
 	UiTheme.clear_cache()
 	NewGamePlus.clear_cache()
 	for p: String in ["platform/AchievementLibrary", "platform/StatCatalog", "challenges/ChallengeLibrary",

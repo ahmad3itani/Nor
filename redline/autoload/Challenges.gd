@@ -11,6 +11,8 @@ extends Node
 var force_active: bool = false
 ## Test seam (kept by T04; T03's Core-row test sets it): -1 = no forced mode.
 var force_reactor_mode: int = -1
+## Test seam (kept by T04): pretend a run just ended (result card pending).
+var force_finishing: bool = false
 ## CaptureTour sets it so the group-open notice never draws in a tour frame.
 var quiet_notices: bool = false
 
@@ -67,11 +69,12 @@ func open_from_title() -> void:
 
 ## True between a run's end and its result card (T04): pause stays shut.
 func finishing() -> bool:
-	return false
+	return force_finishing
 
 
 ## TestRunner teardown. T04 also quits and restores any live sandbox.
 func reset_for_tests() -> void:
 	force_active = false
 	force_reactor_mode = -1
+	force_finishing = false
 	quiet_notices = false

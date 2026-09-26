@@ -48,6 +48,8 @@ func after_each() -> void:
 		if is_instance_valid(n):
 			n.queue_free()
 	_extras.clear()
+	# Let a booted Main leave the tree before the router forgets its room.
+	await get_tree().process_frame
 	get_tree().paused = false
 	Playtest.end_session("test_done")
 	Playtest.allow_headless = false
@@ -388,3 +390,314 @@ func test_start_campaign_sets_igt_complete() -> void:
 		Game.start_campaign()
 		check(Game.state.igt_complete, "start_campaign sets igt_complete (enforce %s)" % enforce)
 	Game.onboarding = Game.ONBOARDING
+
+
+# --- Menus: registry, title, pause, dev hub, overlay, tour session (T01e) ------------
+
+var _main: Node
+
+
+## A full Main scene (menus, HUD, viewport). start_room "" boots to the title.
+func _boot_main(start_room: String) -> MenuHost:
+	_main = (load("res://Main.tscn") as PackedScene).instantiate()
+	_main.set("start_room", start_room)
+	_extra(_main)
+	await physics_frames(3)
+	return _main.get_node("Menus") as MenuHost
+
+
+func _title_of(host: MenuHost) -> MenuScreen:
+	return host.get_node("TitleMenu") as MenuScreen
+
+
+func _labels(menu: MenuScreen) -> Array:
+	var out: Array = []
+	for c in menu._body.get_children():
+		if c is Button and not c.is_queued_for_deletion():
+			out.append((c as Button).text)
+	return out
+
+
+func _button(menu: MenuScreen, text: String) -> Button:
+	for c in menu._body.get_children():
+		if c is Button and not c.is_queued_for_deletion() and (c as Button).text == text:
+			return c as Button
+	return null
+
+
+func _bare_title() -> MenuScreen:
+	var t: MenuScreen = load("res://ui/menus/TitleMenu.gd").new()
+	_extra(t)
+	t.open_menu()
+	return t
+
+
+func test_m9_scripts_load() -> void:
+	for path: String in ["res://ui/debug/DebugOverlay.gd", "res://ui/menus/DevConsole.gd", "res://ui/menus/PauseMenu.gd",
+			"res://ui/menus/MenuHost.gd", "res://ui/UiTheme.gd"] + STUBS:
+		var s := load(path) as GDScript
+		check(s != null and s.can_instantiate(), "%s loads" % path)
+	for n: String in ["BuildInfo", "DemoGate", "BuildProbe", "Loc", "NewGamePlus", "RemixLibrary", "AtomicJson",
+			"MenuHost", "PauseMenu", "DevConsole", "DebugOverlay"]:
+		var found := ProjectSettings.get_global_class_list().any(func(c: Dictionary) -> bool: return c["class"] == n)
+		check(found, "class_name %s is registered" % n)
+	for path: String in ["res://autoload/Platform.gd", "res://autoload/Challenges.gd"]:
+		check((load(path) as GDScript).get_global_name() == "", "%s declares no class_name" % path)
+
+
+func test_map_refused_when_challenge_active() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	check(MenuHost.can_open(&"map", false, false), "map opens in a world room")
+	Challenges.force_active = true
+	check(not MenuHost.can_open(&"map", false, false), "no map inside a challenge run (D-151)")
+	check(MenuHost.can_open(&"pause", false, false), "pause still opens in a run")
+
+
+func test_open_when_free_opens_after_close() -> void:
+	var host := await _boot_main(ROOM_A)
+	check(host.open(&"pause"), "pause opens")
+	host.open_when_free(&"journal", {"k": 1})
+	check(not host.journal.is_open(), "queued while pause is open")
+	host.pause.close_menu()
+	check(host.journal.is_open(), "the queued screen opens once the last menu closes")
+	check(host.journal.ctx == {"k": 1}, "with its context (%s)" % [host.journal.ctx])
+	host.journal.close_menu()
+
+
+func test_open_refused_clears_context() -> void:
+	var host := await _boot_main(ROOM_A)
+	host.open(&"pause")
+	host.open_with(&"journal", {"stale": true})
+	check(not host.journal.is_open(), "refused over an open menu")
+	check(MenuHost.context.is_empty(), "a refused open clears the context")
+	check(not host.open(&"no_such_menu") and MenuHost.context.is_empty(), "unknown ids are refused")
+	host.pause.close_menu()
+
+
+func test_pause_refused_while_finishing() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	Challenges.force_finishing = true
+	check(not MenuHost.can_open(&"pause", false, false), "no pause between a run's end and its result card")
+	Challenges.force_finishing = false
+	check(MenuHost.can_open(&"pause", false, false), "pause opens again")
+
+
+func test_menu_host_copies_context_to_screen() -> void:
+	var host := await _boot_main(ROOM_A)
+	host.open_with(&"journal", {"return_to": &"pause"})
+	check(MenuHost.context.is_empty(), "the host context is cleared after open")
+	check(host.journal.ctx == {"return_to": &"pause"}, "the screen keeps its copy")
+	host.journal.rebuild()
+	check(host.journal.ctx == {"return_to": &"pause"}, "and still has it after a rebuild")
+	host.journal.close_menu()
+
+
+func test_menu_host_registry_ids() -> void:
+	var host := await _boot_main(ROOM_A)
+	for id: String in ["loadout", "pause", "journal", "settings", "slice_end", "moment", "survey", "map", "dev"]:
+		check(host.has_screen(StringName(id)), "screen %s registered" % id)
+		check(MenuHost.IDS.has(id), "IDS lists %s" % id)
+	check(host.is_in_group(&"menu_host"), "the host is findable by group")
+
+
+func test_title_fits_270_all_rows() -> void:
+	var snap := Settings.snapshot()
+	Settings.first_run = true
+	Game.state.last_anchor_room = ROOM_A
+	Game.save_game()
+	var t := _bare_title()
+	await get_tree().process_frame
+	var labels := _labels(t)
+	check(labels.has("Comfort & accessibility") and labels.has("Continue") and labels.has("New Game"), "rows %s" % [labels])
+	check(labels.has("Labs & dev starts…") == OS.is_debug_build(), "labs row in debug builds")
+	check(not labels.has("Combat Lab") and not labels.has("Slice (Relay start)"), "labs moved to the sub-page")
+	var h := await menu_height(t)
+	check(h <= 270.0, "title is %.0f px tall" % h)
+	check(t.focused_index() == 1, "focus starts on Continue, never the first-run row (%d)" % t.focused_index())
+	Settings.first_run = false
+	Settings.restore(snap)
+
+
+func test_title_labs_subpage_back() -> void:
+	var t := _bare_title()
+	if not OS.is_debug_build():
+		return
+	var labs := _button(t, "Labs & dev starts…")
+	check(labs != null, "labs row")
+	labs.pressed.emit()
+	var labels := _labels(t)
+	check(labels.has("Slice (Relay start)") and labels.has("Combat Lab") and labels.has("Movement Lab") and labels.has("Back"), "labs page %s" % [labels])
+	await physics_frames(1)
+	await press_action(&"ui_cancel", 2)
+	check(_labels(t).has("New Game"), "ui_cancel returns to the main page")
+	check((_body_buttons(t)[t.focused_index()] as Button).text == "Labs & dev starts…", "focus back on the labs row")
+	await press_action(&"ui_cancel", 2)
+	check(t.is_open() and _labels(t).has("New Game"), "ui_cancel does nothing on the main page")
+
+
+func _body_buttons(m: MenuScreen) -> Array:
+	return m._body.get_children().filter(func(n: Node) -> bool: return n is Button and not n.is_queued_for_deletion())
+
+
+func test_first_run_row_gone_after_new_game() -> void:
+	var snap := Settings.snapshot()
+	var path := Settings._path
+	Settings._path = TEST_DIR + "/settings.cfg"
+	Settings.first_run = true
+	var t := _bare_title()
+	check(_labels(t).has("Comfort & accessibility"), "first run shows the row")
+	var c := (Game.ONBOARDING as OnboardingConfig).duplicate() as OnboardingConfig
+	c.enforce = true
+	c.campaign_start_room = ROOM_A
+	c.campaign_start_entry = &"start"
+	Game.onboarding = c
+	_button(t, "New Game").pressed.emit()
+	check(not Settings.first_run, "the first title action retires the row")
+	check(not FileAccess.file_exists(TEST_DIR + "/settings.cfg"), "only the real settings path is written")
+	t.open_menu()
+	check(not _labels(t).has("Comfort & accessibility"), "the row is gone")
+	while SceneRouter.transitioning:
+		await get_tree().process_frame
+	Settings._path = path
+	Settings.restore(snap)
+
+
+func test_settings_back_from_title_refocuses_settings_row() -> void:
+	var host := await _boot_main("")
+	var t := _title_of(host)
+	check(t.is_open(), "title up")
+	var settings_row := _labels(t).find("Settings")
+	t.focus_index(settings_row)
+	_button(t, "Settings").pressed.emit()
+	check(host.settings.is_open(), "settings open over the title")
+	var closes: Array = []
+	host.settings.closed.connect(func() -> void: closes.append(1))
+	host.settings.close_menu()
+	await get_tree().process_frame
+	check(t.focused_index() == settings_row, "focus returns to the Settings row (%d, want %d)" % [t.focused_index(), settings_row])
+	var handlers := host.settings.closed.get_connections().size()
+	check(handlers == 2, "one host handler plus this test's (%d)" % handlers)
+
+
+func test_pause_run_rows_with_force_active() -> void:
+	SceneRouter.goto_room(ROOM_A, &"start")
+	await physics_frames(2)
+	var pm: MenuScreen = _extra(load("res://ui/menus/PauseMenu.gd").new())
+	pm.open_menu()
+	check(_labels(pm).has("Map") and _labels(pm).has("Save & Quit to Title"), "normal rows %s" % [_labels(pm)])
+	pm.close_menu()
+	Challenges.force_active = true
+	pm.open_menu()
+	var labels := _labels(pm)
+	check(labels.has("Resume") and labels.has("Restart") and labels.has("Settings") and labels.has("Quit challenge"), "run rows %s" % [labels])
+	check(labels.any(func(l: String) -> bool: return l.begins_with("Ghost: ")), "ghost row")
+	check(not labels.has("Map") and not labels.has("Journal") and not labels.has("Save & Quit to Title"), "no map, journal or save in a run")
+	check(not labels.has("Restart descent"), "no descent restart without stages")
+	pm.close_menu()
+
+
+func test_save_and_quit_emits_to_title_once() -> void:
+	var host := await _boot_main(ROOM_A)
+	var t := _title_of(host)
+	var opens: Array = []
+	var early: Array = []
+	var watch := func() -> void:
+		if t.visible:
+			opens.append(1)
+			if SceneRouter.transitioning:
+				early.append(1)
+	t.visibility_changed.connect(watch)
+	check(host.open(&"pause"), "pause opens")
+	(host.pause as PauseMenu)._quit()
+	for i in 120:
+		await get_tree().process_frame
+		if not SceneRouter.transitioning and t.visible:
+			break
+	check(opens.size() == 1, "the title opens once (%d)" % opens.size())
+	check(early.is_empty(), "only after the transition")
+	check(FileAccess.file_exists(SaveManager.profile_path(1)), "Save & Quit saved")
+
+
+func test_dev_console_main_rows_le_page_rows() -> void:
+	var c: DevConsole = _extra(load("res://ui/menus/DevConsole.gd").new())
+	c.open_menu()
+	check(_labels(c).has("Endgame & build…"), "main page has the endgame hub")
+	check(_labels(c).size() <= DevConsole.PAGE_ROWS, "main page rows %d <= %d" % [_labels(c).size(), DevConsole.PAGE_ROWS])
+	var h := await menu_height(c)
+	check(h <= 270.0, "main page %.0f px" % h)
+	c.close_menu()
+
+
+func test_endgame_hub_fits() -> void:
+	var c: DevConsole = _extra(load("res://ui/menus/DevConsole.gd").new())
+	c.open_menu()
+	c.go(&"endgame")
+	var labels := _labels(c)
+	check(labels.has("Endgame state: Act I complete") and labels.has("Back") and labels.has("Close"), "hub rows %s" % [labels])
+	check(labels.size() <= DevConsole.PAGE_ROWS + 2, "hub rows fit")
+	var h := await menu_height(c)
+	check(h <= 270.0, "hub %.0f px" % h)
+	c.set_detail("detail")
+	check(c._detail != null and c._detail.text == "detail", "set_detail")
+	c.close_menu()
+
+
+func test_debug_overlay_providers() -> void:
+	DebugOverlay.clear_cache()
+	var p := func() -> PackedStringArray: return PackedStringArray(["M9 LINE"])
+	DebugOverlay.providers.append(p)
+	check(DebugOverlay.provider_lines().has("M9 LINE"), "provider lines drawn")
+	var owner := Node.new()
+	DebugOverlay.providers.append(Callable(owner, "get_class"))
+	owner.free()
+	DebugOverlay.provider_lines()
+	check(DebugOverlay.providers.size() == 1, "invalid providers are removed (%d)" % DebugOverlay.providers.size())
+	DebugOverlay.clear_cache()
+	check(DebugOverlay.providers.is_empty(), "clear_cache empties the list")
+
+
+func test_capture_session_resets_and_restores_m9_keys() -> void:
+	var tour: GDScript = load("res://devtools/CaptureTour.gd")
+	var none := PackedStringArray()
+	var before := Settings.snapshot()
+	Settings.ui_scale = 2
+	Settings.locale = "en_XA"
+	Settings.high_contrast = true
+	var snap: Dictionary = tour.prepare_session("slice", none)
+	check(Settings.ui_scale == 0 and Settings.locale == "" and not Settings.high_contrast, "M9 keys at defaults")
+	check(not Settings.achievement_toasts and not Settings.assist_suggestions and not Settings.first_run, "no toasts, offers or first run")
+	check(Platform.store_dir == "user://tour_sandbox/platform" and Platform.allow_headless, "platform store redirected")
+	check(Challenges.quiet_notices, "group notices quiet")
+	tour.restore_session(snap)
+	check(Settings.ui_scale == 2 and Settings.locale == "en_XA" and Settings.high_contrast, "originals restored")
+	check(Platform.store_dir == "user://platform" and not Platform.allow_headless and not Challenges.quiet_notices, "platform reset")
+	CinematicMode.set_mode(CinematicMode.Mode.INSTANT)
+	Settings.restore(before)
+
+
+func test_capture_session_keeps_tour_path_and_subtitle_override() -> void:
+	var tour: GDScript = load("res://devtools/CaptureTour.gd")
+	var none := PackedStringArray()
+	var override := Settings._subtitle_size_override
+	var path := Settings._path
+	Settings._subtitle_size_override = 2
+	var snap: Dictionary = tour.prepare_session("slice", none)
+	check(Settings._path == tour.TOUR_SETTINGS_PATH, "settings save to the tour file")
+	check(Settings._subtitle_size_override == 2, "the --subtitle-size override survives prepare")
+	tour.restore_session(snap)
+	check(Settings._path == path, "path restored")
+	Settings._subtitle_size_override = override
+	CinematicMode.set_mode(CinematicMode.Mode.INSTANT)
+
+
+func test_capture_session_wipes_tour_sandbox() -> void:
+	var tour: GDScript = load("res://devtools/CaptureTour.gd")
+	var none := PackedStringArray()
+	AtomicJson.write("user://tour_sandbox/platform/stale.json", {"x": 1})
+	var snap: Dictionary = tour.prepare_session("slice", none)
+	check(not FileAccess.file_exists("user://tour_sandbox/platform/stale.json"), "a stale sandbox file is wiped")
+	tour.restore_session(snap)
+	check(not DirAccess.dir_exists_absolute("user://tour_sandbox"), "restore leaves no user://tour_sandbox")
+	CinematicMode.set_mode(CinematicMode.Mode.INSTANT)

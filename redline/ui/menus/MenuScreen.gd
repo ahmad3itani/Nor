@@ -8,6 +8,8 @@ signal closed
 var _panel: PanelContainer
 var _body: VBoxContainer
 var _opened_frame: int = -1
+## MenuHost.context at open time; screens read ctx, never MenuHost.context, after open.
+var ctx: Dictionary = {}
 
 
 func _ready() -> void:

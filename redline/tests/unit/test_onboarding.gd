@@ -456,6 +456,9 @@ func test_pistol_drop_collected_from_platform() -> void:
 
 func test_debug_relay_start_entry_exists_in_debug() -> void:
 	var title := _title()
+	# M9: the debug starts and labs live on the title's labs sub-page.
+	title.set("_page", &"labs")
+	title.rebuild()
 	var labels: Array = title.find_children("*", "Button", true, false).map(func(b: Node) -> String: return (b as Button).text)
 	var has_entry := labels.has("Slice (Relay start)")
 	check(has_entry == OS.is_debug_build(), "debug relay entry should exist only in debug builds (buttons %s)" % [labels])

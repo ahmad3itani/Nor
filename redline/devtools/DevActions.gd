@@ -83,6 +83,17 @@ static func unlock_all() -> void:
 	EventBus.loadout_changed.emit()
 
 
+## M9 endgame start: the act1_complete story preset plus unlock-all, so NG+,
+## The Null and the challenge list can be reached without a playthrough.
+## null_open follows from act1_complete through Game.DERIVED_FLAGS (D-154);
+## this never sets it itself. The profile is dev-tainted (unlock_all): no
+## achievements are earned on it (D-145).
+static func apply_endgame_state() -> void:
+	StoryPresets.apply("act1_complete")
+	unlock_all()
+	EventBus.hint_requested.emit("DEV: Act I complete + unlock-all (no achievements)", 2.0)
+
+
 ## Boss id -> [room path, entry at the arena door]. The Collector's room is
 ## written as a format string: CollectorBay lands with the Undercity rooms,
 ## and the content scanner only checks literal paths.

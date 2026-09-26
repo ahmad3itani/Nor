@@ -1,3 +1,4 @@
+class_name DevConsole
 extends MenuScreen
 ## Dev console (bible §34 internal tools), ` (backquote) in debug builds.
 ## Controller-navigable like every menu; pages: main, teleport, spawn,
@@ -22,7 +23,16 @@ const PAGE_ROWS := 11
 const PARENT := {
 	&"seq": &"story", &"mem": &"story", &"presets": &"story", &"arcs": &"story",
 	&"endings": &"story", &"intros": &"story",
+	&"endgame": &"main", &"ach": &"endgame", &"chal": &"endgame", &"null": &"endgame", &"ngplus": &"endgame",
+	&"access": &"endgame", &"locale": &"endgame", &"demo": &"endgame",
 }
+## M9 pages: id -> [row label, page script in ui/menus/dev/]. Each script has
+## `static func build(c: DevConsole) -> void` and is listed only once its task
+## has landed it, so this file is edited once (T01).
+const M9_PAGES := {&"ach": ["Achievements…", "DevAchievementsPage"], &"chal": ["Challenges…", "DevChallengesPage"],
+	&"null": ["The Null…", "DevNullPage"], &"ngplus": ["NG+…", "DevNgPlusPage"],
+	&"access": ["Accessibility…", "DevAccessibilityPage"], &"locale": ["Locale…", "DevLocalePage"],
+	&"demo": ["Demo & build…", "DevDemoPage"]}
 const VIEW_NAMES := ["full", "repeat", "auto"]
 const BOSSES := [["collector_drone", "Collector Drone"], ["warden_krail", "Warden Krail"]]
 
@@ -82,25 +92,37 @@ func rebuild() -> void:
 			_endings_page()
 		&"intros":
 			_intros_page()
+		&"endgame":
+			_endgame_page()
 		_:
-			add_button("Teleport to room…", _go.bind(&"teleport"))
-			add_button("Spawn enemy…", _go.bind(&"spawn"))
-			add_button("Quick boss restart (Warden Krail)", func() -> void:
-				close_menu()
-				DevActions.quick_boss_restart("warden_krail"))
-			add_button("Quick boss restart (Collector Drone)", func() -> void:
-				close_menu()
-				DevActions.quick_boss_restart("collector_drone"))
-			add_button("Unlock-all debug profile", func() -> void:
-				DevActions.unlock_all()
-				EventBus.hint_requested.emit("DEV: everything unlocked", 1.5))
-			add_button("Save-state inspector…", _go.bind(&"state"))
-			add_button("Story…", _go.bind(&"story"))
-			add_button("Hitboxes: %s" % ("on" if is_instance_valid(hitboxes) else "off"), _toggle_hitboxes)
-			add_button("Performance graph: %s" % ("on" if is_instance_valid(perf) else "off"), _toggle_perf)
+			if M9_PAGES.has(page):
+				var script := _m9_page_script(page)
+				if script:
+					script.call("build", self)
+			else:
+				_main_page()
 	if page != &"main":
 		add_button("Back", _go.bind(PARENT.get(page, &"main")))
 	add_button("Close", close_menu)
+
+
+func _main_page() -> void:
+	add_button("Teleport to room…", _go.bind(&"teleport"))
+	add_button("Spawn enemy…", _go.bind(&"spawn"))
+	add_button("Quick boss restart (Warden Krail)", func() -> void:
+		close_menu()
+		DevActions.quick_boss_restart("warden_krail"))
+	add_button("Quick boss restart (Collector Drone)", func() -> void:
+		close_menu()
+		DevActions.quick_boss_restart("collector_drone"))
+	add_button("Unlock-all debug profile", func() -> void:
+		DevActions.unlock_all()
+		EventBus.hint_requested.emit("DEV: everything unlocked", 1.5))
+	add_button("Save-state inspector…", _go.bind(&"state"))
+	add_button("Story…", _go.bind(&"story"))
+	add_button("Endgame & build…", _go.bind(&"endgame"))
+	add_button("Hitboxes: %s" % ("on" if is_instance_valid(hitboxes) else "off"), _toggle_hitboxes)
+	add_button("Performance graph: %s" % ("on" if is_instance_valid(perf) else "off"), _toggle_perf)
 
 
 func _title() -> String:
@@ -117,6 +139,10 @@ func _title() -> String:
 			return "ENDING THEATRE"
 		&"intros":
 			return "BOSS INTROS"
+		&"endgame":
+			return "ENDGAME & BUILD"
+	if M9_PAGES.has(page):
+		return String(M9_PAGES[page][0]).trim_suffix("…").to_upper()
 	return String(page).to_upper()
 
 
@@ -142,6 +168,23 @@ func _add_rows(rows: Array) -> void:
 		if not press.is_valid():
 			press = func() -> void: pass
 		add_button(r[0], press, r[2] if r.size() > 2 else Callable(), r[3] if r.size() > 3 else true)
+
+
+# --- Public helpers for the M9 page scripts (ui/menus/dev/Dev*Page.gd) ---------
+
+func add_rows(rows: Array) -> void:
+	_add_rows(rows)
+
+
+func go(p: StringName) -> void:
+	_go(p)
+
+
+## A muted detail line under the rows (created on first use per rebuild).
+func set_detail(text: String) -> void:
+	if not is_instance_valid(_detail):
+		_detail = add_label("", UiTheme.MUTED, UiTheme.FONT_SIZE - 2)
+	_detail.text = text
 
 
 func _next_list_page() -> void:
@@ -312,6 +355,24 @@ func _show_explain(id: String) -> void:
 func _play_ending_row(id: String) -> void:
 	close_menu()
 	(func() -> void: DevActions.play_ending(id)).call_deferred()
+
+
+# --- Endgame & build hub (M9) -------------------------------------------------------
+
+func _m9_page_script(id: StringName) -> GDScript:
+	var path := "res://ui/menus/dev/%s.gd" % M9_PAGES[id][1]
+	return load(path) as GDScript if ResourceLoader.exists(path) else null
+
+
+func _endgame_page() -> void:
+	for id: StringName in M9_PAGES:
+		if _m9_page_script(id):
+			add_button(M9_PAGES[id][0], _go.bind(id))
+	add_button("Endgame state: Act I complete", func() -> void:
+		DevActions.apply_endgame_state()
+		_refresh())
+	add_label("platform %s · build %s · %s" % [("on" if Platform.active() else "off"), BuildInfo.label(), BuildInfo.kind()],
+		UiTheme.MUTED, UiTheme.FONT_SIZE - 2)
 
 
 func _intros_page() -> void:

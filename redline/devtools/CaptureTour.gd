@@ -8,8 +8,6 @@ const MAIN := preload("res://Main.tscn")
 ## Settings the tour may save (--tour=ui closes the SettingsMenu, which always
 ## saves): never the developer's user://settings.cfg.
 const TOUR_SETTINGS_PATH := "user://capture_tour_settings.cfg"
-const _M8_SETTING_KEYS := ["subtitle_size", "subtitle_background", "speaker_labels", "subtitle_speed",
-	"cinematic_skip_hold", "memories_at_anchors"]
 
 var _out_dir := "user://captures"
 var _tour_name := "movement"
@@ -60,22 +58,37 @@ func _ready() -> void:
 ##   says otherwise. Tours run windowed (PLAY by default), so the Wake opening
 ##   would black out uc_Wake_start and the "mid-fight" shots would land inside
 ##   the first-view boss intros; INSTANT keeps the M7 review frames.
-## - settings: the six M8 subtitle/scene settings take their defaults for the
-##   session (a --subtitle-size=N override still applies), and Settings saves
-##   to TOUR_SETTINGS_PATH, so neither the developer's settings leak into the
+## - settings: every stored setting (M9: all of them, the six M8
+##   subtitle/scene settings included) takes its default for the session (a
+##   --subtitle-size=N override still applies), and Settings saves to
+##   TOUR_SETTINGS_PATH, so neither the developer's settings leak into the
 ##   frames nor the tour into the developer's settings.
+## - platform (M9): toasts and assist offers off, the platform store in a
+##   wiped user://tour_sandbox.
 ## Returns the snapshot restore_session() puts back.
 static func prepare_session(tour: String, args: PackedStringArray) -> Dictionary:
-	var snap := {"_path": Settings._path}
-	for k in _M8_SETTING_KEYS:
-		snap[k] = Settings.get(k)
+	# M9: every stored setting takes its default first (the M8 keys below
+	# included), then the session fields: the tour path, first_run off.
+	var snap := Settings.snapshot()
+	snap["_path"] = Settings._path
+	snap["first_run"] = Settings.first_run
+	Settings.apply_defaults()
 	Settings._path = TOUR_SETTINGS_PATH
+	Settings.first_run = false
 	Settings.subtitle_size = 0
 	Settings.subtitle_background = 1
 	Settings.speaker_labels = true
 	Settings.subtitle_speed = 0
 	Settings.cinematic_skip_hold = true
 	Settings.memories_at_anchors = true
+	# No toasts, assist cards or group notices in frames, and nothing written
+	# to the developer's user://platform: a wiped sandbox store per run, so
+	# every run starts with no unlocks or records (deterministic diffs).
+	Settings.achievement_toasts = false
+	Settings.assist_suggestions = false
+	Challenges.quiet_notices = true
+	AtomicJson.remove_tree("user://tour_sandbox")
+	Platform.reset_for_tests("user://tour_sandbox/platform")
 	var mode := tour_cinematic_mode(tour, args)
 	if mode >= 0:
 		CinematicMode.set_mode(mode as CinematicMode.Mode)
@@ -100,6 +113,9 @@ static func tour_cinematic_mode(tour: String, args: PackedStringArray) -> int:
 static func restore_session(snap: Dictionary) -> void:
 	for k in snap:
 		Settings.set(k, snap[k])
+	Challenges.quiet_notices = false
+	Platform.reset_after_tests()
+	AtomicJson.remove_tree("user://tour_sandbox")
 
 
 func _quit() -> void:

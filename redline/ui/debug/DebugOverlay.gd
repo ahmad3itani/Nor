@@ -1,9 +1,14 @@
+class_name DebugOverlay
 extends CanvasLayer
 ## Live telemetry (bible §38.8, §37.5): movement, combat, core and style, plus
 ## the world state in slice rooms (Scrap, Anchor, Circuits, quests, secrets).
 ## Renders at native resolution above the pixel viewport. Toggle: F1 / L3.
 
 const FONT_SIZE := 5
+## M9: extra line sources (platform, challenges, locale...). Each returns a
+## PackedStringArray drawn after the built-in lines; freed owners' Callables
+## turn invalid and are dropped.
+static var providers: Array[Callable] = []
 
 var _player: Player
 var _spawn_label: String = ""
@@ -59,6 +64,7 @@ func _build_text() -> String:
 		"ON" if get_tree().physics_interpolation else "off"])
 	lines.append_array(story_lines())
 	if _player == null or not is_instance_valid(_player):
+		lines.append_array(provider_lines())
 		return "\n".join(lines)
 	var p := _player
 	var m := p.metrics
@@ -84,6 +90,7 @@ func _build_text() -> String:
 	lines.append("[F1] overlay [R] reset [Tab] station [F2] dash [F3] tune [F4] slowmo")
 	lines.append("[F5] reload [F6] preset [F7] interp [F8] tick rate")
 	lines.append("[F9] ranged [F10] enemies [F11] core mode [F12] switch lab")
+	lines.append_array(provider_lines())
 	return "\n".join(lines)
 
 
@@ -125,3 +132,20 @@ static func story_lines() -> PackedStringArray:
 
 func _yn(b: bool) -> String:
 	return "Y" if b else "-"
+
+
+## Lines from every valid provider; invalid Callables are removed.
+static func provider_lines() -> PackedStringArray:
+	var out := PackedStringArray()
+	for c in providers.duplicate():
+		if not c.is_valid():
+			providers.erase(c)
+			continue
+		var v: Variant = c.call()
+		if v is PackedStringArray:
+			out.append_array(v)
+	return out
+
+
+static func clear_cache() -> void:
+	providers.clear()
