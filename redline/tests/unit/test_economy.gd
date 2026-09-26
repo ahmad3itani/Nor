@@ -58,3 +58,26 @@ func test_undercity_income_as_audited() -> void:
 		check(int(u.get(k, -1)) == want[k], "undercity %s is %d, audited %d" % [k, int(u.get(k, -1)), want[k]])
 	var dormant := load("res://data/enemies/needle_dormant.tres") as EnemyData
 	check(dormant.scrap_drop == 0, "the dormant Needle must drop nothing (%d)" % dormant.scrap_drop)
+
+
+## M9 NG+ (D-155, R09.2, R09.11): one NG+ cycle with the remix on pays no
+## more than the base game. Swapped or re-tuned enemies keep their base drop
+## and added ones drop nothing, so a re-clear pays exactly the base; plain
+## bundles stay taken and secret stashes pay a quarter, so the cycle's
+## one-time income is below the first run's (nothing is paid twice in full).
+## The refilled stashes stay under the re-clear cap as well.
+func test_remix_never_inflates_economy() -> void:
+	var base := EconomyAudit.compute()
+	var ng := EconomyAudit.compute(true)
+	print("ECONOMY_NG %s" % JSON.stringify({"per_clear": ng["per_clear"], "one_time": ng["one_time"], "bundles": ng["bundles"],
+		"ng_secret_bundles": ng["ng_secret_bundles"], "base_per_clear": base["per_clear"], "base_one_time": base["one_time"]}))
+	check(int(ng["per_clear"]) <= int(base["per_clear"]), "NG+ re-clear pays %d, base %d" % [ng["per_clear"], base["per_clear"]])
+	check(int(ng["per_clear"]) == int(base["per_clear"]), "remix on is no hidden Scrap penalty either (R09.11): %d vs %d" % [ng["per_clear"], base["per_clear"]])
+	check(int(ng["one_time"]) <= int(base["one_time"]), "NG+ one-time %d is not above base %d" % [ng["one_time"], base["one_time"]])
+	check(int(ng["bundles"]) < int(base["bundles"]), "no bundle is paid again in full (%d of %d)" % [ng["bundles"], base["bundles"]])
+	check(int(ng["bundles"]) == int(ng["ng_secret_bundles"]), "only secret stashes pay in NG+ (%d vs %d)" % [ng["bundles"], ng["ng_secret_bundles"]])
+	check(int(ng["boss"]) == int(base["boss"]), "the bosses pay as in the first run")
+	check(int(ng["ng_secret_bundles"]) > 0, "secret stashes refill with some Scrap")
+	check(float(ng["ng_secret_bundles"]) <= 0.15 * float(base["sinks"]), "refilled stashes stay under the re-clear cap (%d)" % ng["ng_secret_bundles"])
+	# The audit forces each remix on its own copy; nothing stays forced.
+	check(not RemixLibrary.force_active, "compute(true) does not flip the global force")
