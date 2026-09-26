@@ -4,6 +4,10 @@ extends Resource
 ## knobs live on the behavior node in the variant scene; everything the shared
 ## Enemy body needs lives here.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"display_name": 32}
+
 @export var id: StringName
 @export var display_name: String = ""
 

@@ -14,9 +14,10 @@ extends Interactable
 ## - something unlocked: lit, prompt "Training rig", opens the Challenges
 ##   list with this room's "challenges" spawn as the return point.
 
-## The prompt is the literal in prompt_text() (Loc); nothing else is shown.
-const LOC_FIELDS := {}
-const LOC_EXEMPT := ["prompt_verb"]
+## Localization: Interactable.LOC_FIELDS covers prompt_verb (a subclass may
+## not redeclare it on 4.3); the prompt itself is the Loc literal in
+## prompt_text(), and nothing else here is shown.
+
 ## Where a run started here brings Rook back (a SpawnMarker in this room).
 const RETURN_ENTRY := &"challenges"
 

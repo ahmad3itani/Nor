@@ -12,6 +12,9 @@ extends Resource
 ##   music) are therefore never lost to a skip.
 ## - Steps are shared Resources: per-play state goes in p.memo(), never here.
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (dev labels and conditions)
+const LOC_EXEMPT := ["label", "only_when"]
+
 @export var label: String = ""
 ## Which views play this step: a first view (seen flag unset or the context
 ## says first) or a repeat view.

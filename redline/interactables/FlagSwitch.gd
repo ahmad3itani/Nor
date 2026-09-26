@@ -3,6 +3,10 @@ class_name FlagSwitch
 extends Interactable
 ## One-way switch that sets a flag (shortcut levers, lifts).
 
+## Localization (D5 §4.1): Interactable declares prompt_verb; a subclass adds
+## fields through LOC_FIELDS_EXTRA (a constant cannot be redeclared in 4.3).
+const LOC_FIELDS_EXTRA := {"used_text": 110}
+
 @export var flag_id: String = ""
 @export var used_text: String = ""
 

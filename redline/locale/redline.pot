@@ -14,6 +14,23 @@ msgstr ""
 msgid "New at the Relay training rig: {group}"
 msgstr ""
 
+#. key: bosses/BossArena.gd::boss_title
+#. key: data/sequences/speakers.tres::labels[2]
+#. key: world/rooms/challenge/NullFloor.tscn::Triggers/BossArena.boss_title
+#. BossArena
+#. SpeakerTable
+#. max 24 chars
+#: bosses/BossArena.gd data/sequences/speakers.tres world/rooms/challenge/NullFloor.tscn
+msgid "WARDEN KRAIL"
+msgstr ""
+
+#. key: bosses/BossArena.gd::boss_subtitle
+#. BossArena
+#. max 40 chars
+#: bosses/BossArena.gd
+msgid "Lowlight Enforcement"
+msgstr ""
+
 #. key: challenges/ChallengeGoal.gd::Loc.t
 #: challenges/ChallengeGoal.gd
 msgid "Goal"
@@ -30,12 +47,14 @@ msgid "Run over: Core ran dry"
 msgstr ""
 
 #. key: challenges/RuleWatch.gd::Loc.t
-#: challenges/RuleWatch.gd
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: challenges/RuleWatch.gd ui/menus/ChallengeResultMenu.gd
 msgid "Run over: hit taken"
 msgstr ""
 
 #. key: challenges/RuleWatch.gd::Loc.t
-#: challenges/RuleWatch.gd
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: challenges/RuleWatch.gd ui/menus/ChallengeResultMenu.gd
 msgid "Run over: attack used"
 msgstr ""
 
@@ -69,10 +88,1092 @@ msgstr ""
 msgid "This room has stopped you a few times."
 msgstr ""
 
-#. key: data/challenges/challenge_config.tres::group_titles[0]
-#. ChallengeConfig
+#. key: data/achievements/act1_complete.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/act1_complete.tres
+msgid "Run"
+msgstr ""
+
+#. key: data/achievements/act1_complete.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/act1_complete.tres
+msgid "Finish Act I."
+msgstr ""
+
+#. key: data/achievements/all_fragments.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/all_fragments.tres
+msgid "What Was Taken"
+msgstr ""
+
+#. key: data/achievements/all_fragments.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/all_fragments.tres
+msgid "Recover every memory fragment in Act I."
+msgstr ""
+
+#. key: data/achievements/all_secrets.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/all_secrets.tres
+msgid "Nothing Left Hidden"
+msgstr ""
+
+#. key: data/achievements/all_secrets.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/all_secrets.tres
+msgid "Find every secret in Act I."
+msgstr ""
+
+#. key: data/achievements/all_shards.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/all_shards.tres
+msgid "Full Capacity"
+msgstr ""
+
+#. key: data/achievements/all_shards.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/all_shards.tres
+msgid "Collect every Core Shard in Act I."
+msgstr ""
+
+#. key: data/achievements/chart_lowlight.tres::title
+#. key: data/npcs/nix.tres::map_label
+#. AchievementData
+#. NpcProfile
 #. max 24 chars
-#: data/challenges/challenge_config.tres
+#: data/achievements/chart_lowlight.tres data/npcs/nix.tres
+msgid "Cartographer"
+msgstr ""
+
+#. key: data/achievements/chart_lowlight.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/chart_lowlight.tres
+msgid "Complete “Chart Lowlight”."
+msgstr ""
+
+#. key: data/achievements/circuits_8.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/circuits_8.tres
+msgid "Tinkerer"
+msgstr ""
+
+#. key: data/achievements/circuits_8.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/circuits_8.tres
+msgid "Own eight Circuits."
+msgstr ""
+
+#. key: data/achievements/clamp_krail.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/clamp_krail.tres
+msgid "Dropped the Grid"
+msgstr ""
+
+#. key: data/achievements/clamp_krail.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/clamp_krail.tres
+msgid "Stagger Warden Krail with a Grid Clamp."
+msgstr ""
+
+#. key: data/achievements/clean_getaway.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/clean_getaway.tres
+msgid "Clean Getaway"
+msgstr ""
+
+#. key: data/achievements/clean_getaway.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/clean_getaway.tres
+msgid "Finish the Rainline chase without being caught."
+msgstr ""
+
+#. key: data/achievements/close_call.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/close_call.tres
+msgid "Under the Wire"
+msgstr ""
+
+#. key: data/achievements/close_call.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/close_call.tres
+msgid "Slip under a power shutter at the last moment."
+msgstr ""
+
+#. key: data/achievements/collector_down.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/collector_down.tres
+msgid "Debt Collected"
+msgstr ""
+
+#. key: data/achievements/collector_down.tres::description
+#. key: data/challenges/br_collector.tres::locked_hint
+#. key: data/challenges/br_collector_nohit.tres::locked_hint
+#. key: data/challenges/mo_maintenance_shaft.tres::locked_hint
+#. key: data/challenges/tt_first_pursuit.tres::locked_hint
+#. AchievementData
+#. ChallengeData
+#. max 60 chars
+#: data/achievements/collector_down.tres data/challenges/br_collector.tres data/challenges/br_collector_nohit.tres data/challenges/mo_maintenance_shaft.tres data/challenges/tt_first_pursuit.tres
+msgid "Defeat the Collector Drone."
+msgstr ""
+
+#. key: data/achievements/collector_nohit.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/collector_nohit.tres
+msgid "Untouched: Collector"
+msgstr ""
+
+#. key: data/achievements/collector_nohit.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/collector_nohit.tres
+msgid "Defeat the Collector Drone without taking a hit."
+msgstr ""
+
+#. key: data/achievements/dash_ledges.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/dash_ledges.tres
+msgid "Just Out of Reach"
+msgstr ""
+
+#. key: data/achievements/dash_ledges.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/dash_ledges.tres
+msgid "Reach the three ledges only the Dash can reach."
+msgstr ""
+
+#. key: data/achievements/dead_air.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/dead_air.tres
+msgid "Dead Air, Live Again"
+msgstr ""
+
+#. key: data/achievements/dead_air.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/dead_air.tres
+msgid "Complete “Dead Air”."
+msgstr ""
+
+#. key: data/achievements/depth.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/depth.tres
+msgid "Depth"
+msgstr ""
+
+#. key: data/achievements/depth.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/depth.tres
+msgid "Reach the bottom of the training rig."
+msgstr ""
+
+#. key: data/achievements/depth.tres::hint_when_hidden
+#. AchievementData
+#. max 90 chars
+#: data/achievements/depth.tres
+msgid "The rig at the Relay goes deeper than it looks."
+msgstr ""
+
+#. key: data/achievements/first_blade.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/first_blade.tres
+msgid "Armed and Awake"
+msgstr ""
+
+#. key: data/achievements/first_blade.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/first_blade.tres
+msgid "Take up the Pulse Blade."
+msgstr ""
+
+#. key: data/achievements/first_secret.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/first_secret.tres
+msgid "Under the Floorboards"
+msgstr ""
+
+#. key: data/achievements/first_secret.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/first_secret.tres
+msgid "Find a secret."
+msgstr ""
+
+#. key: data/achievements/intake_log.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/intake_log.tres
+msgid "Intake"
+msgstr ""
+
+#. key: data/achievements/intake_log.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/intake_log.tres
+msgid "Read the Undercity intake log."
+msgstr ""
+
+#. key: data/achievements/intake_log.tres::hint_when_hidden
+#. AchievementData
+#. max 90 chars
+#: data/achievements/intake_log.tres
+msgid "Not every terminal in the Undercity is dead."
+msgstr ""
+
+#. key: data/achievements/krail_down.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/krail_down.tres
+msgid "Warden Down"
+msgstr ""
+
+#. key: data/achievements/krail_down.tres::description
+#. key: data/challenges/br_krail.tres::locked_hint
+#. key: data/challenges/br_krail_nohit.tres::locked_hint
+#. key: data/challenges/nh_security_station.tres::locked_hint
+#. key: data/challenges/tt_neon_roofs.tres::locked_hint
+#. key: data/challenges/tt_rainline.tres::locked_hint
+#. AchievementData
+#. ChallengeData
+#. max 60 chars
+#: data/achievements/krail_down.tres data/challenges/br_krail.tres data/challenges/br_krail_nohit.tres data/challenges/nh_security_station.tres data/challenges/tt_neon_roofs.tres data/challenges/tt_rainline.tres
+msgid "Defeat Warden Krail."
+msgstr ""
+
+#. key: data/achievements/krail_nohit.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/krail_nohit.tres
+msgid "Untouched: Krail"
+msgstr ""
+
+#. key: data/achievements/krail_nohit.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/krail_nohit.tres
+msgid "Defeat Warden Krail without taking a hit."
+msgstr ""
+
+#. key: data/achievements/look_closer.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/look_closer.tres
+msgid "Look Closer"
+msgstr ""
+
+#. key: data/achievements/look_closer.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/look_closer.tres
+msgid "Find a hidden detail in a memory."
+msgstr ""
+
+#. key: data/achievements/look_closer.tres::hint_when_hidden
+#. AchievementData
+#. max 90 chars
+#: data/achievements/look_closer.tres
+msgid "Memories hold more than they show."
+msgstr ""
+
+#. key: data/achievements/orr_on_air.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/orr_on_air.tres
+msgid "On the Air"
+msgstr ""
+
+#. key: data/achievements/orr_on_air.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/orr_on_air.tres
+msgid "Help Orr get back on the air."
+msgstr ""
+
+#. key: data/achievements/perfect_reads.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/perfect_reads.tres
+msgid "Perfect Read"
+msgstr ""
+
+#. key: data/achievements/perfect_reads.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/perfect_reads.tres
+msgid "Perfect-dodge 10 attacks."
+msgstr ""
+
+#. key: data/achievements/reach_relay.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/reach_relay.tres
+msgid "Signal in the Rain"
+msgstr ""
+
+#. key: data/achievements/reach_relay.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/reach_relay.tres
+msgid "Reach the Relay."
+msgstr ""
+
+#. key: data/achievements/remembered_all.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/remembered_all.tres
+msgid "I Remember"
+msgstr ""
+
+#. key: data/achievements/remembered_all.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/remembered_all.tres
+msgid "Remember every memory in Act I."
+msgstr ""
+
+#. key: data/achievements/second_run.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/second_run.tres
+msgid "Second Run"
+msgstr ""
+
+#. key: data/achievements/second_run.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/second_run.tres
+msgid "Finish Act I in New Game+."
+msgstr ""
+
+#. key: data/achievements/style_redline.tres::title
+#. key: data/endings/credits.tres::sections[0].heading
+#. key: data/endings/redline.tres::title
+#. key: data/sequences/ending_redline.tres::steps[6].title
+#. AchievementData
+#. CreditsSection
+#. EndingData
+#. SeqTitleCard
+#. max 32 chars
+#: data/achievements/style_redline.tres data/endings/credits.tres data/endings/redline.tres data/sequences/ending_redline.tres
+msgid "REDLINE"
+msgstr ""
+
+#. key: data/achievements/style_redline.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/style_redline.tres
+msgid "Reach Style REDLINE."
+msgstr ""
+
+#. key: data/achievements/style_s.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/style_s.tres
+msgid "Stylish"
+msgstr ""
+
+#. key: data/achievements/style_s.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/style_s.tres
+msgid "Reach Style S."
+msgstr ""
+
+#. key: data/achievements/top_marks.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/top_marks.tres
+msgid "Top Marks"
+msgstr ""
+
+#. key: data/achievements/top_marks.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/top_marks.tres
+msgid "Earn a Silver medal or better in any challenge."
+msgstr ""
+
+#. key: data/achievements/use_the_city.tres::title
+#. AchievementData
+#. max 32 chars
+#: data/achievements/use_the_city.tres
+msgid "Use the City"
+msgstr ""
+
+#. key: data/achievements/use_the_city.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/use_the_city.tres
+msgid "Defeat an enemy with the environment."
+msgstr ""
+
+#. key: data/achievements/way_up.tres::title
+#. key: data/quests/way_up.tres::title
+#. AchievementData
+#. QuestData
+#. max 32 chars
+#: data/achievements/way_up.tres data/quests/way_up.tres
+msgid "The Way Up"
+msgstr ""
+
+#. key: data/achievements/way_up.tres::description
+#. AchievementData
+#. max 90 chars
+#: data/achievements/way_up.tres
+msgid "Complete “The Way Up”."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[0].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_iko.tres
+msgid "Smuggler. Set up at the Relay. Everything fell off a truck."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::reactions[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_iko.tres::reactions[0].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_iko.tres::stages[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_iko.tres::stages[0].beat_rules[1].dialogue.lines[0].speaker
+#. key: data/arcs/arc_iko.tres::stages[0].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_iko.tres::stages[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_iko.tres::stages[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_iko.tres::stages[1].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/iko.tres::display_name
+#. key: data/npcs/iko.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/iko.tres::rules[0].dialogue.lines[1].speaker
+#. key: data/npcs/iko.tres::rules[1].dialogue.lines[0].speaker
+#. DialogueLine · speaker: Iko
+#. NpcProfile
+#. max 24 chars
+#: data/arcs/arc_iko.tres data/npcs/iko.tres
+msgid "Iko"
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Told you I'd move in. The Relay has a roof and fewer Wardens. Mostly I came for the roof."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[0].beat_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Orr talks. Saves me the speech. Iko. I move what the Wardens don't want moved."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[0].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Rent's paid. Browse."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[1].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_iko.tres
+msgid "Has Krail's trucks now. Won't open the crates tagged SPIRE."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Krail's gone, so his trucks are mine now. Most of the crates, anyway."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "The ones tagged SPIRE stay shut. Rule of the trade: the Spire always comes to collect."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::stages[1].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Spire crates stay shut. Everything else is for sale."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::reactions[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Somebody cracked the back wall of my den. Heavy hands."
+msgstr ""
+
+#. key: data/arcs/arc_iko.tres::reactions[0].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/arcs/arc_iko.tres
+msgid "Keep what you found. Call it rent on the Relay."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[0].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_mara.tres
+msgid "Mechanic. Knows what the Core is. Won't say how she knows."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::reactions[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_mara.tres::reactions[0].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_mara.tres::reactions[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_mara.tres::reactions[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_mara.tres::stages[0].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[2].speaker
+#. key: data/arcs/arc_mara.tres::stages[1].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_mara.tres::stages[1].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/mara.tres::display_name
+#. key: data/npcs/mara.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/mara.tres::rules[0].dialogue.lines[1].speaker
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[1].speaker
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[2].speaker
+#. key: data/npcs/mara.tres::rules[2].dialogue.lines[0].speaker
+#. DialogueLine · speaker: Mara
+#. NpcProfile
+#. max 24 chars
+#: data/arcs/arc_mara.tres data/npcs/mara.tres
+msgid "Mara"
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[0].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "Orr's radio works again. Now he'll never stop talking. What do you need?"
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_mara.tres
+msgid "Wants the Core on her bench. Just a look, she says."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "Krail's dead and you're not. I'll take those odds every day."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "That dash module you pulled off him - don't let it pull you."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].beat_rules[0].dialogue.lines[2].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "When you're steady, I want that Core on my bench. Just a look."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "What I told you stays at this bench. Now, what do you need?"
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::stages[1].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "Bench is clear whenever you are. Until then: weapons, fixes."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::reactions[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "You keep drifting off mid-sentence. Where do you go?"
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::reactions[0].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "If you start seeing things, tell me. Not Orr. Me."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::reactions[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "Hold still. That scar's careful stitching. Somebody wanted you to live."
+msgstr ""
+
+#. key: data/arcs/arc_mara.tres::reactions[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/arcs/arc_mara.tres
+msgid "I've seen one of these Cores before. Once. It wasn't in a person then."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[0].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_nix.tres
+msgid "Cartographer. The city keeps moving. Nix keeps up."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::reactions[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::reactions[0].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_nix.tres::reactions[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::reactions[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[2].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::stages[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_nix.tres::stages[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_nix.tres::stages[1].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/nix.tres::display_name
+#. key: data/npcs/nix.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/nix.tres::rules[0].dialogue.lines[1].speaker
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[1].speaker
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[2].speaker
+#. key: data/npcs/nix.tres::rules[2].dialogue.lines[0].speaker
+#. key: data/quests/chart_lowlight.tres::giver
+#. key: data/quests/chart_lowlight.tres::stages[1].map_note
+#. DialogueLine · speaker: Nix
+#. NpcProfile
+#. QuestData
+#. QuestStage
+#. max 24 chars
+#: data/arcs/arc_nix.tres data/npcs/nix.tres data/quests/chart_lowlight.tres
+msgid "Nix"
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "My map's better than the Wardens' now. Don't tell them."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Found me another room? Tell me where. I'll pretend I knew."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[0].idle_rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Back again. You're the only one here who looks at the map before they get lost."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[1].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_nix.tres
+msgid "Warden Tower is on every map. Nix wants to know who draws them."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Warden Tower is on every map I own. Official ones too. Nothing else in Lowlight holds still."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Someone upstairs wants it found. I'd like to know who draws their maps."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::stages[1].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Still thinking about that tower. Maps, lenses, tickets?"
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::reactions[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "You keep finding rooms I never drew. That's either a gift or a bad habit."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::reactions[0].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Tell me where they are. I'll pretend I knew."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::reactions[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Heard Krail kept books. Books mean someone reads them."
+msgstr ""
+
+#. key: data/arcs/arc_nix.tres::reactions[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/arcs/arc_nix.tres
+msgid "Maps and ledgers. Somewhere upstairs, they end up on the same desk."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[0].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_orr.tres
+msgid "Radio. Hears everything in Lowlight, repeats most of it."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::reactions[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_orr.tres::reactions[0].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[1].dialogue.lines[1].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[0].reply[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[1].reply[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_orr.tres::stages[1].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::display_name
+#. key: data/npcs/orr.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[1].speaker
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[2].speaker
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[1].speaker
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[2].speaker
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[0].speaker
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[1].speaker
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[2].speaker
+#. key: data/npcs/orr_radio.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[3].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[3].dialogue.lines[1].speaker
+#. key: data/npcs/orr_radio.tres::rules[4].dialogue.lines[0].speaker
+#. key: data/quests/dead_air.tres::giver
+#. key: data/quests/dead_air.tres::stages[1].map_note
+#. DialogueLine · speaker: Orr
+#. NpcProfile
+#. QuestData
+#. QuestStage
+#. max 24 chars
+#: data/arcs/arc_orr.tres data/npcs/orr.tres data/npcs/orr_radio.tres data/quests/dead_air.tres
+msgid "Orr"
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Hear that? Lowlight's talking again. Rumors, patrol chatter, somebody singing badly on a rooftop."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Every voice out there is a direction. You bring me more antennas, I'll bring you more city."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Three repeaters. One on the Market roofs, one inside the Apartment Stack, one on the Bell Tower."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[0].idle_rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "They're old. Hit them with your shoulder if you have to. Hit them gently."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_orr.tres
+msgid "Krail's dead. Orr asked what Lowlight should hear."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Krail's patrol band is still dead. Lowlight's already guessing who."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "I can tell Lowlight it was you. Or I let them keep guessing. Your call."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[0].label
+#. DialogueChoice
+#. max 48 chars
+#: data/arcs/arc_orr.tres
+msgid "Put it on the air."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[0].reply[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Then Lowlight knows it was you. So do the Wardens."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[1].label
+#. DialogueChoice
+#. max 48 chars
+#: data/arcs/arc_orr.tres
+msgid "Let them guess."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].beat_rules[0].dialogue.choices[1].reply[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "A ghost, then. Ghosts get rumors, not posters."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Every Warden band has your description now. Keep moving."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::stages[1].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Latest rumor: Krail slipped off his own tower. Nobody believes it."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::reactions[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Board picked up tapping on an old pipe line. Three short, three long."
+msgstr ""
+
+#. key: data/arcs/arc_orr.tres::reactions[0].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/arcs/arc_orr.tres
+msgid "Old crew call sign. Means 'still here'. Haven't heard it in years."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[0].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_vell.tres
+msgid "Circuit broker. Sells lies to the Core, at a markup."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[0].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_vell.tres::reactions[0].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_vell.tres::reactions[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_vell.tres::reactions[2].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_vell.tres::reactions[2].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_vell.tres::stages[0].idle_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_vell.tres::stages[1].beat_rules[0].dialogue.lines[0].speaker
+#. key: data/arcs/arc_vell.tres::stages[1].beat_rules[0].dialogue.lines[1].speaker
+#. key: data/arcs/arc_vell.tres::stages[1].idle_rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/vell.tres::display_name
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[1].speaker
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[2].speaker
+#. key: data/npcs/vell.tres::rules[1].dialogue.lines[0].speaker
+#. DialogueLine · speaker: Vell
+#. NpcProfile
+#. max 24 chars
+#: data/arcs/arc_vell.tres data/npcs/vell.tres
+msgid "Vell"
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[0].idle_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "My best customer. I'm still not asking what you are."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[1].journal_note
+#. NpcArcStage
+#. max 90 chars
+#: data/arcs/arc_vell.tres
+msgid "Krail's supply line is dead. Vell isn't sorry, just short."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Krail's dead, so my supply line is too. His tower moved everything the Spire threw away."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[1].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Circuits come from somewhere. I never asked where. Don't you start."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::stages[1].idle_rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Stock's thin since Krail. Capacity's still the only real currency."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[0].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Your Core keeps making room. Most rigs cap out and start smoking."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[0].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "I'm not asking what you are. I'm writing it down."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[1].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Orr's radio is back. Radios mean customers. I've put out the good stock."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[2].beat_rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "Krail's people asked me once about a Core that never caps out. Was I holding one."
+msgstr ""
+
+#. key: data/arcs/arc_vell.tres::reactions[2].beat_rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/arcs/arc_vell.tres
+msgid "I said no. I say no a lot."
+msgstr ""
+
+#. key: data/challenges/br_collector.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/br_collector.tres
+msgid "Collector Drone — Rematch"
+msgstr ""
+
+#. key: data/challenges/br_collector.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/br_collector.tres
+msgid "The Collector Drone again, from the lift. The clock starts with the fight."
+msgstr ""
+
+#. key: data/challenges/br_collector_nohit.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/br_collector_nohit.tres
+msgid "Collector Drone — No Hit"
+msgstr ""
+
+#. key: data/challenges/br_collector_nohit.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/br_collector_nohit.tres
+msgid "The Collector Drone without taking a single hit."
+msgstr ""
+
+#. key: data/challenges/br_krail.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/br_krail.tres
+msgid "Warden Krail — Rematch"
+msgstr ""
+
+#. key: data/challenges/br_krail.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/br_krail.tres
+msgid "Warden Krail again, from the bell stair. The clamp is live."
+msgstr ""
+
+#. key: data/challenges/br_krail_nohit.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/br_krail_nohit.tres
+msgid "Warden Krail — No Hit"
+msgstr ""
+
+#. key: data/challenges/br_krail_nohit.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/br_krail_nohit.tres
+msgid "Warden Krail without taking a single hit."
+msgstr ""
+
+#. key: data/challenges/challenge_config.tres::group_titles[0]
+#. key: data/districts/null.tres::district_name
+#. key: world/rooms/challenge/NullBreakerRun.tscn::..district_name
+#. key: world/rooms/challenge/NullFloor.tscn::..district_name
+#. key: world/rooms/challenge/NullStaticLane.tscn::..district_name
+#. ChallengeConfig
+#. DistrictTheme
+#. Room
+#. max 24 chars
+#: data/challenges/challenge_config.tres data/districts/null.tres world/rooms/challenge/NullBreakerRun.tscn world/rooms/challenge/NullFloor.tscn world/rooms/challenge/NullStaticLane.tscn
 msgid "Deep Rig"
 msgstr ""
 
@@ -98,9 +1199,11 @@ msgid "Nerve"
 msgstr ""
 
 #. key: data/challenges/challenge_config.tres::group_titles[4]
+#. key: world/rooms/challenge/PulsePit.tscn::..room_name
 #. ChallengeConfig
+#. Room
 #. max 24 chars
-#: data/challenges/challenge_config.tres
+#: data/challenges/challenge_config.tres world/rooms/challenge/PulsePit.tscn
 msgid "Pulse Pit"
 msgstr ""
 
@@ -112,11 +1215,13 @@ msgstr ""
 #. key: data/settings/pages/subtitles.tres::rows[6].choices[0]
 #. key: data/settings/pages/visual.tres::rows[4].choices[0]
 #. key: data/settings/pages/visual.tres::rows[5].choices[0]
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
 #. key: ui/menus/SettingsMenu.gd::Loc.t
 #. ChallengeConfig
 #. SettingDef
 #. max 16 chars
-#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/SettingsMenu.gd
+#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/AchievementsMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd
 msgid "Off"
 msgstr ""
 
@@ -145,6 +1250,155 @@ msgstr ""
 #. max 16 chars
 #: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
 msgid "Both"
+msgstr ""
+
+#. key: data/challenges/mo_maintenance_shaft.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/mo_maintenance_shaft.tres
+msgid "Maintenance Shaft — Movement Only"
+msgstr ""
+
+#. key: data/challenges/mo_maintenance_shaft.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/mo_maintenance_shaft.tres
+msgid "Climb the shaft to the top door. No swings, no shots."
+msgstr ""
+
+#. key: data/challenges/nh_security_station.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/nh_security_station.tres
+msgid "Security Station — No Hit"
+msgstr ""
+
+#. key: data/challenges/nh_security_station.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/nh_security_station.tres
+msgid "Through the live scanners to the roof door without a hit."
+msgstr ""
+
+#. key: data/challenges/null_breaker_run.tres::stages[0].title
+#. key: data/challenges/null_breaker_run.tres::title
+#. key: data/challenges/null_descent.tres::stages[1].title
+#. key: world/rooms/challenge/NullBreakerRun.tscn::..room_name
+#. ChallengeData
+#. ChallengeStage
+#. Room
+#. max 32 chars
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres world/rooms/challenge/NullBreakerRun.tscn
+msgid "Breaker Run"
+msgstr ""
+
+#. key: data/challenges/null_breaker_run.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/null_breaker_run.tres
+msgid "Breakers start the clocks. Make every shutter standing; the Dash is the line."
+msgstr ""
+
+#. key: data/challenges/null_breaker_run.tres::locked_hint
+#. key: data/challenges/null_descent.tres::locked_hint
+#. key: data/challenges/null_floor.tres::locked_hint
+#. key: data/challenges/null_static_lane.tres::locked_hint
+#. key: data/challenges/pit_endurance.tres::locked_hint
+#. key: data/challenges/pit_style.tres::locked_hint
+#. ChallengeData
+#. max 60 chars
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres data/challenges/null_floor.tres data/challenges/null_static_lane.tres data/challenges/pit_endurance.tres data/challenges/pit_style.tres
+msgid "Finish the first act."
+msgstr ""
+
+#. key: data/challenges/null_breaker_run.tres::requires_text
+#. key: data/challenges/null_descent.tres::requires_text
+#. key: data/challenges/null_floor.tres::requires_text
+#. key: data/challenges/null_static_lane.tres::requires_text
+#. ChallengeData
+#. max 60 chars
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres data/challenges/null_floor.tres data/challenges/null_static_lane.tres
+msgid "The rig needs the Dash module."
+msgstr ""
+
+#. key: data/challenges/null_descent.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/null_descent.tres
+msgid "Descent"
+msgstr ""
+
+#. key: data/challenges/null_descent.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/null_descent.tres
+msgid "All three strata in one run. Health carries; a fall restarts the stratum."
+msgstr ""
+
+#. key: data/challenges/null_descent.tres::stages[0].title
+#. key: data/challenges/null_static_lane.tres::stages[0].title
+#. key: data/challenges/null_static_lane.tres::title
+#. key: world/rooms/challenge/NullStaticLane.tscn::..room_name
+#. ChallengeData
+#. ChallengeStage
+#. Room
+#. max 32 chars
+#: data/challenges/null_descent.tres data/challenges/null_static_lane.tres world/rooms/challenge/NullStaticLane.tscn
+msgid "Static Lane"
+msgstr ""
+
+#. key: data/challenges/null_descent.tres::stages[2].title
+#. key: data/challenges/null_floor.tres::stages[0].title
+#. key: data/challenges/null_floor.tres::title
+#. key: world/rooms/challenge/NullFloor.tscn::..room_name
+#. ChallengeData
+#. ChallengeStage
+#. Room
+#. max 32 chars
+#: data/challenges/null_descent.tres data/challenges/null_floor.tres world/rooms/challenge/NullFloor.tscn
+msgid "The Floor"
+msgstr ""
+
+#. key: data/challenges/null_floor.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/null_floor.tres
+msgid "The Warden at the rig's tier: faster calls, Hoppers and a quicker clamp."
+msgstr ""
+
+#. key: data/challenges/null_static_lane.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/null_static_lane.tres
+msgid "Pulsing beams, dash gaps and a fight under Flow drain. Your own loadout."
+msgstr ""
+
+#. key: data/challenges/pit_endurance.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/pit_endurance.tres
+msgid "Pulse Pit — Redline Endurance"
+msgstr ""
+
+#. key: data/challenges/pit_endurance.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/pit_endurance.tres
+msgid "Waves that never stop, on the Challenge core. Time, kills and cleared waves score, x1.5 on this core."
+msgstr ""
+
+#. key: data/challenges/pit_style.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/pit_style.tres
+msgid "Pulse Pit — Style"
+msgstr ""
+
+#. key: data/challenges/pit_style.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/pit_style.tres
+msgid "Five fixed waves in 90 seconds. The score is your style: keep the meter up."
 msgstr ""
 
 #. key: data/challenges/rank_ladder.tres::names[0]
@@ -180,6 +1434,567 @@ msgstr ""
 #. max 12 chars
 #: data/challenges/rank_ladder.tres
 msgid "Redline"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[0].label
+#. key: data/weapons/pulse_blade.tres::display_name
+#. SplitDef
+#. WeaponData
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres data/weapons/pulse_blade.tres
+msgid "Pulse Blade"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[1].label
+#. key: data/enemies/collector_drone.tres::display_name
+#. key: data/enemies/collector_drone_remix.tres::display_name
+#. EnemyData
+#. SplitDef
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres data/enemies/collector_drone.tres data/enemies/collector_drone_remix.tres
+msgid "Collector Drone"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[2].label
+#. key: data/districts/relay.tres::district_name
+#. key: data/world/world_map.tres::district_names[relay]
+#. key: world/rooms/lowlight/Relay.tscn::..district_name
+#. DistrictTheme
+#. Room
+#. SplitDef
+#. WorldMapData
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres data/districts/relay.tres data/world/world_map.tres world/rooms/lowlight/Relay.tscn
+msgid "The Relay"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[3].label
+#. SplitDef
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres
+msgid "Power rerouted"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[4].label
+#. key: world/rooms/lowlight/RainlineChase.tscn::..room_name
+#. Room
+#. SplitDef
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres world/rooms/lowlight/RainlineChase.tscn
+msgid "Rainline"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[5].label
+#. key: data/enemies/warden_krail.tres::display_name
+#. key: data/enemies/warden_krail_null.tres::display_name
+#. key: data/enemies/warden_krail_remix.tres::display_name
+#. EnemyData
+#. SplitDef
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres data/enemies/warden_krail.tres data/enemies/warden_krail_null.tres data/enemies/warden_krail_remix.tres
+msgid "Warden Krail"
+msgstr ""
+
+#. key: data/challenges/splits/act1_campaign.tres::splits[6].label
+#. SplitDef
+#. max 24 chars
+#: data/challenges/splits/act1_campaign.tres
+msgid "Act I"
+msgstr ""
+
+#. key: data/challenges/tt_escape_tunnel.tres::title
+#. key: world/rooms/undercity/EscapeTunnel.tscn::..room_name
+#. ChallengeData
+#. Room
+#. max 32 chars
+#: data/challenges/tt_escape_tunnel.tres world/rooms/undercity/EscapeTunnel.tscn
+msgid "Escape Tunnel"
+msgstr ""
+
+#. key: data/challenges/tt_escape_tunnel.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/tt_escape_tunnel.tres
+msgid "From the bay door up to the Relay mouth."
+msgstr ""
+
+#. key: data/challenges/tt_escape_tunnel.tres::locked_hint
+#. ChallengeData
+#. max 60 chars
+#: data/challenges/tt_escape_tunnel.tres
+msgid "Meet Orr at the Relay."
+msgstr ""
+
+#. key: data/challenges/tt_first_pursuit.tres::title
+#. key: world/rooms/undercity/FirstPursuit.tscn::..room_name
+#. ChallengeData
+#. Room
+#. max 32 chars
+#: data/challenges/tt_first_pursuit.tres world/rooms/undercity/FirstPursuit.tscn
+msgid "First Pursuit"
+msgstr ""
+
+#. key: data/challenges/tt_first_pursuit.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/tt_first_pursuit.tres
+msgid "From the shaft door to the Broken Lift, under the eye."
+msgstr ""
+
+#. key: data/challenges/tt_neon_roofs.tres::title
+#. key: world/rooms/lowlight/NeonRoofs.tscn::..room_name
+#. ChallengeData
+#. Room
+#. max 32 chars
+#: data/challenges/tt_neon_roofs.tres world/rooms/lowlight/NeonRoofs.tscn
+msgid "Neon Roofs"
+msgstr ""
+
+#. key: data/challenges/tt_neon_roofs.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/tt_neon_roofs.tres
+msgid "Across the roofs to the Power Block door."
+msgstr ""
+
+#. key: data/challenges/tt_rainline.tres::title
+#. ChallengeData
+#. max 40 chars
+#: data/challenges/tt_rainline.tres
+msgid "Rainline Chase"
+msgstr ""
+
+#. key: data/challenges/tt_rainline.tres::description
+#. ChallengeData
+#. max 120 chars
+#: data/challenges/tt_rainline.tres
+msgid "The Rainline with the Sweeper behind you, to the Bell Tower door."
+msgstr ""
+
+#. key: data/circuits/blood_capacitor.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/blood_capacitor.tres
+msgid "Blood Capacitor"
+msgstr ""
+
+#. key: data/circuits/blood_capacitor.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/blood_capacitor.tres
+msgid "Every 4 kills restores 1 health pip."
+msgstr ""
+
+#. key: data/circuits/clean_circuit.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/clean_circuit.tres
+msgid "Clean Circuit"
+msgstr ""
+
+#. key: data/circuits/clean_circuit.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/clean_circuit.tres
+msgid "At full health, everything refills the Core 30% more."
+msgstr ""
+
+#. key: data/circuits/demolitionist.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/demolitionist.tres
+msgid "Demolitionist"
+msgstr ""
+
+#. key: data/circuits/demolitionist.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/demolitionist.tres
+msgid "Launched-body impacts, wall slams and breakable walls take double damage."
+msgstr ""
+
+#. key: data/circuits/emergency_loop.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/emergency_loop.tres
+msgid "Emergency Loop"
+msgstr ""
+
+#. key: data/circuits/emergency_loop.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/emergency_loop.tres
+msgid "Once per rest, a lethal hit leaves you at 1 pip instead."
+msgstr ""
+
+#. key: data/circuits/ghost_step.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/ghost_step.tres
+msgid "Ghost Step"
+msgstr ""
+
+#. key: data/circuits/ghost_step.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/ghost_step.tres
+msgid "Dodge and dash invulnerability lasts 40% longer; the perfect-dodge window widens."
+msgstr ""
+
+#. key: data/circuits/glass_pulse.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/glass_pulse.tres
+msgid "Glass Pulse"
+msgstr ""
+
+#. key: data/circuits/glass_pulse.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/glass_pulse.tres
+msgid "All your damage +35%. Damage you take is doubled."
+msgstr ""
+
+#. key: data/circuits/hot_wire.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/hot_wire.tres
+msgid "Hot Wire"
+msgstr ""
+
+#. key: data/circuits/hot_wire.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/hot_wire.tres
+msgid "Overclocked rounds. Hit harder, reach less."
+msgstr ""
+
+#. key: data/circuits/live_current.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/live_current.tres
+msgid "Live Current"
+msgstr ""
+
+#. key: data/circuits/live_current.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/live_current.tres
+msgid "Spikes, walls, clamps: the city fights for you."
+msgstr ""
+
+#. key: data/circuits/longline.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/longline.tres
+msgid "Longline"
+msgstr ""
+
+#. key: data/circuits/longline.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/longline.tres
+msgid "Ranged shots travel 50% farther."
+msgstr ""
+
+#. key: data/circuits/momentum_coil.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/momentum_coil.tres
+msgid "Momentum Coil"
+msgstr ""
+
+#. key: data/circuits/momentum_coil.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/momentum_coil.tres
+msgid "Melee hits deal up to +40% damage based on how fast you were moving when you swung."
+msgstr ""
+
+#. key: data/circuits/predator.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/predator.tres
+msgid "Predator"
+msgstr ""
+
+#. key: data/circuits/predator.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/predator.tres
+msgid "+50% damage against staggered or launched enemies."
+msgstr ""
+
+#. key: data/circuits/rebound.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/rebound.tres
+msgid "Rebound"
+msgstr ""
+
+#. key: data/circuits/rebound.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/rebound.tres
+msgid "A perfect dodge instantly reloads your ranged weapon."
+msgstr ""
+
+#. key: data/circuits/runners_debt.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/runners_debt.tres
+msgid "Runner's Debt"
+msgstr ""
+
+#. key: data/circuits/runners_debt.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/runners_debt.tres
+msgid "The Core drains 40% slower above run speed, 40% faster standing still."
+msgstr ""
+
+#. key: data/circuits/scavenger.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/scavenger.tres
+msgid "Scavenger"
+msgstr ""
+
+#. key: data/circuits/scavenger.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/scavenger.tres
+msgid "Scrap from every source +50%."
+msgstr ""
+
+#. key: data/circuits/slipstream.tres::display_name
+#. CircuitData
+#. max 32 chars
+#: data/circuits/slipstream.tres
+msgid "Slipstream"
+msgstr ""
+
+#. key: data/circuits/slipstream.tres::description
+#. CircuitData
+#. max 140 chars
+#: data/circuits/slipstream.tres
+msgid "Slip the scanners. The Core bills you for it."
+msgstr ""
+
+#. key: data/districts/lowlight.tres::district_name
+#. key: data/world/world_map.tres::district_names[lowlight]
+#. key: world/rooms/lowlight/ApartmentStack.tscn::..district_name
+#. key: world/rooms/lowlight/BellTower.tscn::..district_name
+#. key: world/rooms/lowlight/FloodedAlley.tscn::..district_name
+#. key: world/rooms/lowlight/MarketRun.tscn::..district_name
+#. key: world/rooms/lowlight/NeonRoofs.tscn::..district_name
+#. key: world/rooms/lowlight/PowerBlock.tscn::..district_name
+#. key: world/rooms/lowlight/RainlineChase.tscn::..district_name
+#. key: world/rooms/lowlight/SecurityStation.tscn::..district_name
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::..district_name
+#. key: world/rooms/lowlight/WardenTower.tscn::..district_name
+#. DistrictTheme
+#. Room
+#. WorldMapData
+#. max 24 chars
+#: data/districts/lowlight.tres data/world/world_map.tres world/rooms/lowlight/ApartmentStack.tscn world/rooms/lowlight/BellTower.tscn world/rooms/lowlight/FloodedAlley.tscn world/rooms/lowlight/MarketRun.tscn world/rooms/lowlight/NeonRoofs.tscn world/rooms/lowlight/PowerBlock.tscn world/rooms/lowlight/RainlineChase.tscn world/rooms/lowlight/SecurityStation.tscn world/rooms/lowlight/SmugglerRoute.tscn world/rooms/lowlight/WardenTower.tscn
+msgid "Lowlight"
+msgstr ""
+
+#. key: data/districts/undercity.tres::district_name
+#. key: data/world/world_map.tres::district_names[undercity]
+#. key: world/rooms/undercity/BrokenLift.tscn::..district_name
+#. key: world/rooms/undercity/CollectorBay.tscn::..district_name
+#. key: world/rooms/undercity/EscapeTunnel.tscn::..district_name
+#. key: world/rooms/undercity/FirstPursuit.tscn::..district_name
+#. key: world/rooms/undercity/MaintenanceShaft.tscn::..district_name
+#. key: world/rooms/undercity/MedicalRuin.tscn::..district_name
+#. key: world/rooms/undercity/Wake.tscn::..district_name
+#. DistrictTheme
+#. Room
+#. WorldMapData
+#. max 24 chars
+#: data/districts/undercity.tres data/world/world_map.tres world/rooms/undercity/BrokenLift.tscn world/rooms/undercity/CollectorBay.tscn world/rooms/undercity/EscapeTunnel.tscn world/rooms/undercity/FirstPursuit.tscn world/rooms/undercity/MaintenanceShaft.tscn world/rooms/undercity/MedicalRuin.tscn world/rooms/undercity/Wake.tscn
+msgid "Undercity"
+msgstr ""
+
+#. key: data/endings/credits.tres::closing_line
+#. CreditsData
+#. max 80 chars
+#: data/endings/credits.tres
+msgid "Thank you for playing."
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[0].lines[0]
+#. CreditsSection
+#. max 60 chars
+#: data/endings/credits.tres
+msgid "A work in progress."
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[1].heading
+#. CreditsSection
+#. max 40 chars
+#: data/endings/credits.tres
+msgid "DESIGN, CODE, PLACEHOLDER ART & AUDIO"
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[1].lines[0]
+#. CreditsSection
+#. max 60 chars
+#: data/endings/credits.tres
+msgid "The REDLINE team"
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[2].heading
+#. CreditsSection
+#. max 40 chars
+#: data/endings/credits.tres
+msgid "PLAYTESTERS"
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[2].lines[0]
+#. CreditsSection
+#. max 60 chars
+#: data/endings/credits.tres
+msgid "Everyone who sent a session file."
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[3].heading
+#. CreditsSection
+#. max 40 chars
+#: data/endings/credits.tres
+msgid "ENGINE"
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[3].lines[0]
+#. CreditsSection
+#. max 60 chars
+#: data/endings/credits.tres
+msgid "Made with Godot Engine"
+msgstr ""
+
+#. key: data/endings/credits.tres::sections[3].lines[1]
+#. CreditsSection
+#. max 60 chars
+#: data/endings/credits.tres
+msgid "godotengine.org/license"
+msgstr ""
+
+#. key: data/endings/crown.tres::title
+#. key: data/sequences/ending_crown.tres::steps[6].title
+#. EndingData
+#. SeqTitleCard
+#. max 32 chars
+#: data/endings/crown.tres data/sequences/ending_crown.tres
+msgid "CROWN"
+msgstr ""
+
+#. key: data/endings/crown.tres::tagline
+#. EndingData
+#. max 60 chars
+#: data/endings/crown.tres
+msgid "Take control of the network."
+msgstr ""
+
+#. key: data/endings/redline.tres::tagline
+#. EndingData
+#. max 60 chars
+#: data/endings/redline.tres
+msgid "Hidden: Project REDLINE and The Null."
+msgstr ""
+
+#. key: data/endings/release.tres::title
+#. key: data/sequences/ending_release.tres::steps[8].title
+#. EndingData
+#. SeqTitleCard
+#. max 32 chars
+#: data/endings/release.tres data/sequences/ending_release.tres
+msgid "RELEASE"
+msgstr ""
+
+#. key: data/endings/release.tres::tagline
+#. EndingData
+#. max 60 chars
+#: data/endings/release.tres
+msgid "Change the network; needs memories and people."
+msgstr ""
+
+#. key: data/endings/sever.tres::title
+#. key: data/sequences/ending_sever.tres::steps[9].title
+#. EndingData
+#. SeqTitleCard
+#. max 32 chars
+#: data/endings/sever.tres data/sequences/ending_sever.tres
+msgid "SEVER"
+msgstr ""
+
+#. key: data/endings/sever.tres::tagline
+#. EndingData
+#. max 60 chars
+#: data/endings/sever.tres
+msgid "Tear the network down."
+msgstr ""
+
+#. key: data/enemies/enforcer.tres::display_name
+#. key: data/enemies/enforcer_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/enforcer.tres data/enemies/enforcer_remix.tres
+msgid "Enforcer"
+msgstr ""
+
+#. key: data/enemies/hopper.tres::display_name
+#. key: data/enemies/hopper_null.tres::display_name
+#. key: data/enemies/hopper_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/hopper.tres data/enemies/hopper_null.tres data/enemies/hopper_remix.tres
+msgid "Hopper"
+msgstr ""
+
+#. key: data/enemies/needle.tres::display_name
+#. key: data/enemies/needle_dormant.tres::display_name
+#. key: data/enemies/needle_ledge.tres::display_name
+#. key: data/enemies/needle_ledge_remix.tres::display_name
+#. key: data/enemies/needle_null.tres::display_name
+#. key: data/enemies/needle_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/needle.tres data/enemies/needle_dormant.tres data/enemies/needle_ledge.tres data/enemies/needle_ledge_remix.tres data/enemies/needle_null.tres data/enemies/needle_remix.tres
+msgid "Needle"
+msgstr ""
+
+#. key: data/enemies/scout_drone.tres::display_name
+#. key: data/enemies/scout_drone_null.tres::display_name
+#. key: data/enemies/scout_drone_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/scout_drone.tres data/enemies/scout_drone_null.tres data/enemies/scout_drone_remix.tres
+msgid "Scout Drone"
+msgstr ""
+
+#. key: data/enemies/shield.tres::display_name
+#. key: data/enemies/shield_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/shield.tres data/enemies/shield_remix.tres
+msgid "Shield"
+msgstr ""
+
+#. key: data/enemies/signal_drone.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/signal_drone.tres
+msgid "Signal Drone"
+msgstr ""
+
+#. key: data/enemies/watcher.tres::display_name
+#. key: data/enemies/watcher_remix.tres::display_name
+#. EnemyData
+#. max 32 chars
+#: data/enemies/watcher.tres data/enemies/watcher_remix.tres
+msgid "Watcher"
 msgstr ""
 
 #. key: data/input/glyphs/nintendo.tres::display_name
@@ -662,6 +2477,1004 @@ msgstr ""
 msgid "Restart challenge"
 msgstr ""
 
+#. key: data/lore/mf_lowlight_01.tres::title
+#. MemoryFragmentData
+#. max 40 chars
+#: data/lore/mf_lowlight_01.tres
+msgid "Execution Order 7-R"
+msgstr ""
+
+#. key: data/lore/mf_lowlight_01.tres::text
+#. MemoryFragmentData
+#. max 240 chars
+#: data/lore/mf_lowlight_01.tres
+msgid "A voice reading numbers. Yours, you think. \"Subject non-viable. Recover the core. Discard the rest.\" Someone laughed when the lights went out."
+msgstr ""
+
+#. key: data/lore/mf_lowlight_02.tres::title
+#. MemoryFragmentData
+#. max 40 chars
+#: data/lore/mf_lowlight_02.tres
+msgid "Rain Clinic"
+msgstr ""
+
+#. key: data/lore/mf_lowlight_02.tres::text
+#. MemoryFragmentData
+#. max 240 chars
+#: data/lore/mf_lowlight_02.tres
+msgid "A hand on your chest, where the scar is now. \"It runs on something it shouldn't. Every time it spikes, you'll lose a little more of whatever it's eating.\""
+msgstr ""
+
+#. key: data/lore/mf_lowlight_03.tres::title
+#. MemoryFragmentData
+#. max 40 chars
+#: data/lore/mf_lowlight_03.tres
+msgid "The Warden's Ledger"
+msgstr ""
+
+#. key: data/lore/mf_lowlight_03.tres::text
+#. MemoryFragmentData
+#. max 240 chars
+#: data/lore/mf_lowlight_03.tres
+msgid "Krail's handwriting, neat as a verdict: \"Everything pulled from the Spire passes through my tower. Everything. That includes the ones they call REDLINE.\""
+msgstr ""
+
+#. key: data/lore/mf_lowlight_04.tres::title
+#. MemoryFragmentData
+#. max 40 chars
+#: data/lore/mf_lowlight_04.tres
+msgid "Cell Four"
+msgstr ""
+
+#. key: data/lore/mf_lowlight_04.tres::text
+#. MemoryFragmentData
+#. max 240 chars
+#: data/lore/mf_lowlight_04.tres
+msgid "Rain through a crack in the ceiling. Someone in the next cell taps the pipe: three short, three long. A guard laughs. \"Save it. This one came in without a name. The tag just says SPIRE.\""
+msgstr ""
+
+#. key: data/lore/mf_undercity_01.tres::title
+#. MemoryFragmentData
+#. max 40 chars
+#: data/lore/mf_undercity_01.tres
+msgid "It Won't Come Out"
+msgstr ""
+
+#. key: data/lore/mf_undercity_01.tres::text
+#. MemoryFragmentData
+#. max 240 chars
+#: data/lore/mf_undercity_01.tres
+msgid "Cold steel under your back. Gloved hands on your chest, pulling. Something inside pulls back harder. \"It won't come out.\" A long pause. \"Then leave it in him. The Collector can take both.\""
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::title
+#. MemorySceneData
+#. max 40 chars
+#: data/memories/mem_first_rest.tres
+msgid "Count the Last One"
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mem_first_rest.tres
+msgid "The last car has no markings. Its doors are welded shut."
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mem_first_rest.tres
+msgid "Night. A bridge over the rail yards. Wind in the railings."
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::beats[1].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mem_first_rest.tres
+msgid "Someone beside you counts the cars under their breath."
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::beats[2].speaker
+#. key: data/memories/mf_lowlight_02.tres::beats[2].speaker
+#. key: data/memories/mf_lowlight_02.tres::beats[3].speaker
+#. MemoryBeat · speaker: VOICE
+#. max 24 chars
+#: data/memories/mem_first_rest.tres data/memories/mf_lowlight_02.tres
+msgid "VOICE"
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::beats[2].text
+#. MemoryBeat · speaker: VOICE
+#. max 160 chars
+#: data/memories/mem_first_rest.tres
+msgid "Always count the last one twice."
+msgstr ""
+
+#. key: data/memories/mem_first_rest.tres::beats[3].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mem_first_rest.tres
+msgid "You turn to ask why. Where their face should be, there's only static."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::title_label
+#. MemoryConfig
+#. max 24 chars
+#: data/memories/memory_config.tres
+msgid "MEMORY"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::card_body_anchor
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "Rest at an Anchor to remember."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::card_body_journal
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "Open the Journal to remember."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::more_waiting_hint
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "Another memory is waiting."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::remembered_line
+#. MemoryConfig
+#. max 48 chars · placeholders: %d
+#: data/memories/memory_config.tres
+msgid "Fragments remembered %d / %d"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::gallery_button
+#. MemoryConfig
+#. max 24 chars
+#: data/memories/memory_config.tres
+msgid "Memories…"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::empty_text
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "No memories recovered."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::gallery_title
+#. MemoryConfig
+#. max 32 chars · placeholders: %s
+#: data/memories/memory_config.tres
+msgid "MEMORIES  —  ACT %s"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::pending_hint
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "— rest at an Anchor to remember"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::detail_line
+#. MemoryConfig
+#. max 60 chars · placeholders: %s
+#: data/memories/memory_config.tres
+msgid "Detail: %s"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::detail_unfound_text
+#. MemoryConfig
+#. max 60 chars
+#: data/memories/memory_config.tres
+msgid "Something else was there."
+msgstr ""
+
+#. key: data/memories/memory_config.tres::back_label
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#. key: ui/menus/SettingsMenu.gd::Loc.t
+#. key: ui/menus/TitleMenu.gd::Loc.t
+#. MemoryConfig
+#. max 16 chars
+#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+msgid "Back"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::pause_title
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#. MemoryConfig
+#. max 16 chars
+#: data/memories/memory_config.tres ui/menus/PauseMenu.gd
+msgid "PAUSED"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::pause_resume
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#. MemoryConfig
+#. max 24 chars
+#: data/memories/memory_config.tres ui/menus/PauseMenu.gd
+msgid "Resume"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::pause_skip
+#. MemoryConfig
+#. max 24 chars
+#: data/memories/memory_config.tres
+msgid "Skip memory"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::pause_size
+#. MemoryConfig
+#. max 32 chars · placeholders: %s
+#: data/memories/memory_config.tres
+msgid "Subtitle size: %s"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::size_names[0]
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[0]
+#. MemoryConfig
+#. SettingDef
+#. max 12 chars
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Small"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::size_names[1]
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[1]
+#. MemoryConfig
+#. SettingDef
+#. max 12 chars
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Medium"
+msgstr ""
+
+#. key: data/memories/memory_config.tres::size_names[2]
+#. key: data/settings/pages/subtitles.tres::rows[0].choices[2]
+#. MemoryConfig
+#. SettingDef
+#. max 12 chars
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Large"
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "The order is signed. The signature is red static. It won't come into focus."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "A voice reading numbers. Yours, you think."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::beats[1].speaker
+#. key: data/memories/mf_lowlight_01.tres::beats[2].speaker
+#. MemoryBeat · speaker: READER
+#. max 24 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "READER"
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::beats[1].text
+#. MemoryBeat · speaker: READER
+#. max 160 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "Subject non-viable."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::beats[2].text
+#. MemoryBeat · speaker: READER
+#. max 160 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "Recover the core. Discard the rest."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_01.tres::beats[3].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_01.tres
+msgid "The lights go out. Someone laughs."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_02.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mf_lowlight_02.tres
+msgid "On the tray, a second dressing the shape of your scar. Already used."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_02.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_02.tres
+msgid "Rain on a tin roof. A lamp with a green shade."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_02.tres::beats[1].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_02.tres
+msgid "A hand on your chest, where the scar is now."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_02.tres::beats[2].text
+#. MemoryBeat · speaker: VOICE
+#. max 160 chars
+#: data/memories/mf_lowlight_02.tres
+msgid "It runs on something it shouldn't."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_02.tres::beats[3].text
+#. MemoryBeat · speaker: VOICE
+#. max 160 chars
+#: data/memories/mf_lowlight_02.tres
+msgid "Every time it spikes, you'll lose a little more of whatever it's eating."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "Your line in the ledger has no name. Only SPIRE, and a date the rain has smeared."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "Lamplight on a steel desk. You see it from the floor."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::beats[1].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "Krail's handwriting, neat as a verdict:"
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::beats[2].speaker
+#. key: data/memories/mf_lowlight_03.tres::beats[3].speaker
+#. MemoryBeat · speaker: LEDGER
+#. max 24 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "LEDGER"
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::beats[2].text
+#. MemoryBeat · speaker: LEDGER
+#. max 160 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "Everything pulled from the Spire passes through my tower. Everything."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_03.tres::beats[3].text
+#. MemoryBeat · speaker: LEDGER
+#. max 160 chars
+#: data/memories/mf_lowlight_03.tres
+msgid "That includes the ones they call REDLINE."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "The tapping never finishes. Three short, three long, then nothing."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "Rain through a crack in the ceiling."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::beats[1].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "Someone in the next cell taps the pipe: three short, three long."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::beats[2].speaker
+#. key: data/memories/mf_lowlight_04.tres::beats[3].speaker
+#. MemoryBeat · speaker: GUARD
+#. max 24 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "GUARD"
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::beats[2].text
+#. MemoryBeat · speaker: GUARD
+#. max 160 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "Save it."
+msgstr ""
+
+#. key: data/memories/mf_lowlight_04.tres::beats[3].text
+#. MemoryBeat · speaker: GUARD
+#. max 160 chars
+#: data/memories/mf_lowlight_04.tres
+msgid "This one came in without a name. The tag just says SPIRE."
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::detail_text
+#. MemorySceneData
+#. max 120 chars
+#: data/memories/mf_undercity_01.tres
+msgid "A tag on the tray: UNIT 14. CYCLE 4471. The name field is blank."
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[0].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_undercity_01.tres
+msgid "Cold steel under your back. A lamp swinging overhead."
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[1].text
+#. MemoryBeat
+#. max 160 chars
+#: data/memories/mf_undercity_01.tres
+msgid "Gloved hands on your chest, pulling. Something inside pulls back harder."
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[2].speaker
+#. MemoryBeat · speaker: CREW
+#. max 24 chars
+#: data/memories/mf_undercity_01.tres
+msgid "CREW"
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[2].text
+#. MemoryBeat · speaker: CREW
+#. max 160 chars
+#: data/memories/mf_undercity_01.tres
+msgid "It won't come out."
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[3].speaker
+#. MemoryBeat · speaker: SUPERVISOR
+#. max 24 chars
+#: data/memories/mf_undercity_01.tres
+msgid "SUPERVISOR"
+msgstr ""
+
+#. key: data/memories/mf_undercity_01.tres::beats[3].text
+#. MemoryBeat · speaker: SUPERVISOR
+#. max 160 chars
+#: data/memories/mf_undercity_01.tres
+msgid "Then leave it in him. The Collector can take both."
+msgstr ""
+
+#. key: data/npcs/iko.tres::map_label
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/iko.tres
+msgid "Black Market"
+msgstr ""
+
+#. key: data/npcs/iko.tres::verb
+#. key: data/npcs/mara.tres::verb
+#. key: data/npcs/nix.tres::verb
+#. key: data/npcs/orr.tres::verb
+#. key: data/npcs/vell.tres::verb
+#. NpcProfile
+#. max 16 chars
+#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres
+msgid "Talk"
+msgstr ""
+
+#. key: data/npcs/iko.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/npcs/iko.tres
+msgid "Easy. You're the one who lit up the grid? Good. Krail's people have been sitting on my canal for a month."
+msgstr ""
+
+#. key: data/npcs/iko.tres::rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/npcs/iko.tres
+msgid "Iko. I move what the Wardens don't want moved. I'll set up somewhere safer. That Relay of yours."
+msgstr ""
+
+#. key: data/npcs/iko.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Iko
+#. max 160 chars
+#: data/npcs/iko.tres
+msgid "Everything here fell off a Warden truck. Don't ask which one."
+msgstr ""
+
+#. key: data/npcs/mara.tres::map_label
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/mara.tres
+msgid "Mechanic"
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "Orr says you walked out of a Collector's nest with that thing still burning in you."
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "You've felt it drink by now. Keep it fed, rest at Anchors, and it'll keep you running. Here. A Scattergun. Up close it solves arguments."
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "Stop poking the scar. That's a Redline Core, and it is not supposed to be in a person."
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "Out there it burns hot. Fight, move, break things - it drinks what's left and keeps you running."
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[1].dialogue.lines[2].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "Rest at an Anchor and it settles. Here. A Scattergun. Up close it solves arguments."
+msgstr ""
+
+#. key: data/npcs/mara.tres::rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: Mara
+#. max 160 chars
+#: data/npcs/mara.tres
+msgid "Weapons, fixes, bad advice. Pick one."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "You walked it. All of it, near enough. Look at that - the flood lines, the new walls."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "Seventy years of Lowlight and nobody bothered to redraw it. Here. Your cut, and my old lens."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "Nix. I draw the city. The city keeps redrawing itself, so it's steady work."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "Lowlight moved twice since the flood. My maps didn't. Walk it for me and I'll fill in the rest."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[1].dialogue.lines[2].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "Take a look at the stock. The transit pass gets you between Anchors you've rested at."
+msgstr ""
+
+#. key: data/npcs/nix.tres::rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: Nix
+#. max 160 chars
+#: data/npcs/nix.tres
+msgid "Maps, lenses, tickets. Everything a lost person needs."
+msgstr ""
+
+#. key: data/npcs/orr.tres::map_label
+#. key: data/npcs/orr_radio.tres::display_name
+#. key: data/npcs/orr_radio.tres::map_label
+#. key: data/npcs/orr_radio.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[1].dialogue.lines[1].speaker
+#. key: data/npcs/orr_radio.tres::rules[2].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[1].speaker
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[2].speaker
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[3].speaker
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[4].speaker
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[0].speaker
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[1].speaker
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[2].speaker
+#. DialogueLine · speaker: Radio
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/orr.tres data/npcs/orr_radio.tres
+msgid "Radio"
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "A smuggler came up the lift while you were out. Iko. Says you're good for business."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "Somebody lit up the Rainline. My whole board just jumped."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "All three? The static's gone. I can hear Warden Krail's patrol codes clear as rain."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "He's pulling something up the Bell Tower lift every night. Same crates they meant to carry you out in."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[2].dialogue.lines[2].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "Take this. Earned it. And Rook - don't go up that tower tired."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "So you're the one who shut a Collector up. You look worse than I pictured."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "Mara wants a look at that Core. First, though: the Warden's people knocked our repeaters out of line."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[3].dialogue.lines[2].text
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[2].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "Lowlight's full of them. Realign three and this whole Relay stops being deaf. Deal?"
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "You're awake. Good. Mara said the thing in your chest would either restart you or cook the room."
+msgstr ""
+
+#. key: data/npcs/orr.tres::rules[4].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr.tres
+msgid "I run the radio. Or I did, before the Warden's people knocked our repeaters out of line."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::verb
+#. key: data/npcs/relay_board.tres::verb
+#. NpcProfile
+#. max 16 chars
+#: data/npcs/orr_radio.tres data/npcs/relay_board.tres
+msgid "Listen"
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Relay here. Nothing on this band but Recovery now. Don't linger."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "The Collector's gone off the band. Tell me that was you."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Rail line's straight ahead. Top gallery, left side of the Relay. I'll leave the door unjammed."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Top gallery. Keep climbing."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[3].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Orr, on the old crew band. You came down the back way? Then you know the voice."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[3].dialogue.lines[1].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "That bay below you is a Collector's nest. It hunts what's in your chest. Don't stand still near it."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[4].dialogue.lines[0].text
+#. DialogueLine · speaker: Orr
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Lift shaft, then the Anchor at the top, then the Collector's bay. Don't stop moving."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[0].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "...is this band live? You by the lift shaft - don't answer. Just listen."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[1].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "That eye was a Collector. Civic Recovery. It doesn't want you. It wants what's in your chest."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[2].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Up the shaft the Pulse runs thick and your Core drains. Keep moving, keep hitting. It feeds on that."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[3].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "There's an Anchor at the top - our kit. Rest there and fill back up. The only way on is through the bay. Its nest."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[5].dialogue.lines[4].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Get past it and follow the old rail line up to the Relay. We're friendly. Mostly. Name's Orr."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[0].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "...is this band live? Don't answer. Just listen."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[1].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "Something down here hunts what's in your chest. Civic Recovery calls it a Collector. Its nest is the bay under the old rail line."
+msgstr ""
+
+#. key: data/npcs/orr_radio.tres::rules[6].dialogue.lines[2].text
+#. DialogueLine · speaker: Radio
+#. max 160 chars
+#: data/npcs/orr_radio.tres
+msgid "The rail line runs up to the Relay. We're friendly. Mostly. Name's Orr."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::display_name
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/relay_board.tres
+msgid "Radio board"
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::map_label
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/relay_board.tres
+msgid "Radio chatter"
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/relay_board.tres::rules[0].dialogue.lines[1].speaker
+#. key: data/npcs/relay_board.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/relay_board.tres::rules[1].dialogue.lines[1].speaker
+#. key: data/npcs/relay_board.tres::rules[2].dialogue.lines[0].speaker
+#. key: data/npcs/relay_board.tres::rules[3].dialogue.lines[0].speaker
+#. key: data/sequences/speakers.tres::labels[3]
+#. DialogueLine · speaker: BAND
+#. SpeakerTable
+#. max 24 chars
+#: data/npcs/relay_board.tres data/sequences/speakers.tres
+msgid "BAND"
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "...Recovery, all units. The Lowlight lift is down. Freight reroutes."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Priority unchanged."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Tower, respond. ...Tower?"
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Warden channel closed. Log it as equipment failure."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[2].dialogue.lines[0].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Grid priority reverted in Lowlight. Nobody signed for it."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[3].dialogue.lines[0].text
+#. DialogueLine · speaker: BAND
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Lift run, twenty-two hundred. Same crates. Sign for them at the top."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[4].dialogue.lines[0].speaker
+#. key: data/npcs/relay_board.tres::rules[5].dialogue.lines[0].speaker
+#. DialogueLine · speaker: STATIC
+#. max 24 chars
+#: data/npcs/relay_board.tres
+msgid "STATIC"
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[4].dialogue.lines[0].text
+#. DialogueLine · speaker: STATIC
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Mostly static. Under it, someone is counting."
+msgstr ""
+
+#. key: data/npcs/relay_board.tres::rules[5].dialogue.lines[0].text
+#. DialogueLine · speaker: STATIC
+#. max 160 chars
+#: data/npcs/relay_board.tres
+msgid "Static. Orr says it used to be a whole city in there."
+msgstr ""
+
+#. key: data/npcs/uc_note_crew.tres::display_name
+#. key: data/npcs/uc_note_crew.tres::rules[0].dialogue.lines[0].speaker
+#. DialogueLine · speaker: Note
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/uc_note_crew.tres
+msgid "Note"
+msgstr ""
+
+#. key: data/npcs/uc_note_crew.tres::verb
+#. key: data/npcs/uc_terminal_intake.tres::verb
+#. NpcProfile
+#. max 16 chars
+#: data/npcs/uc_note_crew.tres data/npcs/uc_terminal_intake.tres
+msgid "Read"
+msgstr ""
+
+#. key: data/npcs/uc_note_crew.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Note
+#. max 160 chars
+#: data/npcs/uc_note_crew.tres
+msgid "RELAY CREW STASH. If you're reading this, you can climb. Keep climbing. There's an Anchor at the top of the lift."
+msgstr ""
+
+#. key: data/npcs/uc_terminal_intake.tres::display_name
+#. key: data/npcs/uc_terminal_intake.tres::rules[0].dialogue.lines[0].speaker
+#. key: data/npcs/uc_terminal_intake.tres::rules[1].dialogue.lines[0].speaker
+#. key: data/npcs/uc_terminal_intake.tres::rules[1].dialogue.lines[1].speaker
+#. DialogueLine · speaker: Terminal
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/uc_terminal_intake.tres
+msgid "Terminal"
+msgstr ""
+
+#. key: data/npcs/uc_terminal_intake.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Terminal
+#. max 160 chars
+#: data/npcs/uc_terminal_intake.tres
+msgid "The screen keeps scrolling. Thirteen names, then a blank line where yours should be."
+msgstr ""
+
+#. key: data/npcs/uc_terminal_intake.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Terminal
+#. max 160 chars
+#: data/npcs/uc_terminal_intake.tres
+msgid "INTAKE LOG - CYCLE 4471. Units received: 14. Cores recovered: 13."
+msgstr ""
+
+#. key: data/npcs/uc_terminal_intake.tres::rules[1].dialogue.lines[1].text
+#. DialogueLine · speaker: Terminal
+#. max 160 chars
+#: data/npcs/uc_terminal_intake.tres
+msgid "Unit 14: core refused removal. Crew sent to infirmary. Unit sealed for Collector pickup."
+msgstr ""
+
+#. key: data/npcs/vell.tres::map_label
+#. NpcProfile
+#. max 24 chars
+#: data/npcs/vell.tres
+msgid "Circuit broker"
+msgstr ""
+
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/npcs/vell.tres
+msgid "Circuits. Little lies you tell the Core so it does what you want."
+msgstr ""
+
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[1].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/npcs/vell.tres
+msgid "Your Core has room for a few. Slot them at an Anchor. Swap them whenever you like."
+msgstr ""
+
+#. key: data/npcs/vell.tres::rules[0].dialogue.lines[2].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/npcs/vell.tres
+msgid "First one's free. Scavenger - you'll find more Scrap, which you will then give to me."
+msgstr ""
+
+#. key: data/npcs/vell.tres::rules[1].dialogue.lines[0].text
+#. DialogueLine · speaker: Vell
+#. max 160 chars
+#: data/npcs/vell.tres
+msgid "Capacity's the only real currency. Scrap just gets you in the door."
+msgstr ""
+
 #. key: data/platform/presence.tres::title
 #. PresenceTable
 #. max 40 chars
@@ -865,6 +3678,111 @@ msgstr ""
 msgid "Silver medals or better"
 msgstr ""
 
+#. key: data/quests/chart_lowlight.tres::title
+#. QuestData
+#. max 40 chars
+#: data/quests/chart_lowlight.tres
+msgid "Chart Lowlight"
+msgstr ""
+
+#. key: data/quests/chart_lowlight.tres::stages[0].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/chart_lowlight.tres
+msgid "Explore Lowlight until Nix's map is mostly filled in (see the map's explored %)."
+msgstr ""
+
+#. key: data/quests/chart_lowlight.tres::stages[1].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/chart_lowlight.tres
+msgid "Bring the survey back to Nix at the Relay."
+msgstr ""
+
+#. key: data/quests/dead_air.tres::title
+#. QuestData
+#. max 40 chars
+#: data/quests/dead_air.tres
+msgid "Dead Air"
+msgstr ""
+
+#. key: data/quests/dead_air.tres::stages[0].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/dead_air.tres
+msgid "Realign the three signal repeaters in Lowlight."
+msgstr ""
+
+#. key: data/quests/dead_air.tres::stages[0].map_note
+#. QuestStage
+#. max 40 chars
+#: data/quests/dead_air.tres
+msgid "Orr: first repeater, over the stalls"
+msgstr ""
+
+#. key: data/quests/dead_air.tres::stages[1].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/dead_air.tres
+msgid "Report back to Orr at the Relay."
+msgstr ""
+
+#. key: data/quests/way_up.tres::giver
+#. QuestData
+#. max 24 chars
+#: data/quests/way_up.tres
+msgid "Orr (radio)"
+msgstr ""
+
+#. key: data/quests/way_up.tres::stages[0].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/way_up.tres
+msgid "Get past the Collector's bay at the top of the lift shaft."
+msgstr ""
+
+#. key: data/quests/way_up.tres::stages[0].map_note
+#. QuestStage
+#. max 40 chars
+#: data/quests/way_up.tres
+msgid "Orr: the Collector's nest"
+msgstr ""
+
+#. key: data/quests/way_up.tres::stages[1].description
+#. QuestStage
+#. max 120 chars
+#: data/quests/way_up.tres
+msgid "Follow the rail line up to the Relay and find Orr."
+msgstr ""
+
+#. key: data/reactor/reactor_assist.tres::mode_name
+#. key: data/settings/pages/assists.tres::rows[0].choices[1]
+#. ReactorConfig
+#. SettingDef
+#. max 20 chars
+#: data/reactor/reactor_assist.tres data/settings/pages/assists.tres
+msgid "Story / Assist"
+msgstr ""
+
+#. key: data/reactor/reactor_challenge.tres::mode_name
+#. key: data/settings/pages/assists.tres::rows[0].choices[2]
+#. ReactorConfig
+#. SettingDef
+#. max 20 chars
+#: data/reactor/reactor_challenge.tres data/settings/pages/assists.tres
+msgid "Redline Challenge"
+msgstr ""
+
+#. key: data/reactor/reactor_normal.tres::mode_name
+#. key: data/settings/pages/assists.tres::rows[0].choices[0]
+#. key: data/settings/pages/subtitles.tres::rows[3].choices[0]
+#. ReactorConfig
+#. SettingDef
+#. max 20 chars
+#: data/reactor/reactor_normal.tres data/settings/pages/assists.tres data/settings/pages/subtitles.tres
+msgid "Normal"
+msgstr ""
+
 #. key: data/release/demo.tres::title_tag
 #. DemoConfig
 #. max 12 chars
@@ -928,6 +3846,289 @@ msgstr ""
 msgid "Save and quit to title"
 msgstr ""
 
+#. key: data/sequences/act1_close.tres::steps[3].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/act1_close.tres
+msgid "Every band in Lowlight is saying it. Krail's tower went dark."
+msgstr ""
+
+#. key: data/sequences/act1_close.tres::steps[4].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/act1_close.tres
+msgid "Half my board's deaf and I can still hear it. Krail's tower went dark."
+msgstr ""
+
+#. key: data/sequences/act1_close.tres::steps[5].text
+#. SeqLine · speaker: mara
+#. max 120 chars
+#: data/sequences/act1_close.tres
+msgid "Then the Spire sends someone worse. It always does."
+msgstr ""
+
+#. key: data/sequences/act1_close.tres::steps[7].text
+#. SeqLine · speaker: iko
+#. max 120 chars
+#: data/sequences/act1_close.tres
+msgid "Worse pays better. Just saying."
+msgstr ""
+
+#. key: data/sequences/act1_close.tres::steps[9].text
+#. SeqLine · speaker: band
+#. max 120 chars
+#: data/sequences/act1_close.tres
+msgid "...all Recovery units. Priority unchanged. Signature still active."
+msgstr ""
+
+#. key: data/sequences/bark_bell_lift.tres::steps[0].text
+#. SeqLine · speaker: band
+#. max 120 chars
+#: data/sequences/bark_bell_lift.tres
+msgid "Lift crew, tonight's load is priority. The Warden signs for it himself."
+msgstr ""
+
+#. key: data/sequences/bark_market_patrol.tres::steps[0].text
+#. SeqLine · speaker: band
+#. max 120 chars
+#: data/sequences/bark_market_patrol.tres
+msgid "...patrol eight, Market Run. Scanning for a core signature. No name on file."
+msgstr ""
+
+#. key: data/sequences/bark_tunnel_orr.tres::steps[0].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/bark_tunnel_orr.tres
+msgid "Back down there? Keep it short. Recovery still sweeps this band."
+msgstr ""
+
+#. key: data/sequences/ending_crown.tres::steps[2].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_crown.tres
+msgid "You take hold of the network. Every light in Veyra steadies at once."
+msgstr ""
+
+#. key: data/sequences/ending_crown.tres::steps[3].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_crown.tres
+msgid "The city runs through you now."
+msgstr ""
+
+#. key: data/sequences/ending_crown.tres::steps[4].text
+#. SeqLine · speaker: nix
+#. max 120 chars
+#: data/sequences/ending_crown.tres
+msgid "The map redraws itself every morning now. I don't touch it."
+msgstr ""
+
+#. key: data/sequences/ending_crown.tres::steps[6].subtitle
+#. key: data/sequences/ending_redline.tres::steps[6].subtitle
+#. key: data/sequences/ending_release.tres::steps[8].subtitle
+#. key: data/sequences/ending_sever.tres::steps[9].subtitle
+#. SeqTitleCard
+#. max 48 chars
+#: data/sequences/ending_crown.tres data/sequences/ending_redline.tres data/sequences/ending_release.tres data/sequences/ending_sever.tres
+msgid "PLACEHOLDER ENDING"
+msgstr ""
+
+#. key: data/sequences/ending_redline.tres::steps[3].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_redline.tres
+msgid "Static on every band at once."
+msgstr ""
+
+#. key: data/sequences/ending_redline.tres::steps[4].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_redline.tres
+msgid "Then everything goes red, and quiet."
+msgstr ""
+
+#. key: data/sequences/ending_release.tres::steps[2].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_release.tres
+msgid "You don't pull and you don't hold. You change it."
+msgstr ""
+
+#. key: data/sequences/ending_release.tres::steps[3].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_release.tres
+msgid "The lights stay on."
+msgstr ""
+
+#. key: data/sequences/ending_release.tres::steps[4].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_release.tres
+msgid "Three short. Three long. This time the tapping finishes."
+msgstr ""
+
+#. key: data/sequences/ending_release.tres::steps[5].text
+#. SeqLine · speaker: mara
+#. max 120 chars
+#: data/sequences/ending_release.tres
+msgid "You came back. That's new."
+msgstr ""
+
+#. key: data/sequences/ending_release.tres::steps[6].text
+#. SeqLine · speaker: vell
+#. max 120 chars
+#: data/sequences/ending_release.tres
+msgid "Relay's full. First time I've had to turn the heat up."
+msgstr ""
+
+#. key: data/sequences/ending_sever.tres::steps[2].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_sever.tres
+msgid "You tear the network down."
+msgstr ""
+
+#. key: data/sequences/ending_sever.tres::steps[5].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/ending_sever.tres
+msgid "The lights go out district by district, all the way up the Spire."
+msgstr ""
+
+#. key: data/sequences/ending_sever.tres::steps[6].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/ending_sever.tres
+msgid "Every band's dead. Quietest night Lowlight ever had."
+msgstr ""
+
+#. key: data/sequences/ending_sever.tres::steps[7].text
+#. SeqLine · speaker: mara
+#. max 120 chars
+#: data/sequences/ending_sever.tres
+msgid "No lights, no Spire. We'll see what people build in the dark."
+msgstr ""
+
+#. key: data/sequences/ll_krail_intro.tres::steps[2].text
+#. SeqLine · speaker: krail
+#. max 120 chars
+#: data/sequences/ll_krail_intro.tres
+msgid "Fourteen. You were meant to come up in a crate."
+msgstr ""
+
+#. key: data/sequences/ll_krail_intro.tres::steps[3].text
+#. SeqLine · speaker: krail
+#. max 120 chars
+#: data/sequences/ll_krail_intro.tres
+msgid "Everything from the Spire passes my desk. You're still on my ledger."
+msgstr ""
+
+#. key: data/sequences/relay_arrival.tres::steps[6].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/relay_arrival.tres
+msgid "Top gallery. Told you I'd leave it open."
+msgstr ""
+
+#. key: data/sequences/relay_arrival.tres::steps[7].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/relay_arrival.tres
+msgid "Top gallery. Door's open."
+msgstr ""
+
+#. key: data/sequences/relay_arrival.tres::steps[8].text
+#. SeqLine · speaker: orr
+#. max 120 chars
+#: data/sequences/relay_arrival.tres
+msgid "Come on down. The kettle's still hot."
+msgstr ""
+
+#. key: data/sequences/speakers.tres::labels[0]
+#. SpeakerTable
+#. max 24 chars
+#: data/sequences/speakers.tres
+msgid "WARD PA"
+msgstr ""
+
+#. key: data/sequences/speakers.tres::labels[1]
+#. SpeakerTable
+#. max 24 chars
+#: data/sequences/speakers.tres
+msgid "C-00"
+msgstr ""
+
+#. key: data/sequences/test_seq_lines.tres::steps[0].text
+#. SeqLine · speaker: pa
+#. max 120 chars
+#: data/sequences/test_seq_lines.tres
+msgid "Line one. Ward fourteen, hold for collection."
+msgstr ""
+
+#. key: data/sequences/test_seq_lines.tres::steps[1].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/test_seq_lines.tres
+msgid "Line two. The slab is cold under your hands."
+msgstr ""
+
+#. key: data/sequences/test_seq_lines.tres::steps[2].text
+#. SeqLine · speaker: band
+#. max 120 chars
+#: data/sequences/test_seq_lines.tres
+msgid "...line three. Signature still on the band."
+msgstr ""
+
+#. key: data/sequences/test_seq_parity.tres::steps[4].text
+#. SeqLine
+#. max 120 chars
+#: data/sequences/test_seq_parity.tres
+msgid "The ward hums. Somewhere a pump coughs twice."
+msgstr ""
+
+#. key: data/sequences/test_seq_repeat_bark.tres::steps[2].text
+#. SeqLine · speaker: band
+#. max 120 chars
+#: data/sequences/test_seq_repeat_bark.tres
+msgid "...patrol eight, holding. Repeat, holding."
+msgstr ""
+
+#. key: data/sequences/test_seq_view.tres::steps[0].text
+#. SeqLine · speaker: pa
+#. max 120 chars
+#: data/sequences/test_seq_view.tres
+msgid "First view only: the ward speaks."
+msgstr ""
+
+#. key: data/sequences/uc_collector_intro.tres::steps[5].text
+#. SeqLine · speaker: c00
+#. max 120 chars
+#: data/sequences/uc_collector_intro.tres
+msgid "Core signature located. Recovering."
+msgstr ""
+
+#. key: data/sequences/uc_opening.tres::steps[7].text
+#. SeqLine · speaker: pa
+#. max 120 chars
+#: data/sequences/uc_opening.tres
+msgid "Ward fourteen. Fourteen of fourteen processed."
+msgstr ""
+
+#. key: data/sequences/uc_opening.tres::steps[9].text
+#. SeqLine · speaker: pa
+#. max 120 chars
+#: data/sequences/uc_opening.tres
+msgid "Hold for collection."
+msgstr ""
+
+#. key: data/sequences/uc_opening.tres::steps[15].text
+#. SeqLine · speaker: pa
+#. max 120 chars
+#: data/sequences/uc_opening.tres
+msgid "Collection delayed. Remain on your slab."
+msgstr ""
+
 #. key: data/settings/catalog.tres::assist_header
 #. SettingsCatalog
 #. max 120 chars
@@ -968,28 +4169,6 @@ msgstr ""
 #. max 90 chars
 #: data/settings/pages/assists.tres
 msgid "How fast the Redline Core drains and how much it forgives."
-msgstr ""
-
-#. key: data/settings/pages/assists.tres::rows[0].choices[0]
-#. key: data/settings/pages/subtitles.tres::rows[3].choices[0]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/assists.tres data/settings/pages/subtitles.tres
-msgid "Normal"
-msgstr ""
-
-#. key: data/settings/pages/assists.tres::rows[0].choices[1]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/assists.tres
-msgid "Story / Assist"
-msgstr ""
-
-#. key: data/settings/pages/assists.tres::rows[0].choices[2]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/assists.tres
-msgid "Redline Challenge"
 msgstr ""
 
 #. key: data/settings/pages/assists.tres::rows[1].label
@@ -1612,27 +4791,6 @@ msgstr ""
 msgid "Text size of dialogue and scene lines."
 msgstr ""
 
-#. key: data/settings/pages/subtitles.tres::rows[0].choices[0]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/subtitles.tres
-msgid "Small"
-msgstr ""
-
-#. key: data/settings/pages/subtitles.tres::rows[0].choices[1]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/subtitles.tres
-msgid "Medium"
-msgstr ""
-
-#. key: data/settings/pages/subtitles.tres::rows[0].choices[2]
-#. SettingDef
-#. max 20 chars
-#: data/settings/pages/subtitles.tres
-msgid "Large"
-msgstr ""
-
 #. key: data/settings/pages/subtitles.tres::rows[1].label
 #. SettingDef
 #. max 40 chars
@@ -1760,10 +4918,12 @@ msgid "Lines move on by themselves after a reading pause. Choices always wait."
 msgstr ""
 
 #. key: data/settings/pages/subtitles.tres::rows[6].choices[1]
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
 #. key: ui/menus/SettingsMenu.gd::Loc.t
 #. SettingDef
 #. max 20 chars
-#: data/settings/pages/subtitles.tres ui/menus/SettingsMenu.gd
+#: data/settings/pages/subtitles.tres ui/menus/AchievementsMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd
 msgid "On"
 msgstr ""
 
@@ -1886,6 +5046,213 @@ msgstr ""
 msgid "Some"
 msgstr ""
 
+#. key: data/shops/shop_iko.tres::title
+#. ShopData
+#. max 32 chars
+#: data/shops/shop_iko.tres
+msgid "Iko  —  Black Market"
+msgstr ""
+
+#. key: data/shops/shop_iko.tres::items[0].display_name
+#. ShopItem
+#. max 32 chars
+#: data/shops/shop_iko.tres
+msgid "Bootleg Injector"
+msgstr ""
+
+#. key: data/shops/shop_iko.tres::items[0].description
+#. ShopItem
+#. max 140 chars
+#: data/shops/shop_iko.tres
+msgid "+1 injector charge. Warden stock; the seal's been filed off."
+msgstr ""
+
+#. key: data/shops/shop_mara.tres::title
+#. ShopData
+#. max 32 chars
+#: data/shops/shop_mara.tres
+msgid "Mara  —  Mechanic"
+msgstr ""
+
+#. key: data/shops/shop_mara.tres::items[2].display_name
+#. ShopItem
+#. max 32 chars
+#: data/shops/shop_mara.tres
+msgid "Spare Injector"
+msgstr ""
+
+#. key: data/shops/shop_mara.tres::items[2].description
+#. ShopItem
+#. max 140 chars
+#: data/shops/shop_mara.tres
+msgid "Carry one more healing injector."
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::title
+#. ShopData
+#. max 32 chars
+#: data/shops/shop_nix.tres
+msgid "Nix  —  Cartographer"
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[0].display_name
+#. ShopItem
+#. max 32 chars
+#: data/shops/shop_nix.tres
+msgid "Lowlight base map"
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[0].description
+#. ShopItem
+#. max 140 chars
+#: data/shops/shop_nix.tres
+msgid "Every street outline in Lowlight. Filling in the details is on you."
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[1].display_name
+#. ShopItem
+#. max 32 chars
+#: data/shops/shop_nix.tres
+msgid "Transit pass"
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[1].description
+#. ShopItem
+#. max 140 chars
+#: data/shops/shop_nix.tres
+msgid "Ride the old lines between any Anchors you have rested at."
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[2].display_name
+#. ShopItem
+#. max 32 chars
+#: data/shops/shop_nix.tres
+msgid "Surveyor's lens"
+msgstr ""
+
+#. key: data/shops/shop_nix.tres::items[2].description
+#. ShopItem
+#. max 140 chars
+#: data/shops/shop_nix.tres
+msgid "Marks map rooms that still hide something. Not where - that's the fun part."
+msgstr ""
+
+#. key: data/shops/shop_vell.tres::title
+#. ShopData
+#. max 32 chars
+#: data/shops/shop_vell.tres
+msgid "Vell  —  Circuit Broker"
+msgstr ""
+
+#. key: data/story/act1.tres::name
+#. ActData
+#. max 32 chars
+#: data/story/act1.tres
+msgid "RUN"
+msgstr ""
+
+#. key: data/story/act1.tres::standing[0].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Orr's board hears all of Lowlight now. He listens to it all night."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[1].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Half of Orr's board is still deaf. He keeps turning the dials anyway."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[2].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Nix has Lowlight on paper, every alley of it. The Spire isn't on it yet."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[3].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Krail's ledger says REDLINE too. Nobody will say what it means."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[4].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Iko has a stall at the Relay now. Business is good. Too good."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[5].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "Some of what you remembered doesn't fit together yet."
+msgstr ""
+
+#. key: data/story/act1.tres::standing[6].text
+#. ActStandingLine
+#. max 160 chars
+#: data/story/act1.tres
+msgid "The Spire has lost a Warden. It will send someone to ask why."
+msgstr ""
+
+#. key: data/weapons/heavy_revolver.tres::display_name
+#. WeaponData
+#. max 24 chars
+#: data/weapons/heavy_revolver.tres
+msgid "Heavy Revolver"
+msgstr ""
+
+#. key: data/weapons/scattergun.tres::display_name
+#. WeaponData
+#. max 24 chars
+#: data/weapons/scattergun.tres
+msgid "Scattergun"
+msgstr ""
+
+#. key: data/weapons/service_pistol.tres::display_name
+#. WeaponData
+#. max 24 chars
+#: data/weapons/service_pistol.tres
+msgid "Service Pistol"
+msgstr ""
+
+#. key: data/weapons/split_katars.tres::display_name
+#. WeaponData
+#. max 24 chars
+#: data/weapons/split_katars.tres
+msgid "Split Katars"
+msgstr ""
+
+#. key: data/world/chase/rainline.tres::warn_hint
+#. key: data/world/chase/rainline_remix.tres::warn_hint
+#. key: data/world/chase/test_chase.tres::warn_hint
+#. PursuerData
+#. max 90 chars
+#: data/world/chase/rainline.tres data/world/chase/rainline_remix.tres data/world/chase/test_chase.tres
+msgid "Something on the line just woke up. Run east."
+msgstr ""
+
+#. key: data/world/chase/rainline.tres::repeat_hint
+#. key: data/world/chase/rainline_remix.tres::repeat_hint
+#. key: data/world/chase/test_chase.tres::repeat_hint
+#. PursuerData
+#. max 90 chars
+#: data/world/chase/rainline.tres data/world/chase/rainline_remix.tres data/world/chase/test_chase.tres
+msgid "Keep moving — it catches you when you slow down."
+msgstr ""
+
+#. key: data/world/onboarding.tres::title_subtitle
+#. OnboardingConfig
+#. max 60 chars
+#: data/world/onboarding.tres
+msgid "Act I  —  Undercity to Lowlight"
+msgstr ""
+
 #. key: input/InputBindings.gd::Loc.t
 #: input/InputBindings.gd
 msgid "That input cannot be used here."
@@ -1950,6 +5317,53 @@ msgstr ""
 msgid "{key} stays on {action}."
 msgstr ""
 
+#. key: interactables/AbilityPickup.gd::hint_text
+#. AbilityPickup
+#. max 90 chars · placeholders: %s
+#: interactables/AbilityPickup.gd
+msgid "DASH UNLOCKED  —  press [%s] to dash"
+msgstr ""
+
+#. key: interactables/ChallengeTerminal.gd::Loc.t
+#: interactables/ChallengeTerminal.gd
+msgid "Training rig"
+msgstr ""
+
+#. key: interactables/ChallengeTerminal.gd::prompt_verb
+#. key: interactables/FlagSwitch.gd::prompt_verb
+#. key: interactables/Interactable.gd::prompt_verb
+#. key: interactables/NPC.gd::prompt_verb
+#. key: interactables/SignalRepeater.gd::prompt_verb
+#. key: world/anchors/Anchor.gd::prompt_verb
+#. Anchor
+#. ChallengeTerminal
+#. FlagSwitch
+#. Interactable
+#. NPC
+#. SignalRepeater
+#. max 16 chars
+#: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
+msgid "Use"
+msgstr ""
+
+#. key: ui/hud/AchievementToast.gd::Loc.tn
+#. placeholders: {n}
+#: ui/hud/AchievementToast.gd
+msgid "{n} ACHIEVEMENT UNLOCKED"
+msgid_plural "{n} ACHIEVEMENTS UNLOCKED"
+msgstr[0] ""
+msgstr[1] ""
+
+#. key: ui/hud/AchievementToast.gd::Loc.t
+#: ui/hud/AchievementToast.gd
+msgid "See them in the Journal."
+msgstr ""
+
+#. key: ui/hud/AchievementToast.gd::Loc.t
+#: ui/hud/AchievementToast.gd
+msgid "ACHIEVEMENT"
+msgstr ""
+
 #. key: ui/hud/RunTimerHud.gd::Loc.f
 #. placeholders: {time}
 #: ui/hud/RunTimerHud.gd
@@ -1996,15 +5410,404 @@ msgstr ""
 msgid "NO ATTACKS"
 msgstr ""
 
+#. key: ui/menus/AchievementsMenu.gd::Loc.f
+#. placeholders: {n} {total}
+#: ui/menus/AchievementsMenu.gd
+msgid "ACHIEVEMENTS  {n} / {total}"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.f
+#. placeholders: {filter}
+#: ui/menus/AchievementsMenu.gd
+msgid "Show: {filter}"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.f
+#. placeholders: {state}
+#: ui/menus/AchievementsMenu.gd
+msgid "Show hidden details: {state}"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "Nothing here yet."
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "Everything here is unlocked."
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.f
+#. placeholders: {pages} {page}
+#: ui/menus/AchievementsMenu.gd
+msgid "More… ({page}/{pages})"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "Records…"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd
+msgid "???"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "Keep exploring."
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "Hidden achievement"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.f
+#. placeholders: {now} {target}
+#: ui/menus/AchievementsMenu.gd
+msgid "{now} / {target}"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "More…"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "RECORDS"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "This save"
+msgstr ""
+
+#. key: ui/menus/AchievementsMenu.gd::Loc.t
+#: ui/menus/AchievementsMenu.gd
+msgid "All time"
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.t
+#: ui/menus/AssistSuggestMenu.gd
+msgid "If you'd like, these options can help."
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.t
+#: ui/menus/AssistSuggestMenu.gd
+msgid "They never lock anything, and you can change them any time in Settings."
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.t
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Open all assists…"
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.t
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Not now"
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.t
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Don't suggest again"
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.f
+#. placeholders: {setting} {value}
+#: ui/menus/AssistSuggestMenu.gd
+msgid "{setting}: {value}  —  On"
+msgstr ""
+
+#. key: ui/menus/AssistSuggestMenu.gd::Loc.f
+#. placeholders: {setting} {value}
+#: ui/menus/AssistSuggestMenu.gd
+msgid "{setting}: {value}  —  Turn on"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Descend again"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Leave"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Retry"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. key: ui/menus/PauseMenu.gd::Loc.f
+#. placeholders: {mode}
+#: ui/menus/ChallengeResultMenu.gd ui/menus/ChallengesMenu.gd ui/menus/PauseMenu.gd
+msgid "Ghost: {mode}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Back to Challenges"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#. key: ui/menus/PauseMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd ui/menus/PauseMenu.gd
+msgid "Quit challenge"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. key: ui/menus/DemoEndMenu.gd::Loc.f
+#. key: ui/menus/SliceEndMenu.gd::Loc.f
+#. placeholders: {time}
+#: ui/menus/ChallengeResultMenu.gd ui/menus/DemoEndMenu.gd ui/menus/SliceEndMenu.gd
+msgid "Time {time}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {tier} {time}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{time}  {tier}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {score} {tier}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Score {score}  {tier}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {score} {tier}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{tier}  ·  score {score}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {delta}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best! {delta}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {points}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best! +{points}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best!"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {rank}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Local board: #{rank}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Run over: out of health"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Run over"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {target} {tier}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Next: {tier} at {target}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.f
+#. placeholders: {stage} {tier} {time}
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{stage}  {time}  {tier}"
+msgstr ""
+
+#. key: ui/menus/ChallengeResultMenu.gd::Loc.t
+#: ui/menus/ChallengeResultMenu.gd
+msgid "new best"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "CHALLENGES"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {got} {max} {p}
+#: ui/menus/ChallengesMenu.gd
+msgid "Profile {p} · medals {got} / {max}"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Depth reached"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {hint}
+#: ui/menus/ChallengesMenu.gd
+msgid "Locked — {hint}"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Core mode never changes your rank"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {n}
+#: ui/menus/ChallengesMenu.gd
+msgid "Records from an earlier version of this room: {n} (archived)"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Local board: no finishes yet"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Local board"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {glyph}
+#: ui/menus/ChallengesMenu.gd
+msgid "{glyph} marks runs with an assist or reduced hitstop. They earn the same medals."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {pages} {page}
+#: ui/menus/ChallengesMenu.gd
+msgid "More… ({page} / {pages})"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "No rig ghost yet"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "How ranks work"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Start"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "No hits. Falls and Core burnout count."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Movement only: no swings or shots."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {time}
+#: ui/menus/ChallengesMenu.gd
+msgid "Time limit {time}"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Your own loadout"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Fixed kit: unarmed"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {weapons}
+#: ui/menus/ChallengesMenu.gd
+msgid "Fixed kit: {weapons}"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Beat the rig ghost's time"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {tiers}
+#: ui/menus/ChallengesMenu.gd
+msgid "{tiers} (of 1000)"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {n}
+#: ui/menus/ChallengesMenu.gd
+msgid "Your best: none yet ({n} attempts)"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {best} {n}
+#: ui/menus/ChallengesMenu.gd
+msgid "Your best: {best} ({n} attempts)"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {date} {medal} {profile} {rank} {value}
+#: ui/menus/ChallengesMenu.gd
+msgid "{rank}. P{profile}  {value}  {medal}  {date}"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "assist"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "reduced hitstop"
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "The training rig cannot start that run right now."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Time: finishing near the stage's par earns time points; at its Redline time you earn them all."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Damage: every hit and every death costs points."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.t
+#: ui/menus/ChallengesMenu.gd
+msgid "Style: a higher average style rank earns more points."
+msgstr ""
+
+#. key: ui/menus/ChallengesMenu.gd::Loc.f
+#. placeholders: {top}
+#: ui/menus/ChallengesMenu.gd
+msgid "{top}: no hits, no deaths and a time at or under the stage's Redline time."
+msgstr ""
+
 #. key: ui/menus/DemoEndMenu.gd::Loc.t
 #: ui/menus/DemoEndMenu.gd
 msgid "Keep exploring"
-msgstr ""
-
-#. key: ui/menus/DemoEndMenu.gd::Loc.f
-#. placeholders: {time}
-#: ui/menus/DemoEndMenu.gd
-msgid "Time {time}"
 msgstr ""
 
 #. key: ui/menus/DemoEndMenu.gd::Loc.f
@@ -2013,14 +5816,66 @@ msgstr ""
 msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}"
 msgstr ""
 
-#. key: ui/menus/PauseMenu.gd::Loc.t
-#: ui/menus/PauseMenu.gd
-msgid "PAUSED"
+#. key: ui/menus/JournalMenu.gd::Loc.t
+#: ui/menus/JournalMenu.gd
+msgid "Achievements…"
 msgstr ""
 
-#. key: ui/menus/PauseMenu.gd::Loc.t
-#: ui/menus/PauseMenu.gd
-msgid "Resume"
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "NEW GAME+"
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "New Game+ is not available for this save."
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Keeps: your weapons, Circuits, banked Scrap and upgrades. Core Shards you found stay found."
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Resets: the story, people, map and memories. Secret stashes refill with a quarter of their Scrap."
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Your cleared save is copied to an archive file; the game cannot load it back."
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Begin"
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Replace your Continue save with New Game+?"
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Memories and quests you have not finished start over."
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.t
+#: ui/menus/NgPlusMenu.gd
+msgid "Begin New Game+"
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.f
+#. placeholders: {state}
+#: ui/menus/NgPlusMenu.gd
+msgid "Remixed enemies and hazards: {state}"
+msgstr ""
+
+#. key: ui/menus/NgPlusMenu.gd::Loc.f
+#. placeholders: {state}
+#: ui/menus/NgPlusMenu.gd
+msgid "Start with the Dash: {state}"
 msgstr ""
 
 #. key: ui/menus/PauseMenu.gd::Loc.t
@@ -2033,21 +5888,10 @@ msgstr ""
 msgid "Restart descent"
 msgstr ""
 
-#. key: ui/menus/PauseMenu.gd::Loc.f
-#. placeholders: {mode}
-#: ui/menus/PauseMenu.gd
-msgid "Ghost: {mode}"
-msgstr ""
-
 #. key: ui/menus/PauseMenu.gd::Loc.t
 #. key: ui/menus/TitleMenu.gd::Loc.t
 #: ui/menus/PauseMenu.gd ui/menus/TitleMenu.gd
 msgid "Settings"
-msgstr ""
-
-#. key: ui/menus/PauseMenu.gd::Loc.t
-#: ui/menus/PauseMenu.gd
-msgid "Quit challenge"
 msgstr ""
 
 #. key: ui/menus/SettingsMenu.gd::Loc.t
@@ -2058,12 +5902,6 @@ msgstr ""
 #. key: ui/menus/SettingsMenu.gd::Loc.t
 #: ui/menus/SettingsMenu.gd
 msgid "Reset all settings…"
-msgstr ""
-
-#. key: ui/menus/SettingsMenu.gd::Loc.t
-#. key: ui/menus/TitleMenu.gd::Loc.t
-#: ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
-msgid "Back"
 msgstr ""
 
 #. key: ui/menus/SettingsMenu.gd::Loc.t
@@ -2203,6 +6041,27 @@ msgstr ""
 msgid "Automatic ({language})"
 msgstr ""
 
+#. key: ui/menus/SliceEndMenu.gd::Loc.f
+#. placeholders: {cycle} {state}
+#: ui/menus/SliceEndMenu.gd
+msgid "{cycle} complete. Remix {state}."
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "on"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "off"
+msgstr ""
+
+#. key: ui/menus/SliceEndMenu.gd::Loc.t
+#: ui/menus/SliceEndMenu.gd
+msgid "New: a training rig at the Relay, and New Game+ on the title."
+msgstr ""
+
 #. key: ui/menus/TitleMenu.gd::Loc.t
 #: ui/menus/TitleMenu.gd
 msgid "Comfort & accessibility"
@@ -2291,6 +6150,13 @@ msgstr ""
 msgid "RIG"
 msgstr ""
 
+#. key: world/rooms/CombatLab.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/CombatLab.tscn
+msgid "Combat Lab"
+msgstr ""
+
 #. key: world/rooms/CombatLab.tscn::Labels/Label0.text
 #. Label
 #: world/rooms/CombatLab.tscn
@@ -2319,6 +6185,20 @@ msgstr ""
 #. Label
 #: world/rooms/CombatLab.tscn
 msgid "ARENA 3  drones: shoot, air attacks, dodge bolts"
+msgstr ""
+
+#. key: world/rooms/FlowZone.gd::first_entry_hint
+#. FlowZone
+#. max 110 chars
+#: world/rooms/FlowZone.gd
+msgid "HOSTILE ZONE  —  your Core drains here. Fight and move to refill it."
+msgstr ""
+
+#. key: world/rooms/MovementLab.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/MovementLab.tscn
+msgid "Movement Lab"
 msgstr ""
 
 #. key: world/rooms/MovementLab.tscn::Labels/Label0.text
@@ -2427,4 +6307,434 @@ msgstr ""
 #. Label
 #: world/rooms/MovementLab.tscn
 msgid "DROP LEDGE - hard landing"
+msgstr ""
+
+#. key: world/rooms/Room.gd::room_name
+#. Room
+#. max 32 chars
+#: world/rooms/Room.gd
+msgid "Room"
+msgstr ""
+
+#. key: world/rooms/challenge/NullFloor.tscn::Triggers/BossArena.boss_subtitle
+#. BossArena
+#. max 40 chars
+#: world/rooms/challenge/NullFloor.tscn
+msgid "Echo"
+msgstr ""
+
+#. key: world/rooms/challenge/PulsePit.tscn::..district_name
+#. Room
+#. max 24 chars
+#: world/rooms/challenge/PulsePit.tscn
+msgid "Training Pit"
+msgstr ""
+
+#. key: world/rooms/lowlight/ApartmentStack.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Apartment Stack"
+msgstr ""
+
+#. key: world/rooms/lowlight/ApartmentStack.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Bolted from the other side."
+msgstr ""
+
+#. key: world/rooms/lowlight/ApartmentStack.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Hatch: bolted from the tunnel side"
+msgstr ""
+
+#. key: world/rooms/lowlight/ApartmentStack.tscn::Triggers/Hint2.text
+#. key: world/rooms/undercity/MedicalRuin.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/ApartmentStack.tscn world/rooms/undercity/MedicalRuin.tscn
+msgid "Hurt? Stand still and hold on: [{action}] uses an injector"
+msgstr ""
+
+#. key: world/rooms/lowlight/BellTower.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Bell Tower"
+msgstr ""
+
+#. key: world/rooms/lowlight/BellTower.tscn::Interactables/Lever1.used_text
+#. FlagSwitch
+#. max 110 chars
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Lift to the Relay is running"
+msgstr ""
+
+#. key: world/rooms/lowlight/BellTower.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Orr: crates go up here every night"
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/FloodedAlley.tscn
+msgid "Flooded Alley"
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::Props/MapMarker1.label
+#. key: world/rooms/undercity/EscapeTunnel.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "Too wide to jump"
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::Triggers/Hint1.text
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::Triggers/Hint2.text
+#. key: world/rooms/undercity/EscapeTunnel.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/lowlight/SmugglerRoute.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "Too far to jump. Maybe later."
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::Triggers/Hint2.text
+#. key: world/rooms/undercity/FirstPursuit.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/FirstPursuit.tscn
+msgid "Run and hold [{action}] to slide"
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::Triggers/Hint3.text
+#. key: world/rooms/undercity/MedicalRuin.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/MedicalRuin.tscn
+msgid "[{action}] attack"
+msgstr ""
+
+#. key: world/rooms/lowlight/FloodedAlley.tscn::Triggers/Hint4.text
+#. key: world/rooms/undercity/MaintenanceShaft.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/MaintenanceShaft.tscn
+msgid "[{action}] dodge - it passes through attacks"
+msgstr ""
+
+#. key: world/rooms/lowlight/MarketRun.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/MarketRun.tscn
+msgid "Market Run"
+msgstr ""
+
+#. key: world/rooms/lowlight/MarketRun.tscn::Triggers/Hint1.text
+#. key: world/rooms/undercity/EscapeTunnel.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/MarketRun.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "[{action}] shoot - aim with the move keys"
+msgstr ""
+
+#. key: world/rooms/lowlight/MarketRun.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/MarketRun.tscn
+msgid "Up + [{action}] launches enemies. Knock them into the spikes."
+msgstr ""
+
+#. key: world/rooms/lowlight/NeonRoofs.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Wide gap: slide, then jump out of the slide"
+msgstr ""
+
+#. key: world/rooms/lowlight/NeonRoofs.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Dodge, then jump mid-dodge to carry its speed"
+msgstr ""
+
+#. key: world/rooms/lowlight/NeonRoofs.tscn::Triggers/Hint3.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Shields block from the front. Go behind, above, or [{action}] heavy."
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Power Block"
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Interactables/Lever1.used_text
+#. FlagSwitch
+#. max 110 chars
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Grid rerouted. Station doors on priority power. Overhead, the Rainline hums awake."
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Security Station: grid-priority access only. Reroute at the basement relay."
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Sealed by the security grid."
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Triggers/Hint3.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Breakers power the shutters. Hit one [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Triggers/Hint4.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Shutter dropping? Get low and slide under [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/PowerBlock.tscn::Triggers/Hint5.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Too high? Jump and strike it, or shoot straight up [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/RainlineChase.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/RainlineChase.tscn
+msgid "Orr: the Rainline is running again"
+msgstr ""
+
+#. key: world/rooms/lowlight/Relay.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/Relay.tscn
+msgid "Resistance hub"
+msgstr ""
+
+#. key: world/rooms/lowlight/Relay.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/Relay.tscn
+msgid "Talk to Orr  [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/Relay.tscn::Triggers/Hint2.text
+#. key: world/rooms/undercity/BrokenLift.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/Relay.tscn world/rooms/undercity/BrokenLift.tscn
+msgid "Anchors save, heal and refill. Rest to change your loadout."
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Security Station"
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Scanners on calibration: harmless. Low beam: jump it [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "High beam: slide under [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::Triggers/Hint3.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Full beam: dodge through it. Scanners read a dodge as a blur [{action}]"
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::Triggers/Hint4.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "It blinks. Wait for dark, or dodge."
+msgstr ""
+
+#. key: world/rooms/lowlight/SecurityStation.tscn::Triggers/Hint5.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "The searchlight runs off that breaker."
+msgstr ""
+
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Smuggler Route"
+msgstr ""
+
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Too wide to jump (mostly)"
+msgstr ""
+
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::Interactables/Lever1.used_text
+#. FlagSwitch
+#. max 110 chars
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Hatch unbolted. The Stack is through here; the den Anchor gets you back to the Power Block."
+msgstr ""
+
+#. key: world/rooms/lowlight/SmugglerRoute.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "A chalk eye. Someone uses this route."
+msgstr ""
+
+#. key: world/rooms/lowlight/WardenTower.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Warden Tower"
+msgstr ""
+
+#. key: world/rooms/lowlight/WardenTower.tscn::Geometry/Clamp_wt_clamp.arm_hint
+#. GridClamp
+#. max 90 chars
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Breakers live. Drop the clamp on him."
+msgstr ""
+
+#. key: world/rooms/lowlight/WardenTower.tscn::Props/MapMarker1.label
+#. MapMarker
+#. max 40 chars
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Nix: on every map. Why?"
+msgstr ""
+
+#. key: world/rooms/undercity/BrokenLift.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/undercity/BrokenLift.tscn
+msgid "Broken Lift"
+msgstr ""
+
+#. key: world/rooms/undercity/CollectorBay.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "Collector Bay"
+msgstr ""
+
+#. key: world/rooms/undercity/CollectorBay.tscn::Triggers/BossArena.boss_title
+#. BossArena
+#. max 32 chars
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "COLLECTOR DRONE"
+msgstr ""
+
+#. key: world/rooms/undercity/CollectorBay.tscn::Triggers/BossArena.boss_subtitle
+#. BossArena
+#. max 40 chars
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "Civic Recovery Unit C-00"
+msgstr ""
+
+#. key: world/rooms/undercity/FirstPursuit.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars
+#: world/rooms/undercity/FirstPursuit.tscn
+msgid "Something up there is scanning for you. Keep moving."
+msgstr ""
+
+#. key: world/rooms/undercity/FirstPursuit.tscn::Triggers/Hint3.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/undercity/FirstPursuit.tscn
+msgid "A radio is crackling.  [{action}]"
+msgstr ""
+
+#. key: world/rooms/undercity/MaintenanceShaft.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/undercity/MaintenanceShaft.tscn
+msgid "Maintenance Shaft"
+msgstr ""
+
+#. key: world/rooms/undercity/MaintenanceShaft.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/undercity/MaintenanceShaft.tscn
+msgid "Jump, then [{action}] to reach things above you"
+msgstr ""
+
+#. key: world/rooms/undercity/MedicalRuin.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/undercity/MedicalRuin.tscn
+msgid "Medical Ruin"
+msgstr ""
+
+#. key: world/rooms/undercity/Wake.tscn::..room_name
+#. Room
+#. max 32 chars
+#: world/rooms/undercity/Wake.tscn
+msgid "Wake"
+msgstr ""
+
+#. key: world/rooms/undercity/Wake.tscn::Interactables/Lever1.used_text
+#. key: world/rooms/undercity/Wake.tscn::Interactables/Lever2.used_text
+#. FlagSwitch
+#. max 110 chars
+#: world/rooms/undercity/Wake.tscn
+msgid "The ward shutter grinds open"
+msgstr ""
+
+#. key: world/rooms/undercity/Wake.tscn::Triggers/Hint1.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/undercity/Wake.tscn
+msgid "Alive. Something in your chest made sure of it.  Move  [{action}]"
+msgstr ""
+
+#. key: world/rooms/undercity/Wake.tscn::Triggers/Hint2.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/undercity/Wake.tscn
+msgid "[{action}] jump - hold it to go higher"
+msgstr ""
+
+#. key: world/rooms/undercity/Wake.tscn::Triggers/Hint3.text
+#. HintTrigger
+#. max 110 chars · placeholders: {action}
+#: world/rooms/undercity/Wake.tscn
+msgid "[{action}] use"
 msgstr ""

@@ -7,6 +7,9 @@ extends Resource
 ## Jump is authored as height + time-to-apex; gravity and launch speed are derived
 ## so designers tune what the player perceives rather than raw physics numbers.
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (a tuning preset id)
+const LOC_EXEMPT := ["preset_name"]
+
 @export var preset_name: String = "default"
 
 @export_group("Run")

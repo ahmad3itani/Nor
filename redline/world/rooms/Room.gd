@@ -8,6 +8,10 @@ extends Node2D
 ## entry markers, carried momentum, pits that cost a pip and return you to
 ## safe ground, and death that sends you back to the last Anchor.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"room_name": 32, "district_name": 24}
+
 @export var room_name: String = "Room"
 @export var bounds: Rect2 = Rect2(0, 0, 480, 270)
 @export var player_scene: PackedScene = preload("res://player/Player.tscn")

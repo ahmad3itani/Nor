@@ -5,6 +5,12 @@ extends Area2D
 ## the player is inside one. Outside = safe exploration, no pressure.
 ## Origin is the top-left corner.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"first_entry_hint": 110}
+## Not shown to a player: `label` names the zone in the debug overlay only.
+const LOC_EXEMPT := ["label"]
+
 @export var size: Vector2 = Vector2(320, 200):
 	set(v):
 		size = v.snapped(Vector2.ONE)

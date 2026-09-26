@@ -24,6 +24,10 @@ const MAX_CATCHUP := 180.0
 ## The catch-up speed blends in linearly over this many px past far_lead.
 const CATCHUP_BLEND := 64.0
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"warn_hint": 90, "repeat_hint": 90}
+
 @export var id: String = ""
 @export var look: Look = Look.SWEEPER
 ## Room y of the overhead rail, relative to the path's y (negative = above).

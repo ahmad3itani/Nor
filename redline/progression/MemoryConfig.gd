@@ -3,6 +3,15 @@ extends Resource
 ## Tuning and player-facing text for memory vignettes and the journal
 ## gallery (bible §37.3: content lives in data; data/memories/memory_config.tres).
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title_label": 24, "card_body_anchor": 60, "card_body_journal": 60,
+	"more_waiting_hint": 60, "remembered_line": 48, "gallery_button": 24, "empty_text": 60, "gallery_title": 32,
+	"pending_hint": 60, "detail_line": 60, "detail_unfound_text": 60, "back_label": 16, "pause_title": 16,
+	"pause_resume": 24, "pause_skip": 24, "pause_size": 32, "size_names": 12}
+## Not shown to a player: glyphs and roman act numerals are marks, not words (D-163).
+const LOC_EXEMPT := ["glyph_seen", "glyph_pending", "glyph_locked", "glyph_gap", "act_names"]
+
 @export_group("Pacing")
 ## Vignettes per Anchor rest. 1 keeps the first rest before the Collector
 ## short (D-112); extras wait for the next rest with more_waiting_hint.

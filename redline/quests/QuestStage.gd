@@ -1,6 +1,10 @@
 class_name QuestStage
 extends Resource
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"description": 120, "map_note": 40}
+
 @export_multiline var description: String = ""
 ## The stage is done when every flag here is set. Progress shows as n/total.
 @export var complete_flags: PackedStringArray = []

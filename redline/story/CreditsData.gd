@@ -8,6 +8,10 @@ extends Resource
 const ENGINE_HEADING := "ENGINE"
 const ENGINE_NAME := "Godot Engine"
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"closing_line": 80}
+
 @export var sections: Array[CreditsSection] = []
 ## Last line, held on screen while the roll ends.
 @export var closing_line: String = ""

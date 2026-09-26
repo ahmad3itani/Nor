@@ -17,6 +17,10 @@ enum Kind { ABILITY_GATE, LANDMARK, NOTE }
 const NOTE_SECRET_CLEARANCE := 96.0
 const NOTE_LABEL_MAX := 40
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"label": 40}
+
 @export var kind: Kind = Kind.ABILITY_GATE
 @export var label: String = ""
 @export var resolved_when: String = ""

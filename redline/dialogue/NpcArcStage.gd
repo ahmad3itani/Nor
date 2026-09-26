@@ -7,6 +7,10 @@ extends Resource
 ## World consequences are not listed here: props and switches key on the
 ## stage flag arc_<npc>_<id> directly (WorldStateSwitch, T08).
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"journal_note": 90}
+
 ## snake_case, unique in the arc; names the flags arc_<npc>_<id> (reached)
 ## and arcbeat_<npc>_<id> (beat heard).
 @export var id: String = ""

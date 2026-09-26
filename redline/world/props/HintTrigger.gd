@@ -4,6 +4,10 @@ extends Area2D
 ## Shows a short contextual tip once (bible §42: short, contextual, taught by
 ## geometry first). `{action}` in the text becomes the player's binding.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"text": 110}
+
 @export var size: Vector2 = Vector2(48, 96)
 @export var hint_id: String = ""
 @export_multiline var text: String = ""

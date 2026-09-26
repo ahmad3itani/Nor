@@ -4,6 +4,10 @@ extends Resource
 ## architecture, parallax layers, weather, lighting language"). Placeholder
 ## renderers read these colors until the Art Bible's real assets exist.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"district_name": 24}
+
 @export var district_name: String = ""
 @export_group("Sky & skyline")
 @export var sky_top: Color = Color("0b0a12")

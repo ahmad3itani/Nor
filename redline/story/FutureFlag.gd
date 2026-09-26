@@ -7,6 +7,9 @@ const NOTE_MAX := 80
 ## Acts II..V, or 9 = the M9 postgame (The Null, bible §30).
 const VALID_ACTS: Array[int] = [2, 3, 4, 5, 9]
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (an author note on a future-act flag)
+const LOC_EXEMPT := ["note"]
+
 @export var flag: String = ""
 @export var act: int = 5
 ## Why the flag exists (<= 80 chars); the validator report shows it.

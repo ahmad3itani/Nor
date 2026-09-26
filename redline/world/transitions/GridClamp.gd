@@ -23,6 +23,10 @@ const RED := Color("e8283c")
 const LAMP_OFF := Color("3a3030")
 const LAMPS := 5
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"arm_hint": 90}
+
 @export var clamp_id: String = ""
 @export var circuits: Array[StringName] = []
 @export var timing: ClampTiming

@@ -5,6 +5,10 @@ extends Area2D
 ## NPCs, switches, doors. The PlayerInteractor picks the nearest enabled one
 ## and shows its prompt; subclasses implement interact().
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"prompt_verb": 16}
+
 @export var size: Vector2 = Vector2(24, 32):
 	set(v):
 		size = v

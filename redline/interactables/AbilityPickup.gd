@@ -3,6 +3,10 @@ extends Area2D
 ## Traversal unlock dropped by a boss (bible §15: Warden Krail -> Dash).
 ## Grants the ability, sets a flag, and teaches it in one short line.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"hint_text": 90}
+
 @export var ability: StringName = &"dash"
 @export var flag_id: String = "unlocked_dash"
 @export var hint_text: String = "DASH UNLOCKED  —  press [%s] to dash"

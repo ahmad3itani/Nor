@@ -4,6 +4,9 @@ extends Resource
 ## play, environmental kills and perfect dodges raise the rank; repeating
 ## the same attack gives diminishing returns; getting hit costs rank.
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (grade marks and brand, never translated (D-163))
+const LOC_EXEMPT := ["rank_names"]
+
 @export var rank_names: PackedStringArray = ["D", "C", "B", "A", "S", "SS", "SSS", "REDLINE"]
 ## Points needed for each rank (same length as rank_names, ascending, first = 0).
 @export var rank_thresholds: PackedFloat32Array = [0, 80, 200, 360, 560, 800, 1080, 1400]

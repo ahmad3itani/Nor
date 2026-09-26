@@ -114,7 +114,9 @@ func test_enforce_false_reports_warnings_only() -> void:
 	check((r["errors"] as PackedStringArray).is_empty(), "the repo has no string-lint errors: %s" % [r["errors"]])
 	var warns := Array(r["warnings"])
 	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-3]")), "pre-migration literals are reported as warnings")
-	check(warns.any(func(w: String) -> bool: return w.begins_with("[L-2]")), "unclassified pre-M9 fields are reported as warnings")
+	# T13's declaration commit classified every pre-M9 field, so L-2 is
+	# silent from here on (the coverage rule itself: test_coverage_flags_unclassified_field).
+	check(not warns.any(func(w: String) -> bool: return w.begins_with("[L-2]")), "every text field is classified")
 	# Catalog freshness (L-1) is not asserted here: until T13 regenerates the
 	# catalog, later branches add Loc calls without --write (R06.2). The only
 	# freshness gate is test_catalog_up_to_date, skipped while ENFORCE is off.

@@ -20,6 +20,10 @@ const MAX_TOTAL_CHARS := 400
 const MAX_DETAIL_CHARS := 120
 const LORE_DIR := "res://data/lore"
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title": 40, "detail_text": 120}
+
 ## == fragment.id for FRAGMENT scenes.
 @export var id: String = ""
 @export var source: Source = Source.FRAGMENT

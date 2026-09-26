@@ -3,6 +3,10 @@ extends SequenceStep
 ## Title card. use_arena_title reads BossArena.boss_title/boss_subtitle, so
 ## the arena stays the one source of truth for a boss's name.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title": 32, "subtitle": 48}
+
 @export var title: String = ""
 @export var subtitle: String = ""
 @export var use_arena_title: bool = false

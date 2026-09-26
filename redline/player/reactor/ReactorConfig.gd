@@ -4,6 +4,10 @@ extends Resource
 ## drains inside Flow Zones; kills, perfect dodges and stylish play refill it.
 ## At zero it burns health until refilled.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"mode_name": 24}
+
 @export var mode_name: String = "Normal"
 @export var max_charge: float = 100.0
 @export var start_charge: float = 70.0

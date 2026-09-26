@@ -7,6 +7,10 @@ extends Resource
 ## slice start (Relay, full kit), so nothing changes for old saves, tests or
 ## the capture tours. Game.START_ROOM stays the Relay either way.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title_subtitle": 60}
+
 ## Off: New Game = the legacy slice start. On: the campaign start below.
 @export var enforce: bool = false
 ## Where a campaign New Game drops Rook (the Undercity's Wake once it exists).

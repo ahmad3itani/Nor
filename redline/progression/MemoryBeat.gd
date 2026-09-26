@@ -4,6 +4,10 @@ extends Resource
 ## (PLAY) or its auto time (AUTO); nothing in a memory runs on a clock the
 ## player cannot stop, because the world is paused behind it.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"speaker": 24, "text": 160}
+
 ## "" = narration (italic, no label); else an UPPERCASE role label of at most
 ## 16 characters (bible §24 speaker labels). Never a name: memories introduce
 ## no names in Act I.

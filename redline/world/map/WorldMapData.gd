@@ -3,6 +3,10 @@ extends Resource
 ## The world map layout and discovery rules (bible §20). One resource for the
 ## whole city; districts are just tags on rooms.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"district_names": 24}
+
 @export var rooms: Array[MapRoomData] = []
 ## Fog of discovery granularity (world px) and how far Rook "sees" (world px).
 @export var cell_size: float = 64.0

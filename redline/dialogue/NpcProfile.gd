@@ -2,6 +2,10 @@ class_name NpcProfile
 extends Resource
 ## Who an NPC is and what they say when (ordered rules, first match wins).
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"display_name": 24, "map_label": 24, "verb": 16}
+
 @export var npc_id: String = ""
 @export var display_name: String = ""
 @export var color: Color = Color("9a8fb5")

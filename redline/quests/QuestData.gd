@@ -4,6 +4,10 @@ extends Resource
 ## start_flag is set and advances as stage flags get set by dialogue,
 ## switches or pickups. Nothing but flags needs saving.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title": 40, "giver": 24}
+
 @export var id: String = ""
 @export var title: String = ""
 @export var giver: String = ""

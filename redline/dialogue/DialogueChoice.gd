@@ -7,6 +7,10 @@ extends Resource
 ## (Game.apply_dialogue(d, choice)), so a reply skipped by mashing still
 ## records the answer.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"label": 48}
+
 @export var id: String = ""
 ## Rook's words (<= 28 chars so 2-3 options fit under the last line).
 @export var label: String = ""

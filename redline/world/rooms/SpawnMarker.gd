@@ -4,6 +4,9 @@ extends Marker2D
 ## Where the player (re)appears. Rooms collect these; the reset hotkey returns
 ## to the active one and devtools can cycle through them (teleport).
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (a dev label for the spawn)
+const LOC_EXEMPT := ["label"]
+
 @export var spawn_id: StringName = &"start"
 @export var is_default: bool = false
 @export_enum("Right:1", "Left:-1") var facing: int = 1

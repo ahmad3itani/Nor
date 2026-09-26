@@ -5,6 +5,10 @@ extends Resource
 
 const MAX_STANDING_CAP := 6
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"name": 32}
+
 @export var act: int = 1
 ## "RUN" (bible §18).
 @export var name: String = ""

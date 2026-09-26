@@ -9,6 +9,10 @@ extends SequenceStep
 
 const MAX_CHARS := 120
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"text": MAX_CHARS}
+
 @export var speaker_id: String = ""
 @export_multiline var text: String = ""
 ## 0 = auto time.

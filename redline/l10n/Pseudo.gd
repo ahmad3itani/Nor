@@ -8,7 +8,7 @@ extends RefCounted
 ## byte-stable for ExtractStrings --check.
 
 ## Spans copied verbatim: {named} placeholders, printf specs and BBCode tags.
-const PROTECTED := "\\{[a-z_][a-z0-9_]*\\}|%[-+ 0#]*[0-9]*(?:\\.[0-9]+)?[sdfxXcoe%]|\\[/?[a-z_]+[^\\]]*\\]"
+const PROTECTED := "\\{[a-z_][a-z0-9_]*\\}|%[-+0#]*[0-9]*(?:\\.[0-9]+)?[sdfxXcoe%]|\\[/?[a-z_]+[^\\]]*\\]"
 
 static var _rx: RegEx
 

@@ -4,6 +4,10 @@ extends Resource
 ## just ask Game for a stat: `multipliers` multiply (default 1.0), `values`
 ## add up (default 0.0). Stat names are documented in Docs/CIRCUITS.md.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"display_name": 32, "description": 140}
+
 @export var id: String = ""
 @export var display_name: String = ""
 @export_multiline var description: String = ""

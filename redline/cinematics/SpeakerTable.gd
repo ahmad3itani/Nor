@@ -8,6 +8,11 @@ extends Resource
 const PATH := "res://data/sequences/speakers.tres"
 const NPC_DIR := "res://data/npcs"
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"labels": 24}
+const LOC_EXEMPT := ["ids"]
+
 @export var ids: PackedStringArray = []
 @export var labels: PackedStringArray = []
 @export var colors: PackedColorArray = []

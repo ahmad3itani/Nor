@@ -5,6 +5,10 @@ extends Resource
 
 enum Kind { MELEE, RANGED }
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"display_name": 24}
+
 @export var id: StringName
 @export var display_name: String = ""
 @export var kind: Kind = Kind.MELEE

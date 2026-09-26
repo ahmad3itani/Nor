@@ -12,6 +12,14 @@ msgstr ""
 msgid "New at the Relay training rig: {group}"
 msgstr "[Ñéŵ áť ťĥé Ŕéĺáý ťŕáíñíñğ ŕíğ: {group}~~~~~~~~~~~]"
 
+#: bosses/BossArena.gd data/sequences/speakers.tres world/rooms/challenge/NullFloor.tscn
+msgid "WARDEN KRAIL"
+msgstr "[ŴÁŔĎÉÑ ĶŔÁÍĹ~~~~~~]"
+
+#: bosses/BossArena.gd
+msgid "Lowlight Enforcement"
+msgstr "[Ĺóŵĺíğĥť Éñfóŕçéméñť~~~~~~~]"
+
 #: challenges/ChallengeGoal.gd
 msgid "Goal"
 msgstr "[Ğóáĺ~~]"
@@ -24,11 +32,11 @@ msgstr "[Ŕúñ óvéŕ: féĺĺ~~~~~]"
 msgid "Run over: Core ran dry"
 msgstr "[Ŕúñ óvéŕ: Çóŕé ŕáñ ďŕý~~~~~~~~]"
 
-#: challenges/RuleWatch.gd
+#: challenges/RuleWatch.gd ui/menus/ChallengeResultMenu.gd
 msgid "Run over: hit taken"
 msgstr "[Ŕúñ óvéŕ: ĥíť ťáķéñ~~~~~~~]"
 
-#: challenges/RuleWatch.gd
+#: challenges/RuleWatch.gd ui/menus/ChallengeResultMenu.gd
 msgid "Run over: attack used"
 msgstr "[Ŕúñ óvéŕ: áťťáçķ úšéď~~~~~~~~]"
 
@@ -48,7 +56,555 @@ msgstr "[Ťĥíš šťŕéťçĥ ĥáš šťóppéď ýóú á féŵ ťíméš.~
 msgid "This room has stopped you a few times."
 msgstr "[Ťĥíš ŕóóm ĥáš šťóppéď ýóú á féŵ ťíméš.~~~~~~~~~~~~~~]"
 
-#: data/challenges/challenge_config.tres
+#: data/achievements/act1_complete.tres
+msgid "Run"
+msgstr "[Ŕúñ~~]"
+
+#: data/achievements/act1_complete.tres
+msgid "Finish Act I."
+msgstr "[Fíñíšĥ Áçť Í.~~~~~]"
+
+#: data/achievements/all_fragments.tres
+msgid "What Was Taken"
+msgstr "[Ŵĥáť Ŵáš Ťáķéñ~~~~~]"
+
+#: data/achievements/all_fragments.tres
+msgid "Recover every memory fragment in Act I."
+msgstr "[Ŕéçóvéŕ évéŕý mémóŕý fŕáğméñť íñ Áçť Í.~~~~~~~~~~~~~~]"
+
+#: data/achievements/all_secrets.tres
+msgid "Nothing Left Hidden"
+msgstr "[Ñóťĥíñğ Ĺéfť Ĥíďďéñ~~~~~~~]"
+
+#: data/achievements/all_secrets.tres
+msgid "Find every secret in Act I."
+msgstr "[Fíñď évéŕý šéçŕéť íñ Áçť Í.~~~~~~~~~~]"
+
+#: data/achievements/all_shards.tres
+msgid "Full Capacity"
+msgstr "[Fúĺĺ Çápáçíťý~~~~~]"
+
+#: data/achievements/all_shards.tres
+msgid "Collect every Core Shard in Act I."
+msgstr "[Çóĺĺéçť évéŕý Çóŕé Šĥáŕď íñ Áçť Í.~~~~~~~~~~~~]"
+
+#: data/achievements/chart_lowlight.tres data/npcs/nix.tres
+msgid "Cartographer"
+msgstr "[Çáŕťóğŕápĥéŕ~~~~~~]"
+
+#: data/achievements/chart_lowlight.tres
+msgid "Complete “Chart Lowlight”."
+msgstr "[Çómpĺéťé “Çĥáŕť Ĺóŵĺíğĥť”.~~~~~~~~~~]"
+
+#: data/achievements/circuits_8.tres
+msgid "Tinkerer"
+msgstr "[Ťíñķéŕéŕ~~~~]"
+
+#: data/achievements/circuits_8.tres
+msgid "Own eight Circuits."
+msgstr "[Óŵñ éíğĥť Çíŕçúíťš.~~~~~~~]"
+
+#: data/achievements/clamp_krail.tres
+msgid "Dropped the Grid"
+msgstr "[Ďŕóppéď ťĥé Ğŕíď~~~~~~]"
+
+#: data/achievements/clamp_krail.tres
+msgid "Stagger Warden Krail with a Grid Clamp."
+msgstr "[Šťáğğéŕ Ŵáŕďéñ Ķŕáíĺ ŵíťĥ á Ğŕíď Çĺámp.~~~~~~~~~~~~~~]"
+
+#: data/achievements/clean_getaway.tres
+msgid "Clean Getaway"
+msgstr "[Çĺéáñ Ğéťáŵáý~~~~~]"
+
+#: data/achievements/clean_getaway.tres
+msgid "Finish the Rainline chase without being caught."
+msgstr "[Fíñíšĥ ťĥé Ŕáíñĺíñé çĥášé ŵíťĥóúť béíñğ çáúğĥť.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/close_call.tres
+msgid "Under the Wire"
+msgstr "[Úñďéŕ ťĥé Ŵíŕé~~~~~]"
+
+#: data/achievements/close_call.tres
+msgid "Slip under a power shutter at the last moment."
+msgstr "[Šĺíp úñďéŕ á póŵéŕ šĥúťťéŕ áť ťĥé ĺášť móméñť.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/collector_down.tres
+msgid "Debt Collected"
+msgstr "[Ďébť Çóĺĺéçťéď~~~~~]"
+
+#: data/achievements/collector_down.tres data/challenges/br_collector.tres data/challenges/br_collector_nohit.tres data/challenges/mo_maintenance_shaft.tres data/challenges/tt_first_pursuit.tres
+msgid "Defeat the Collector Drone."
+msgstr "[Ďéféáť ťĥé Çóĺĺéçťóŕ Ďŕóñé.~~~~~~~~~~]"
+
+#: data/achievements/collector_nohit.tres
+msgid "Untouched: Collector"
+msgstr "[Úñťóúçĥéď: Çóĺĺéçťóŕ~~~~~~~]"
+
+#: data/achievements/collector_nohit.tres
+msgid "Defeat the Collector Drone without taking a hit."
+msgstr "[Ďéféáť ťĥé Çóĺĺéçťóŕ Ďŕóñé ŵíťĥóúť ťáķíñğ á ĥíť.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/dash_ledges.tres
+msgid "Just Out of Reach"
+msgstr "[Ĵúšť Óúť óf Ŕéáçĥ~~~~~~]"
+
+#: data/achievements/dash_ledges.tres
+msgid "Reach the three ledges only the Dash can reach."
+msgstr "[Ŕéáçĥ ťĥé ťĥŕéé ĺéďğéš óñĺý ťĥé Ďášĥ çáñ ŕéáçĥ.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/dead_air.tres
+msgid "Dead Air, Live Again"
+msgstr "[Ďéáď Áíŕ, Ĺívé Áğáíñ~~~~~~~]"
+
+#: data/achievements/dead_air.tres
+msgid "Complete “Dead Air”."
+msgstr "[Çómpĺéťé “Ďéáď Áíŕ”.~~~~~~~]"
+
+#: data/achievements/depth.tres
+msgid "Depth"
+msgstr "[Ďépťĥ~~~]"
+
+#: data/achievements/depth.tres
+msgid "Reach the bottom of the training rig."
+msgstr "[Ŕéáçĥ ťĥé bóťťóm óf ťĥé ťŕáíñíñğ ŕíğ.~~~~~~~~~~~~~]"
+
+#: data/achievements/depth.tres
+msgid "The rig at the Relay goes deeper than it looks."
+msgstr "[Ťĥé ŕíğ áť ťĥé Ŕéĺáý ğóéš ďéépéŕ ťĥáñ íť ĺóóķš.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/first_blade.tres
+msgid "Armed and Awake"
+msgstr "[Áŕméď áñď Áŵáķé~~~~~~]"
+
+#: data/achievements/first_blade.tres
+msgid "Take up the Pulse Blade."
+msgstr "[Ťáķé úp ťĥé Púĺšé Bĺáďé.~~~~~~~~~]"
+
+#: data/achievements/first_secret.tres
+msgid "Under the Floorboards"
+msgstr "[Úñďéŕ ťĥé Fĺóóŕbóáŕďš~~~~~~~~]"
+
+#: data/achievements/first_secret.tres
+msgid "Find a secret."
+msgstr "[Fíñď á šéçŕéť.~~~~~]"
+
+#: data/achievements/intake_log.tres
+msgid "Intake"
+msgstr "[Íñťáķé~~~]"
+
+#: data/achievements/intake_log.tres
+msgid "Read the Undercity intake log."
+msgstr "[Ŕéáď ťĥé Úñďéŕçíťý íñťáķé ĺóğ.~~~~~~~~~~~]"
+
+#: data/achievements/intake_log.tres
+msgid "Not every terminal in the Undercity is dead."
+msgstr "[Ñóť évéŕý ťéŕmíñáĺ íñ ťĥé Úñďéŕçíťý íš ďéáď.~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/krail_down.tres
+msgid "Warden Down"
+msgstr "[Ŵáŕďéñ Ďóŵñ~~~~~~]"
+
+#: data/achievements/krail_down.tres data/challenges/br_krail.tres data/challenges/br_krail_nohit.tres data/challenges/nh_security_station.tres data/challenges/tt_neon_roofs.tres data/challenges/tt_rainline.tres
+msgid "Defeat Warden Krail."
+msgstr "[Ďéféáť Ŵáŕďéñ Ķŕáíĺ.~~~~~~~]"
+
+#: data/achievements/krail_nohit.tres
+msgid "Untouched: Krail"
+msgstr "[Úñťóúçĥéď: Ķŕáíĺ~~~~~~]"
+
+#: data/achievements/krail_nohit.tres
+msgid "Defeat Warden Krail without taking a hit."
+msgstr "[Ďéféáť Ŵáŕďéñ Ķŕáíĺ ŵíťĥóúť ťáķíñğ á ĥíť.~~~~~~~~~~~~~~~]"
+
+#: data/achievements/look_closer.tres
+msgid "Look Closer"
+msgstr "[Ĺóóķ Çĺóšéŕ~~~~~~]"
+
+#: data/achievements/look_closer.tres
+msgid "Find a hidden detail in a memory."
+msgstr "[Fíñď á ĥíďďéñ ďéťáíĺ íñ á mémóŕý.~~~~~~~~~~~~]"
+
+#: data/achievements/look_closer.tres
+msgid "Memories hold more than they show."
+msgstr "[Mémóŕíéš ĥóĺď móŕé ťĥáñ ťĥéý šĥóŵ.~~~~~~~~~~~~]"
+
+#: data/achievements/orr_on_air.tres
+msgid "On the Air"
+msgstr "[Óñ ťĥé Áíŕ~~~~~]"
+
+#: data/achievements/orr_on_air.tres
+msgid "Help Orr get back on the air."
+msgstr "[Ĥéĺp Óŕŕ ğéť báçķ óñ ťĥé áíŕ.~~~~~~~~~~~]"
+
+#: data/achievements/perfect_reads.tres
+msgid "Perfect Read"
+msgstr "[Péŕféçť Ŕéáď~~~~~~]"
+
+#: data/achievements/perfect_reads.tres
+msgid "Perfect-dodge 10 attacks."
+msgstr "[Péŕféçť-ďóďğé 10 áťťáçķš.~~~~~~~~~]"
+
+#: data/achievements/reach_relay.tres
+msgid "Signal in the Rain"
+msgstr "[Šíğñáĺ íñ ťĥé Ŕáíñ~~~~~~~]"
+
+#: data/achievements/reach_relay.tres
+msgid "Reach the Relay."
+msgstr "[Ŕéáçĥ ťĥé Ŕéĺáý.~~~~~~]"
+
+#: data/achievements/remembered_all.tres
+msgid "I Remember"
+msgstr "[Í Ŕémémbéŕ~~~~~]"
+
+#: data/achievements/remembered_all.tres
+msgid "Remember every memory in Act I."
+msgstr "[Ŕémémbéŕ évéŕý mémóŕý íñ Áçť Í.~~~~~~~~~~~]"
+
+#: data/achievements/second_run.tres
+msgid "Second Run"
+msgstr "[Šéçóñď Ŕúñ~~~~~]"
+
+#: data/achievements/second_run.tres
+msgid "Finish Act I in New Game+."
+msgstr "[Fíñíšĥ Áçť Í íñ Ñéŵ Ğámé+.~~~~~~~~~~]"
+
+#: data/achievements/style_redline.tres data/endings/credits.tres data/endings/redline.tres data/sequences/ending_redline.tres
+msgid "REDLINE"
+msgstr "[ŔÉĎĹÍÑÉ~~~~]"
+
+#: data/achievements/style_redline.tres
+msgid "Reach Style REDLINE."
+msgstr "[Ŕéáçĥ Šťýĺé ŔÉĎĹÍÑÉ.~~~~~~~]"
+
+#: data/achievements/style_s.tres
+msgid "Stylish"
+msgstr "[Šťýĺíšĥ~~~~]"
+
+#: data/achievements/style_s.tres
+msgid "Reach Style S."
+msgstr "[Ŕéáçĥ Šťýĺé Š.~~~~~]"
+
+#: data/achievements/top_marks.tres
+msgid "Top Marks"
+msgstr "[Ťóp Máŕķš~~~~~]"
+
+#: data/achievements/top_marks.tres
+msgid "Earn a Silver medal or better in any challenge."
+msgstr "[Éáŕñ á Šíĺvéŕ méďáĺ óŕ béťťéŕ íñ áñý çĥáĺĺéñğé.~~~~~~~~~~~~~~~~~]"
+
+#: data/achievements/use_the_city.tres
+msgid "Use the City"
+msgstr "[Úšé ťĥé Çíťý~~~~~~]"
+
+#: data/achievements/use_the_city.tres
+msgid "Defeat an enemy with the environment."
+msgstr "[Ďéféáť áñ éñémý ŵíťĥ ťĥé éñvíŕóñméñť.~~~~~~~~~~~~~]"
+
+#: data/achievements/way_up.tres data/quests/way_up.tres
+msgid "The Way Up"
+msgstr "[Ťĥé Ŵáý Úp~~~~~]"
+
+#: data/achievements/way_up.tres
+msgid "Complete “The Way Up”."
+msgstr "[Çómpĺéťé “Ťĥé Ŵáý Úp”.~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Smuggler. Set up at the Relay. Everything fell off a truck."
+msgstr "[Šmúğğĺéŕ. Šéť úp áť ťĥé Ŕéĺáý. Évéŕýťĥíñğ féĺĺ óff á ťŕúçķ.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres data/npcs/iko.tres
+msgid "Iko"
+msgstr "[Íķó~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Told you I'd move in. The Relay has a roof and fewer Wardens. Mostly I came for the roof."
+msgstr "[Ťóĺď ýóú Í'ď móvé íñ. Ťĥé Ŕéĺáý ĥáš á ŕóóf áñď féŵéŕ Ŵáŕďéñš. Móšťĺý Í çámé fóŕ ťĥé ŕóóf.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Orr talks. Saves me the speech. Iko. I move what the Wardens don't want moved."
+msgstr "[Óŕŕ ťáĺķš. Šávéš mé ťĥé špééçĥ. Íķó. Í móvé ŵĥáť ťĥé Ŵáŕďéñš ďóñ'ť ŵáñť móvéď.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Rent's paid. Browse."
+msgstr "[Ŕéñť'š páíď. Bŕóŵšé.~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Has Krail's trucks now. Won't open the crates tagged SPIRE."
+msgstr "[Ĥáš Ķŕáíĺ'š ťŕúçķš ñóŵ. Ŵóñ'ť ópéñ ťĥé çŕáťéš ťáğğéď ŠPÍŔÉ.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Krail's gone, so his trucks are mine now. Most of the crates, anyway."
+msgstr "[Ķŕáíĺ'š ğóñé, šó ĥíš ťŕúçķš áŕé míñé ñóŵ. Móšť óf ťĥé çŕáťéš, áñýŵáý.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "The ones tagged SPIRE stay shut. Rule of the trade: the Spire always comes to collect."
+msgstr "[Ťĥé óñéš ťáğğéď ŠPÍŔÉ šťáý šĥúť. Ŕúĺé óf ťĥé ťŕáďé: ťĥé Špíŕé áĺŵáýš çóméš ťó çóĺĺéçť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Spire crates stay shut. Everything else is for sale."
+msgstr "[Špíŕé çŕáťéš šťáý šĥúť. Évéŕýťĥíñğ éĺšé íš fóŕ šáĺé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Somebody cracked the back wall of my den. Heavy hands."
+msgstr "[Šómébóďý çŕáçķéď ťĥé báçķ ŵáĺĺ óf mý ďéñ. Ĥéávý ĥáñďš.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_iko.tres
+msgid "Keep what you found. Call it rent on the Relay."
+msgstr "[Ķéép ŵĥáť ýóú fóúñď. Çáĺĺ íť ŕéñť óñ ťĥé Ŕéĺáý.~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Mechanic. Knows what the Core is. Won't say how she knows."
+msgstr "[Méçĥáñíç. Ķñóŵš ŵĥáť ťĥé Çóŕé íš. Ŵóñ'ť šáý ĥóŵ šĥé ķñóŵš.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres data/npcs/mara.tres
+msgid "Mara"
+msgstr "[Máŕá~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Orr's radio works again. Now he'll never stop talking. What do you need?"
+msgstr "[Óŕŕ'š ŕáďíó ŵóŕķš áğáíñ. Ñóŵ ĥé'ĺĺ ñévéŕ šťóp ťáĺķíñğ. Ŵĥáť ďó ýóú ñééď?~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Wants the Core on her bench. Just a look, she says."
+msgstr "[Ŵáñťš ťĥé Çóŕé óñ ĥéŕ béñçĥ. Ĵúšť á ĺóóķ, šĥé šáýš.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Krail's dead and you're not. I'll take those odds every day."
+msgstr "[Ķŕáíĺ'š ďéáď áñď ýóú'ŕé ñóť. Í'ĺĺ ťáķé ťĥóšé óďďš évéŕý ďáý.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "That dash module you pulled off him - don't let it pull you."
+msgstr "[Ťĥáť ďášĥ móďúĺé ýóú púĺĺéď óff ĥím - ďóñ'ť ĺéť íť púĺĺ ýóú.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "When you're steady, I want that Core on my bench. Just a look."
+msgstr "[Ŵĥéñ ýóú'ŕé šťéáďý, Í ŵáñť ťĥáť Çóŕé óñ mý béñçĥ. Ĵúšť á ĺóóķ.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "What I told you stays at this bench. Now, what do you need?"
+msgstr "[Ŵĥáť Í ťóĺď ýóú šťáýš áť ťĥíš béñçĥ. Ñóŵ, ŵĥáť ďó ýóú ñééď?~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Bench is clear whenever you are. Until then: weapons, fixes."
+msgstr "[Béñçĥ íš çĺéáŕ ŵĥéñévéŕ ýóú áŕé. Úñťíĺ ťĥéñ: ŵéápóñš, fíxéš.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "You keep drifting off mid-sentence. Where do you go?"
+msgstr "[Ýóú ķéép ďŕífťíñğ óff míď-šéñťéñçé. Ŵĥéŕé ďó ýóú ğó?~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "If you start seeing things, tell me. Not Orr. Me."
+msgstr "[Íf ýóú šťáŕť šééíñğ ťĥíñğš, ťéĺĺ mé. Ñóť Óŕŕ. Mé.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "Hold still. That scar's careful stitching. Somebody wanted you to live."
+msgstr "[Ĥóĺď šťíĺĺ. Ťĥáť šçáŕ'š çáŕéfúĺ šťíťçĥíñğ. Šómébóďý ŵáñťéď ýóú ťó ĺívé.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_mara.tres
+msgid "I've seen one of these Cores before. Once. It wasn't in a person then."
+msgstr "[Í'vé šééñ óñé óf ťĥéšé Çóŕéš béfóŕé. Óñçé. Íť ŵášñ'ť íñ á péŕšóñ ťĥéñ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Cartographer. The city keeps moving. Nix keeps up."
+msgstr "[Çáŕťóğŕápĥéŕ. Ťĥé çíťý ķéépš móvíñğ. Ñíx ķéépš úp.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres data/npcs/nix.tres data/quests/chart_lowlight.tres
+msgid "Nix"
+msgstr "[Ñíx~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "My map's better than the Wardens' now. Don't tell them."
+msgstr "[Mý máp'š béťťéŕ ťĥáñ ťĥé Ŵáŕďéñš' ñóŵ. Ďóñ'ť ťéĺĺ ťĥém.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Found me another room? Tell me where. I'll pretend I knew."
+msgstr "[Fóúñď mé áñóťĥéŕ ŕóóm? Ťéĺĺ mé ŵĥéŕé. Í'ĺĺ pŕéťéñď Í ķñéŵ.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Back again. You're the only one here who looks at the map before they get lost."
+msgstr "[Báçķ áğáíñ. Ýóú'ŕé ťĥé óñĺý óñé ĥéŕé ŵĥó ĺóóķš áť ťĥé máp béfóŕé ťĥéý ğéť ĺóšť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Warden Tower is on every map. Nix wants to know who draws them."
+msgstr "[Ŵáŕďéñ Ťóŵéŕ íš óñ évéŕý máp. Ñíx ŵáñťš ťó ķñóŵ ŵĥó ďŕáŵš ťĥém.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Warden Tower is on every map I own. Official ones too. Nothing else in Lowlight holds still."
+msgstr "[Ŵáŕďéñ Ťóŵéŕ íš óñ évéŕý máp Í óŵñ. Óffíçíáĺ óñéš ťóó. Ñóťĥíñğ éĺšé íñ Ĺóŵĺíğĥť ĥóĺďš šťíĺĺ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Someone upstairs wants it found. I'd like to know who draws their maps."
+msgstr "[Šóméóñé úpšťáíŕš ŵáñťš íť fóúñď. Í'ď ĺíķé ťó ķñóŵ ŵĥó ďŕáŵš ťĥéíŕ mápš.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Still thinking about that tower. Maps, lenses, tickets?"
+msgstr "[Šťíĺĺ ťĥíñķíñğ ábóúť ťĥáť ťóŵéŕ. Mápš, ĺéñšéš, ťíçķéťš?~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "You keep finding rooms I never drew. That's either a gift or a bad habit."
+msgstr "[Ýóú ķéép fíñďíñğ ŕóómš Í ñévéŕ ďŕéŵ. Ťĥáť'š éíťĥéŕ á ğífť óŕ á báď ĥábíť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Tell me where they are. I'll pretend I knew."
+msgstr "[Ťéĺĺ mé ŵĥéŕé ťĥéý áŕé. Í'ĺĺ pŕéťéñď Í ķñéŵ.~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Heard Krail kept books. Books mean someone reads them."
+msgstr "[Ĥéáŕď Ķŕáíĺ ķépť bóóķš. Bóóķš méáñ šóméóñé ŕéáďš ťĥém.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_nix.tres
+msgid "Maps and ledgers. Somewhere upstairs, they end up on the same desk."
+msgstr "[Mápš áñď ĺéďğéŕš. Šóméŵĥéŕé úpšťáíŕš, ťĥéý éñď úp óñ ťĥé šámé ďéšķ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Radio. Hears everything in Lowlight, repeats most of it."
+msgstr "[Ŕáďíó. Ĥéáŕš évéŕýťĥíñğ íñ Ĺóŵĺíğĥť, ŕépéáťš móšť óf íť.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres data/npcs/orr.tres data/npcs/orr_radio.tres data/quests/dead_air.tres
+msgid "Orr"
+msgstr "[Óŕŕ~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Hear that? Lowlight's talking again. Rumors, patrol chatter, somebody singing badly on a rooftop."
+msgstr "[Ĥéáŕ ťĥáť? Ĺóŵĺíğĥť'š ťáĺķíñğ áğáíñ. Ŕúmóŕš, páťŕóĺ çĥáťťéŕ, šómébóďý šíñğíñğ báďĺý óñ á ŕóófťóp.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Every voice out there is a direction. You bring me more antennas, I'll bring you more city."
+msgstr "[Évéŕý vóíçé óúť ťĥéŕé íš á ďíŕéçťíóñ. Ýóú bŕíñğ mé móŕé áñťéññáš, Í'ĺĺ bŕíñğ ýóú móŕé çíťý.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Three repeaters. One on the Market roofs, one inside the Apartment Stack, one on the Bell Tower."
+msgstr "[Ťĥŕéé ŕépéáťéŕš. Óñé óñ ťĥé Máŕķéť ŕóófš, óñé íñšíďé ťĥé Ápáŕťméñť Šťáçķ, óñé óñ ťĥé Béĺĺ Ťóŵéŕ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "They're old. Hit them with your shoulder if you have to. Hit them gently."
+msgstr "[Ťĥéý'ŕé óĺď. Ĥíť ťĥém ŵíťĥ ýóúŕ šĥóúĺďéŕ íf ýóú ĥávé ťó. Ĥíť ťĥém ğéñťĺý.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Krail's dead. Orr asked what Lowlight should hear."
+msgstr "[Ķŕáíĺ'š ďéáď. Óŕŕ ášķéď ŵĥáť Ĺóŵĺíğĥť šĥóúĺď ĥéáŕ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Krail's patrol band is still dead. Lowlight's already guessing who."
+msgstr "[Ķŕáíĺ'š páťŕóĺ báñď íš šťíĺĺ ďéáď. Ĺóŵĺíğĥť'š áĺŕéáďý ğúéššíñğ ŵĥó.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "I can tell Lowlight it was you. Or I let them keep guessing. Your call."
+msgstr "[Í çáñ ťéĺĺ Ĺóŵĺíğĥť íť ŵáš ýóú. Óŕ Í ĺéť ťĥém ķéép ğúéššíñğ. Ýóúŕ çáĺĺ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Put it on the air."
+msgstr "[Púť íť óñ ťĥé áíŕ.~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Then Lowlight knows it was you. So do the Wardens."
+msgstr "[Ťĥéñ Ĺóŵĺíğĥť ķñóŵš íť ŵáš ýóú. Šó ďó ťĥé Ŵáŕďéñš.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Let them guess."
+msgstr "[Ĺéť ťĥém ğúéšš.~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "A ghost, then. Ghosts get rumors, not posters."
+msgstr "[Á ğĥóšť, ťĥéñ. Ğĥóšťš ğéť ŕúmóŕš, ñóť póšťéŕš.~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Every Warden band has your description now. Keep moving."
+msgstr "[Évéŕý Ŵáŕďéñ báñď ĥáš ýóúŕ ďéšçŕípťíóñ ñóŵ. Ķéép móvíñğ.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Latest rumor: Krail slipped off his own tower. Nobody believes it."
+msgstr "[Ĺáťéšť ŕúmóŕ: Ķŕáíĺ šĺíppéď óff ĥíš óŵñ ťóŵéŕ. Ñóbóďý béĺíévéš íť.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Board picked up tapping on an old pipe line. Three short, three long."
+msgstr "[Bóáŕď píçķéď úp ťáppíñğ óñ áñ óĺď pípé ĺíñé. Ťĥŕéé šĥóŕť, ťĥŕéé ĺóñğ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_orr.tres
+msgid "Old crew call sign. Means 'still here'. Haven't heard it in years."
+msgstr "[Óĺď çŕéŵ çáĺĺ šíğñ. Méáñš 'šťíĺĺ ĥéŕé'. Ĥávéñ'ť ĥéáŕď íť íñ ýéáŕš.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Circuit broker. Sells lies to the Core, at a markup."
+msgstr "[Çíŕçúíť bŕóķéŕ. Šéĺĺš ĺíéš ťó ťĥé Çóŕé, áť á máŕķúp.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres data/npcs/vell.tres
+msgid "Vell"
+msgstr "[Véĺĺ~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "My best customer. I'm still not asking what you are."
+msgstr "[Mý béšť çúšťóméŕ. Í'm šťíĺĺ ñóť ášķíñğ ŵĥáť ýóú áŕé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Krail's supply line is dead. Vell isn't sorry, just short."
+msgstr "[Ķŕáíĺ'š šúppĺý ĺíñé íš ďéáď. Véĺĺ íšñ'ť šóŕŕý, ĵúšť šĥóŕť.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Krail's dead, so my supply line is too. His tower moved everything the Spire threw away."
+msgstr "[Ķŕáíĺ'š ďéáď, šó mý šúppĺý ĺíñé íš ťóó. Ĥíš ťóŵéŕ móvéď évéŕýťĥíñğ ťĥé Špíŕé ťĥŕéŵ áŵáý.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Circuits come from somewhere. I never asked where. Don't you start."
+msgstr "[Çíŕçúíťš çómé fŕóm šóméŵĥéŕé. Í ñévéŕ ášķéď ŵĥéŕé. Ďóñ'ť ýóú šťáŕť.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Stock's thin since Krail. Capacity's still the only real currency."
+msgstr "[Šťóçķ'š ťĥíñ šíñçé Ķŕáíĺ. Çápáçíťý'š šťíĺĺ ťĥé óñĺý ŕéáĺ çúŕŕéñçý.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Your Core keeps making room. Most rigs cap out and start smoking."
+msgstr "[Ýóúŕ Çóŕé ķéépš máķíñğ ŕóóm. Móšť ŕíğš çáp óúť áñď šťáŕť šmóķíñğ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "I'm not asking what you are. I'm writing it down."
+msgstr "[Í'm ñóť ášķíñğ ŵĥáť ýóú áŕé. Í'm ŵŕíťíñğ íť ďóŵñ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Orr's radio is back. Radios mean customers. I've put out the good stock."
+msgstr "[Óŕŕ'š ŕáďíó íš báçķ. Ŕáďíóš méáñ çúšťóméŕš. Í'vé púť óúť ťĥé ğóóď šťóçķ.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "Krail's people asked me once about a Core that never caps out. Was I holding one."
+msgstr "[Ķŕáíĺ'š péópĺé ášķéď mé óñçé ábóúť á Çóŕé ťĥáť ñévéŕ çápš óúť. Ŵáš Í ĥóĺďíñğ óñé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/arcs/arc_vell.tres
+msgid "I said no. I say no a lot."
+msgstr "[Í šáíď ñó. Í šáý ñó á ĺóť.~~~~~~~~~~]"
+
+#: data/challenges/br_collector.tres
+msgid "Collector Drone — Rematch"
+msgstr "[Çóĺĺéçťóŕ Ďŕóñé — Ŕémáťçĥ~~~~~~~~~]"
+
+#: data/challenges/br_collector.tres
+msgid "The Collector Drone again, from the lift. The clock starts with the fight."
+msgstr "[Ťĥé Çóĺĺéçťóŕ Ďŕóñé áğáíñ, fŕóm ťĥé ĺífť. Ťĥé çĺóçķ šťáŕťš ŵíťĥ ťĥé fíğĥť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/br_collector_nohit.tres
+msgid "Collector Drone — No Hit"
+msgstr "[Çóĺĺéçťóŕ Ďŕóñé — Ñó Ĥíť~~~~~~~~~]"
+
+#: data/challenges/br_collector_nohit.tres
+msgid "The Collector Drone without taking a single hit."
+msgstr "[Ťĥé Çóĺĺéçťóŕ Ďŕóñé ŵíťĥóúť ťáķíñğ á šíñğĺé ĥíť.~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/br_krail.tres
+msgid "Warden Krail — Rematch"
+msgstr "[Ŵáŕďéñ Ķŕáíĺ — Ŕémáťçĥ~~~~~~~~]"
+
+#: data/challenges/br_krail.tres
+msgid "Warden Krail again, from the bell stair. The clamp is live."
+msgstr "[Ŵáŕďéñ Ķŕáíĺ áğáíñ, fŕóm ťĥé béĺĺ šťáíŕ. Ťĥé çĺámp íš ĺívé.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/br_krail_nohit.tres
+msgid "Warden Krail — No Hit"
+msgstr "[Ŵáŕďéñ Ķŕáíĺ — Ñó Ĥíť~~~~~~~~]"
+
+#: data/challenges/br_krail_nohit.tres
+msgid "Warden Krail without taking a single hit."
+msgstr "[Ŵáŕďéñ Ķŕáíĺ ŵíťĥóúť ťáķíñğ á šíñğĺé ĥíť.~~~~~~~~~~~~~~~]"
+
+#: data/challenges/challenge_config.tres data/districts/null.tres world/rooms/challenge/NullBreakerRun.tscn world/rooms/challenge/NullFloor.tscn world/rooms/challenge/NullStaticLane.tscn
 msgid "Deep Rig"
 msgstr "[Ďéép Ŕíğ~~~~]"
 
@@ -64,11 +620,11 @@ msgstr "[Ťímé Ťŕíáĺ~~~~~]"
 msgid "Nerve"
 msgstr "[Ñéŕvé~~~]"
 
-#: data/challenges/challenge_config.tres
+#: data/challenges/challenge_config.tres world/rooms/challenge/PulsePit.tscn
 msgid "Pulse Pit"
 msgstr "[Púĺšé Píť~~~~~]"
 
-#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/SettingsMenu.gd
+#: data/challenges/challenge_config.tres data/settings/pages/assists.tres data/settings/pages/challenges.tres data/settings/pages/subtitles.tres data/settings/pages/visual.tres ui/menus/AchievementsMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd
 msgid "Off"
 msgstr "[Óff~~]"
 
@@ -83,6 +639,78 @@ msgstr "[Ŕíğ ğĥóšť~~~~~]"
 #: data/challenges/challenge_config.tres data/settings/pages/challenges.tres
 msgid "Both"
 msgstr "[Bóťĥ~~]"
+
+#: data/challenges/mo_maintenance_shaft.tres
+msgid "Maintenance Shaft — Movement Only"
+msgstr "[Máíñťéñáñçé Šĥáfť — Móvéméñť Óñĺý~~~~~~~~~~~~]"
+
+#: data/challenges/mo_maintenance_shaft.tres
+msgid "Climb the shaft to the top door. No swings, no shots."
+msgstr "[Çĺímb ťĥé šĥáfť ťó ťĥé ťóp ďóóŕ. Ñó šŵíñğš, ñó šĥóťš.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/nh_security_station.tres
+msgid "Security Station — No Hit"
+msgstr "[Šéçúŕíťý Šťáťíóñ — Ñó Ĥíť~~~~~~~~~]"
+
+#: data/challenges/nh_security_station.tres
+msgid "Through the live scanners to the roof door without a hit."
+msgstr "[Ťĥŕóúğĥ ťĥé ĺívé šçáññéŕš ťó ťĥé ŕóóf ďóóŕ ŵíťĥóúť á ĥíť.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres world/rooms/challenge/NullBreakerRun.tscn
+msgid "Breaker Run"
+msgstr "[Bŕéáķéŕ Ŕúñ~~~~~~]"
+
+#: data/challenges/null_breaker_run.tres
+msgid "Breakers start the clocks. Make every shutter standing; the Dash is the line."
+msgstr "[Bŕéáķéŕš šťáŕť ťĥé çĺóçķš. Máķé évéŕý šĥúťťéŕ šťáñďíñğ; ťĥé Ďášĥ íš ťĥé ĺíñé.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres data/challenges/null_floor.tres data/challenges/null_static_lane.tres data/challenges/pit_endurance.tres data/challenges/pit_style.tres
+msgid "Finish the first act."
+msgstr "[Fíñíšĥ ťĥé fíŕšť áçť.~~~~~~~~]"
+
+#: data/challenges/null_breaker_run.tres data/challenges/null_descent.tres data/challenges/null_floor.tres data/challenges/null_static_lane.tres
+msgid "The rig needs the Dash module."
+msgstr "[Ťĥé ŕíğ ñééďš ťĥé Ďášĥ móďúĺé.~~~~~~~~~~~]"
+
+#: data/challenges/null_descent.tres
+msgid "Descent"
+msgstr "[Ďéšçéñť~~~~]"
+
+#: data/challenges/null_descent.tres
+msgid "All three strata in one run. Health carries; a fall restarts the stratum."
+msgstr "[Áĺĺ ťĥŕéé šťŕáťá íñ óñé ŕúñ. Ĥéáĺťĥ çáŕŕíéš; á fáĺĺ ŕéšťáŕťš ťĥé šťŕáťúm.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/null_descent.tres data/challenges/null_static_lane.tres world/rooms/challenge/NullStaticLane.tscn
+msgid "Static Lane"
+msgstr "[Šťáťíç Ĺáñé~~~~~~]"
+
+#: data/challenges/null_descent.tres data/challenges/null_floor.tres world/rooms/challenge/NullFloor.tscn
+msgid "The Floor"
+msgstr "[Ťĥé Fĺóóŕ~~~~~]"
+
+#: data/challenges/null_floor.tres
+msgid "The Warden at the rig's tier: faster calls, Hoppers and a quicker clamp."
+msgstr "[Ťĥé Ŵáŕďéñ áť ťĥé ŕíğ'š ťíéŕ: fášťéŕ çáĺĺš, Ĥóppéŕš áñď á qúíçķéŕ çĺámp.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/null_static_lane.tres
+msgid "Pulsing beams, dash gaps and a fight under Flow drain. Your own loadout."
+msgstr "[Púĺšíñğ béámš, ďášĥ ğápš áñď á fíğĥť úñďéŕ Fĺóŵ ďŕáíñ. Ýóúŕ óŵñ ĺóáďóúť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/pit_endurance.tres
+msgid "Pulse Pit — Redline Endurance"
+msgstr "[Púĺšé Píť — Ŕéďĺíñé Éñďúŕáñçé~~~~~~~~~~~]"
+
+#: data/challenges/pit_endurance.tres
+msgid "Waves that never stop, on the Challenge core. Time, kills and cleared waves score, x1.5 on this core."
+msgstr "[Ŵávéš ťĥáť ñévéŕ šťóp, óñ ťĥé Çĥáĺĺéñğé çóŕé. Ťímé, ķíĺĺš áñď çĺéáŕéď ŵávéš šçóŕé, x1.5 óñ ťĥíš çóŕé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/pit_style.tres
+msgid "Pulse Pit — Style"
+msgstr "[Púĺšé Píť — Šťýĺé~~~~~~]"
+
+#: data/challenges/pit_style.tres
+msgid "Five fixed waves in 90 seconds. The score is your style: keep the meter up."
+msgstr "[Fívé fíxéď ŵávéš íñ 90 šéçóñďš. Ťĥé šçóŕé íš ýóúŕ šťýĺé: ķéép ťĥé méťéŕ úp.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
 
 #: data/challenges/rank_ladder.tres
 msgid "Clear"
@@ -103,6 +731,290 @@ msgstr "[Ğóĺď~~]"
 #: data/challenges/rank_ladder.tres
 msgid "Redline"
 msgstr "[Ŕéďĺíñé~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres data/weapons/pulse_blade.tres
+msgid "Pulse Blade"
+msgstr "[Púĺšé Bĺáďé~~~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres data/enemies/collector_drone.tres data/enemies/collector_drone_remix.tres
+msgid "Collector Drone"
+msgstr "[Çóĺĺéçťóŕ Ďŕóñé~~~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres data/districts/relay.tres data/world/world_map.tres world/rooms/lowlight/Relay.tscn
+msgid "The Relay"
+msgstr "[Ťĥé Ŕéĺáý~~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres
+msgid "Power rerouted"
+msgstr "[Póŵéŕ ŕéŕóúťéď~~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres world/rooms/lowlight/RainlineChase.tscn
+msgid "Rainline"
+msgstr "[Ŕáíñĺíñé~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres data/enemies/warden_krail.tres data/enemies/warden_krail_null.tres data/enemies/warden_krail_remix.tres
+msgid "Warden Krail"
+msgstr "[Ŵáŕďéñ Ķŕáíĺ~~~~~~]"
+
+#: data/challenges/splits/act1_campaign.tres
+msgid "Act I"
+msgstr "[Áçť Í~~~]"
+
+#: data/challenges/tt_escape_tunnel.tres world/rooms/undercity/EscapeTunnel.tscn
+msgid "Escape Tunnel"
+msgstr "[Éšçápé Ťúññéĺ~~~~~]"
+
+#: data/challenges/tt_escape_tunnel.tres
+msgid "From the bay door up to the Relay mouth."
+msgstr "[Fŕóm ťĥé báý ďóóŕ úp ťó ťĥé Ŕéĺáý móúťĥ.~~~~~~~~~~~~~~]"
+
+#: data/challenges/tt_escape_tunnel.tres
+msgid "Meet Orr at the Relay."
+msgstr "[Mééť Óŕŕ áť ťĥé Ŕéĺáý.~~~~~~~~]"
+
+#: data/challenges/tt_first_pursuit.tres world/rooms/undercity/FirstPursuit.tscn
+msgid "First Pursuit"
+msgstr "[Fíŕšť Púŕšúíť~~~~~]"
+
+#: data/challenges/tt_first_pursuit.tres
+msgid "From the shaft door to the Broken Lift, under the eye."
+msgstr "[Fŕóm ťĥé šĥáfť ďóóŕ ťó ťĥé Bŕóķéñ Ĺífť, úñďéŕ ťĥé éýé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/challenges/tt_neon_roofs.tres world/rooms/lowlight/NeonRoofs.tscn
+msgid "Neon Roofs"
+msgstr "[Ñéóñ Ŕóófš~~~~~]"
+
+#: data/challenges/tt_neon_roofs.tres
+msgid "Across the roofs to the Power Block door."
+msgstr "[Áçŕóšš ťĥé ŕóófš ťó ťĥé Póŵéŕ Bĺóçķ ďóóŕ.~~~~~~~~~~~~~~~]"
+
+#: data/challenges/tt_rainline.tres
+msgid "Rainline Chase"
+msgstr "[Ŕáíñĺíñé Çĥášé~~~~~]"
+
+#: data/challenges/tt_rainline.tres
+msgid "The Rainline with the Sweeper behind you, to the Bell Tower door."
+msgstr "[Ťĥé Ŕáíñĺíñé ŵíťĥ ťĥé Šŵéépéŕ béĥíñď ýóú, ťó ťĥé Béĺĺ Ťóŵéŕ ďóóŕ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/blood_capacitor.tres
+msgid "Blood Capacitor"
+msgstr "[Bĺóóď Çápáçíťóŕ~~~~~~]"
+
+#: data/circuits/blood_capacitor.tres
+msgid "Every 4 kills restores 1 health pip."
+msgstr "[Évéŕý 4 ķíĺĺš ŕéšťóŕéš 1 ĥéáĺťĥ píp.~~~~~~~~~~~~~]"
+
+#: data/circuits/clean_circuit.tres
+msgid "Clean Circuit"
+msgstr "[Çĺéáñ Çíŕçúíť~~~~~]"
+
+#: data/circuits/clean_circuit.tres
+msgid "At full health, everything refills the Core 30% more."
+msgstr "[Áť fúĺĺ ĥéáĺťĥ, évéŕýťĥíñğ ŕéfíĺĺš ťĥé Çóŕé 30% móŕé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/demolitionist.tres
+msgid "Demolitionist"
+msgstr "[Ďémóĺíťíóñíšť~~~~~]"
+
+#: data/circuits/demolitionist.tres
+msgid "Launched-body impacts, wall slams and breakable walls take double damage."
+msgstr "[Ĺáúñçĥéď-bóďý ímpáçťš, ŵáĺĺ šĺámš áñď bŕéáķábĺé ŵáĺĺš ťáķé ďóúbĺé ďámáğé.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/emergency_loop.tres
+msgid "Emergency Loop"
+msgstr "[Éméŕğéñçý Ĺóóp~~~~~]"
+
+#: data/circuits/emergency_loop.tres
+msgid "Once per rest, a lethal hit leaves you at 1 pip instead."
+msgstr "[Óñçé péŕ ŕéšť, á ĺéťĥáĺ ĥíť ĺéávéš ýóú áť 1 píp íñšťéáď.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/ghost_step.tres
+msgid "Ghost Step"
+msgstr "[Ğĥóšť Šťép~~~~~]"
+
+#: data/circuits/ghost_step.tres
+msgid "Dodge and dash invulnerability lasts 40% longer; the perfect-dodge window widens."
+msgstr "[Ďóďğé áñď ďášĥ íñvúĺñéŕábíĺíťý ĺášťš 40% ĺóñğéŕ; ťĥé péŕféçť-ďóďğé ŵíñďóŵ ŵíďéñš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/glass_pulse.tres
+msgid "Glass Pulse"
+msgstr "[Ğĺášš Púĺšé~~~~~~]"
+
+#: data/circuits/glass_pulse.tres
+msgid "All your damage +35%. Damage you take is doubled."
+msgstr "[Áĺĺ ýóúŕ ďámáğé +35%. Ďámáğé ýóú ťáķé íš ďóúbĺéď.~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/hot_wire.tres
+msgid "Hot Wire"
+msgstr "[Ĥóť Ŵíŕé~~~~]"
+
+#: data/circuits/hot_wire.tres
+msgid "Overclocked rounds. Hit harder, reach less."
+msgstr "[Óvéŕçĺóçķéď ŕóúñďš. Ĥíť ĥáŕďéŕ, ŕéáçĥ ĺéšš.~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/live_current.tres
+msgid "Live Current"
+msgstr "[Ĺívé Çúŕŕéñť~~~~~~]"
+
+#: data/circuits/live_current.tres
+msgid "Spikes, walls, clamps: the city fights for you."
+msgstr "[Špíķéš, ŵáĺĺš, çĺámpš: ťĥé çíťý fíğĥťš fóŕ ýóú.~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/longline.tres
+msgid "Longline"
+msgstr "[Ĺóñğĺíñé~~~~]"
+
+#: data/circuits/longline.tres
+msgid "Ranged shots travel 50% farther."
+msgstr "[Ŕáñğéď šĥóťš ťŕávéĺ 50% fáŕťĥéŕ.~~~~~~~~~~~~]"
+
+#: data/circuits/momentum_coil.tres
+msgid "Momentum Coil"
+msgstr "[Móméñťúm Çóíĺ~~~~~]"
+
+#: data/circuits/momentum_coil.tres
+msgid "Melee hits deal up to +40% damage based on how fast you were moving when you swung."
+msgstr "[Méĺéé ĥíťš ďéáĺ úp ťó +40% ďámáğé bášéď óñ ĥóŵ fášť ýóú ŵéŕé móvíñğ ŵĥéñ ýóú šŵúñğ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/predator.tres
+msgid "Predator"
+msgstr "[Pŕéďáťóŕ~~~~]"
+
+#: data/circuits/predator.tres
+msgid "+50% damage against staggered or launched enemies."
+msgstr "[+50% ďámáğé áğáíñšť šťáğğéŕéď óŕ ĺáúñçĥéď éñémíéš.~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/rebound.tres
+msgid "Rebound"
+msgstr "[Ŕébóúñď~~~~]"
+
+#: data/circuits/rebound.tres
+msgid "A perfect dodge instantly reloads your ranged weapon."
+msgstr "[Á péŕféçť ďóďğé íñšťáñťĺý ŕéĺóáďš ýóúŕ ŕáñğéď ŵéápóñ.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/runners_debt.tres
+msgid "Runner's Debt"
+msgstr "[Ŕúññéŕ'š Ďébť~~~~~]"
+
+#: data/circuits/runners_debt.tres
+msgid "The Core drains 40% slower above run speed, 40% faster standing still."
+msgstr "[Ťĥé Çóŕé ďŕáíñš 40% šĺóŵéŕ ábóvé ŕúñ špééď, 40% fášťéŕ šťáñďíñğ šťíĺĺ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/circuits/scavenger.tres
+msgid "Scavenger"
+msgstr "[Šçávéñğéŕ~~~~~]"
+
+#: data/circuits/scavenger.tres
+msgid "Scrap from every source +50%."
+msgstr "[Šçŕáp fŕóm évéŕý šóúŕçé +50%.~~~~~~~~~~~]"
+
+#: data/circuits/slipstream.tres
+msgid "Slipstream"
+msgstr "[Šĺípšťŕéám~~~~~]"
+
+#: data/circuits/slipstream.tres
+msgid "Slip the scanners. The Core bills you for it."
+msgstr "[Šĺíp ťĥé šçáññéŕš. Ťĥé Çóŕé bíĺĺš ýóú fóŕ íť.~~~~~~~~~~~~~~~~]"
+
+#: data/districts/lowlight.tres data/world/world_map.tres world/rooms/lowlight/ApartmentStack.tscn world/rooms/lowlight/BellTower.tscn world/rooms/lowlight/FloodedAlley.tscn world/rooms/lowlight/MarketRun.tscn world/rooms/lowlight/NeonRoofs.tscn world/rooms/lowlight/PowerBlock.tscn world/rooms/lowlight/RainlineChase.tscn world/rooms/lowlight/SecurityStation.tscn world/rooms/lowlight/SmugglerRoute.tscn world/rooms/lowlight/WardenTower.tscn
+msgid "Lowlight"
+msgstr "[Ĺóŵĺíğĥť~~~~]"
+
+#: data/districts/undercity.tres data/world/world_map.tres world/rooms/undercity/BrokenLift.tscn world/rooms/undercity/CollectorBay.tscn world/rooms/undercity/EscapeTunnel.tscn world/rooms/undercity/FirstPursuit.tscn world/rooms/undercity/MaintenanceShaft.tscn world/rooms/undercity/MedicalRuin.tscn world/rooms/undercity/Wake.tscn
+msgid "Undercity"
+msgstr "[Úñďéŕçíťý~~~~~]"
+
+#: data/endings/credits.tres
+msgid "Thank you for playing."
+msgstr "[Ťĥáñķ ýóú fóŕ pĺáýíñğ.~~~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "A work in progress."
+msgstr "[Á ŵóŕķ íñ pŕóğŕéšš.~~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "DESIGN, CODE, PLACEHOLDER ART & AUDIO"
+msgstr "[ĎÉŠÍĞÑ, ÇÓĎÉ, PĹÁÇÉĤÓĹĎÉŔ ÁŔŤ & ÁÚĎÍÓ~~~~~~~~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "The REDLINE team"
+msgstr "[Ťĥé ŔÉĎĹÍÑÉ ťéám~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "PLAYTESTERS"
+msgstr "[PĹÁÝŤÉŠŤÉŔŠ~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "Everyone who sent a session file."
+msgstr "[Évéŕýóñé ŵĥó šéñť á šéššíóñ fíĺé.~~~~~~~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "ENGINE"
+msgstr "[ÉÑĞÍÑÉ~~~]"
+
+#: data/endings/credits.tres
+msgid "Made with Godot Engine"
+msgstr "[Máďé ŵíťĥ Ğóďóť Éñğíñé~~~~~~~~]"
+
+#: data/endings/credits.tres
+msgid "godotengine.org/license"
+msgstr "[ğóďóťéñğíñé.óŕğ/ĺíçéñšé~~~~~~~~~]"
+
+#: data/endings/crown.tres data/sequences/ending_crown.tres
+msgid "CROWN"
+msgstr "[ÇŔÓŴÑ~~~]"
+
+#: data/endings/crown.tres
+msgid "Take control of the network."
+msgstr "[Ťáķé çóñťŕóĺ óf ťĥé ñéťŵóŕķ.~~~~~~~~~~]"
+
+#: data/endings/redline.tres
+msgid "Hidden: Project REDLINE and The Null."
+msgstr "[Ĥíďďéñ: Pŕóĵéçť ŔÉĎĹÍÑÉ áñď Ťĥé Ñúĺĺ.~~~~~~~~~~~~~]"
+
+#: data/endings/release.tres data/sequences/ending_release.tres
+msgid "RELEASE"
+msgstr "[ŔÉĹÉÁŠÉ~~~~]"
+
+#: data/endings/release.tres
+msgid "Change the network; needs memories and people."
+msgstr "[Çĥáñğé ťĥé ñéťŵóŕķ; ñééďš mémóŕíéš áñď péópĺé.~~~~~~~~~~~~~~~~~]"
+
+#: data/endings/sever.tres data/sequences/ending_sever.tres
+msgid "SEVER"
+msgstr "[ŠÉVÉŔ~~~]"
+
+#: data/endings/sever.tres
+msgid "Tear the network down."
+msgstr "[Ťéáŕ ťĥé ñéťŵóŕķ ďóŵñ.~~~~~~~~]"
+
+#: data/enemies/enforcer.tres data/enemies/enforcer_remix.tres
+msgid "Enforcer"
+msgstr "[Éñfóŕçéŕ~~~~]"
+
+#: data/enemies/hopper.tres data/enemies/hopper_null.tres data/enemies/hopper_remix.tres
+msgid "Hopper"
+msgstr "[Ĥóppéŕ~~~]"
+
+#: data/enemies/needle.tres data/enemies/needle_dormant.tres data/enemies/needle_ledge.tres data/enemies/needle_ledge_remix.tres data/enemies/needle_null.tres data/enemies/needle_remix.tres
+msgid "Needle"
+msgstr "[Ñééďĺé~~~]"
+
+#: data/enemies/scout_drone.tres data/enemies/scout_drone_null.tres data/enemies/scout_drone_remix.tres
+msgid "Scout Drone"
+msgstr "[Šçóúť Ďŕóñé~~~~~~]"
+
+#: data/enemies/shield.tres data/enemies/shield_remix.tres
+msgid "Shield"
+msgstr "[Šĥíéĺď~~~]"
+
+#: data/enemies/signal_drone.tres
+msgid "Signal Drone"
+msgstr "[Šíğñáĺ Ďŕóñé~~~~~~]"
+
+#: data/enemies/watcher.tres data/enemies/watcher_remix.tres
+msgid "Watcher"
+msgstr "[Ŵáťçĥéŕ~~~~]"
 
 #: data/input/glyphs/nintendo.tres data/settings/pages/controls.tres
 msgid "Nintendo"
@@ -348,6 +1260,546 @@ msgstr "[Méñúš~~~]"
 msgid "Restart challenge"
 msgstr "[Ŕéšťáŕť çĥáĺĺéñğé~~~~~~]"
 
+#: data/lore/mf_lowlight_01.tres
+msgid "Execution Order 7-R"
+msgstr "[Éxéçúťíóñ Óŕďéŕ 7-Ŕ~~~~~~~]"
+
+#: data/lore/mf_lowlight_01.tres
+msgid "A voice reading numbers. Yours, you think. \"Subject non-viable. Recover the core. Discard the rest.\" Someone laughed when the lights went out."
+msgstr "[Á vóíçé ŕéáďíñğ ñúmbéŕš. Ýóúŕš, ýóú ťĥíñķ. \"Šúbĵéçť ñóñ-víábĺé. Ŕéçóvéŕ ťĥé çóŕé. Ďíšçáŕď ťĥé ŕéšť.\" Šóméóñé ĺáúğĥéď ŵĥéñ ťĥé ĺíğĥťš ŵéñť óúť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/lore/mf_lowlight_02.tres
+msgid "Rain Clinic"
+msgstr "[Ŕáíñ Çĺíñíç~~~~~~]"
+
+#: data/lore/mf_lowlight_02.tres
+msgid "A hand on your chest, where the scar is now. \"It runs on something it shouldn't. Every time it spikes, you'll lose a little more of whatever it's eating.\""
+msgstr "[Á ĥáñď óñ ýóúŕ çĥéšť, ŵĥéŕé ťĥé šçáŕ íš ñóŵ. \"Íť ŕúñš óñ šóméťĥíñğ íť šĥóúĺďñ'ť. Évéŕý ťímé íť špíķéš, ýóú'ĺĺ ĺóšé á ĺíťťĺé móŕé óf ŵĥáťévéŕ íť'š éáťíñğ.\"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/lore/mf_lowlight_03.tres
+msgid "The Warden's Ledger"
+msgstr "[Ťĥé Ŵáŕďéñ'š Ĺéďğéŕ~~~~~~~]"
+
+#: data/lore/mf_lowlight_03.tres
+msgid "Krail's handwriting, neat as a verdict: \"Everything pulled from the Spire passes through my tower. Everything. That includes the ones they call REDLINE.\""
+msgstr "[Ķŕáíĺ'š ĥáñďŵŕíťíñğ, ñéáť áš á véŕďíçť: \"Évéŕýťĥíñğ púĺĺéď fŕóm ťĥé Špíŕé páššéš ťĥŕóúğĥ mý ťóŵéŕ. Évéŕýťĥíñğ. Ťĥáť íñçĺúďéš ťĥé óñéš ťĥéý çáĺĺ ŔÉĎĹÍÑÉ.\"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/lore/mf_lowlight_04.tres
+msgid "Cell Four"
+msgstr "[Çéĺĺ Fóúŕ~~~~~]"
+
+#: data/lore/mf_lowlight_04.tres
+msgid "Rain through a crack in the ceiling. Someone in the next cell taps the pipe: three short, three long. A guard laughs. \"Save it. This one came in without a name. The tag just says SPIRE.\""
+msgstr "[Ŕáíñ ťĥŕóúğĥ á çŕáçķ íñ ťĥé çéíĺíñğ. Šóméóñé íñ ťĥé ñéxť çéĺĺ ťápš ťĥé pípé: ťĥŕéé šĥóŕť, ťĥŕéé ĺóñğ. Á ğúáŕď ĺáúğĥš. \"Šávé íť. Ťĥíš óñé çámé íñ ŵíťĥóúť á ñámé. Ťĥé ťáğ ĵúšť šáýš ŠPÍŔÉ.\"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/lore/mf_undercity_01.tres
+msgid "It Won't Come Out"
+msgstr "[Íť Ŵóñ'ť Çómé Óúť~~~~~~]"
+
+#: data/lore/mf_undercity_01.tres
+msgid "Cold steel under your back. Gloved hands on your chest, pulling. Something inside pulls back harder. \"It won't come out.\" A long pause. \"Then leave it in him. The Collector can take both.\""
+msgstr "[Çóĺď šťééĺ úñďéŕ ýóúŕ báçķ. Ğĺóvéď ĥáñďš óñ ýóúŕ çĥéšť, púĺĺíñğ. Šóméťĥíñğ íñšíďé púĺĺš báçķ ĥáŕďéŕ. \"Íť ŵóñ'ť çómé óúť.\" Á ĺóñğ páúšé. \"Ťĥéñ ĺéávé íť íñ ĥím. Ťĥé Çóĺĺéçťóŕ çáñ ťáķé bóťĥ.\"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "Count the Last One"
+msgstr "[Çóúñť ťĥé Ĺášť Óñé~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "The last car has no markings. Its doors are welded shut."
+msgstr "[Ťĥé ĺášť çáŕ ĥáš ñó máŕķíñğš. Íťš ďóóŕš áŕé ŵéĺďéď šĥúť.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "Night. A bridge over the rail yards. Wind in the railings."
+msgstr "[Ñíğĥť. Á bŕíďğé óvéŕ ťĥé ŕáíĺ ýáŕďš. Ŵíñď íñ ťĥé ŕáíĺíñğš.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "Someone beside you counts the cars under their breath."
+msgstr "[Šóméóñé béšíďé ýóú çóúñťš ťĥé çáŕš úñďéŕ ťĥéíŕ bŕéáťĥ.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres data/memories/mf_lowlight_02.tres
+msgid "VOICE"
+msgstr "[VÓÍÇÉ~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "Always count the last one twice."
+msgstr "[Áĺŵáýš çóúñť ťĥé ĺášť óñé ťŵíçé.~~~~~~~~~~~~]"
+
+#: data/memories/mem_first_rest.tres
+msgid "You turn to ask why. Where their face should be, there's only static."
+msgstr "[Ýóú ťúŕñ ťó ášķ ŵĥý. Ŵĥéŕé ťĥéíŕ fáçé šĥóúĺď bé, ťĥéŕé'š óñĺý šťáťíç.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "MEMORY"
+msgstr "[MÉMÓŔÝ~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Rest at an Anchor to remember."
+msgstr "[Ŕéšť áť áñ Áñçĥóŕ ťó ŕémémbéŕ.~~~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Open the Journal to remember."
+msgstr "[Ópéñ ťĥé Ĵóúŕñáĺ ťó ŕémémbéŕ.~~~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Another memory is waiting."
+msgstr "[Áñóťĥéŕ mémóŕý íš ŵáíťíñğ.~~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Fragments remembered %d / %d"
+msgstr "[Fŕáğméñťš ŕémémbéŕéď %d / %d~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Memories…"
+msgstr "[Mémóŕíéš…~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "No memories recovered."
+msgstr "[Ñó mémóŕíéš ŕéçóvéŕéď.~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "MEMORIES  —  ACT %s"
+msgstr "[MÉMÓŔÍÉŠ  —  ÁÇŤ %s~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "— rest at an Anchor to remember"
+msgstr "[— ŕéšť áť áñ Áñçĥóŕ ťó ŕémémbéŕ~~~~~~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Detail: %s"
+msgstr "[Ďéťáíĺ: %s~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Something else was there."
+msgstr "[Šóméťĥíñğ éĺšé ŵáš ťĥéŕé.~~~~~~~~~]"
+
+#: data/memories/memory_config.tres ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
+msgid "Back"
+msgstr "[Báçķ~~]"
+
+#: data/memories/memory_config.tres ui/menus/PauseMenu.gd
+msgid "PAUSED"
+msgstr "[PÁÚŠÉĎ~~~]"
+
+#: data/memories/memory_config.tres ui/menus/PauseMenu.gd
+msgid "Resume"
+msgstr "[Ŕéšúmé~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Skip memory"
+msgstr "[Šķíp mémóŕý~~~~~~]"
+
+#: data/memories/memory_config.tres
+msgid "Subtitle size: %s"
+msgstr "[Šúbťíťĺé šížé: %s~~~~~~]"
+
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Small"
+msgstr "[Šmáĺĺ~~~]"
+
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Medium"
+msgstr "[Méďíúm~~~]"
+
+#: data/memories/memory_config.tres data/settings/pages/subtitles.tres
+msgid "Large"
+msgstr "[Ĺáŕğé~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "The order is signed. The signature is red static. It won't come into focus."
+msgstr "[Ťĥé óŕďéŕ íš šíğñéď. Ťĥé šíğñáťúŕé íš ŕéď šťáťíç. Íť ŵóñ'ť çómé íñťó fóçúš.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "A voice reading numbers. Yours, you think."
+msgstr "[Á vóíçé ŕéáďíñğ ñúmbéŕš. Ýóúŕš, ýóú ťĥíñķ.~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "READER"
+msgstr "[ŔÉÁĎÉŔ~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "Subject non-viable."
+msgstr "[Šúbĵéçť ñóñ-víábĺé.~~~~~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "Recover the core. Discard the rest."
+msgstr "[Ŕéçóvéŕ ťĥé çóŕé. Ďíšçáŕď ťĥé ŕéšť.~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_01.tres
+msgid "The lights go out. Someone laughs."
+msgstr "[Ťĥé ĺíğĥťš ğó óúť. Šóméóñé ĺáúğĥš.~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_02.tres
+msgid "On the tray, a second dressing the shape of your scar. Already used."
+msgstr "[Óñ ťĥé ťŕáý, á šéçóñď ďŕéššíñğ ťĥé šĥápé óf ýóúŕ šçáŕ. Áĺŕéáďý úšéď.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_02.tres
+msgid "Rain on a tin roof. A lamp with a green shade."
+msgstr "[Ŕáíñ óñ á ťíñ ŕóóf. Á ĺámp ŵíťĥ á ğŕééñ šĥáďé.~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_02.tres
+msgid "A hand on your chest, where the scar is now."
+msgstr "[Á ĥáñď óñ ýóúŕ çĥéšť, ŵĥéŕé ťĥé šçáŕ íš ñóŵ.~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_02.tres
+msgid "It runs on something it shouldn't."
+msgstr "[Íť ŕúñš óñ šóméťĥíñğ íť šĥóúĺďñ'ť.~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_02.tres
+msgid "Every time it spikes, you'll lose a little more of whatever it's eating."
+msgstr "[Évéŕý ťímé íť špíķéš, ýóú'ĺĺ ĺóšé á ĺíťťĺé móŕé óf ŵĥáťévéŕ íť'š éáťíñğ.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "Your line in the ledger has no name. Only SPIRE, and a date the rain has smeared."
+msgstr "[Ýóúŕ ĺíñé íñ ťĥé ĺéďğéŕ ĥáš ñó ñámé. Óñĺý ŠPÍŔÉ, áñď á ďáťé ťĥé ŕáíñ ĥáš šméáŕéď.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "Lamplight on a steel desk. You see it from the floor."
+msgstr "[Ĺámpĺíğĥť óñ á šťééĺ ďéšķ. Ýóú šéé íť fŕóm ťĥé fĺóóŕ.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "Krail's handwriting, neat as a verdict:"
+msgstr "[Ķŕáíĺ'š ĥáñďŵŕíťíñğ, ñéáť áš á véŕďíçť:~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "LEDGER"
+msgstr "[ĹÉĎĞÉŔ~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "Everything pulled from the Spire passes through my tower. Everything."
+msgstr "[Évéŕýťĥíñğ púĺĺéď fŕóm ťĥé Špíŕé páššéš ťĥŕóúğĥ mý ťóŵéŕ. Évéŕýťĥíñğ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_03.tres
+msgid "That includes the ones they call REDLINE."
+msgstr "[Ťĥáť íñçĺúďéš ťĥé óñéš ťĥéý çáĺĺ ŔÉĎĹÍÑÉ.~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "The tapping never finishes. Three short, three long, then nothing."
+msgstr "[Ťĥé ťáppíñğ ñévéŕ fíñíšĥéš. Ťĥŕéé šĥóŕť, ťĥŕéé ĺóñğ, ťĥéñ ñóťĥíñğ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "Rain through a crack in the ceiling."
+msgstr "[Ŕáíñ ťĥŕóúğĥ á çŕáçķ íñ ťĥé çéíĺíñğ.~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "Someone in the next cell taps the pipe: three short, three long."
+msgstr "[Šóméóñé íñ ťĥé ñéxť çéĺĺ ťápš ťĥé pípé: ťĥŕéé šĥóŕť, ťĥŕéé ĺóñğ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "GUARD"
+msgstr "[ĞÚÁŔĎ~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "Save it."
+msgstr "[Šávé íť.~~~~]"
+
+#: data/memories/mf_lowlight_04.tres
+msgid "This one came in without a name. The tag just says SPIRE."
+msgstr "[Ťĥíš óñé çámé íñ ŵíťĥóúť á ñámé. Ťĥé ťáğ ĵúšť šáýš ŠPÍŔÉ.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "A tag on the tray: UNIT 14. CYCLE 4471. The name field is blank."
+msgstr "[Á ťáğ óñ ťĥé ťŕáý: ÚÑÍŤ 14. ÇÝÇĹÉ 4471. Ťĥé ñámé fíéĺď íš bĺáñķ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "Cold steel under your back. A lamp swinging overhead."
+msgstr "[Çóĺď šťééĺ úñďéŕ ýóúŕ báçķ. Á ĺámp šŵíñğíñğ óvéŕĥéáď.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "Gloved hands on your chest, pulling. Something inside pulls back harder."
+msgstr "[Ğĺóvéď ĥáñďš óñ ýóúŕ çĥéšť, púĺĺíñğ. Šóméťĥíñğ íñšíďé púĺĺš báçķ ĥáŕďéŕ.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "CREW"
+msgstr "[ÇŔÉŴ~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "It won't come out."
+msgstr "[Íť ŵóñ'ť çómé óúť.~~~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "SUPERVISOR"
+msgstr "[ŠÚPÉŔVÍŠÓŔ~~~~~]"
+
+#: data/memories/mf_undercity_01.tres
+msgid "Then leave it in him. The Collector can take both."
+msgstr "[Ťĥéñ ĺéávé íť íñ ĥím. Ťĥé Çóĺĺéçťóŕ çáñ ťáķé bóťĥ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/iko.tres
+msgid "Black Market"
+msgstr "[Bĺáçķ Máŕķéť~~~~~~]"
+
+#: data/npcs/iko.tres data/npcs/mara.tres data/npcs/nix.tres data/npcs/orr.tres data/npcs/vell.tres
+msgid "Talk"
+msgstr "[Ťáĺķ~~]"
+
+#: data/npcs/iko.tres
+msgid "Easy. You're the one who lit up the grid? Good. Krail's people have been sitting on my canal for a month."
+msgstr "[Éášý. Ýóú'ŕé ťĥé óñé ŵĥó ĺíť úp ťĥé ğŕíď? Ğóóď. Ķŕáíĺ'š péópĺé ĥávé bééñ šíťťíñğ óñ mý çáñáĺ fóŕ á móñťĥ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/iko.tres
+msgid "Iko. I move what the Wardens don't want moved. I'll set up somewhere safer. That Relay of yours."
+msgstr "[Íķó. Í móvé ŵĥáť ťĥé Ŵáŕďéñš ďóñ'ť ŵáñť móvéď. Í'ĺĺ šéť úp šóméŵĥéŕé šáféŕ. Ťĥáť Ŕéĺáý óf ýóúŕš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/iko.tres
+msgid "Everything here fell off a Warden truck. Don't ask which one."
+msgstr "[Évéŕýťĥíñğ ĥéŕé féĺĺ óff á Ŵáŕďéñ ťŕúçķ. Ďóñ'ť ášķ ŵĥíçĥ óñé.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Mechanic"
+msgstr "[Méçĥáñíç~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Orr says you walked out of a Collector's nest with that thing still burning in you."
+msgstr "[Óŕŕ šáýš ýóú ŵáĺķéď óúť óf á Çóĺĺéçťóŕ'š ñéšť ŵíťĥ ťĥáť ťĥíñğ šťíĺĺ búŕñíñğ íñ ýóú.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "You've felt it drink by now. Keep it fed, rest at Anchors, and it'll keep you running. Here. A Scattergun. Up close it solves arguments."
+msgstr "[Ýóú'vé féĺť íť ďŕíñķ bý ñóŵ. Ķéép íť féď, ŕéšť áť Áñçĥóŕš, áñď íť'ĺĺ ķéép ýóú ŕúññíñğ. Ĥéŕé. Á Šçáťťéŕğúñ. Úp çĺóšé íť šóĺvéš áŕğúméñťš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Stop poking the scar. That's a Redline Core, and it is not supposed to be in a person."
+msgstr "[Šťóp póķíñğ ťĥé šçáŕ. Ťĥáť'š á Ŕéďĺíñé Çóŕé, áñď íť íš ñóť šúppóšéď ťó bé íñ á péŕšóñ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Out there it burns hot. Fight, move, break things - it drinks what's left and keeps you running."
+msgstr "[Óúť ťĥéŕé íť búŕñš ĥóť. Fíğĥť, móvé, bŕéáķ ťĥíñğš - íť ďŕíñķš ŵĥáť'š ĺéfť áñď ķéépš ýóú ŕúññíñğ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Rest at an Anchor and it settles. Here. A Scattergun. Up close it solves arguments."
+msgstr "[Ŕéšť áť áñ Áñçĥóŕ áñď íť šéťťĺéš. Ĥéŕé. Á Šçáťťéŕğúñ. Úp çĺóšé íť šóĺvéš áŕğúméñťš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/mara.tres
+msgid "Weapons, fixes, bad advice. Pick one."
+msgstr "[Ŵéápóñš, fíxéš, báď áďvíçé. Píçķ óñé.~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "You walked it. All of it, near enough. Look at that - the flood lines, the new walls."
+msgstr "[Ýóú ŵáĺķéď íť. Áĺĺ óf íť, ñéáŕ éñóúğĥ. Ĺóóķ áť ťĥáť - ťĥé fĺóóď ĺíñéš, ťĥé ñéŵ ŵáĺĺš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "Seventy years of Lowlight and nobody bothered to redraw it. Here. Your cut, and my old lens."
+msgstr "[Šévéñťý ýéáŕš óf Ĺóŵĺíğĥť áñď ñóbóďý bóťĥéŕéď ťó ŕéďŕáŵ íť. Ĥéŕé. Ýóúŕ çúť, áñď mý óĺď ĺéñš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "Nix. I draw the city. The city keeps redrawing itself, so it's steady work."
+msgstr "[Ñíx. Í ďŕáŵ ťĥé çíťý. Ťĥé çíťý ķéépš ŕéďŕáŵíñğ íťšéĺf, šó íť'š šťéáďý ŵóŕķ.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "Lowlight moved twice since the flood. My maps didn't. Walk it for me and I'll fill in the rest."
+msgstr "[Ĺóŵĺíğĥť móvéď ťŵíçé šíñçé ťĥé fĺóóď. Mý mápš ďíďñ'ť. Ŵáĺķ íť fóŕ mé áñď Í'ĺĺ fíĺĺ íñ ťĥé ŕéšť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "Take a look at the stock. The transit pass gets you between Anchors you've rested at."
+msgstr "[Ťáķé á ĺóóķ áť ťĥé šťóçķ. Ťĥé ťŕáñšíť pášš ğéťš ýóú béťŵééñ Áñçĥóŕš ýóú'vé ŕéšťéď áť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/nix.tres
+msgid "Maps, lenses, tickets. Everything a lost person needs."
+msgstr "[Mápš, ĺéñšéš, ťíçķéťš. Évéŕýťĥíñğ á ĺóšť péŕšóñ ñééďš.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres data/npcs/orr_radio.tres
+msgid "Radio"
+msgstr "[Ŕáďíó~~~]"
+
+#: data/npcs/orr.tres
+msgid "A smuggler came up the lift while you were out. Iko. Says you're good for business."
+msgstr "[Á šmúğğĺéŕ çámé úp ťĥé ĺífť ŵĥíĺé ýóú ŵéŕé óúť. Íķó. Šáýš ýóú'ŕé ğóóď fóŕ búšíñéšš.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "Somebody lit up the Rainline. My whole board just jumped."
+msgstr "[Šómébóďý ĺíť úp ťĥé Ŕáíñĺíñé. Mý ŵĥóĺé bóáŕď ĵúšť ĵúmpéď.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "All three? The static's gone. I can hear Warden Krail's patrol codes clear as rain."
+msgstr "[Áĺĺ ťĥŕéé? Ťĥé šťáťíç'š ğóñé. Í çáñ ĥéáŕ Ŵáŕďéñ Ķŕáíĺ'š páťŕóĺ çóďéš çĺéáŕ áš ŕáíñ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "He's pulling something up the Bell Tower lift every night. Same crates they meant to carry you out in."
+msgstr "[Ĥé'š púĺĺíñğ šóméťĥíñğ úp ťĥé Béĺĺ Ťóŵéŕ ĺífť évéŕý ñíğĥť. Šámé çŕáťéš ťĥéý méáñť ťó çáŕŕý ýóú óúť íñ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "Take this. Earned it. And Rook - don't go up that tower tired."
+msgstr "[Ťáķé ťĥíš. Éáŕñéď íť. Áñď Ŕóóķ - ďóñ'ť ğó úp ťĥáť ťóŵéŕ ťíŕéď.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "So you're the one who shut a Collector up. You look worse than I pictured."
+msgstr "[Šó ýóú'ŕé ťĥé óñé ŵĥó šĥúť á Çóĺĺéçťóŕ úp. Ýóú ĺóóķ ŵóŕšé ťĥáñ Í píçťúŕéď.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "Mara wants a look at that Core. First, though: the Warden's people knocked our repeaters out of line."
+msgstr "[Máŕá ŵáñťš á ĺóóķ áť ťĥáť Çóŕé. Fíŕšť, ťĥóúğĥ: ťĥé Ŵáŕďéñ'š péópĺé ķñóçķéď óúŕ ŕépéáťéŕš óúť óf ĺíñé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "Lowlight's full of them. Realign three and this whole Relay stops being deaf. Deal?"
+msgstr "[Ĺóŵĺíğĥť'š fúĺĺ óf ťĥém. Ŕéáĺíğñ ťĥŕéé áñď ťĥíš ŵĥóĺé Ŕéĺáý šťópš béíñğ ďéáf. Ďéáĺ?~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "You're awake. Good. Mara said the thing in your chest would either restart you or cook the room."
+msgstr "[Ýóú'ŕé áŵáķé. Ğóóď. Máŕá šáíď ťĥé ťĥíñğ íñ ýóúŕ çĥéšť ŵóúĺď éíťĥéŕ ŕéšťáŕť ýóú óŕ çóóķ ťĥé ŕóóm.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr.tres
+msgid "I run the radio. Or I did, before the Warden's people knocked our repeaters out of line."
+msgstr "[Í ŕúñ ťĥé ŕáďíó. Óŕ Í ďíď, béfóŕé ťĥé Ŵáŕďéñ'š péópĺé ķñóçķéď óúŕ ŕépéáťéŕš óúť óf ĺíñé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres data/npcs/relay_board.tres
+msgid "Listen"
+msgstr "[Ĺíšťéñ~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Relay here. Nothing on this band but Recovery now. Don't linger."
+msgstr "[Ŕéĺáý ĥéŕé. Ñóťĥíñğ óñ ťĥíš báñď búť Ŕéçóvéŕý ñóŵ. Ďóñ'ť ĺíñğéŕ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "The Collector's gone off the band. Tell me that was you."
+msgstr "[Ťĥé Çóĺĺéçťóŕ'š ğóñé óff ťĥé báñď. Ťéĺĺ mé ťĥáť ŵáš ýóú.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Rail line's straight ahead. Top gallery, left side of the Relay. I'll leave the door unjammed."
+msgstr "[Ŕáíĺ ĺíñé'š šťŕáíğĥť áĥéáď. Ťóp ğáĺĺéŕý, ĺéfť šíďé óf ťĥé Ŕéĺáý. Í'ĺĺ ĺéávé ťĥé ďóóŕ úñĵámméď.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Top gallery. Keep climbing."
+msgstr "[Ťóp ğáĺĺéŕý. Ķéép çĺímbíñğ.~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Orr, on the old crew band. You came down the back way? Then you know the voice."
+msgstr "[Óŕŕ, óñ ťĥé óĺď çŕéŵ báñď. Ýóú çámé ďóŵñ ťĥé báçķ ŵáý? Ťĥéñ ýóú ķñóŵ ťĥé vóíçé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "That bay below you is a Collector's nest. It hunts what's in your chest. Don't stand still near it."
+msgstr "[Ťĥáť báý béĺóŵ ýóú íš á Çóĺĺéçťóŕ'š ñéšť. Íť ĥúñťš ŵĥáť'š íñ ýóúŕ çĥéšť. Ďóñ'ť šťáñď šťíĺĺ ñéáŕ íť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Lift shaft, then the Anchor at the top, then the Collector's bay. Don't stop moving."
+msgstr "[Ĺífť šĥáfť, ťĥéñ ťĥé Áñçĥóŕ áť ťĥé ťóp, ťĥéñ ťĥé Çóĺĺéçťóŕ'š báý. Ďóñ'ť šťóp móvíñğ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "...is this band live? You by the lift shaft - don't answer. Just listen."
+msgstr "[...íš ťĥíš báñď ĺívé? Ýóú bý ťĥé ĺífť šĥáfť - ďóñ'ť áñšŵéŕ. Ĵúšť ĺíšťéñ.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "That eye was a Collector. Civic Recovery. It doesn't want you. It wants what's in your chest."
+msgstr "[Ťĥáť éýé ŵáš á Çóĺĺéçťóŕ. Çívíç Ŕéçóvéŕý. Íť ďóéšñ'ť ŵáñť ýóú. Íť ŵáñťš ŵĥáť'š íñ ýóúŕ çĥéšť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Up the shaft the Pulse runs thick and your Core drains. Keep moving, keep hitting. It feeds on that."
+msgstr "[Úp ťĥé šĥáfť ťĥé Púĺšé ŕúñš ťĥíçķ áñď ýóúŕ Çóŕé ďŕáíñš. Ķéép móvíñğ, ķéép ĥíťťíñğ. Íť fééďš óñ ťĥáť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "There's an Anchor at the top - our kit. Rest there and fill back up. The only way on is through the bay. Its nest."
+msgstr "[Ťĥéŕé'š áñ Áñçĥóŕ áť ťĥé ťóp - óúŕ ķíť. Ŕéšť ťĥéŕé áñď fíĺĺ báçķ úp. Ťĥé óñĺý ŵáý óñ íš ťĥŕóúğĥ ťĥé báý. Íťš ñéšť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Get past it and follow the old rail line up to the Relay. We're friendly. Mostly. Name's Orr."
+msgstr "[Ğéť pášť íť áñď fóĺĺóŵ ťĥé óĺď ŕáíĺ ĺíñé úp ťó ťĥé Ŕéĺáý. Ŵé'ŕé fŕíéñďĺý. Móšťĺý. Ñámé'š Óŕŕ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "...is this band live? Don't answer. Just listen."
+msgstr "[...íš ťĥíš báñď ĺívé? Ďóñ'ť áñšŵéŕ. Ĵúšť ĺíšťéñ.~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "Something down here hunts what's in your chest. Civic Recovery calls it a Collector. Its nest is the bay under the old rail line."
+msgstr "[Šóméťĥíñğ ďóŵñ ĥéŕé ĥúñťš ŵĥáť'š íñ ýóúŕ çĥéšť. Çívíç Ŕéçóvéŕý çáĺĺš íť á Çóĺĺéçťóŕ. Íťš ñéšť íš ťĥé báý úñďéŕ ťĥé óĺď ŕáíĺ ĺíñé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/orr_radio.tres
+msgid "The rail line runs up to the Relay. We're friendly. Mostly. Name's Orr."
+msgstr "[Ťĥé ŕáíĺ ĺíñé ŕúñš úp ťó ťĥé Ŕéĺáý. Ŵé'ŕé fŕíéñďĺý. Móšťĺý. Ñámé'š Óŕŕ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Radio board"
+msgstr "[Ŕáďíó bóáŕď~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Radio chatter"
+msgstr "[Ŕáďíó çĥáťťéŕ~~~~~]"
+
+#: data/npcs/relay_board.tres data/sequences/speakers.tres
+msgid "BAND"
+msgstr "[BÁÑĎ~~]"
+
+#: data/npcs/relay_board.tres
+msgid "...Recovery, all units. The Lowlight lift is down. Freight reroutes."
+msgstr "[...Ŕéçóvéŕý, áĺĺ úñíťš. Ťĥé Ĺóŵĺíğĥť ĺífť íš ďóŵñ. Fŕéíğĥť ŕéŕóúťéš.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Priority unchanged."
+msgstr "[Pŕíóŕíťý úñçĥáñğéď.~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Tower, respond. ...Tower?"
+msgstr "[Ťóŵéŕ, ŕéšpóñď. ...Ťóŵéŕ?~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Warden channel closed. Log it as equipment failure."
+msgstr "[Ŵáŕďéñ çĥáññéĺ çĺóšéď. Ĺóğ íť áš éqúípméñť fáíĺúŕé.~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Grid priority reverted in Lowlight. Nobody signed for it."
+msgstr "[Ğŕíď pŕíóŕíťý ŕévéŕťéď íñ Ĺóŵĺíğĥť. Ñóbóďý šíğñéď fóŕ íť.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Lift run, twenty-two hundred. Same crates. Sign for them at the top."
+msgstr "[Ĺífť ŕúñ, ťŵéñťý-ťŵó ĥúñďŕéď. Šámé çŕáťéš. Šíğñ fóŕ ťĥém áť ťĥé ťóp.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "STATIC"
+msgstr "[ŠŤÁŤÍÇ~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Mostly static. Under it, someone is counting."
+msgstr "[Móšťĺý šťáťíç. Úñďéŕ íť, šóméóñé íš çóúñťíñğ.~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/relay_board.tres
+msgid "Static. Orr says it used to be a whole city in there."
+msgstr "[Šťáťíç. Óŕŕ šáýš íť úšéď ťó bé á ŵĥóĺé çíťý íñ ťĥéŕé.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/uc_note_crew.tres
+msgid "Note"
+msgstr "[Ñóťé~~]"
+
+#: data/npcs/uc_note_crew.tres data/npcs/uc_terminal_intake.tres
+msgid "Read"
+msgstr "[Ŕéáď~~]"
+
+#: data/npcs/uc_note_crew.tres
+msgid "RELAY CREW STASH. If you're reading this, you can climb. Keep climbing. There's an Anchor at the top of the lift."
+msgstr "[ŔÉĹÁÝ ÇŔÉŴ ŠŤÁŠĤ. Íf ýóú'ŕé ŕéáďíñğ ťĥíš, ýóú çáñ çĺímb. Ķéép çĺímbíñğ. Ťĥéŕé'š áñ Áñçĥóŕ áť ťĥé ťóp óf ťĥé ĺífť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/uc_terminal_intake.tres
+msgid "Terminal"
+msgstr "[Ťéŕmíñáĺ~~~~]"
+
+#: data/npcs/uc_terminal_intake.tres
+msgid "The screen keeps scrolling. Thirteen names, then a blank line where yours should be."
+msgstr "[Ťĥé šçŕééñ ķéépš šçŕóĺĺíñğ. Ťĥíŕťééñ ñáméš, ťĥéñ á bĺáñķ ĺíñé ŵĥéŕé ýóúŕš šĥóúĺď bé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/uc_terminal_intake.tres
+msgid "INTAKE LOG - CYCLE 4471. Units received: 14. Cores recovered: 13."
+msgstr "[ÍÑŤÁĶÉ ĹÓĞ - ÇÝÇĹÉ 4471. Úñíťš ŕéçéívéď: 14. Çóŕéš ŕéçóvéŕéď: 13.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/uc_terminal_intake.tres
+msgid "Unit 14: core refused removal. Crew sent to infirmary. Unit sealed for Collector pickup."
+msgstr "[Úñíť 14: çóŕé ŕéfúšéď ŕémóváĺ. Çŕéŵ šéñť ťó íñfíŕmáŕý. Úñíť šéáĺéď fóŕ Çóĺĺéçťóŕ píçķúp.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/vell.tres
+msgid "Circuit broker"
+msgstr "[Çíŕçúíť bŕóķéŕ~~~~~]"
+
+#: data/npcs/vell.tres
+msgid "Circuits. Little lies you tell the Core so it does what you want."
+msgstr "[Çíŕçúíťš. Ĺíťťĺé ĺíéš ýóú ťéĺĺ ťĥé Çóŕé šó íť ďóéš ŵĥáť ýóú ŵáñť.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/vell.tres
+msgid "Your Core has room for a few. Slot them at an Anchor. Swap them whenever you like."
+msgstr "[Ýóúŕ Çóŕé ĥáš ŕóóm fóŕ á féŵ. Šĺóť ťĥém áť áñ Áñçĥóŕ. Šŵáp ťĥém ŵĥéñévéŕ ýóú ĺíķé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/vell.tres
+msgid "First one's free. Scavenger - you'll find more Scrap, which you will then give to me."
+msgstr "[Fíŕšť óñé'š fŕéé. Šçávéñğéŕ - ýóú'ĺĺ fíñď móŕé Šçŕáp, ŵĥíçĥ ýóú ŵíĺĺ ťĥéñ ğívé ťó mé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/npcs/vell.tres
+msgid "Capacity's the only real currency. Scrap just gets you in the door."
+msgstr "[Çápáçíťý'š ťĥé óñĺý ŕéáĺ çúŕŕéñçý. Šçŕáp ĵúšť ğéťš ýóú íñ ťĥé ďóóŕ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
 #: data/platform/presence.tres
 msgid "In the menus"
 msgstr "[Íñ ťĥé méñúš~~~~~~]"
@@ -464,6 +1916,62 @@ msgstr "[Šéçŕéťš fóúñď~~~~~]"
 msgid "Silver medals or better"
 msgstr "[Šíĺvéŕ méďáĺš óŕ béťťéŕ~~~~~~~~~]"
 
+#: data/quests/chart_lowlight.tres
+msgid "Chart Lowlight"
+msgstr "[Çĥáŕť Ĺóŵĺíğĥť~~~~~]"
+
+#: data/quests/chart_lowlight.tres
+msgid "Explore Lowlight until Nix's map is mostly filled in (see the map's explored %)."
+msgstr "[Éxpĺóŕé Ĺóŵĺíğĥť úñťíĺ Ñíx'š máp íš móšťĺý fíĺĺéď íñ (šéé ťĥé máp'š éxpĺóŕéď %).~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/quests/chart_lowlight.tres
+msgid "Bring the survey back to Nix at the Relay."
+msgstr "[Bŕíñğ ťĥé šúŕvéý báçķ ťó Ñíx áť ťĥé Ŕéĺáý.~~~~~~~~~~~~~~~]"
+
+#: data/quests/dead_air.tres
+msgid "Dead Air"
+msgstr "[Ďéáď Áíŕ~~~~]"
+
+#: data/quests/dead_air.tres
+msgid "Realign the three signal repeaters in Lowlight."
+msgstr "[Ŕéáĺíğñ ťĥé ťĥŕéé šíğñáĺ ŕépéáťéŕš íñ Ĺóŵĺíğĥť.~~~~~~~~~~~~~~~~~]"
+
+#: data/quests/dead_air.tres
+msgid "Orr: first repeater, over the stalls"
+msgstr "[Óŕŕ: fíŕšť ŕépéáťéŕ, óvéŕ ťĥé šťáĺĺš~~~~~~~~~~~~~]"
+
+#: data/quests/dead_air.tres
+msgid "Report back to Orr at the Relay."
+msgstr "[Ŕépóŕť báçķ ťó Óŕŕ áť ťĥé Ŕéĺáý.~~~~~~~~~~~~]"
+
+#: data/quests/way_up.tres
+msgid "Orr (radio)"
+msgstr "[Óŕŕ (ŕáďíó)~~~~~~]"
+
+#: data/quests/way_up.tres
+msgid "Get past the Collector's bay at the top of the lift shaft."
+msgstr "[Ğéť pášť ťĥé Çóĺĺéçťóŕ'š báý áť ťĥé ťóp óf ťĥé ĺífť šĥáfť.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/quests/way_up.tres
+msgid "Orr: the Collector's nest"
+msgstr "[Óŕŕ: ťĥé Çóĺĺéçťóŕ'š ñéšť~~~~~~~~~]"
+
+#: data/quests/way_up.tres
+msgid "Follow the rail line up to the Relay and find Orr."
+msgstr "[Fóĺĺóŵ ťĥé ŕáíĺ ĺíñé úp ťó ťĥé Ŕéĺáý áñď fíñď Óŕŕ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/reactor/reactor_assist.tres data/settings/pages/assists.tres
+msgid "Story / Assist"
+msgstr "[Šťóŕý / Áššíšť~~~~~]"
+
+#: data/reactor/reactor_challenge.tres data/settings/pages/assists.tres
+msgid "Redline Challenge"
+msgstr "[Ŕéďĺíñé Çĥáĺĺéñğé~~~~~~]"
+
+#: data/reactor/reactor_normal.tres data/settings/pages/assists.tres data/settings/pages/subtitles.tres
+msgid "Normal"
+msgstr "[Ñóŕmáĺ~~~]"
+
 #: data/release/demo.tres
 msgid "DEMO"
 msgstr "[ĎÉMÓ~~]"
@@ -500,6 +2008,166 @@ msgstr "[Ķéép éxpĺóŕíñğ ťĥé Úñďéŕçíťý~~~~~~~~~~]"
 msgid "Save and quit to title"
 msgstr "[Šávé áñď qúíť ťó ťíťĺé~~~~~~~~]"
 
+#: data/sequences/act1_close.tres
+msgid "Every band in Lowlight is saying it. Krail's tower went dark."
+msgstr "[Évéŕý báñď íñ Ĺóŵĺíğĥť íš šáýíñğ íť. Ķŕáíĺ'š ťóŵéŕ ŵéñť ďáŕķ.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/act1_close.tres
+msgid "Half my board's deaf and I can still hear it. Krail's tower went dark."
+msgstr "[Ĥáĺf mý bóáŕď'š ďéáf áñď Í çáñ šťíĺĺ ĥéáŕ íť. Ķŕáíĺ'š ťóŵéŕ ŵéñť ďáŕķ.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/act1_close.tres
+msgid "Then the Spire sends someone worse. It always does."
+msgstr "[Ťĥéñ ťĥé Špíŕé šéñďš šóméóñé ŵóŕšé. Íť áĺŵáýš ďóéš.~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/act1_close.tres
+msgid "Worse pays better. Just saying."
+msgstr "[Ŵóŕšé páýš béťťéŕ. Ĵúšť šáýíñğ.~~~~~~~~~~~]"
+
+#: data/sequences/act1_close.tres
+msgid "...all Recovery units. Priority unchanged. Signature still active."
+msgstr "[...áĺĺ Ŕéçóvéŕý úñíťš. Pŕíóŕíťý úñçĥáñğéď. Šíğñáťúŕé šťíĺĺ áçťívé.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/bark_bell_lift.tres
+msgid "Lift crew, tonight's load is priority. The Warden signs for it himself."
+msgstr "[Ĺífť çŕéŵ, ťóñíğĥť'š ĺóáď íš pŕíóŕíťý. Ťĥé Ŵáŕďéñ šíğñš fóŕ íť ĥímšéĺf.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/bark_market_patrol.tres
+msgid "...patrol eight, Market Run. Scanning for a core signature. No name on file."
+msgstr "[...páťŕóĺ éíğĥť, Máŕķéť Ŕúñ. Šçáññíñğ fóŕ á çóŕé šíğñáťúŕé. Ñó ñámé óñ fíĺé.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/bark_tunnel_orr.tres
+msgid "Back down there? Keep it short. Recovery still sweeps this band."
+msgstr "[Báçķ ďóŵñ ťĥéŕé? Ķéép íť šĥóŕť. Ŕéçóvéŕý šťíĺĺ šŵéépš ťĥíš báñď.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_crown.tres
+msgid "You take hold of the network. Every light in Veyra steadies at once."
+msgstr "[Ýóú ťáķé ĥóĺď óf ťĥé ñéťŵóŕķ. Évéŕý ĺíğĥť íñ Véýŕá šťéáďíéš áť óñçé.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_crown.tres
+msgid "The city runs through you now."
+msgstr "[Ťĥé çíťý ŕúñš ťĥŕóúğĥ ýóú ñóŵ.~~~~~~~~~~~]"
+
+#: data/sequences/ending_crown.tres
+msgid "The map redraws itself every morning now. I don't touch it."
+msgstr "[Ťĥé máp ŕéďŕáŵš íťšéĺf évéŕý móŕñíñğ ñóŵ. Í ďóñ'ť ťóúçĥ íť.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_crown.tres data/sequences/ending_redline.tres data/sequences/ending_release.tres data/sequences/ending_sever.tres
+msgid "PLACEHOLDER ENDING"
+msgstr "[PĹÁÇÉĤÓĹĎÉŔ ÉÑĎÍÑĞ~~~~~~~]"
+
+#: data/sequences/ending_redline.tres
+msgid "Static on every band at once."
+msgstr "[Šťáťíç óñ évéŕý báñď áť óñçé.~~~~~~~~~~~]"
+
+#: data/sequences/ending_redline.tres
+msgid "Then everything goes red, and quiet."
+msgstr "[Ťĥéñ évéŕýťĥíñğ ğóéš ŕéď, áñď qúíéť.~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_release.tres
+msgid "You don't pull and you don't hold. You change it."
+msgstr "[Ýóú ďóñ'ť púĺĺ áñď ýóú ďóñ'ť ĥóĺď. Ýóú çĥáñğé íť.~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_release.tres
+msgid "The lights stay on."
+msgstr "[Ťĥé ĺíğĥťš šťáý óñ.~~~~~~~]"
+
+#: data/sequences/ending_release.tres
+msgid "Three short. Three long. This time the tapping finishes."
+msgstr "[Ťĥŕéé šĥóŕť. Ťĥŕéé ĺóñğ. Ťĥíš ťímé ťĥé ťáppíñğ fíñíšĥéš.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_release.tres
+msgid "You came back. That's new."
+msgstr "[Ýóú çámé báçķ. Ťĥáť'š ñéŵ.~~~~~~~~~~]"
+
+#: data/sequences/ending_release.tres
+msgid "Relay's full. First time I've had to turn the heat up."
+msgstr "[Ŕéĺáý'š fúĺĺ. Fíŕšť ťímé Í'vé ĥáď ťó ťúŕñ ťĥé ĥéáť úp.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_sever.tres
+msgid "You tear the network down."
+msgstr "[Ýóú ťéáŕ ťĥé ñéťŵóŕķ ďóŵñ.~~~~~~~~~~]"
+
+#: data/sequences/ending_sever.tres
+msgid "The lights go out district by district, all the way up the Spire."
+msgstr "[Ťĥé ĺíğĥťš ğó óúť ďíšťŕíçť bý ďíšťŕíçť, áĺĺ ťĥé ŵáý úp ťĥé Špíŕé.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_sever.tres
+msgid "Every band's dead. Quietest night Lowlight ever had."
+msgstr "[Évéŕý báñď'š ďéáď. Qúíéťéšť ñíğĥť Ĺóŵĺíğĥť évéŕ ĥáď.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ending_sever.tres
+msgid "No lights, no Spire. We'll see what people build in the dark."
+msgstr "[Ñó ĺíğĥťš, ñó Špíŕé. Ŵé'ĺĺ šéé ŵĥáť péópĺé búíĺď íñ ťĥé ďáŕķ.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ll_krail_intro.tres
+msgid "Fourteen. You were meant to come up in a crate."
+msgstr "[Fóúŕťééñ. Ýóú ŵéŕé méáñť ťó çómé úp íñ á çŕáťé.~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/ll_krail_intro.tres
+msgid "Everything from the Spire passes my desk. You're still on my ledger."
+msgstr "[Évéŕýťĥíñğ fŕóm ťĥé Špíŕé páššéš mý ďéšķ. Ýóú'ŕé šťíĺĺ óñ mý ĺéďğéŕ.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/relay_arrival.tres
+msgid "Top gallery. Told you I'd leave it open."
+msgstr "[Ťóp ğáĺĺéŕý. Ťóĺď ýóú Í'ď ĺéávé íť ópéñ.~~~~~~~~~~~~~~]"
+
+#: data/sequences/relay_arrival.tres
+msgid "Top gallery. Door's open."
+msgstr "[Ťóp ğáĺĺéŕý. Ďóóŕ'š ópéñ.~~~~~~~~~]"
+
+#: data/sequences/relay_arrival.tres
+msgid "Come on down. The kettle's still hot."
+msgstr "[Çómé óñ ďóŵñ. Ťĥé ķéťťĺé'š šťíĺĺ ĥóť.~~~~~~~~~~~~~]"
+
+#: data/sequences/speakers.tres
+msgid "WARD PA"
+msgstr "[ŴÁŔĎ PÁ~~~~]"
+
+#: data/sequences/speakers.tres
+msgid "C-00"
+msgstr "[Ç-00~~]"
+
+#: data/sequences/test_seq_lines.tres
+msgid "Line one. Ward fourteen, hold for collection."
+msgstr "[Ĺíñé óñé. Ŵáŕď fóúŕťééñ, ĥóĺď fóŕ çóĺĺéçťíóñ.~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/test_seq_lines.tres
+msgid "Line two. The slab is cold under your hands."
+msgstr "[Ĺíñé ťŵó. Ťĥé šĺáb íš çóĺď úñďéŕ ýóúŕ ĥáñďš.~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/test_seq_lines.tres
+msgid "...line three. Signature still on the band."
+msgstr "[...ĺíñé ťĥŕéé. Šíğñáťúŕé šťíĺĺ óñ ťĥé báñď.~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/test_seq_parity.tres
+msgid "The ward hums. Somewhere a pump coughs twice."
+msgstr "[Ťĥé ŵáŕď ĥúmš. Šóméŵĥéŕé á púmp çóúğĥš ťŵíçé.~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/test_seq_repeat_bark.tres
+msgid "...patrol eight, holding. Repeat, holding."
+msgstr "[...páťŕóĺ éíğĥť, ĥóĺďíñğ. Ŕépéáť, ĥóĺďíñğ.~~~~~~~~~~~~~~~]"
+
+#: data/sequences/test_seq_view.tres
+msgid "First view only: the ward speaks."
+msgstr "[Fíŕšť víéŵ óñĺý: ťĥé ŵáŕď špéáķš.~~~~~~~~~~~~]"
+
+#: data/sequences/uc_collector_intro.tres
+msgid "Core signature located. Recovering."
+msgstr "[Çóŕé šíğñáťúŕé ĺóçáťéď. Ŕéçóvéŕíñğ.~~~~~~~~~~~~~]"
+
+#: data/sequences/uc_opening.tres
+msgid "Ward fourteen. Fourteen of fourteen processed."
+msgstr "[Ŵáŕď fóúŕťééñ. Fóúŕťééñ óf fóúŕťééñ pŕóçéššéď.~~~~~~~~~~~~~~~~~]"
+
+#: data/sequences/uc_opening.tres
+msgid "Hold for collection."
+msgstr "[Ĥóĺď fóŕ çóĺĺéçťíóñ.~~~~~~~]"
+
+#: data/sequences/uc_opening.tres
+msgid "Collection delayed. Remain on your slab."
+msgstr "[Çóĺĺéçťíóñ ďéĺáýéď. Ŕémáíñ óñ ýóúŕ šĺáb.~~~~~~~~~~~~~~]"
+
 #: data/settings/catalog.tres
 msgid "Change these any time. They never lock content or achievements."
 msgstr "[Çĥáñğé ťĥéšé áñý ťímé. Ťĥéý ñévéŕ ĺóçķ çóñťéñť óŕ áçĥíévéméñťš.~~~~~~~~~~~~~~~~~~~~~~~]"
@@ -523,18 +2191,6 @@ msgstr "[Çóŕé móďé~~~~~]"
 #: data/settings/pages/assists.tres
 msgid "How fast the Redline Core drains and how much it forgives."
 msgstr "[Ĥóŵ fášť ťĥé Ŕéďĺíñé Çóŕé ďŕáíñš áñď ĥóŵ múçĥ íť fóŕğívéš.~~~~~~~~~~~~~~~~~~~~~]"
-
-#: data/settings/pages/assists.tres data/settings/pages/subtitles.tres
-msgid "Normal"
-msgstr "[Ñóŕmáĺ~~~]"
-
-#: data/settings/pages/assists.tres
-msgid "Story / Assist"
-msgstr "[Šťóŕý / Áššíšť~~~~~]"
-
-#: data/settings/pages/assists.tres
-msgid "Redline Challenge"
-msgstr "[Ŕéďĺíñé Çĥáĺĺéñğé~~~~~~]"
 
 #: data/settings/pages/assists.tres
 msgid "Core burnout costs health"
@@ -889,18 +2545,6 @@ msgid "Text size of dialogue and scene lines."
 msgstr "[Ťéxť šížé óf ďíáĺóğúé áñď šçéñé ĺíñéš.~~~~~~~~~~~~~~]"
 
 #: data/settings/pages/subtitles.tres
-msgid "Small"
-msgstr "[Šmáĺĺ~~~]"
-
-#: data/settings/pages/subtitles.tres
-msgid "Medium"
-msgstr "[Méďíúm~~~]"
-
-#: data/settings/pages/subtitles.tres
-msgid "Large"
-msgstr "[Ĺáŕğé~~~]"
-
-#: data/settings/pages/subtitles.tres
 msgid "Subtitle background"
 msgstr "[Šúbťíťĺé báçķğŕóúñď~~~~~~~]"
 
@@ -972,7 +2616,7 @@ msgstr "[Ťéxť áúťó-áďváñçé~~~~~~]"
 msgid "Lines move on by themselves after a reading pause. Choices always wait."
 msgstr "[Ĺíñéš móvé óñ bý ťĥémšéĺvéš áfťéŕ á ŕéáďíñğ páúšé. Çĥóíçéš áĺŵáýš ŵáíť.~~~~~~~~~~~~~~~~~~~~~~~~~]"
 
-#: data/settings/pages/subtitles.tres ui/menus/SettingsMenu.gd
+#: data/settings/pages/subtitles.tres ui/menus/AchievementsMenu.gd ui/menus/NgPlusMenu.gd ui/menus/SettingsMenu.gd
 msgid "On"
 msgstr "[Óñ~~]"
 
@@ -1044,6 +2688,122 @@ msgstr "[Ďáŕķéñš ťĥé fáŕ báçķďŕóp šó ťĥé pĺáý ĺáýé
 msgid "Some"
 msgstr "[Šómé~~]"
 
+#: data/shops/shop_iko.tres
+msgid "Iko  —  Black Market"
+msgstr "[Íķó  —  Bĺáçķ Máŕķéť~~~~~~~]"
+
+#: data/shops/shop_iko.tres
+msgid "Bootleg Injector"
+msgstr "[Bóóťĺéğ Íñĵéçťóŕ~~~~~~]"
+
+#: data/shops/shop_iko.tres
+msgid "+1 injector charge. Warden stock; the seal's been filed off."
+msgstr "[+1 íñĵéçťóŕ çĥáŕğé. Ŵáŕďéñ šťóçķ; ťĥé šéáĺ'š bééñ fíĺéď óff.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/shops/shop_mara.tres
+msgid "Mara  —  Mechanic"
+msgstr "[Máŕá  —  Méçĥáñíç~~~~~~]"
+
+#: data/shops/shop_mara.tres
+msgid "Spare Injector"
+msgstr "[Špáŕé Íñĵéçťóŕ~~~~~]"
+
+#: data/shops/shop_mara.tres
+msgid "Carry one more healing injector."
+msgstr "[Çáŕŕý óñé móŕé ĥéáĺíñğ íñĵéçťóŕ.~~~~~~~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Nix  —  Cartographer"
+msgstr "[Ñíx  —  Çáŕťóğŕápĥéŕ~~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Lowlight base map"
+msgstr "[Ĺóŵĺíğĥť bášé máp~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Every street outline in Lowlight. Filling in the details is on you."
+msgstr "[Évéŕý šťŕééť óúťĺíñé íñ Ĺóŵĺíğĥť. Fíĺĺíñğ íñ ťĥé ďéťáíĺš íš óñ ýóú.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Transit pass"
+msgstr "[Ťŕáñšíť pášš~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Ride the old lines between any Anchors you have rested at."
+msgstr "[Ŕíďé ťĥé óĺď ĺíñéš béťŵééñ áñý Áñçĥóŕš ýóú ĥávé ŕéšťéď áť.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Surveyor's lens"
+msgstr "[Šúŕvéýóŕ'š ĺéñš~~~~~~]"
+
+#: data/shops/shop_nix.tres
+msgid "Marks map rooms that still hide something. Not where - that's the fun part."
+msgstr "[Máŕķš máp ŕóómš ťĥáť šťíĺĺ ĥíďé šóméťĥíñğ. Ñóť ŵĥéŕé - ťĥáť'š ťĥé fúñ páŕť.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/shops/shop_vell.tres
+msgid "Vell  —  Circuit Broker"
+msgstr "[Véĺĺ  —  Çíŕçúíť Bŕóķéŕ~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "RUN"
+msgstr "[ŔÚÑ~~]"
+
+#: data/story/act1.tres
+msgid "Orr's board hears all of Lowlight now. He listens to it all night."
+msgstr "[Óŕŕ'š bóáŕď ĥéáŕš áĺĺ óf Ĺóŵĺíğĥť ñóŵ. Ĥé ĺíšťéñš ťó íť áĺĺ ñíğĥť.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "Half of Orr's board is still deaf. He keeps turning the dials anyway."
+msgstr "[Ĥáĺf óf Óŕŕ'š bóáŕď íš šťíĺĺ ďéáf. Ĥé ķéépš ťúŕñíñğ ťĥé ďíáĺš áñýŵáý.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "Nix has Lowlight on paper, every alley of it. The Spire isn't on it yet."
+msgstr "[Ñíx ĥáš Ĺóŵĺíğĥť óñ pápéŕ, évéŕý áĺĺéý óf íť. Ťĥé Špíŕé íšñ'ť óñ íť ýéť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "Krail's ledger says REDLINE too. Nobody will say what it means."
+msgstr "[Ķŕáíĺ'š ĺéďğéŕ šáýš ŔÉĎĹÍÑÉ ťóó. Ñóbóďý ŵíĺĺ šáý ŵĥáť íť méáñš.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "Iko has a stall at the Relay now. Business is good. Too good."
+msgstr "[Íķó ĥáš á šťáĺĺ áť ťĥé Ŕéĺáý ñóŵ. Búšíñéšš íš ğóóď. Ťóó ğóóď.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "Some of what you remembered doesn't fit together yet."
+msgstr "[Šómé óf ŵĥáť ýóú ŕémémbéŕéď ďóéšñ'ť fíť ťóğéťĥéŕ ýéť.~~~~~~~~~~~~~~~~~~~]"
+
+#: data/story/act1.tres
+msgid "The Spire has lost a Warden. It will send someone to ask why."
+msgstr "[Ťĥé Špíŕé ĥáš ĺóšť á Ŵáŕďéñ. Íť ŵíĺĺ šéñď šóméóñé ťó ášķ ŵĥý.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/weapons/heavy_revolver.tres
+msgid "Heavy Revolver"
+msgstr "[Ĥéávý Ŕévóĺvéŕ~~~~~]"
+
+#: data/weapons/scattergun.tres
+msgid "Scattergun"
+msgstr "[Šçáťťéŕğúñ~~~~~]"
+
+#: data/weapons/service_pistol.tres
+msgid "Service Pistol"
+msgstr "[Šéŕvíçé Píšťóĺ~~~~~]"
+
+#: data/weapons/split_katars.tres
+msgid "Split Katars"
+msgstr "[Špĺíť Ķáťáŕš~~~~~~]"
+
+#: data/world/chase/rainline.tres data/world/chase/rainline_remix.tres data/world/chase/test_chase.tres
+msgid "Something on the line just woke up. Run east."
+msgstr "[Šóméťĥíñğ óñ ťĥé ĺíñé ĵúšť ŵóķé úp. Ŕúñ éášť.~~~~~~~~~~~~~~~~]"
+
+#: data/world/chase/rainline.tres data/world/chase/rainline_remix.tres data/world/chase/test_chase.tres
+msgid "Keep moving — it catches you when you slow down."
+msgstr "[Ķéép móvíñğ — íť çáťçĥéš ýóú ŵĥéñ ýóú šĺóŵ ďóŵñ.~~~~~~~~~~~~~~~~~]"
+
+#: data/world/onboarding.tres
+msgid "Act I  —  Undercity to Lowlight"
+msgstr "[Áçť Í  —  Úñďéŕçíťý ťó Ĺóŵĺíğĥť~~~~~~~~~~~]"
+
 #: input/InputBindings.gd
 msgid "That input cannot be used here."
 msgstr "[Ťĥáť íñpúť çáññóť bé úšéď ĥéŕé.~~~~~~~~~~~]"
@@ -1088,6 +2848,32 @@ msgstr "[Páúšé ñééďš óñé móŕé ķéý.~~~~~~~~~]"
 msgid "{key} stays on {action}."
 msgstr "[{key} šťáýš óñ {action}.~~~~~~]"
 
+#: interactables/AbilityPickup.gd
+msgid "DASH UNLOCKED  —  press [%s] to dash"
+msgstr "[ĎÁŠĤ ÚÑĹÓÇĶÉĎ  —  pŕéšš [%s] ťó ďášĥ~~~~~~~~~~~~]"
+
+#: interactables/ChallengeTerminal.gd
+msgid "Training rig"
+msgstr "[Ťŕáíñíñğ ŕíğ~~~~~~]"
+
+#: interactables/ChallengeTerminal.gd interactables/FlagSwitch.gd interactables/Interactable.gd interactables/NPC.gd interactables/SignalRepeater.gd world/anchors/Anchor.gd
+msgid "Use"
+msgstr "[Úšé~~]"
+
+#: ui/hud/AchievementToast.gd
+msgid "{n} ACHIEVEMENT UNLOCKED"
+msgid_plural "{n} ACHIEVEMENTS UNLOCKED"
+msgstr[0] "[{n} ÁÇĤÍÉVÉMÉÑŤ ÚÑĹÓÇĶÉĎ~~~~~~~~]"
+msgstr[1] "[{n} ÁÇĤÍÉVÉMÉÑŤŠ ÚÑĹÓÇĶÉĎ~~~~~~~~]"
+
+#: ui/hud/AchievementToast.gd
+msgid "See them in the Journal."
+msgstr "[Šéé ťĥém íñ ťĥé Ĵóúŕñáĺ.~~~~~~~~~]"
+
+#: ui/hud/AchievementToast.gd
+msgid "ACHIEVEMENT"
+msgstr "[ÁÇĤÍÉVÉMÉÑŤ~~~~~~]"
+
 #: ui/hud/RunTimerHud.gd
 msgid "IGT {time}"
 msgstr "[ÍĞŤ {time}~~]"
@@ -1120,25 +2906,349 @@ msgstr "[ÑÓ ĤÍŤ~~~]"
 msgid "NO ATTACKS"
 msgstr "[ÑÓ ÁŤŤÁÇĶŠ~~~~~]"
 
+#: ui/menus/AchievementsMenu.gd
+msgid "ACHIEVEMENTS  {n} / {total}"
+msgstr "[ÁÇĤÍÉVÉMÉÑŤŠ  {n} / {total}~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Show: {filter}"
+msgstr "[Šĥóŵ: {filter}~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Show hidden details: {state}"
+msgstr "[Šĥóŵ ĥíďďéñ ďéťáíĺš: {state}~~~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Nothing here yet."
+msgstr "[Ñóťĥíñğ ĥéŕé ýéť.~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Everything here is unlocked."
+msgstr "[Évéŕýťĥíñğ ĥéŕé íš úñĺóçķéď.~~~~~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "More… ({page}/{pages})"
+msgstr "[Móŕé… ({page}/{pages})~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Records…"
+msgstr "[Ŕéçóŕďš…~~~~]"
+
+#: ui/menus/AchievementsMenu.gd ui/menus/ChallengesMenu.gd
+msgid "???"
+msgstr "[???~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Keep exploring."
+msgstr "[Ķéép éxpĺóŕíñğ.~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "Hidden achievement"
+msgstr "[Ĥíďďéñ áçĥíévéméñť~~~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "{now} / {target}"
+msgstr "[{now} / {target}~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "More…"
+msgstr "[Móŕé…~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "RECORDS"
+msgstr "[ŔÉÇÓŔĎŠ~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "This save"
+msgstr "[Ťĥíš šávé~~~~~]"
+
+#: ui/menus/AchievementsMenu.gd
+msgid "All time"
+msgstr "[Áĺĺ ťímé~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "If you'd like, these options can help."
+msgstr "[Íf ýóú'ď ĺíķé, ťĥéšé ópťíóñš çáñ ĥéĺp.~~~~~~~~~~~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "They never lock anything, and you can change them any time in Settings."
+msgstr "[Ťĥéý ñévéŕ ĺóçķ áñýťĥíñğ, áñď ýóú çáñ çĥáñğé ťĥém áñý ťímé íñ Šéťťíñğš.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Open all assists…"
+msgstr "[Ópéñ áĺĺ áššíšťš…~~~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Not now"
+msgstr "[Ñóť ñóŵ~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "Don't suggest again"
+msgstr "[Ďóñ'ť šúğğéšť áğáíñ~~~~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "{setting}: {value}  —  On"
+msgstr "[{setting}: {value}  —  Óñ~~~~~]"
+
+#: ui/menus/AssistSuggestMenu.gd
+msgid "{setting}: {value}  —  Turn on"
+msgstr "[{setting}: {value}  —  Ťúŕñ óñ~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Descend again"
+msgstr "[Ďéšçéñď áğáíñ~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Leave"
+msgstr "[Ĺéávé~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Retry"
+msgstr "[Ŕéťŕý~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd ui/menus/ChallengesMenu.gd ui/menus/PauseMenu.gd
+msgid "Ghost: {mode}"
+msgstr "[Ğĥóšť: {mode}~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Back to Challenges"
+msgstr "[Báçķ ťó Çĥáĺĺéñğéš~~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd ui/menus/PauseMenu.gd
+msgid "Quit challenge"
+msgstr "[Qúíť çĥáĺĺéñğé~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd ui/menus/DemoEndMenu.gd ui/menus/SliceEndMenu.gd
+msgid "Time {time}"
+msgstr "[Ťímé {time}~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{time}  {tier}"
+msgstr "[{time}  {tier}~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Score {score}  {tier}"
+msgstr "[Šçóŕé {score}  {tier}~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{tier}  ·  score {score}"
+msgstr "[{tier}  ·  šçóŕé {score}~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best! {delta}"
+msgstr "[Ñéŵ péŕšóñáĺ béšť! {delta}~~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best! +{points}"
+msgstr "[Ñéŵ péŕšóñáĺ béšť! +{points}~~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "New personal best!"
+msgstr "[Ñéŵ péŕšóñáĺ béšť!~~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Local board: #{rank}"
+msgstr "[Ĺóçáĺ bóáŕď: #{rank}~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Run over: out of health"
+msgstr "[Ŕúñ óvéŕ: óúť óf ĥéáĺťĥ~~~~~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Run over"
+msgstr "[Ŕúñ óvéŕ~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "Next: {tier} at {target}"
+msgstr "[Ñéxť: {tier} áť {target}~~~~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "{stage}  {time}  {tier}"
+msgstr "[{stage}  {time}  {tier}~~]"
+
+#: ui/menus/ChallengeResultMenu.gd
+msgid "new best"
+msgstr "[ñéŵ béšť~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "CHALLENGES"
+msgstr "[ÇĤÁĹĹÉÑĞÉŠ~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Profile {p} · medals {got} / {max}"
+msgstr "[Pŕófíĺé {p} · méďáĺš {got} / {max}~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Depth reached"
+msgstr "[Ďépťĥ ŕéáçĥéď~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Locked — {hint}"
+msgstr "[Ĺóçķéď — {hint}~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Core mode never changes your rank"
+msgstr "[Çóŕé móďé ñévéŕ çĥáñğéš ýóúŕ ŕáñķ~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Records from an earlier version of this room: {n} (archived)"
+msgstr "[Ŕéçóŕďš fŕóm áñ éáŕĺíéŕ véŕšíóñ óf ťĥíš ŕóóm: {n} (áŕçĥívéď)~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Local board: no finishes yet"
+msgstr "[Ĺóçáĺ bóáŕď: ñó fíñíšĥéš ýéť~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Local board"
+msgstr "[Ĺóçáĺ bóáŕď~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "{glyph} marks runs with an assist or reduced hitstop. They earn the same medals."
+msgstr "[{glyph} máŕķš ŕúñš ŵíťĥ áñ áššíšť óŕ ŕéďúçéď ĥíťšťóp. Ťĥéý éáŕñ ťĥé šámé méďáĺš.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "More… ({page} / {pages})"
+msgstr "[Móŕé… ({page} / {pages})~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "No rig ghost yet"
+msgstr "[Ñó ŕíğ ğĥóšť ýéť~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "How ranks work"
+msgstr "[Ĥóŵ ŕáñķš ŵóŕķ~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Start"
+msgstr "[Šťáŕť~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "No hits. Falls and Core burnout count."
+msgstr "[Ñó ĥíťš. Fáĺĺš áñď Çóŕé búŕñóúť çóúñť.~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Movement only: no swings or shots."
+msgstr "[Móvéméñť óñĺý: ñó šŵíñğš óŕ šĥóťš.~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Time limit {time}"
+msgstr "[Ťímé ĺímíť {time}~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Your own loadout"
+msgstr "[Ýóúŕ óŵñ ĺóáďóúť~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Fixed kit: unarmed"
+msgstr "[Fíxéď ķíť: úñáŕméď~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Fixed kit: {weapons}"
+msgstr "[Fíxéď ķíť: {weapons}~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Beat the rig ghost's time"
+msgstr "[Béáť ťĥé ŕíğ ğĥóšť'š ťímé~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "{tiers} (of 1000)"
+msgstr "[{tiers} (óf 1000)~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Your best: none yet ({n} attempts)"
+msgstr "[Ýóúŕ béšť: ñóñé ýéť ({n} áťťémpťš)~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Your best: {best} ({n} attempts)"
+msgstr "[Ýóúŕ béšť: {best} ({n} áťťémpťš)~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "{rank}. P{profile}  {value}  {medal}  {date}"
+msgstr "[{rank}. P{profile}  {value}  {medal}  {date}~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "assist"
+msgstr "[áššíšť~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "reduced hitstop"
+msgstr "[ŕéďúçéď ĥíťšťóp~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "The training rig cannot start that run right now."
+msgstr "[Ťĥé ťŕáíñíñğ ŕíğ çáññóť šťáŕť ťĥáť ŕúñ ŕíğĥť ñóŵ.~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Time: finishing near the stage's par earns time points; at its Redline time you earn them all."
+msgstr "[Ťímé: fíñíšĥíñğ ñéáŕ ťĥé šťáğé'š páŕ éáŕñš ťímé póíñťš; áť íťš Ŕéďĺíñé ťímé ýóú éáŕñ ťĥém áĺĺ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Damage: every hit and every death costs points."
+msgstr "[Ďámáğé: évéŕý ĥíť áñď évéŕý ďéáťĥ çóšťš póíñťš.~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "Style: a higher average style rank earns more points."
+msgstr "[Šťýĺé: á ĥíğĥéŕ ávéŕáğé šťýĺé ŕáñķ éáŕñš móŕé póíñťš.~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/ChallengesMenu.gd
+msgid "{top}: no hits, no deaths and a time at or under the stage's Redline time."
+msgstr "[{top}: ñó ĥíťš, ñó ďéáťĥš áñď á ťímé áť óŕ úñďéŕ ťĥé šťáğé'š Ŕéďĺíñé ťímé.~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
 #: ui/menus/DemoEndMenu.gd
 msgid "Keep exploring"
 msgstr "[Ķéép éxpĺóŕíñğ~~~~~]"
 
 #: ui/menus/DemoEndMenu.gd
-msgid "Time {time}"
-msgstr "[Ťímé {time}~~~]"
-
-#: ui/menus/DemoEndMenu.gd
 msgid "Secrets {found} / {total}    Memory fragments {frags} / {frag_total}"
 msgstr "[Šéçŕéťš {found} / {total}    Mémóŕý fŕáğméñťš {frags} / {frag_total}~~~~~~~~~~~~~]"
 
-#: ui/menus/PauseMenu.gd
-msgid "PAUSED"
-msgstr "[PÁÚŠÉĎ~~~]"
+#: ui/menus/JournalMenu.gd
+msgid "Achievements…"
+msgstr "[Áçĥíévéméñťš…~~~~~]"
 
-#: ui/menus/PauseMenu.gd
-msgid "Resume"
-msgstr "[Ŕéšúmé~~~]"
+#: ui/menus/NgPlusMenu.gd
+msgid "NEW GAME+"
+msgstr "[ÑÉŴ ĞÁMÉ+~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "New Game+ is not available for this save."
+msgstr "[Ñéŵ Ğámé+ íš ñóť áváíĺábĺé fóŕ ťĥíš šávé.~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Keeps: your weapons, Circuits, banked Scrap and upgrades. Core Shards you found stay found."
+msgstr "[Ķéépš: ýóúŕ ŵéápóñš, Çíŕçúíťš, báñķéď Šçŕáp áñď úpğŕáďéš. Çóŕé Šĥáŕďš ýóú fóúñď šťáý fóúñď.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Resets: the story, people, map and memories. Secret stashes refill with a quarter of their Scrap."
+msgstr "[Ŕéšéťš: ťĥé šťóŕý, péópĺé, máp áñď mémóŕíéš. Šéçŕéť šťášĥéš ŕéfíĺĺ ŵíťĥ á qúáŕťéŕ óf ťĥéíŕ Šçŕáp.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Your cleared save is copied to an archive file; the game cannot load it back."
+msgstr "[Ýóúŕ çĺéáŕéď šávé íš çópíéď ťó áñ áŕçĥívé fíĺé; ťĥé ğámé çáññóť ĺóáď íť báçķ.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Begin"
+msgstr "[Béğíñ~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Replace your Continue save with New Game+?"
+msgstr "[Ŕépĺáçé ýóúŕ Çóñťíñúé šávé ŵíťĥ Ñéŵ Ğámé+?~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Memories and quests you have not finished start over."
+msgstr "[Mémóŕíéš áñď qúéšťš ýóú ĥávé ñóť fíñíšĥéď šťáŕť óvéŕ.~~~~~~~~~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Begin New Game+"
+msgstr "[Béğíñ Ñéŵ Ğámé+~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Remixed enemies and hazards: {state}"
+msgstr "[Ŕémíxéď éñémíéš áñď ĥážáŕďš: {state}~~~~~~~~~~~]"
+
+#: ui/menus/NgPlusMenu.gd
+msgid "Start with the Dash: {state}"
+msgstr "[Šťáŕť ŵíťĥ ťĥé Ďášĥ: {state}~~~~~~~~]"
 
 #: ui/menus/PauseMenu.gd
 msgid "Restart"
@@ -1148,17 +3258,9 @@ msgstr "[Ŕéšťáŕť~~~~]"
 msgid "Restart descent"
 msgstr "[Ŕéšťáŕť ďéšçéñť~~~~~~]"
 
-#: ui/menus/PauseMenu.gd
-msgid "Ghost: {mode}"
-msgstr "[Ğĥóšť: {mode}~~~~]"
-
 #: ui/menus/PauseMenu.gd ui/menus/TitleMenu.gd
 msgid "Settings"
 msgstr "[Šéťťíñğš~~~~]"
-
-#: ui/menus/PauseMenu.gd
-msgid "Quit challenge"
-msgstr "[Qúíť çĥáĺĺéñğé~~~~~]"
 
 #: ui/menus/SettingsMenu.gd
 msgid "SETTINGS"
@@ -1167,10 +3269,6 @@ msgstr "[ŠÉŤŤÍÑĞŠ~~~~]"
 #: ui/menus/SettingsMenu.gd
 msgid "Reset all settings…"
 msgstr "[Ŕéšéť áĺĺ šéťťíñğš…~~~~~~~]"
-
-#: ui/menus/SettingsMenu.gd ui/menus/TitleMenu.gd
-msgid "Back"
-msgstr "[Báçķ~~]"
 
 #: ui/menus/SettingsMenu.gd
 msgid "Reset this page…"
@@ -1272,6 +3370,22 @@ msgstr "[Áúťó (ŕóťáťéš)~~~~~]"
 msgid "Automatic ({language})"
 msgstr "[Áúťómáťíç ({language})~~~~~~]"
 
+#: ui/menus/SliceEndMenu.gd
+msgid "{cycle} complete. Remix {state}."
+msgstr "[{cycle} çómpĺéťé. Ŕémíx {state}.~~~~~~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "on"
+msgstr "[óñ~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "off"
+msgstr "[óff~~]"
+
+#: ui/menus/SliceEndMenu.gd
+msgid "New: a training rig at the Relay, and New Game+ on the title."
+msgstr "[Ñéŵ: á ťŕáíñíñğ ŕíğ áť ťĥé Ŕéĺáý, áñď Ñéŵ Ğámé+ óñ ťĥé ťíťĺé.~~~~~~~~~~~~~~~~~~~~~~]"
+
 #: ui/menus/TitleMenu.gd
 msgid "Comfort & accessibility"
 msgstr "[Çómfóŕť & áççéššíbíĺíťý~~~~~~~~~]"
@@ -1341,6 +3455,10 @@ msgid "RIG"
 msgstr "[ŔÍĞ~~]"
 
 #: world/rooms/CombatLab.tscn
+msgid "Combat Lab"
+msgstr "[Çómbáť Ĺáb~~~~~]"
+
+#: world/rooms/CombatLab.tscn
 msgid "SAFE: no core drain.  DUMMIES ->"
 msgstr "[ŠÁFÉ: ñó çóŕé ďŕáíñ.  ĎÚMMÍÉŠ ->~~~~~~~~~~~~]"
 
@@ -1359,6 +3477,14 @@ msgstr "[ÁŔÉÑÁ 2  ğúáŕďš: ğó béĥíñď, ábóvé, óŕ ĥéávý~
 #: world/rooms/CombatLab.tscn
 msgid "ARENA 3  drones: shoot, air attacks, dodge bolts"
 msgstr "[ÁŔÉÑÁ 3  ďŕóñéš: šĥóóť, áíŕ áťťáçķš, ďóďğé bóĺťš~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/FlowZone.gd
+msgid "HOSTILE ZONE  —  your Core drains here. Fight and move to refill it."
+msgstr "[ĤÓŠŤÍĹÉ ŽÓÑÉ  —  ýóúŕ Çóŕé ďŕáíñš ĥéŕé. Fíğĥť áñď móvé ťó ŕéfíĺĺ íť.~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/MovementLab.tscn
+msgid "Movement Lab"
+msgstr "[Móvéméñť Ĺáb~~~~~~]"
 
 #: world/rooms/MovementLab.tscn
 msgid "RUN STRIP - accel/decel/turn"
@@ -1431,3 +3557,243 @@ msgstr "[ÓÑÉ-ŴÁÝ (ďóŵñ+ĵúmp ďŕópš)~~~~~~~~~]"
 #: world/rooms/MovementLab.tscn
 msgid "DROP LEDGE - hard landing"
 msgstr "[ĎŔÓP ĹÉĎĞÉ - ĥáŕď ĺáñďíñğ~~~~~~~~~]"
+
+#: world/rooms/Room.gd
+msgid "Room"
+msgstr "[Ŕóóm~~]"
+
+#: world/rooms/challenge/NullFloor.tscn
+msgid "Echo"
+msgstr "[Éçĥó~~]"
+
+#: world/rooms/challenge/PulsePit.tscn
+msgid "Training Pit"
+msgstr "[Ťŕáíñíñğ Píť~~~~~~]"
+
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Apartment Stack"
+msgstr "[Ápáŕťméñť Šťáçķ~~~~~~]"
+
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Bolted from the other side."
+msgstr "[Bóĺťéď fŕóm ťĥé óťĥéŕ šíďé.~~~~~~~~~~]"
+
+#: world/rooms/lowlight/ApartmentStack.tscn
+msgid "Hatch: bolted from the tunnel side"
+msgstr "[Ĥáťçĥ: bóĺťéď fŕóm ťĥé ťúññéĺ šíďé~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/ApartmentStack.tscn world/rooms/undercity/MedicalRuin.tscn
+msgid "Hurt? Stand still and hold on: [{action}] uses an injector"
+msgstr "[Ĥúŕť? Šťáñď šťíĺĺ áñď ĥóĺď óñ: [{action}] úšéš áñ íñĵéçťóŕ~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Bell Tower"
+msgstr "[Béĺĺ Ťóŵéŕ~~~~~]"
+
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Lift to the Relay is running"
+msgstr "[Ĺífť ťó ťĥé Ŕéĺáý íš ŕúññíñğ~~~~~~~~~~]"
+
+#: world/rooms/lowlight/BellTower.tscn
+msgid "Orr: crates go up here every night"
+msgstr "[Óŕŕ: çŕáťéš ğó úp ĥéŕé évéŕý ñíğĥť~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn
+msgid "Flooded Alley"
+msgstr "[Fĺóóďéď Áĺĺéý~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "Too wide to jump"
+msgstr "[Ťóó ŵíďé ťó ĵúmp~~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/lowlight/SmugglerRoute.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "Too far to jump. Maybe later."
+msgstr "[Ťóó fáŕ ťó ĵúmp. Máýbé ĺáťéŕ.~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/FirstPursuit.tscn
+msgid "Run and hold [{action}] to slide"
+msgstr "[Ŕúñ áñď ĥóĺď [{action}] ťó šĺíďé~~~~~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/MedicalRuin.tscn
+msgid "[{action}] attack"
+msgstr "[[{action}] áťťáçķ~~~~~]"
+
+#: world/rooms/lowlight/FloodedAlley.tscn world/rooms/undercity/MaintenanceShaft.tscn
+msgid "[{action}] dodge - it passes through attacks"
+msgstr "[[{action}] ďóďğé - íť páššéš ťĥŕóúğĥ áťťáçķš~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/MarketRun.tscn
+msgid "Market Run"
+msgstr "[Máŕķéť Ŕúñ~~~~~]"
+
+#: world/rooms/lowlight/MarketRun.tscn world/rooms/undercity/EscapeTunnel.tscn
+msgid "[{action}] shoot - aim with the move keys"
+msgstr "[[{action}] šĥóóť - áím ŵíťĥ ťĥé móvé ķéýš~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/MarketRun.tscn
+msgid "Up + [{action}] launches enemies. Knock them into the spikes."
+msgstr "[Úp + [{action}] ĺáúñçĥéš éñémíéš. Ķñóçķ ťĥém íñťó ťĥé špíķéš.~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Wide gap: slide, then jump out of the slide"
+msgstr "[Ŵíďé ğáp: šĺíďé, ťĥéñ ĵúmp óúť óf ťĥé šĺíďé~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Dodge, then jump mid-dodge to carry its speed"
+msgstr "[Ďóďğé, ťĥéñ ĵúmp míď-ďóďğé ťó çáŕŕý íťš špééď~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/NeonRoofs.tscn
+msgid "Shields block from the front. Go behind, above, or [{action}] heavy."
+msgstr "[Šĥíéĺďš bĺóçķ fŕóm ťĥé fŕóñť. Ğó béĥíñď, ábóvé, óŕ [{action}] ĥéávý.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Power Block"
+msgstr "[Póŵéŕ Bĺóçķ~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Grid rerouted. Station doors on priority power. Overhead, the Rainline hums awake."
+msgstr "[Ğŕíď ŕéŕóúťéď. Šťáťíóñ ďóóŕš óñ pŕíóŕíťý póŵéŕ. Óvéŕĥéáď, ťĥé Ŕáíñĺíñé ĥúmš áŵáķé.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Security Station: grid-priority access only. Reroute at the basement relay."
+msgstr "[Šéçúŕíťý Šťáťíóñ: ğŕíď-pŕíóŕíťý áççéšš óñĺý. Ŕéŕóúťé áť ťĥé bášéméñť ŕéĺáý.~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Sealed by the security grid."
+msgstr "[Šéáĺéď bý ťĥé šéçúŕíťý ğŕíď.~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Breakers power the shutters. Hit one [{action}]"
+msgstr "[Bŕéáķéŕš póŵéŕ ťĥé šĥúťťéŕš. Ĥíť óñé [{action}]~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Shutter dropping? Get low and slide under [{action}]"
+msgstr "[Šĥúťťéŕ ďŕóppíñğ? Ğéť ĺóŵ áñď šĺíďé úñďéŕ [{action}]~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/PowerBlock.tscn
+msgid "Too high? Jump and strike it, or shoot straight up [{action}]"
+msgstr "[Ťóó ĥíğĥ? Ĵúmp áñď šťŕíķé íť, óŕ šĥóóť šťŕáíğĥť úp [{action}]~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/RainlineChase.tscn
+msgid "Orr: the Rainline is running again"
+msgstr "[Óŕŕ: ťĥé Ŕáíñĺíñé íš ŕúññíñğ áğáíñ~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/Relay.tscn
+msgid "Resistance hub"
+msgstr "[Ŕéšíšťáñçé ĥúb~~~~~]"
+
+#: world/rooms/lowlight/Relay.tscn
+msgid "Talk to Orr  [{action}]"
+msgstr "[Ťáĺķ ťó Óŕŕ  [{action}]~~~~~~]"
+
+#: world/rooms/lowlight/Relay.tscn world/rooms/undercity/BrokenLift.tscn
+msgid "Anchors save, heal and refill. Rest to change your loadout."
+msgstr "[Áñçĥóŕš šávé, ĥéáĺ áñď ŕéfíĺĺ. Ŕéšť ťó çĥáñğé ýóúŕ ĺóáďóúť.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Security Station"
+msgstr "[Šéçúŕíťý Šťáťíóñ~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Scanners on calibration: harmless. Low beam: jump it [{action}]"
+msgstr "[Šçáññéŕš óñ çáĺíbŕáťíóñ: ĥáŕmĺéšš. Ĺóŵ béám: ĵúmp íť [{action}]~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "High beam: slide under [{action}]"
+msgstr "[Ĥíğĥ béám: šĺíďé úñďéŕ [{action}]~~~~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "Full beam: dodge through it. Scanners read a dodge as a blur [{action}]"
+msgstr "[Fúĺĺ béám: ďóďğé ťĥŕóúğĥ íť. Šçáññéŕš ŕéáď á ďóďğé áš á bĺúŕ [{action}]~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "It blinks. Wait for dark, or dodge."
+msgstr "[Íť bĺíñķš. Ŵáíť fóŕ ďáŕķ, óŕ ďóďğé.~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SecurityStation.tscn
+msgid "The searchlight runs off that breaker."
+msgstr "[Ťĥé šéáŕçĥĺíğĥť ŕúñš óff ťĥáť bŕéáķéŕ.~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Smuggler Route"
+msgstr "[Šmúğğĺéŕ Ŕóúťé~~~~~]"
+
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Too wide to jump (mostly)"
+msgstr "[Ťóó ŵíďé ťó ĵúmp (móšťĺý)~~~~~~~~~]"
+
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "Hatch unbolted. The Stack is through here; the den Anchor gets you back to the Power Block."
+msgstr "[Ĥáťçĥ úñbóĺťéď. Ťĥé Šťáçķ íš ťĥŕóúğĥ ĥéŕé; ťĥé ďéñ Áñçĥóŕ ğéťš ýóú báçķ ťó ťĥé Póŵéŕ Bĺóçķ.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/SmugglerRoute.tscn
+msgid "A chalk eye. Someone uses this route."
+msgstr "[Á çĥáĺķ éýé. Šóméóñé úšéš ťĥíš ŕóúťé.~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Warden Tower"
+msgstr "[Ŵáŕďéñ Ťóŵéŕ~~~~~~]"
+
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Breakers live. Drop the clamp on him."
+msgstr "[Bŕéáķéŕš ĺívé. Ďŕóp ťĥé çĺámp óñ ĥím.~~~~~~~~~~~~~]"
+
+#: world/rooms/lowlight/WardenTower.tscn
+msgid "Nix: on every map. Why?"
+msgstr "[Ñíx: óñ évéŕý máp. Ŵĥý?~~~~~~~~~]"
+
+#: world/rooms/undercity/BrokenLift.tscn
+msgid "Broken Lift"
+msgstr "[Bŕóķéñ Ĺífť~~~~~~]"
+
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "Collector Bay"
+msgstr "[Çóĺĺéçťóŕ Báý~~~~~]"
+
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "COLLECTOR DRONE"
+msgstr "[ÇÓĹĹÉÇŤÓŔ ĎŔÓÑÉ~~~~~~]"
+
+#: world/rooms/undercity/CollectorBay.tscn
+msgid "Civic Recovery Unit C-00"
+msgstr "[Çívíç Ŕéçóvéŕý Úñíť Ç-00~~~~~~~~~]"
+
+#: world/rooms/undercity/FirstPursuit.tscn
+msgid "Something up there is scanning for you. Keep moving."
+msgstr "[Šóméťĥíñğ úp ťĥéŕé íš šçáññíñğ fóŕ ýóú. Ķéép móvíñğ.~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/undercity/FirstPursuit.tscn
+msgid "A radio is crackling.  [{action}]"
+msgstr "[Á ŕáďíó íš çŕáçķĺíñğ.  [{action}]~~~~~~~~~]"
+
+#: world/rooms/undercity/MaintenanceShaft.tscn
+msgid "Maintenance Shaft"
+msgstr "[Máíñťéñáñçé Šĥáfť~~~~~~]"
+
+#: world/rooms/undercity/MaintenanceShaft.tscn
+msgid "Jump, then [{action}] to reach things above you"
+msgstr "[Ĵúmp, ťĥéñ [{action}] ťó ŕéáçĥ ťĥíñğš ábóvé ýóú~~~~~~~~~~~~~~]"
+
+#: world/rooms/undercity/MedicalRuin.tscn
+msgid "Medical Ruin"
+msgstr "[Méďíçáĺ Ŕúíñ~~~~~~]"
+
+#: world/rooms/undercity/Wake.tscn
+msgid "Wake"
+msgstr "[Ŵáķé~~]"
+
+#: world/rooms/undercity/Wake.tscn
+msgid "The ward shutter grinds open"
+msgstr "[Ťĥé ŵáŕď šĥúťťéŕ ğŕíñďš ópéñ~~~~~~~~~~]"
+
+#: world/rooms/undercity/Wake.tscn
+msgid "Alive. Something in your chest made sure of it.  Move  [{action}]"
+msgstr "[Áĺívé. Šóméťĥíñğ íñ ýóúŕ çĥéšť máďé šúŕé óf íť.  Móvé  [{action}]~~~~~~~~~~~~~~~~~~~~]"
+
+#: world/rooms/undercity/Wake.tscn
+msgid "[{action}] jump - hold it to go higher"
+msgstr "[[{action}] ĵúmp - ĥóĺď íť ťó ğó ĥíğĥéŕ~~~~~~~~~~~]"
+
+#: world/rooms/undercity/Wake.tscn
+msgid "[{action}] use"
+msgstr "[[{action}] úšé~~~]"

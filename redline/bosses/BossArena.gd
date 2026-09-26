@@ -8,6 +8,10 @@ extends Area2D
 ## by persist_id, an AbilityPickup by its flag).
 ## Origin: top-left of the trigger area.
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"boss_title": 32, "boss_subtitle": 40}
+
 @export var size: Vector2 = Vector2(400, 200)
 @export var boss_id: String = "warden_krail"
 @export var boss_title: String = "WARDEN KRAIL"

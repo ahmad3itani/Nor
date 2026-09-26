@@ -20,6 +20,10 @@ const FORBIDDEN_STEPS: PackedStringArray = ["SeqCamera", "SeqRookPose", "SeqFlag
 const FORBIDDEN_PREFIX := "SeqActor"
 const MAX_BUDGET := 90.0
 
+## Localization (D5 §4.1): player-visible text fields -> max source chars
+## (0 = none). The source stays English here; Loc translates at display.
+const LOC_FIELDS := {"title": 32, "tagline": TAGLINE_MAX}
+
 ## == file basename: sever, crown, release, redline.
 @export var id: String = ""
 ## "SEVER": the title card and the theatre row.

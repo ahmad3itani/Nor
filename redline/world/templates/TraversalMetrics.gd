@@ -9,6 +9,9 @@ extends Resource
 
 const TECHNIQUES: PackedStringArray = ["run_jump", "slide_jump", "dodge_jump", "dash_jump"]
 
+## Localization (D5 §4.1): text-like fields that are never shown to a player. (a tuning preset id)
+const LOC_EXEMPT := ["preset_name"]
+
 @export var preset_name: String = "default"
 ## Collider width: a centre can sit half of it past a ledge and still stand.
 @export var body_width: float = 12.0
