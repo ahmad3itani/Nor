@@ -263,8 +263,11 @@ func test_null_doors_declared() -> void:
 		check(seen_doors.has(row), "declared door missing %s" % [row])
 	for row in NULL_SPAWNS:
 		check(seen_spawns.has(row), "declared spawn missing %s" % [row])
-	# Every stage entry of the shipped Deep Rig challenges is one of them.
+	# Every stage entry of the shipped Deep Rig and Pulse Pit challenges is
+	# one of them (other groups start in district rooms, outside this table).
 	for ch in ChallengeLibrary.all():
+		if ch.group != ChallengeData.Group.NULL and ch.group != ChallengeData.Group.PULSE_PIT:
+			continue
 		for i in ch.stage_count():
 			check(NULL_SPAWNS.any(func(r: Array) -> bool: return r[0] == ch.stage_room(i) and r[1] == ch.stage_entry(i)),
 				"%s stage %d enters at a declared spawn" % [ch.id, i])
