@@ -31,11 +31,20 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 	_busy = true
 	if sequence:
+		# The close sets act1_complete under its fade (the world changes in
+		# the black), a few steps before it ends. An abort after that step
+		# must not leave a half-closed act (Mara at the door, Orr's on-air
+		# stage entered by the flag's listeners), so it puts the flags back.
+		var flags_before: Dictionary = Game.state.flags.duplicate(true)
+		var state := Game.state
 		var res := await Cinematics.play(sequence, SequenceContext.for_room(_room()))
 		# Refused (another play owns Cinematics) or aborted (Save & Quit runs
 		# CinematicMode.abort_all() before it saves; a room leave aborts too):
 		# nothing is marked, so the close replays from its start next time.
 		if res.refused or res.aborted() or not is_inside_tree():
+			if not res.refused and Game.state == state and Game.state.flags.hash() != flags_before.hash():
+				Game.state.flags = flags_before
+				EventBus.game_state_reset.emit()
 			_busy = false
 			return
 	# Set after the scene, not before: a quit mid-scene must replay it.

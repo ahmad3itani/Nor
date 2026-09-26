@@ -771,6 +771,44 @@ func test_quit_mid_close_replays() -> void:
 	check(FileAccess.file_exists("%s/profile_1.json" % SAVE_DIR) or not DirAccess.get_files_at(SAVE_DIR).is_empty(), "the quit saved into the test dir")
 
 
+## Quit after the close's SeqFlag step (act1_complete under the fade) but
+## before its end: the abort puts the flags back, including what the flag's
+## listeners entered (Orr's on-air arc stage), so the close replays.
+func test_quit_late_in_close_reverts_flags() -> void:
+	Game.set_flag("warden_krail_defeated")
+	Game.set_flag("met_orr")
+	_auto(4.0)
+	room = await _enter(RELAY, &"start")
+	var slice := _slice_end()
+	slice._on_body_entered(room.player)
+	var seq: SequenceData = Cinematics.current.seq if Cinematics.is_playing() else null
+	check(seq != null and seq.id == "act1_close", "the close plays")
+	var flag_step := -1
+	for i in seq.steps.size():
+		if seq.steps[i] is SeqFlag and Array((seq.steps[i] as SeqFlag).flags).has("act1_complete"):
+			flag_step = i
+	check(flag_step >= 0 and flag_step < seq.steps.size() - 1, "act1_complete is set before the close's last step")
+	for i in 3000:
+		if not Cinematics.is_playing() or Cinematics.current.index > flag_step:
+			break
+		await get_tree().process_frame
+	check(Cinematics.is_playing() and Cinematics.current.index > flag_step, "reached a step after the flag")
+	check(Game.has_flag("act1_complete"), "act1_complete set under the fade")
+	check(Game.has_flag("arc_orr_on_air"), "its listener entered Orr's on-air stage")
+	var pm := _pause_menu()
+	pm.open_menu()
+	pm.quit_to_title.connect(func() -> void: SceneRouter.transition_to(TITLE))
+	pm._quit()
+	check(not Cinematics.is_playing(), "aborted")
+	check(not Game.has_flag("act1_complete"), "act1_complete put back")
+	check(not Game.has_flag("arc_orr_on_air"), "the flag's arc stage put back")
+	check(not Game.has_flag("slice_end_seen") and not Game.has_flag("seen_seq_act1_close"), "nothing marked: the close replays")
+	var saved: Dictionary = SaveManager.load_profile(Game.profile_id).get("flags", {})
+	check(not saved.has("act1_complete") or not bool(saved["act1_complete"]), "the quit saved the reverted flags")
+	await physics_frames(30)
+	check(slices.is_empty(), "slice_completed never emitted")
+
+
 func test_pause_skip_close_opens_card() -> void:
 	Game.set_flag("warden_krail_defeated")
 	_auto(1.0)
