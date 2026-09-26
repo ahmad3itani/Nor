@@ -152,10 +152,16 @@ func test_null_group_hidden_until_null_open() -> void:
 	ChallengeLibrary.clear_cache()
 	var m := _list()
 	check(not _has(_texts(m), "Deep Rig"), "no Deep Rig block before null_open: %s" % [_texts(m)])
+	var all := ChallengeLibrary.all()
+	var n_null := all.filter(func(c: ChallengeData) -> bool: return c.group == ChallengeData.Group.NULL).size()
+	check(n_null > 0, "the fixtures hold a Deep Rig challenge")
+	var hidden_max := ChallengesMenu.medal_tally(all)[1]
+	check(hidden_max == (all.size() - n_null) * (RankLadder.COUNT - 1), "the hidden block adds nothing to the medal max (%d)" % hidden_max)
 	Game.set_flag("act1_complete")
 	check(Game.has_flag("null_open"), "act1_complete derives null_open")
 	m.rebuild()
 	check(_has(_texts(m), "Deep Rig"), "the Deep Rig block shows once null_open holds: %s" % [_texts(m)])
+	check(ChallengesMenu.medal_tally(all)[1] == all.size() * (RankLadder.COUNT - 1), "the shown block counts toward the max")
 	check(not _has(_texts(m), "Depth reached"), "no depth line yet")
 	Game.set_flag("null_depth_reached")
 	m.rebuild()
@@ -553,3 +559,94 @@ func test_dev_page_starts_finishes_and_fails() -> void:
 	check(ChallengeDevActions.fail_now(&"hit"), "fail now")
 	check(int(Challenges.last_result.get("outcome", -1)) == ChallengeData.Outcome.FAILED_HIT, "a hit failure")
 	check(str(Challenges.last_result.get("cause", "")) == "Run over: hit taken", "with the neutral cause")
+
+
+func test_dev_fabrication_taints_profile() -> void:
+	_unlock_all()
+	check(not Game.state.dev_tainted, "a clean profile to start")
+	Game.state.igt_complete = true
+	ChallengeDevActions.reset_campaign_clock()
+	check(not Game.state.igt_complete, "a reset clock no longer counts as a complete campaign")
+	Game.state.dev_tainted = false
+	await h.goto(RELAY, &"challenges")
+	check(ChallengeDevActions.start("tt_neon_roofs"), "a dev start of an unlocked challenge")
+	check(await h.until(func() -> bool: return Challenges.phase() == Challenges.Phase.RUNNING and not SceneRouter.transitioning), "the run goes live")
+	check(Game.held_profile != null and not Game.held_profile.dev_tainted, "starting an unlocked challenge does not taint")
+	var before := Platform.stat(&"challenge_silver_medals", true)
+	check(ChallengeDevActions.finish_as(3), "finish now as Gold")
+	check(int(Challenges.last_result.get("medal", -1)) == 3, "a Gold result")
+	check(Platform.stat(&"challenge_silver_medals", true) == before, "a fabricated Gold never counts toward Top Marks")
+	var real: GameState = Game.held_profile if Game.held_profile != null else Game.state
+	check(real.dev_tainted, "the real profile is tainted")
+	Challenges.reset_for_tests()
+	Game.state.dev_tainted = false
+	DevActions.force_unavailable = true
+	check(not ChallengeDevActions.start("tt_neon_roofs"), "no dev start when dev actions are unavailable")
+	DevActions.force_unavailable = false
+	check(not Challenges.active(), "nothing started")
+
+
+func test_result_card_shows_neutral_tags() -> void:
+	var ch := ChallengeLibrary.by_id("tt_neon_roofs")
+	var card := _card(_finished(ch, 1234, 2, {"tags": {"assists": ["damage_assist"], "timing": [Challenges.TAG_HITSTOP]}}))
+	var texts := _texts(card)
+	check(_has(texts, "◇ assist") and _has(texts, "◇ reduced hitstop"), "the result card carries the run's tags: %s" % [texts])
+	var plain := _card(_finished(ch, 1234, 2))
+	check(not _has(_texts(plain), "◇"), "an untagged result has no tag")
+
+
+func test_result_card_descent_only_for_deep_rig() -> void:
+	ChallengeLibrary.data_dir = H.FIXTURES
+	ChallengeLibrary.clear_cache()
+	var staged := H.fx(H.FIXTURES + "/fx_staged.tres")
+	var r := _finished(staged, 800, 3, {"stages": [{"id": "stage_a"}, {"id": "stage_b"}]})
+	check(ChallengeResultMenu.descent(r, staged), "a Deep Rig run is a descent")
+	var trial := staged.duplicate(true) as ChallengeData
+	trial.group = ChallengeData.Group.TIME_TRIAL
+	check(not ChallengeResultMenu.descent(r, trial), "a staged run outside the Deep Rig keeps Retry/Ghost/Back/Quit")
+
+
+func test_result_split_delta_uses_previous_stage_best() -> void:
+	ChallengeLibrary.data_dir = H.FIXTURES
+	ChallengeLibrary.clear_cache()
+	var ch := H.fx(H.FIXTURES + "/fx_staged.tres")
+	var old := {"id": "stage_a", "title": "A", "frames": 600, "score": 500, "tier": 1}
+	Challenges.records.submit_stage(ch, 1, "stage_a", old)
+	var faster := {"id": "stage_a", "title": "A", "frames": 540, "score": 600, "tier": 2}
+	Challenges.records.submit_stage(ch, 1, "stage_a", faster)
+	var slower := {"id": "stage_b", "title": "B", "frames": 700, "score": 400, "tier": 1}
+	Challenges.records.submit_stage(ch, 1, "stage_b", {"id": "stage_b", "frames": 650, "score": 450, "tier": 1})
+	Challenges.records.submit_stage(ch, 1, "stage_b", slower)
+	var r := _finished(ch, 800, 2, {"stages": [faster, slower]})
+	var lines := ChallengeResultMenu.split_lines(r, ch)
+	check(lines.size() == 2, "one line per stage")
+	check(not lines[0].contains("+0.00") and lines[0].contains("new best"), "a fresh stage best never reads +0.00: %s" % lines[0])
+	check(lines[1].contains(RunClock.format_delta(50)), "a slower stage shows its delta to the stored best: %s" % lines[1])
+	var with_prev := faster.duplicate()
+	with_prev["prev_frames"] = 600
+	lines = ChallengeResultMenu.split_lines(_finished(ch, 800, 2, {"stages": [with_prev]}), ch)
+	check(lines[0].contains(RunClock.format_delta(-60)), "prev_frames gives the real delta: %s" % lines[0])
+
+
+func test_result_back_refused_keeps_card() -> void:
+	_unlock_all()
+	var ch := ChallengeLibrary.by_id("tt_neon_roofs")
+	var host := h.make_host()
+	check(await _run_from_relay(ch), "the run starts")
+	Challenges.finish(ChallengeData.Outcome.FINISHED)
+	var card := _card(Challenges.last_result.duplicate(true), host)
+	_arm(0)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	SceneRouter.transitioning = true
+	_button(card, "Back to Challenges").pressed.emit()
+	check(card.is_open(), "Back while quit() cannot act keeps the card up")
+	_button(card, "Quit challenge").pressed.emit()
+	check(card.is_open(), "so does Quit")
+	SceneRouter.transitioning = false
+	check(Challenges.active(), "the run is still held")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_button(card, "Quit challenge").pressed.emit()
+	await physics_frames(10)
+	check(not card.is_open() and (not Challenges.active() or Challenges.phase() == Challenges.Phase.LEAVING), "Quit works once the transition is over")

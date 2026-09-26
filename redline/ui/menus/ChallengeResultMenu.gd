@@ -79,7 +79,7 @@ func rebuild() -> void:
 	if stages.size() > 1:
 		for line in split_lines(r, ch):
 			add_label(line, UiTheme.MUTED)
-	if descent(r):
+	if descent(r, ch):
 		add_button(Loc.t("Descend again"), _guarded.bind(retry.bind(&"menu")))
 		add_button(Loc.t("Leave"), _guarded.bind(quit_challenge))
 		return
@@ -89,8 +89,12 @@ func rebuild() -> void:
 	add_button(Loc.t("Quit challenge"), _guarded.bind(quit_challenge))
 
 
-static func descent(r: Dictionary) -> bool:
-	return (r.get("stages", []) as Array).size() > 1
+## A Deep Rig descent (the NULL group) gets "Descend again / Leave"; every
+## other run, staged or not, keeps Retry, Ghost, Back and Quit.
+static func descent(r: Dictionary, ch: ChallengeData) -> bool:
+	if ch != null:
+		return ch.group == ChallengeData.Group.NULL
+	return int(r.get("score_kind", -1)) == ChallengeData.ScoreKind.RANK and (r.get("stages", []) as Array).size() > 1
 
 
 ## [[text, colour], ...]: the outcome, the value and tier, a new best, the
@@ -106,13 +110,18 @@ static func summary_lines(r: Dictionary, ch: ChallengeData) -> Array:
 		return out
 	var kind := int(r.get("score_kind", ch.score_kind if ch else 0))
 	var tier := Loc.t(RankLadder.name(maxi(medal, 0)))
+	var line := ""
 	match kind:
 		ChallengeData.ScoreKind.TIME:
-			out.append([Loc.f("{time}  {tier}", {"time": RunClock.format(value), "tier": tier}), UiTheme.TEXT])
+			line = Loc.f("{time}  {tier}", {"time": RunClock.format(value), "tier": tier})
 		ChallengeData.ScoreKind.SCORE:
-			out.append([Loc.f("Score {score}  {tier}", {"score": value, "tier": tier}), UiTheme.TEXT])
+			line = Loc.f("Score {score}  {tier}", {"score": value, "tier": tier})
 		_:
-			out.append([Loc.f("{tier}  ·  score {score}", {"score": value, "tier": tier}), UiTheme.TEXT])
+			line = Loc.f("{tier}  ·  score {score}", {"score": value, "tier": tier})
+	# R08.3: the same neutral tags the board row shows for this run.
+	for w in ChallengesMenu.tag_words(r.get("tags", {}) as Dictionary):
+		line += "  %s %s" % [ChallengesMenu.TAG_GLYPH, w]
+	out.append([line, UiTheme.TEXT])
 	var prev := int(r.get("prev_best", -1))
 	if bool(r.get("new_best", false)):
 		if prev >= 0 and kind == ChallengeData.ScoreKind.TIME:
@@ -157,17 +166,47 @@ static func next_target(ch: ChallengeData, medal: int, kind: int) -> String:
 
 
 ## A staged run's split table: "Static Lane  0:31.52  Gold  (-1.20)".
+## The delta is against the stage best from before this run: a stage result
+## carrying "prev_frames" uses it; otherwise the stored stage best is used
+## only when it is not this very result (Challenges stores a new stage best
+## at the stage clear, before the card opens, so comparing against it would
+## always read +0.00). A new stage best without its previous time reads
+## "(new best)".
 static func split_lines(r: Dictionary, ch: ChallengeData) -> PackedStringArray:
 	var out := PackedStringArray()
 	for s: Dictionary in r.get("stages", []):
+		var frames := int(s.get("frames", 0))
 		var line := Loc.f("{stage}  {time}  {tier}", {"stage": Loc.t(str(s.get("title", ""))),
-			"time": RunClock.format(int(s.get("frames", 0))), "tier": Loc.t(RankLadder.name(int(s.get("tier", 0))))})
-		if ch:
-			var best := Challenges.records.best_stage(ch.id, int(r.get("profile", Game.profile_id)), str(s.get("id", "")), ch.revision)
-			if not best.is_empty() and int(best.get("frames", -1)) >= 0:
-				line += "  (%s)" % RunClock.format_delta(int(s.get("frames", 0)) - int(best["frames"]))
+			"time": RunClock.format(frames), "tier": Loc.t(RankLadder.name(int(s.get("tier", 0))))})
+		var prev := stage_prev_frames(r, ch, s)
+		if prev >= 0:
+			line += "  (%s)" % RunClock.format_delta(frames - prev)
+		elif prev == STAGE_NEW_BEST:
+			line += "  (%s)" % Loc.t("new best")
 		out.append(line)
 	return out
+
+
+## stage_prev_frames: no earlier best to compare against.
+const STAGE_NO_PREV := -1
+## stage_prev_frames: this stage is the stored best and the earlier one is gone.
+const STAGE_NEW_BEST := -2
+
+
+## The previous best frames for stage result `s`, or STAGE_NO_PREV /
+## STAGE_NEW_BEST.
+static func stage_prev_frames(r: Dictionary, ch: ChallengeData, s: Dictionary) -> int:
+	if s.has("prev_frames"):
+		var pf := int(s["prev_frames"])
+		return pf if pf >= 0 else STAGE_NO_PREV
+	if ch == null:
+		return STAGE_NO_PREV
+	var best := Challenges.records.best_stage(ch.id, int(r.get("profile", Game.profile_id)), str(s.get("id", "")), ch.revision)
+	if best.is_empty() or int(best.get("frames", -1)) < 0:
+		return STAGE_NO_PREV
+	if int(best["frames"]) == int(s.get("frames", 0)) and int(best.get("score", -1)) == int(s.get("score", -1)):
+		return STAGE_NEW_BEST
+	return int(best["frames"])
 
 
 ## Runs `action` only once confirming is armed (a held key never fires it).
@@ -193,15 +232,31 @@ func _cycle_ghost() -> void:
 ## point (the Relay rig spawn, or the title).
 func back_to_challenges() -> void:
 	var ret: Dictionary = Challenges.session.return_to.duplicate() if Challenges.session else {}
-	close_menu()
-	Challenges.quit()
+	if not _leave():
+		return
 	_back_pending = true
 	_reopen_list(ret)
 
 
 func quit_challenge() -> void:
+	_leave()
+
+
+## Closes the card and leaves the run. Challenges.quit() does nothing while a
+## transition runs or the session is starting; then the card opens again
+## so the player is never left frozen with no menu (R08.1). True when the
+## run is over or on its way out.
+func _leave() -> bool:
 	close_menu()
 	Challenges.quit()
+	if left_run():
+		return true
+	open_menu()
+	return false
+
+
+static func left_run() -> bool:
+	return not Challenges.active() or Challenges.phase() == Challenges.Phase.LEAVING
 
 
 func _reopen_list(ret: Dictionary) -> void:
@@ -213,8 +268,14 @@ func _reopen_list(ret: Dictionary) -> void:
 			break
 		await tree.process_frame
 	_back_pending = false
+	if Challenges.active():
+		# The run never left: bring the card back rather than strand a
+		# frozen player with no menu.
+		if Challenges.phase() == Challenges.Phase.FINISHED and not visible and is_inside_tree():
+			open_menu()
+		return
 	var host := get_parent()
-	if host == null or not host.has_method("open_with") or Challenges.active():
+	if host == null or not host.has_method("open_with"):
 		return
 	var ctx_out: Dictionary = {"from": "title"} if bool(ret.get("title", false)) else ret
 	host.call("open_with", &"challenges", ctx_out)

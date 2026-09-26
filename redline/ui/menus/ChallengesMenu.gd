@@ -153,13 +153,19 @@ func row_text(ch: ChallengeData) -> String:
 
 
 ## [medals earned, medals possible] over `list` (each challenge's best tier,
-## Clear counting 0).
+## Clear counting 0). The Deep Rig block counts only once it is shown
+## (null_open), so the header never hints at a hidden group.
 static func medal_tally(list: Array[ChallengeData]) -> Array[int]:
 	var got := 0
+	var n := 0
+	var null_shown := ChallengeLibrary.profile_holds("flag:null_open")
 	for ch in list:
+		if ch.group == ChallengeData.Group.NULL and not null_shown:
+			continue
+		n += 1
 		var best := Challenges.records.best(ch.id, Game.profile_id, ch.revision)
 		got += maxi(0, int(best.get("medal", 0)))
-	return [got, list.size() * (RankLadder.COUNT - 1)]
+	return [got, n * (RankLadder.COUNT - 1)]
 
 
 static func requirements_met(ch: ChallengeData) -> bool:
