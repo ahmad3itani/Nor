@@ -189,6 +189,20 @@ func test_assist_tags_neutral_everywhere() -> void:
 	check(shaming.is_empty(), "no M9 string shames an assist player: %s" % shaming)
 
 
+## §24 never shame: no death count on the Journal header, as on the Act I
+## card (R09.13) and the Records page (M9 audit).
+func test_journal_header_has_no_death_count() -> void:
+	Game.state.deaths = 7
+	var m := _menu("res://ui/menus/JournalMenu.gd")
+	var texts: Array[String] = []
+	for c in m._body.get_children():
+		if c is Label:
+			texts.append((c as Label).text)
+	check(texts.any(func(t: String) -> bool: return t.contains("Secrets")), "the header is built: %s" % [texts])
+	check(not texts.any(func(t: String) -> bool: return t.to_lower().contains("death")), "no death count: %s" % [texts])
+	m.close_menu()
+
+
 func test_pad_view_is_map_in_campaign_reset_in_challenge_and_null() -> void:
 	var view := InputEventJoypadButton.new()
 	view.button_index = JOY_BUTTON_BACK

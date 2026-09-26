@@ -3528,8 +3528,8 @@ msgid "Achievements…"
 msgstr "[Áçĥíévéméñťš…~~~~~]"
 
 #: ui/menus/JournalMenu.gd
-msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}"
-msgstr "[Šéçŕéťš {found}/{total}    Çóŕé Šĥáŕďš {shards}    Šçŕáp {scrap}    Ťímé {time}    Ďéáťĥš {deaths}~~~~~~~~~~~~~~~~~~~~]"
+msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}"
+msgstr "[Šéçŕéťš {found}/{total}    Çóŕé Šĥáŕďš {shards}    Šçŕáp {scrap}    Ťímé {time}~~~~~~~~~~~~~~~~]"
 
 #: ui/menus/JournalMenu.gd
 msgid "Close"

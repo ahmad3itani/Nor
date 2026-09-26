@@ -67,10 +67,11 @@ func rebuild() -> void:
 	add_button(Loc.t("Achievements…"), open_achievements)
 	_build_memories_section()
 	var t := SliceStats.totals()
-	add_label(Loc.f("Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}", {
+	# No death count (§24: nothing shames), like the Act I card (R09.13) and
+	# the Records page.
+	add_label(Loc.f("Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}", {
 		"found": SliceStats.secrets_found(), "total": (t["secret_ids"] as Array).size(), "shards": Game.state.core_shards,
-		"scrap": Game.state.total_scrap(), "time": SliceStats.format_time(Game.state.play_time_sec),
-		"deaths": Game.state.deaths}), UiTheme.MUTED)
+		"scrap": Game.state.total_scrap(), "time": SliceStats.format_time(Game.state.play_time_sec)}), UiTheme.MUTED)
 	var completion: String = load("res://ui/menus/MapMenu.gd").completion_text()
 	if completion != "":
 		add_label(completion, UiTheme.MUTED, UiTheme.FONT_SIZE - 1)

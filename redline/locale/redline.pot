@@ -6249,9 +6249,9 @@ msgid "Achievements…"
 msgstr ""
 
 #. key: ui/menus/JournalMenu.gd::Loc.f
-#. placeholders: {deaths} {found} {scrap} {shards} {time} {total}
+#. placeholders: {found} {scrap} {shards} {time} {total}
 #: ui/menus/JournalMenu.gd
-msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}    Deaths {deaths}"
+msgid "Secrets {found}/{total}    Core Shards {shards}    Scrap {scrap}    Time {time}"
 msgstr ""
 
 #. key: ui/menus/JournalMenu.gd::Loc.t
