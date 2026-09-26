@@ -14,6 +14,11 @@ extends MenuScreen
 ## their latest stage (§18: consequences through people, never a score). A
 ## sub-mode keeps the main page inside the 270 px canvas (MenuScreen has no
 ## scroll); Back/ui_cancel returns to the main page with focus on the row.
+##
+## M9 T07: an "Achievements…" row after "People…" opens the Achievements
+## menu the PauseMenu._open way (close first, then request; R07.1): MenuHost
+## refuses an open while any screen is up. Its Back reopens the Journal with
+## ctx {"row": n}, and the Journal refocuses that row.
 
 var _mode: StringName = &"main"
 var _card: Label
@@ -26,6 +31,9 @@ var _people_return_focus: int = -1
 func open_menu() -> void:
 	_mode = &"main"
 	super.open_menu()
+	var row := int(ctx.get("row", -1))
+	if row >= 0:
+		focus_index(row)
 
 
 func rebuild() -> void:
@@ -54,6 +62,7 @@ func rebuild() -> void:
 		add_label("✓ %s" % q.title, UiTheme.MUTED)
 	if not _people_arcs().is_empty():
 		add_button("People…", show_people)
+	add_button(Loc.t("Achievements…"), open_achievements)
 	_build_memories_section()
 	var t := SliceStats.totals()
 	add_label("Secrets %d/%d    Core Shards %d    Scrap %d    Time %s    Deaths %d" % [
@@ -88,6 +97,15 @@ func _listed_scenes() -> Array[MemorySceneData]:
 		if MemoryLibrary.is_seen(s.id) or MemoryLibrary.is_unlocked(s):
 			out.append(s)
 	return out
+
+
+## Opens the Achievements menu over the game; its Back comes back to this
+## row (R07.1: close first, then request through MenuHost).
+func open_achievements() -> void:
+	var row := focused_index()
+	close_menu()
+	MenuHost.context = {"return_to": &"journal", "row": row}
+	EventBus.menu_requested.emit(&"achievements")
 
 
 func show_gallery() -> void:
