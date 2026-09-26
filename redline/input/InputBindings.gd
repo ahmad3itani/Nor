@@ -18,6 +18,10 @@ const KEY := &"key"
 const PAD := &"pad"
 ## Pad stick axes (0..3) are never slots: move_* keep them as shipped.
 const FIRST_TRIGGER_AXIS := 4
+## InputEvent.device for every event this class builds: all devices, as in
+## project.godot. The InputEvent default (0) would pin a rebound slot to the
+## first pad, so a second pad or a reconnected one would stop working.
+const ALL_DEVICES := -1
 const DEV_ACTIONS_PATH := "res://devtools/DevActions.gd"
 
 ## action -> Array[InputEvent] (duplicates of the project.godot events).
@@ -84,12 +88,14 @@ static func decode(s: String) -> InputEvent:
 				return null
 			var k := InputEventKey.new()
 			k.physical_keycode = body.to_int() as Key
+			k.device = ALL_DEVICES
 			return k
 		"b":
 			if not body.is_valid_int() or body.to_int() < 0 or body.to_int() >= JOY_BUTTON_SDL_MAX:
 				return null
 			var b := InputEventJoypadButton.new()
 			b.button_index = body.to_int() as JoyButton
+			b.device = ALL_DEVICES
 			return b
 		"a":
 			var dir_sign := body.right(1)
@@ -101,6 +107,7 @@ static func decode(s: String) -> InputEvent:
 			var m := InputEventJoypadMotion.new()
 			m.axis = axis.to_int() as JoyAxis
 			m.axis_value = 1.0 if dir_sign == "+" else -1.0
+			m.device = ALL_DEVICES
 			return m
 	return null
 

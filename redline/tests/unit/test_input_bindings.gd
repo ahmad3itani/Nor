@@ -77,6 +77,26 @@ func test_encode_decode_roundtrip() -> void:
 	check(InputBindings.encode(_axis(5, 0.8)) == "a5+" and InputBindings.encode(_axis(1, -0.3)) == "a1-", "axis signs")
 	for bad in ["", "k", "kabc", "k-3", "b", "b99", "a9+", "a4*", "a+", "x12", "k0"]:
 		check(InputBindings.decode(bad) == null, "garbage '%s' decodes to null" % bad)
+	for s in ["k32", "b2", "a5+"]:
+		check(InputBindings.decode(s).device == -1, "'%s' decodes for all devices, as project.godot" % s)
+
+
+## A rebound pad slot answers every pad, not just joypad 0 (a second pad, a
+## reconnect under a new id); cinematic_skip, rebuilt from jump, does too.
+func test_rebound_pad_matches_any_device() -> void:
+	InputBindings.apply({"jump": {"pad": ["b2"]}})
+	var press := InputEventJoypadButton.new()
+	press.button_index = JOY_BUTTON_X
+	press.pressed = true
+	press.device = 1
+	check(InputMap.event_is_action(press, &"jump"), "pad 1 X is jump after a rebind")
+	check(InputMap.event_is_action(press, &"cinematic_skip"), "and skips a scene (mirror)")
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_SPACE
+	key.pressed = true
+	key.device = 3
+	InputBindings.apply({"jump": {"key": ["k%d" % KEY_SPACE]}})
+	check(InputMap.event_is_action(key, &"jump"), "rebound key matches any device id")
 
 
 func test_apply_override_and_reset() -> void:
