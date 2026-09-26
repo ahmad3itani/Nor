@@ -79,6 +79,28 @@ func test_arming_ignores_held_confirm() -> void:
 	check(_got.size() == 1, "captured after arming")
 
 
+## A drifting stick / resting trigger keeps Input.is_anything_pressed() true:
+## Esc, Backspace and pad Start still cancel while ARMING, and ARMING never
+## outlasts arm_max_sec.
+func test_arming_can_always_be_left() -> void:
+	_held[0] = true
+	for ev in [_key(KEY_ESCAPE), _key(KEY_BACKSPACE), _button(JOY_BUTTON_START)]:
+		_cancelled.clear()
+		_cap.start("Jump", &"pad" if ev is InputEventJoypadButton else &"key")
+		_cap._process(0.05)
+		check(_cap.state == RebindCapture.State.ARMING, "arming")
+		_cap._input(ev)
+		check(_cancelled == [&"cancelled"] and not _cap.is_active(), "%s cancels while arming" % ev.as_text())
+	_cap.start("Jump", &"key")
+	for i in 70:
+		_cap._process(1.0 / 60.0)
+	check(_cap.state == RebindCapture.State.LISTENING, "held input can not keep the capture arming")
+	_cap.timeout_sec = 1.0
+	_cap._time_left = 1.0
+	_cap._process(1.1)
+	check(_cancelled.back() == &"timeout", "then the timeout runs")
+
+
 func test_key_captured_physical() -> void:
 	_listen(&"key")
 	_cap._input(_key(KEY_J))
