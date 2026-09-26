@@ -140,6 +140,8 @@ func test_build_py_lists_same_rule_ids() -> void:
 		check(py.contains("[%s]" % id), "build.py reports %s" % id)
 		check(gd.contains("[%s]" % id), "ExportRules reports %s" % id)
 	check(py.contains("\"PY-NET\""), "build.py keeps the tools network ban (PY-NET)")
+	check(py.contains("errs = self_test() +"), "build.py --check runs its checker self-test (aliased imports, smoke)")
+	check(py.contains("from importlib import import_module as im"), "the self-test covers an aliased import_module")
 
 
 func test_build_probe_minimums() -> void:

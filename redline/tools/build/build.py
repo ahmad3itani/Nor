@@ -51,7 +51,8 @@ REQUIRED_INCLUDES = ["data/challenges/ghosts/*.ghost", "locale/*.po"]
 SECRET_KEY_RE = re.compile(r"password|keystore|identity|apple_id|team_id|api_?key|certificate|p12|provisioning", re.I)
 # PY-NET: no network module in any Python tool (D-141, the user's local-only rule).
 # Top-level module names; ast finds every name in "import os, socket", every
-# "from x.y import z", and __import__("x") / importlib.import_module("x") calls.
+# "from x.y import z", and __import__("x") / importlib.import_module("x") calls,
+# including aliases ("from importlib import import_module as im"; self_test).
 NET_MODULES = {"urllib", "urllib2", "urllib3", "http", "socket", "socketserver", "ssl", "requests", "httpx",
                "aiohttp", "ftplib", "smtplib", "poplib", "imaplib", "telnetlib", "xmlrpc", "asyncio", "websocket",
                "websockets", "webbrowser"}
@@ -64,6 +65,14 @@ def net_imports(source, filename="<tool>"):
         tree = ast.parse(source, filename)
     except SyntaxError as e:
         return ["<unparsable: %s>" % e.msg]
+    # Every local name bound to a dynamic importer ("from importlib import
+    # import_module as im", "from builtins import __import__ as imp").
+    importers = {"__import__", "import_module"}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module in ("importlib", "builtins"):
+            for a in node.names:
+                if a.name in ("import_module", "__import__"):
+                    importers.add(a.asname or a.name)
     for node in ast.walk(tree):
         names = []
         if isinstance(node, ast.Import):
@@ -73,7 +82,7 @@ def net_imports(source, filename="<tool>"):
         elif isinstance(node, ast.Call):
             f = node.func
             fname = f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else "")
-            if fname in ("__import__", "import_module") and node.args:
+            if fname in importers and node.args:
                 arg = node.args[0]
                 if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
                     names = [arg.value]
@@ -265,9 +274,44 @@ def load_repo():
     return presets, project, read(".gitignore")
 
 
+# Known sources and BUILD_INFO records --check runs the checkers against, so a
+# regression in net_imports or smoke_problems fails the gate (review, T05).
+SELF_TEST_NET = [
+    ("import os, socket", ["socket"]),
+    ("import json, urllib.request", ["urllib.request"]),
+    ("from http import client", ["http"]),
+    ("__import__('socket')", ["socket"]),
+    ("import importlib\nimportlib.import_module('ssl')", ["ssl"]),
+    ("from importlib import import_module as im\nim('socket')", ["socket"]),
+    ("from builtins import __import__ as imp\nimp('requests')", ["requests"]),
+    ("from importlib import import_module as im\nim(name)", ["<dynamic import>"]),
+    ("import os, json, re\nimport importlib\nimportlib.import_module('json')", []),
+]
+SELF_TEST_SMOKE_OK = {"kind": "full", "locales": ["en", "ar"], "data": {"ghosts": 3},
+                      "user_dir": "/home/x/.local/share/godot/app_userdata/REDLINE"}
+
+
+def self_test():
+    """Checker regressions, as DRIFT lines (empty when every case holds)."""
+    errs = []
+    for src, want in SELF_TEST_NET:
+        got = net_imports(src)
+        if got != want:
+            errs.append("[SELF-TEST] net_imports(%r) = %s, expected %s" % (src, got, want))
+    if smoke_problems(SELF_TEST_SMOKE_OK, "full", False, 2):
+        errs.append("[SELF-TEST] smoke_problems rejects a good record: %s" % smoke_problems(SELF_TEST_SMOKE_OK, "full", False, 2))
+    no_ghosts = dict(SELF_TEST_SMOKE_OK, data={})
+    if not any("ghosts" in e for e in smoke_problems(no_ghosts, "full", False, 1)):
+        errs.append("[SELF-TEST] smoke_problems accepts a record without a ghosts count")
+    one_locale = dict(SELF_TEST_SMOKE_OK, locales=["en"])
+    if not any("locale" in e for e in smoke_problems(one_locale, "full", False, 2)):
+        errs.append("[SELF-TEST] smoke_problems accepts 1 locale with --min-locales 2")
+    return errs
+
+
 def run_check():
     presets, project, gitignore = load_repo()
-    errs = check_invariants(presets, project, gitignore) + check_no_network()
+    errs = self_test() + check_invariants(presets, project, gitignore) + check_no_network()
     for e in errs:
         print("DRIFT: " + e)
     if not errs:
