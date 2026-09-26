@@ -42,6 +42,9 @@ func test_every_data_sfx_exists() -> void:
 
 
 func test_menus_open_and_close() -> void:
+	# SettingsMenu saves on close: to a temp file (M9 T14, test_zz_user_dir_clean).
+	var real_path: String = Settings._path
+	Settings._path = "user://test_music_menus_settings.cfg"
 	Game.new_game()
 	for path in ["res://ui/menus/PauseMenu.gd", "res://ui/menus/JournalMenu.gd",
 			"res://ui/menus/SettingsMenu.gd", "res://ui/menus/SliceEndMenu.gd",
@@ -58,6 +61,8 @@ func test_menus_open_and_close() -> void:
 	title.open_menu()
 	check(title.is_open() and not get_tree().paused, "title should open without pausing")
 	title.queue_free()
+	Settings.remove_settings_files(Settings._path)
+	Settings._path = real_path
 
 
 func test_slice_totals_count_content() -> void:

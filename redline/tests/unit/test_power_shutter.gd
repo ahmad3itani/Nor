@@ -17,7 +17,13 @@ var enemy_hits: Array = []
 var _added_circuit: Resource
 
 
+## Anchor rests and entries save: into a temp dir, never the developer's
+## real saves (M9 T14, test_zz_user_dir_clean).
+const TEMP_SAVES := "user://test_power_shutter_saves"
+
+
 func before_each() -> void:
+	SaveManager.save_dir = TEMP_SAVES
 	root = Node2D.new()
 	add_child(root)
 	SceneRouter.register_world_root(root)
@@ -41,6 +47,8 @@ func after_each() -> void:
 	SceneRouter.world_root = null
 	root.queue_free()
 	Game.new_game()
+	SaveManager.save_dir = SaveManager.DEFAULT_SAVE_DIR
+	AtomicJson.remove_tree(TEMP_SAVES)
 	await physics_frames(2)
 
 
