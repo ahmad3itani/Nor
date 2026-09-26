@@ -25,6 +25,11 @@ var allow_headless := false
 var store_dir: String = DEFAULT_STORE_DIR
 ## Dev: let a dev-tainted profile earn (D-145), for testing the toasts.
 var dev_allow_tainted := false
+## CaptureTour's last frames: no platform file is written for the rest of the
+## process (the frames after restore_session would otherwise reload the
+## developer's store, tick play time into it and flush it on exit). Nothing
+## clears it: only a quitting tour sets it.
+var hold_writes := false
 
 var config: PlatformConfig
 var backend: PlatformBackend
@@ -221,6 +226,8 @@ func _save() -> void:
 
 
 func _write(s: LocalStore) -> void:
+	if hold_writes:
+		return
 	s.presence = {"key": presence.key, "text": presence.text} if presence.key != "" else {}
 	s.save()
 
@@ -312,10 +319,16 @@ func dev_reset_all() -> void:
 	achievements.mark_dirty()
 
 
-func reset_for_tests(dir: String) -> void:
+## `persist_old` false drops the loaded store unsaved instead (CaptureTour:
+## its only change is the boot frames' play time, which is not the
+## developer's play).
+func reset_for_tests(dir: String, persist_old: bool = true) -> void:
 	# Flush the real store first (CaptureTour runs with a display): its
 	# unsaved lifetime stats belong in its own dir.
-	_persist_old_store()
+	if persist_old:
+		_persist_old_store()
+	else:
+		_store = null
 	store_dir = dir
 	allow_headless = true
 

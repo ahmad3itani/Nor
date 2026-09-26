@@ -115,6 +115,26 @@ func test_reset_for_tests_uses_temp_dir() -> void:
 	check(real_after == real_before, "the real user store is untouched")
 
 
+## CaptureTour (M9 audit): the store loaded in its boot frames is dropped,
+## not flushed, when the tour moves to its sandbox; after hold_writes (its
+## quit) no platform file is written, so the developer's store keeps its bytes.
+func test_capture_tour_never_writes_the_previous_store() -> void:
+	# DIR_B stands in for the developer's real store dir.
+	Platform.reset_for_tests(DIR_B)
+	Platform.store().set_lifetime(&"play_time", 0.25)
+	check(Platform.store().dirty, "the boot-frame play time is unsaved")
+	Platform.reset_for_tests(TEST_DIR, false)
+	Platform.store()
+	check(not FileAccess.file_exists(_file(DIR_B)), "the dropped store was not flushed to its dir")
+	Platform.store_dir = DIR_B
+	Platform.hold_writes = true
+	Platform.store().set_lifetime(&"play_time", 0.5)
+	Platform.flush()
+	Platform._exit_tree()
+	Platform.hold_writes = false
+	check(not FileAccess.file_exists(_file(DIR_B)), "nothing written after hold_writes")
+
+
 func test_unknown_backend_falls_back_to_local() -> void:
 	var b := PlatformBackends.create(&"no_such_store")
 	check(b is LocalPlatformBackend and b.backend_id() == &"local", "unknown ids play on the local backend")

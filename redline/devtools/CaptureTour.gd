@@ -98,7 +98,7 @@ static func prepare_session(tour: String, args: PackedStringArray) -> Dictionary
 	Settings.assist_suggestions = false
 	Challenges.quiet_notices = true
 	AtomicJson.remove_tree("user://tour_sandbox")
-	Platform.reset_for_tests("user://tour_sandbox/platform")
+	Platform.reset_for_tests("user://tour_sandbox/platform", false)
 	var mode := tour_cinematic_mode(tour, args)
 	if mode >= 0:
 		CinematicMode.set_mode(mode as CinematicMode.Mode)
@@ -130,6 +130,9 @@ static func restore_session(snap: Dictionary) -> void:
 
 
 func _quit(code: int = 0) -> void:
+	# The frames between the reset and the exit write no platform file: the
+	# developer's user://platform is never touched by a tour (M9 audit).
+	Platform.hold_writes = true
 	restore_session(_settings_snapshot)
 	get_tree().quit(code)
 
