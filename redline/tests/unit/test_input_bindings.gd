@@ -288,6 +288,18 @@ func test_space_for_heal_shows_soft_notice_and_binds() -> void:
 	check(InputBindings.soft_notice(_key(KEY_Y)) == "", "no notice for a plain key")
 
 
+## SettingsRules runs inside the validator's rule-module pass and is clean.
+func test_settings_rules_clean_in_validator() -> void:
+	var v := ContentValidator.new()
+	v.validate_m9()
+	var se := Array(v.errors).filter(func(e: String) -> bool: return e.begins_with("[SE-"))
+	check(se.is_empty(), "no SE errors: %s" % str(se))
+	var broken := SettingsRules.catalog_errors(Settings.settings_catalog().duplicate(true) as SettingsCatalog, Settings)
+	check(broken.is_empty(), "a copy of the catalog is still clean")
+	var cat := SettingsCatalog.new()
+	check(not SettingsRules.catalog_errors(cat, Settings).is_empty(), "an empty catalog misses every Settings property")
+
+
 func test_default_map_passes_se4() -> void:
 	var errs := SettingsRules.rebind_errors(InputBindings.catalog())
 	check(errs.is_empty(), "SE-4 clean: %s" % "; ".join(errs))
