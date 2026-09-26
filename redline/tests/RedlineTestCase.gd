@@ -53,9 +53,26 @@ func press_action(action: StringName, hold_frames: int) -> void:
 	await press_actions(one, hold_frames)
 
 
-## Height a MenuScreen's panel needs once autowrap labels settle (they take
-## more than one sort pass, hence 2 frames). Every '<= 270' panel test uses it.
+## Height a MenuScreen's content needs once autowrap labels settle (they take
+## more than one sort pass, hence 2 frames). Every '<= 270 without scrolling'
+## test uses it. M9 (R03.4): menus scroll, so this measures the rows plus the
+## panel margins, not the capped panel (see panel_height).
 func menu_height(menu: MenuScreen) -> float:
+	return await content_height(menu)
+
+
+## The rows' full height plus the panel's top and bottom content margins:
+## what the panel would need without a scroll area.
+func content_height(menu: MenuScreen) -> float:
+	for i in 2:
+		await get_tree().process_frame
+	var sb := menu._panel.get_theme_stylebox("panel")
+	var margins := sb.get_margin(SIDE_TOP) + sb.get_margin(SIDE_BOTTOM) if sb else 0.0
+	return menu._body.get_combined_minimum_size().y + margins
+
+
+## The panel's real height (capped by the scroll area): 'fits or scrolls'.
+func panel_height(menu: MenuScreen) -> float:
 	for i in 2:
 		await get_tree().process_frame
 	return menu._panel.get_combined_minimum_size().y
@@ -87,3 +104,26 @@ func use_default_m8_settings() -> Dictionary:
 func restore_m8_settings(snap: Dictionary) -> void:
 	for k in snap:
 		Settings.set(k, snap[k])
+
+
+# --- M9 settings helpers (T03) ---
+
+## Every stored setting (catalog keys, bindings, locale) plus the session
+## overrides, for tests that change Settings; hand it to restore_settings.
+func snapshot_settings() -> Dictionary:
+	var snap := Settings.snapshot()
+	snap["_path"] = Settings._path
+	snap["_subtitle_size_override"] = Settings._subtitle_size_override
+	snap["_locale_override"] = Settings._locale_override
+	return snap
+
+
+## Puts a snapshot_settings() back and resets the InputMap to the snapshot's
+## bindings (none in a test run), so no rebind leaks into the next test.
+func restore_settings(snap: Dictionary) -> void:
+	Settings.restore(snap)
+	Settings._path = str(snap.get("_path", Settings.SETTINGS_PATH))
+	Settings._subtitle_size_override = int(snap.get("_subtitle_size_override", -1))
+	Settings._locale_override = str(snap.get("_locale_override", ""))
+	InputBindings.apply(Settings.bindings)
+	UiTheme.invalidate()
