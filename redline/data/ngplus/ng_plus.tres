@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="NgPlusConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/NgPlusConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+carry_weapons = true
+carry_circuits = true
+carry_core_shards = true
+carry_scrap_banked = true
+carry_shop_upgrades = true
+carry_flags = PackedStringArray("null_open", "null_depth_reached")
+carry_flag_prefixes = PackedStringArray("hint_", "null_")
+optional_abilities = PackedStringArray("dash")
+skip_start_flags = PackedStringArray("core_hud_hidden")
+cycle_flag = "ng_cycle"
+remix_flag = "ng_remix"
+keep_dash_flag = "ng_keep_dash"
+max_cycle_label = 9
+secret_scrap_scale = 0.25
+secret_spot_radius = 96.0
