@@ -15,15 +15,28 @@ var size: Vector2 = Vector2(16, 64)
 var target_room: String = ""
 var depth: float = 12.0
 var trigger: Area2D
+## The exit this barrier covers (its monitoring comes back on remove()).
+var exit: RoomExit
 
 
-func setup(exit: RoomExit, p_depth: float) -> DemoBarrier:
+func setup(p_exit: RoomExit, p_depth: float) -> DemoBarrier:
+	exit = p_exit
 	name = "DemoBarrier_%s" % exit.name
 	position = exit.position
 	size = exit.size
 	target_room = exit.target_room
 	depth = p_depth
 	return self
+
+
+## Takes the wall down and hands the gap back to its exit (the demo session
+## turned off, or the dev bypass turned on, inside this room).
+func remove() -> void:
+	remove_from_group(&"demo_barrier")
+	name = "DemoBarrierRemoved"  # DemoGate skips an exit whose barrier name is still taken
+	if is_instance_valid(exit):
+		exit.set_deferred("monitoring", true)
+	queue_free()
 
 
 func _ready() -> void:

@@ -17,7 +17,7 @@ static func build(c: DevConsole) -> void:
 		DemoBarrier.set_debug_draw(not DemoBarrier.debug_draw)
 		c._refresh())
 	c.add_button("Gate bypass: %s" % ("on" if DemoGate.dev_bypass else "off"), func() -> void:
-		DemoGate.dev_bypass = not DemoGate.dev_bypass
+		DemoGate.set_dev_bypass(not DemoGate.dev_bypass)
 		c._refresh())
 	c.add_button("Teleport to the demo border", func() -> void:
 		c.close_menu()

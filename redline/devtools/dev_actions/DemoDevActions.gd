@@ -7,7 +7,7 @@ extends RefCounted
 ## A demo session in any build: forces the demo kind (saves, platform files,
 ## settings and playtests move under user://demo/, BuildInfo.apply_demo_dirs)
 ## and adds a DemoGate so border exits get their barriers from the next room
-## load. Off puts every path back.
+## load. Off puts every path back and takes the current room's barriers down.
 static func set_demo_session(on: bool) -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	BuildInfo.set_force_demo(1 if on else -1)

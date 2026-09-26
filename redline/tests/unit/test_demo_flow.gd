@@ -423,6 +423,27 @@ func test_demo_session_toggle_restores() -> void:
 	SaveManager.save_dir = SAVE_DIR
 
 
+## Turning the demo session off (or the bypass on) inside a border room takes
+## its barriers down and hands Exit2 back at once; the bypass off restores them.
+func test_session_off_and_bypass_clear_barriers_in_room() -> void:
+	DemoDevActions.set_demo_session(true)
+	await get_tree().process_frame
+	SceneRouter.goto_room(TUNNEL)
+	await physics_frames(2)
+	var exit2 := SceneRouter.current_room.find_child("Exit2", true, false) as RoomExit
+	check(_barriers(SceneRouter.current_room).size() == 1 and not exit2.monitoring, "walled in the demo")
+	DemoGate.set_dev_bypass(true)
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).is_empty() and exit2.monitoring, "the bypass opens the gap now")
+	DemoGate.set_dev_bypass(false)
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).size() == 1 and not exit2.monitoring, "bypass off walls it again")
+	DemoDevActions.set_demo_session(false)
+	await physics_frames(2)
+	check(_barriers(SceneRouter.current_room).is_empty(), "session off frees the barrier")
+	check(exit2.monitoring, "Exit2 works again in the full game")
+
+
 # --- The card ---------------------------------------------------------------------
 
 func test_card_fits_270_and_controller_reachable() -> void:
@@ -483,22 +504,38 @@ func test_demo_gate_idle_during_challenge() -> void:
 
 ## A challenge whose run crosses the border is dropped from the demo's list.
 ## The fixture is written at runtime (its ChallengeData script lands with the
-## challenge runtime); without that runtime the test has nothing to check.
+## challenge runtime, T04). Without that runtime there is nothing to check; once
+## it exists, every seam this test needs must too, or the test fails (it must
+## never degrade to a silent pass after the merge).
 func test_demo_blocked_fixture_absent_in_demo() -> void:
 	var lib_path := "res://challenges/%s.gd" % "ChallengeLibrary"
 	var data_path := "res://challenges/%s.gd" % "ChallengeData"
-	if not (ResourceLoader.exists(lib_path) and ResourceLoader.exists(data_path)):
-		print("  (skipped: the challenge runtime is not on this branch)")
+	var has_lib := ResourceLoader.exists(lib_path)
+	var has_data := ResourceLoader.exists(data_path)
+	if not has_lib and not has_data:
+		print("  (skipped: the challenge runtime is not on this branch; must run after the T04 merge)")
+		return
+	check(has_lib and has_data, "ChallengeLibrary and ChallengeData land together")
+	if not (has_lib and has_data):
 		return
 	var lib := load(lib_path) as GDScript
 	var ch := (load(data_path) as GDScript).new() as Resource
+	var missing: Array = []
 	for kv: Array in [["id", "tt_demo_border_fixture"], ["start_room", TUNNEL], ["finish_exit_target", RELAY]]:
 		if kv[0] in ch:
 			ch.set(kv[0], kv[1])
+		else:
+			missing.append(kv[0])
+	check(missing.is_empty(), "ChallengeData has the fields this fixture sets (missing %s)" % [missing])
+	var saved_dir: Variant = lib.get("data_dir")
+	check(saved_dir is String and lib.has_method("all") and lib.has_method("clear_cache"),
+		"ChallengeLibrary exposes data_dir, all() and clear_cache() (%s)" % [saved_dir])
+	if not missing.is_empty() or not (saved_dir is String and lib.has_method("all")):
+		return
 	DirAccess.make_dir_recursive_absolute(TEST_DIR + "/challenges")
 	check(ResourceSaver.save(ch, TEST_DIR + "/challenges/tt_demo_border_fixture.tres") == OK, "fixture written")
-	var saved_dir: Variant = lib.get("data_dir")
 	lib.set("data_dir", TEST_DIR + "/challenges")
+	check(lib.get("data_dir") == TEST_DIR + "/challenges", "data_dir redirected")
 	lib.call("clear_cache")
 	var ids := func() -> Array:
 		return (lib.call("all") as Array).map(func(c: Resource) -> String: return str(c.get("id")))
@@ -545,10 +582,13 @@ func test_force_demo_reloads_stores_from_demo_dir() -> void:
 	Platform.reset_after_tests()
 	BuildInfo.set_force_demo(1)
 	check(Platform.store_dir == BuildInfo.DEMO_PLATFORM_DIR, "Platform reads user://demo/platform (%s)" % Platform.store_dir)
+	# While Platform is the T01 stub this proves little (it never unlocks);
+	# the T02 merge seeds a full-game unlock here (see open problems).
 	check(Platform.unlocked_ids().is_empty(), "no full-game unlocks in the demo")
 	var records := "res://challenges/%s.gd" % "RecordStore"
 	if ResourceLoader.exists(records):
 		var rs := load(records) as GDScript
+		check(rs.has_method("dir"), "RecordStore exposes dir() (update this test if T04 renamed it)")
 		if rs.has_method("dir"):
 			check(str(rs.call("dir")).begins_with(BuildInfo.DEMO_PLATFORM_DIR), "RecordStore follows Platform.store_dir")
 	BuildInfo.set_force_demo(-1)

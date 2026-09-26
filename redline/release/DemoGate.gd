@@ -52,8 +52,31 @@ static func ensure(tree: SceneTree) -> void:
 	tree.root.add_child.call_deferred(DemoGate.new())
 
 
+## Frees every gate and the current room's barriers (their exits work again).
 static func remove_all(tree: SceneTree) -> void:
 	if tree == null:
 		return
 	for g in tree.get_nodes_in_group(&"demo_gate"):
 		g.queue_free()
+	clear_barriers(tree)
+
+
+static func clear_barriers(tree: SceneTree) -> void:
+	if tree == null:
+		return
+	for b in tree.get_nodes_in_group(&"demo_barrier"):
+		(b as DemoBarrier).remove()
+
+
+## Dev: the bypass takes effect in the current room at once (on: the barriers
+## go; off: they come back through the gate), not from the next room load.
+static func set_dev_bypass(on: bool) -> void:
+	dev_bypass = on
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return
+	if on:
+		clear_barriers(tree)
+	elif is_instance_valid(SceneRouter.current_room):
+		for g in tree.get_nodes_in_group(&"demo_gate"):
+			(g as DemoGate)._on_room_loaded(SceneRouter.current_room)
