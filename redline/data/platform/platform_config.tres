@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PlatformConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/PlatformConfig.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+backend_id = &"local"
+store_file = "achievements.json"
+store_version = 1
+toast_seconds = 3.5
+toast_collapse_at = 4
+close_call_margin_s = 0.25
+flush_interval_s = 60.0
+menu_rows_per_page = 6
+grind_cap = 25.0
