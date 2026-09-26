@@ -15,6 +15,29 @@ const DIR := "user://playtests"
 ## Tuning note: add a flag here when a new onboarding beat needs timing data.
 const RECORDED_FLAGS: PackedStringArray = ["core_hud_hidden", "got_pulse_blade", "got_service_pistol", "met_orr_radio", "uc_ward_shutter"]
 
+## Pre-M9 EventBus signals Playtest deliberately does not record, each with
+## why (CrossRules X-3: every signal is either recorded here or listed).
+const UNRECORDED_SIGNALS := {
+	"player_respawned": "room_enter covers respawns",
+	"player_landed": "per-frame movement noise",
+	"camera_shake_requested": "presentation only",
+	"camera_impulse_requested": "presentation only",
+	"room_loaded": "room_enter is the §44 room event",
+	"movement_config_changed": "dev tuning",
+	"movement_config_reload_requested": "dev tuning",
+	"ranged_weapon_changed": "loadout snapshot in _meta",
+	"reactor_changed": "per-frame meter",
+	"game_state_reset": "session boundary is begin_session",
+	"scrap_changed": "scrap_* events cover it",
+	"interact_prompt_changed": "UI only",
+	"dialogue_finished": "dialogue_* events cover it",
+	"menu_requested": "menu_open covers it",
+	"memory_playback_requested": "memory_* story events cover it",
+	"memory_playback_finished": "memory_* story events cover it",
+	"memory_playback_aborted": "memory_* story events cover it",
+	"collectible_taken": "collect events cover it",
+}
+
 var config: PlaytestConfig = CONFIG
 ## Where session files go (tests point this at a temp folder).
 var dir: String = DIR
@@ -109,6 +132,30 @@ func _ready() -> void:
 		_event("ending_start", {"id": id, "theatre": theatre}))
 	EventBus.ending_finished.connect(func(id: String, theatre: bool, skipped: bool) -> void:
 		_event("ending", {"id": id, "theatre": theatre, "skipped": skipped}))
+	# M9 endgame: achievements, challenge runs, splits, NG+, rebinding,
+	# assist offers, language and the demo boundary.
+	EventBus.achievement_unlocked.connect(func(id: String, retro: bool) -> void:
+		_event("achievement", {"id": id, "retro": retro}))
+	EventBus.challenge_started.connect(func(id: String, attempt: int) -> void:
+		_event("challenge_start", {"id": id, "attempt": attempt}))
+	EventBus.challenge_finished.connect(func(id: String, outcome: int, value: int, medal: int, new_best: bool) -> void:
+		_event("challenge_end", {"id": id, "outcome": outcome, "value": value, "medal": medal, "new_best": new_best}))
+	EventBus.challenge_reset.connect(func(id: String, reason: StringName) -> void:
+		_event("challenge_reset", {"id": id, "reason": String(reason)}))
+	EventBus.challenge_stage_cleared.connect(func(id: String, stage: String, frames: int, hits: int, deaths: int, medal: int) -> void:
+		_event("challenge_stage", {"id": id, "stage": stage, "frames": frames, "hits": hits, "deaths": deaths, "medal": medal}))
+	EventBus.speedrun_split.connect(func(id: String, igt: int, delta: int) -> void:
+		_event("split", {"id": id, "igt": igt, "delta": delta}))
+	EventBus.ng_plus_started.connect(func(cycle: int) -> void: _event("ng_plus", {"cycle": cycle}))
+	EventBus.input_bindings_changed.connect(func(action: StringName) -> void:
+		_event("rebind", {"action": String(action)}))
+	EventBus.assist_suggested.connect(func(context: String, cause: String, deaths: int) -> void:
+		_event("assist_suggested", {"context": context, "cause": cause, "deaths": deaths}))
+	EventBus.assist_suggestion_answered.connect(func(context: String, answer: StringName, key: String) -> void:
+		_event("assist_answered", {"context": context, "answer": String(answer), "key": key}))
+	EventBus.locale_changed.connect(func(locale: String) -> void: _event("locale", {"locale": locale}))
+	EventBus.demo_boundary_reached.connect(func(from: String, to: String) -> void:
+		_event("demo_end", {"from": from, "to": to}))
 
 
 func recording_allowed() -> bool:

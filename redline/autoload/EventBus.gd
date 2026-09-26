@@ -143,3 +143,32 @@ signal ending_finished(ending_id: String, theatre: bool, skipped: bool)
 ## Any Collectible was taken (kind = Collectible.Kind as int). Emitted after the
 ## pickup updated GameState, so count conditions re-evaluate on the pickup frame.
 signal collectible_taken(persist_id: String, kind: int)
+
+## --- Endgame (M9) ---
+# Declared in M9 T01 ahead of their emitters (platform, challenges, NG+,
+# settings, assists, localization, demo); every emitter and listener lives in
+# its own system. Each is also a Playtest hook (local telemetry only).
+## M9 D1: an achievement unlocked in the local store. retroactive = unlocked by the re-evaluation on game_state_reset (D-143).
+signal achievement_unlocked(achievement_id: String, retroactive: bool)
+## A challenge attempt began (attempt counts from 1 per session).
+signal challenge_started(challenge_id: String, attempt: int)
+## An attempt ended. outcome = ChallengeData.Outcome (FINISHED, FAILED_HIT, FAILED_ATTACK, DIED, QUIT); value = frames (TIME) or points (SCORE/RANK), -1 when not finished; medal -1 (no finish) or a RankLadder tier 0..4 (Clear, Bronze, Silver, Gold, Redline; names from data/challenges/rank_ladder.tres, never style letters); new_best = a new personal best for this profile.
+signal challenge_finished(challenge_id: String, outcome: int, value: int, medal: int, new_best: bool)
+## An attempt was discarded and restarted. reason: &'reset' | &'death' | &'fail' | &'menu'.
+signal challenge_reset(challenge_id: String, reason: StringName)
+## A stage (Null stratum) goal was reached inside a staged run. It replaces D3's null_room_cleared.
+signal challenge_stage_cleared(challenge_id: String, stage_id: String, frames: int, hits: int, deaths: int, medal: int)
+## A campaign split reached for the first time on this profile; delta against the stored best split, 0 if none.
+signal speedrun_split(split_id: String, igt_frames: int, delta_frames: int)
+## A New Game+ conversion finished (cycle >= 1).
+signal ng_plus_started(cycle: int)
+## A binding changed in Controls (action = &'' after a bulk reset).
+signal input_bindings_changed(action: StringName)
+## The adaptive-assist advisor offered options (§23: offered, never applied).
+signal assist_suggested(context: String, cause: String, deaths: int)
+## answer: &'applied' (setting_key says which), &'opened_settings', &'later', &'never'.
+signal assist_suggestion_answered(context: String, answer: StringName, setting_key: String)
+## The display language changed (code). Payloads elsewhere stay source text (D-162).
+signal locale_changed(locale: String)
+## Demo builds: Rook reached an exit into content outside the demo.
+signal demo_boundary_reached(from_room: String, target_room: String)
