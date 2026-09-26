@@ -16,6 +16,13 @@ switch(parent=) nests a switch (returns its full path), npc(name=) gives a
 second post of the same profile its own node name (D-123), and
 mapmarker(shown_when=) is emitted only when set (NOTE markers, kind=2).
 sequence_trigger() places a SequenceTrigger by name (T07).
+
+M9 additions: defaults keep every generator byte-identical. RoomGen(...,
+folder=) resolves bare exit targets inside that folder instead of Lowlight
+("challenge" rooms); goal() places a ChallengeGoal (a staged challenge's
+stage end, optionally on a boss kill); wave_spawn(n, x, y) adds the Pulse
+Pit's WaveSpawn_<n> markers under one "WaveSpawns" node; wave_director()
+places the WaveDirector; SCENES gains the Deep Rig boss variant.
 """
 import sys
 
@@ -53,6 +60,8 @@ SCRIPTS = {
  "respawn": "res://interactables/EntryCheckpoint.gd", "flagdecl": "res://world/rooms/FlagDeclaration.gd",
  # M8 scripted sequences.
  "sequence": "res://world/props/SequenceTrigger.gd",
+ # M9 challenge rooms (T10).
+ "challenge_goal": "res://challenges/ChallengeGoal.gd", "wave_director": "res://world/challenge/WaveDirector.gd",
 }
 SCENES = {n: "res://enemies/variants/%s.tscn" % n for n in ["Needle", "Shield", "ScoutDrone", "Hopper", "Watcher", "Enforcer"]}
 SCENES["WardenKrail"] = "res://bosses/WardenKrail.tscn"
@@ -61,6 +70,7 @@ SCENES["CollectorDrone"] = "res://bosses/CollectorDrone.tscn"
 SCENES["PulseBladeRack"] = "res://interactables/PulseBladeRack.tscn"
 SCENES["ServicePistolDrop"] = "res://interactables/ServicePistolDrop.tscn"
 SCENES["CollectorEye"] = "res://world/props/CollectorEye.tscn"
+SCENES["WardenKrailNull"] = "res://bosses/variants/WardenKrailNull.tscn"
 
 def q(s): return '"' + str(s).replace('\\', '\\\\').replace('"', '\\"') + '"'
 def num(v):
@@ -69,8 +79,10 @@ def num(v):
 def strings(items): return "PackedStringArray(%s)" % ", ".join(q(i) for i in items)
 
 class RoomGen:
-    def __init__(self, name, bounds, theme, district, room_name, max_attackers=2):
+    def __init__(self, name, bounds, theme, district, room_name, max_attackers=2, folder=None):
         self.name, self.bounds, self.theme, self.district, self.room_name = name, bounds, theme, district, room_name
+        # M9: bare exit targets resolve in this folder ("challenge"), not Lowlight.
+        self.folder = folder
         self.ext = {}
         self.nodes = []  # (parent, name, type, props list)
         self.counts = {}
@@ -118,7 +130,7 @@ class RoomGen:
         return self.add("Spawns", "Spawn_", "Marker2D", p, "Spawn_" + sid)
     def exit(self, x, y, w, h, target, entry, flag=""):
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("exit"), 'size = Vector2(%d, %d)' % (w, h),
-             'target_room = %s' % q((ROOMS if "/" in target else LL) + target + ".tscn"), 'target_entry = &%s' % q(entry)]
+             'target_room = %s' % q(self._target(target)), 'target_entry = &%s' % q(entry)]
         if flag: p.append('requires_flag = %s' % q(flag))
         return self.add("Triggers", "Exit", "Area2D", p)
     def anchor(self, aid, x, y, facing=1):
@@ -246,6 +258,30 @@ class RoomGen:
     def declare_flags(self, *flags):
         """Stub rooms only: stands in for flags a later room will set."""
         return self.add("Triggers", "FlagDeclaration", "Node", ['script = %s' % self._script("flagdecl"), 'produces = %s' % strings(flags)], "FlagDeclaration")
+    def _target(self, target):
+        if "/" in target:
+            return ROOMS + target + ".tscn"
+        return (ROOMS + self.folder + "/" if self.folder else LL) + target + ".tscn"
+
+    # --- M9 challenge-room helpers (T10) ---
+    def goal(self, x, y, w, h, stage_id, on_boss=""):
+        """A ChallengeGoal (top-left origin): the end of stage `stage_id`;
+        with on_boss it fires on that boss's defeat instead of on entry."""
+        p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("challenge_goal"),
+             'size = Vector2(%d, %d)' % (w, h), 'stage_id = %s' % q(stage_id)]
+        if on_boss: p.append('on_boss = %s' % q(on_boss))
+        return self.add("Triggers", "Goal_", "Area2D", p, "Goal_" + stage_id)
+    def wave_spawn(self, n, x, y):
+        """Pulse Pit spawn marker WaveSpawn_<n> (WaveEntry.spawn_points index)."""
+        if not any(pp == "." and nn == "WaveSpawns" for pp, nn, _, _ in self.nodes):
+            self.nodes.append((".", "WaveSpawns", "Node2D", []))
+        return self.add("WaveSpawns", "WaveSpawn_", "Marker2D", ['position = Vector2(%d, %d)' % (x, y)], "WaveSpawn_%d" % n)
+    def wave_director(self, sets):
+        """The WaveDirector, with the WaveSets (data/challenges/waves/<id>.tres) it may run."""
+        refs = [self._res("waves_" + s, "Resource", "res://data/challenges/waves/%s.tres" % s) for s in sets]
+        return self.add(".", "WaveDirector", "Node", ['script = %s' % self._script("wave_director"),
+            'wave_sets = Array[Resource]([%s])' % ", ".join(refs)], "WaveDirector")
+
     def _level(self, name):
         return self._res("level_" + name, "Resource", "res://data/level/%s.tres" % name)
 
