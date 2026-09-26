@@ -460,10 +460,10 @@ func _check_future_flags() -> void:
 	for f in flags:
 		for where: String in producers.get(f, []):
 			if where != FutureFlagSet.PATH:
-				errors.append("future flag '%s' (Act %d) is set by %s: remove it from future_flags.tres when that act lands" % [f, future.act_of(f), where])
+				errors.append("future flag '%s' (%s) is set by %s: remove it from future_flags.tres when that act lands" % [f, FutureFlag.when_label(future.act_of(f)), where])
 		for where: String in consumers.get(f, []):
 			if where != FutureFlagSet.PATH and not where.begins_with(FUTURE_READERS_DIR):
-				errors.append("future flag '%s' (Act %d) is read by %s: only data/endings may read it until that act lands" % [f, future.act_of(f), where])
+				errors.append("future flag '%s' (%s) is read by %s: only data/endings may read it until that act lands" % [f, FutureFlag.when_label(future.act_of(f)), where])
 	if not flags.is_empty():
 		warnings.append("%d future flags declared (Acts II-V/M9): %s" % [flags.size(), ", ".join(flags)])
 
@@ -812,7 +812,7 @@ func story_report() -> PackedStringArray:
 		md.append("")
 	md.append("### Future flags")
 	md.append("")
-	md.append("| Flag | Act | Note | Read by |")
+	md.append("| Flag | When | Note | Read by |")
 	md.append("|---|---|---|---|")
 	for fe in future.entries:
 		if fe == null:
@@ -821,7 +821,7 @@ func story_report() -> PackedStringArray:
 		for where: String in consumers.get(fe.flag, []):
 			if not readers.has(where.get_file()):
 				readers.append(where.get_file())
-		md.append("| %s | %d | %s | %s |" % [fe.flag, fe.act, _cell(fe.note), ", ".join(readers) if not readers.is_empty() else "—"])
+		md.append("| %s | %s | %s | %s |" % [fe.flag, FutureFlag.when_label(fe.act), _cell(fe.note), ", ".join(readers) if not readers.is_empty() else "—"])
 	md.append("")
 	return md
 
@@ -839,7 +839,7 @@ static func _tagged(conds: Array, future: FutureFlagSet) -> String:
 		if c == "":
 			continue
 		var act := future.act_of(c.trim_prefix("!").get_slice(":", 1)) if future.is_future_condition(c) else 0
-		out.append("%s (Act %d)" % [c, act] if act > 0 else c)
+		out.append("%s (%s)" % [c, FutureFlag.when_label(act)] if act > 0 else c)
 	return _cell(", ".join(out)) if not out.is_empty() else "—"
 
 

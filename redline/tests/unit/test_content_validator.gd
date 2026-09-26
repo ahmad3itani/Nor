@@ -264,3 +264,5 @@ func test_story_report_section() -> void:
 		var rows := Array(md.split("\n")).filter(func(l: String) -> bool: return l.begins_with("| %s |" % id) and l.contains("reachable now: no"))
 		check(rows.size() == 1, "ending %s has one 'reachable now: no' row" % id)
 	check(md.contains("flag:finale_choice_sever (Act 5)"), "future flags tagged with their act")
+	check(md.contains("flag:null_depth_reached (M9 postgame)") and not md.contains("(Act 9)"), "act 9 reads as the M9 postgame")
+	check(md.contains("| null_depth_reached | M9 postgame |"), "future-flag table shows the M9 postgame")
