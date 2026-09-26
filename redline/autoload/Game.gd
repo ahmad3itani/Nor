@@ -83,6 +83,9 @@ func start_campaign() -> void:
 	new_game()
 	# M9: only a title New Game counts for campaign IGT bests (both modes).
 	state.igt_complete = true
+	# M9 demo (D-165): marks a demo-born profile (a flag, no schema change).
+	if BuildInfo.is_demo():
+		state.flags["demo_build"] = true
 	if not onboarding.enforce:
 		return
 	state.owned_weapons.assign(onboarding.start_owned_weapons)
@@ -485,7 +488,9 @@ func transit_unlocked() -> bool:
 func transit_destinations(exclude_room: String = "", exclude_id: String = "") -> Array[String]:
 	var out: Array[String] = []
 	for key in state.anchors_rested:
-		if key != "%s|%s" % [exclude_room, exclude_id]:
+		# Demo builds never offer a stop outside the demo (belt and braces:
+		# transit is off there too, and SceneRouter refuses the room).
+		if key != "%s|%s" % [exclude_room, exclude_id] and BuildInfo.room_allowed(key.get_slice("|", 0)):
 			out.append(key)
 	return out
 

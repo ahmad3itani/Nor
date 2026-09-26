@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DemoConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://release/DemoConfig.gd" id="1_demo"]
+
+[resource]
+script = ExtResource("1_demo")
+id = "undercity"
+allowed_room_dirs = PackedStringArray("res://world/rooms/undercity")
+allowed_rooms = PackedStringArray("res://world/rooms/TitleBackdrop.tscn")
+end_mode = 0
+disabled_features = Array[StringName]([&"labs", &"lab_cycle", &"relay_start", &"ngplus", &"null", &"transit"])
+recording_default = false
+achievements = PackedStringArray()
+barrier_depth = 12.0
+title_tag = "DEMO"
+title_subtitle = "Demo  —  The Undercity"
+end_header = "END OF THE DEMO"
+end_lines = PackedStringArray("You made it out of the Undercity. The Relay is just ahead.")
+secrets_note = "Some secrets open only with an ability from later in the game."
+cta_lines = PackedStringArray("The full Act I continues in Lowlight: the Relay and its people, the Rainline chase, Warden Krail and the Dash.", "If you want to follow REDLINE, wishlist it and tell us what you thought.")
+keep_label = "Keep exploring the Undercity"
+quit_label = "Save and quit to title"

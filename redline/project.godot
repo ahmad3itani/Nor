@@ -11,6 +11,8 @@ config/version="0.8.0-m8"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+config/use_custom_user_dir.demo=true
+config/custom_user_dir_name.demo="REDLINE Demo"
 
 [autoload]
 
@@ -241,6 +243,7 @@ common/physics_ticks_per_second=60
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

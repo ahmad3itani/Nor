@@ -45,7 +45,11 @@ static func totals() -> Dictionary:
 static func room_paths() -> PackedStringArray:
 	var out := PackedStringArray()
 	for dir in ContentValidator.WORLD_ROOM_DIRS:
-		out.append_array(DataDir.list_scenes(dir))
+		for path in DataDir.list_scenes(dir):
+			# A demo counts only its own rooms (BuildInfo.set_force_demo
+			# clears the cache when the build kind changes).
+			if BuildInfo.room_allowed(path):
+				out.append(path)
 	return out
 
 
