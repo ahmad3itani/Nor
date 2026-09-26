@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Resource" path="res://data/enemies/brains/shield.tres" id="brain_res"]
+
+[sub_resource type="Resource" id="Attack"]
+script = ExtResource("1_attack")
+id = &"shield_bash"
+startup = 0.55
+active = 0.14
+recovery = 0.55
+cancel_time = 0.0
+damage = 1.0
+poise_damage = 0.0
+knockback = Vector2(230, -130)
+hitstop = 0.08
+hitbox = Rect2(0, -30, 28, 28)
+lunge_speed = 130.0
+ground_friction = 500.0
+camera_trauma = 0.15
+swing_sfx = &"enemy_attack"
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"shield"
+display_name = "Shield"
+max_health = 60.0
+max_poise = 40.0
+stagger_time = 0.7
+mass = 2.5
+armored = true
+move_speed = 38.0
+accel = 400.0
+body_size = Vector2(18, 30)
+aggro_range = 200.0
+brain = ExtResource("brain_res")
+attack_cooldown = 1.4
+reactor_reward = 18.0
+scrap_drop = 0
+style_value = 60.0
+color = Color(0.55, 0.52, 0.66, 1)
+attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])

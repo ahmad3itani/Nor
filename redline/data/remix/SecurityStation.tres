@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="RoomRemix" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://world/remix/RoomRemix.gd" id="RoomRemix"]
+[ext_resource type="Script" path="res://world/remix/RemixOp.gd" id="RemixOp"]
+[ext_resource type="Resource" path="res://data/level/scanner_full_pulse_10_remix.tres" id="scanner_full_pulse_10_remix"]
+[ext_resource type="Resource" path="res://data/enemies/shield_remix.tres" id="shield_remix"]
+
+[sub_resource type="Resource" id="Op1"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Hazards/Scanner_ss_full_1")
+property = &"data"
+value = ExtResource("scanner_full_pulse_10_remix")
+
+[sub_resource type="Resource" id="Op2"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Hazards/Scanner_ss_high_2")
+property = &"phase"
+value = 0.5
+
+[sub_resource type="Resource" id="Op3"]
+script = ExtResource("RemixOp")
+kind = 2
+target = NodePath("Enemies/Hopper1")
+scene_kind = "Shield"
+data = ExtResource("shield_remix")
+
+[resource]
+script = ExtResource("RoomRemix")
+room = "res://world/rooms/lowlight/SecurityStation.tscn"
+active_when = "flag:ng_remix"
+ops = Array[ExtResource("RemixOp")]([SubResource("Op1"), SubResource("Op2"), SubResource("Op3")])
+intent = "Faster sweeps in the lobby; the calibration lane is untouched (tutorial)."

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="RoomRemix" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://world/remix/RoomRemix.gd" id="RoomRemix"]
+[ext_resource type="Script" path="res://world/remix/RemixOp.gd" id="RemixOp"]
+[ext_resource type="Resource" path="res://data/enemies/scout_drone_remix.tres" id="scout_drone_remix"]
+[ext_resource type="Resource" path="res://data/enemies/needle_remix.tres" id="needle_remix"]
+
+[sub_resource type="Resource" id="Op1"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/ScoutDrone1")
+property = &"data"
+value = ExtResource("scout_drone_remix")
+
+[sub_resource type="Resource" id="Op2"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/ScoutDrone2")
+property = &"data"
+value = ExtResource("scout_drone_remix")
+
+[sub_resource type="Resource" id="Op3"]
+script = ExtResource("RemixOp")
+kind = 0
+target = NodePath("Enemies/Needle2")
+scene_kind = "Needle"
+data = ExtResource("needle_remix")
+offset = Vector2(56, 0)
+
+[resource]
+script = ExtResource("RoomRemix")
+room = "res://world/rooms/undercity/MaintenanceShaft.tscn"
+active_when = "flag:ng_remix"
+ops = Array[ExtResource("RemixOp")]([SubResource("Op1"), SubResource("Op2"), SubResource("Op3")])
+intent = "Floor 2 is a three-body composition under two drones that fire pairs."

@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="RoomRemix" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://world/remix/RoomRemix.gd" id="RoomRemix"]
+[ext_resource type="Script" path="res://world/remix/RemixOp.gd" id="RemixOp"]
+[ext_resource type="Resource" path="res://data/enemies/warden_krail_remix.tres" id="warden_krail_remix"]
+[ext_resource type="PackedScene" path="res://enemies/variants/Hopper.tscn" id="Hopper"]
+[ext_resource type="Resource" path="res://data/level/clamp_krail_remix.tres" id="clamp_krail_remix"]
+
+[sub_resource type="Resource" id="Op1"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1")
+property = &"data"
+value = ExtResource("warden_krail_remix")
+
+[sub_resource type="Resource" id="Op2"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1/Behavior")
+property = &"phase2_threshold"
+value = 0.65
+
+[sub_resource type="Resource" id="Op3"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1/Behavior")
+property = &"phase2_telegraph_scale"
+value = 0.75
+
+[sub_resource type="Resource" id="Op4"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1/Behavior")
+property = &"summon_scene"
+value = ExtResource("Hopper")
+
+[sub_resource type="Resource" id="Op5"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1/Behavior")
+property = &"summon_offsets"
+value = Array[Vector2]([Vector2(-170, 0), Vector2(170, 0), Vector2(0, -40)])
+
+[sub_resource type="Resource" id="Op6"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/WardenKrail1/Behavior")
+property = &"phase_pause"
+value = 0.9
+
+[sub_resource type="Resource" id="Op7"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Geometry/Clamp_wt_clamp")
+property = &"timing"
+value = ExtResource("clamp_krail_remix")
+
+[resource]
+script = ExtResource("RoomRemix")
+room = "res://world/rooms/lowlight/WardenTower.tscn"
+active_when = "flag:ng_remix"
+ops = Array[ExtResource("RemixOp")]([SubResource("Op1"), SubResource("Op2"), SubResource("Op3"), SubResource("Op4"), SubResource("Op5"), SubResource("Op6"), SubResource("Op7")])
+intent = "Summons change, phase 2 comes earlier, the clamp punish comes back sooner."

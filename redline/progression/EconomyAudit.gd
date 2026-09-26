@@ -9,15 +9,34 @@ extends RefCounted
 ## - by_district: the placed Scrap (bundles, walls, enemies, boss, one_time,
 ##   per_clear) of each map district, so ECONOMY.md can show where the
 ##   income comes from. Quests, dialogue and sinks are not per-district.
+## compute(true) audits one NG+ cycle (D-155, R09.2, R09.11): every room with
+## its remix applied (forced, whatever the flags say), plain Scrap bundles
+## already taken (carried), secret stashes paying NgPlusConfig.
+## secret_scrap_scale, everything else (walls, enemies, bosses, quests,
+## dialogue) paid again. "ng_secret_bundles" is that stash income.
 
 
-static func compute() -> Dictionary:
-	var r := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0, "quests": 0, "dialogue": 0, "sinks": 0, "sink_items": {}, "by_district": {}}
+static func compute(remix := false) -> Dictionary:
+	var r := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0, "quests": 0, "dialogue": 0, "sinks": 0, "sink_items": {}, "by_district": {},
+		"ng_secret_bundles": 0}
+	var scale := NewGamePlus.config().secret_scrap_scale
 	for room in Game.world_map.rooms:
 		var inst := (load(room.room_path) as PackedScene).instantiate()
 		RoomTemplate.expand_all(inst)
 		var placed := {"bundles": 0, "walls": 0, "enemies_first_clear": 0, "boss": 0}
-		tally(inst, placed)
+		if remix:
+			RemixLibrary.apply(inst, room.room_path, true)
+			var secret := NewGamePlus.secret_bundles_in(inst)
+			for n in inst.find_children("*", "Collectible", true, false):
+				var c := n as Collectible
+				if c.kind == Collectible.Kind.SCRAP_BUNDLE and secret.has(c.persist_id):
+					var pay := roundi(c.scrap_amount * scale)
+					placed["bundles"] += pay
+					r["ng_secret_bundles"] += pay
+			# Bundles are counted above (plain ones stay taken in NG+).
+			tally(inst, placed, false)
+		else:
+			tally(inst, placed)
 		inst.free()
 		var district := String(room.district)
 		if not r["by_district"].has(district):
@@ -57,10 +76,11 @@ static func compute() -> Dictionary:
 
 ## Adds one (expanded) room's placed Scrap to `r`. Bosses are one-time
 ## income (data.boss), never part of a respawning re-clear.
-static func tally(inst: Node, r: Dictionary) -> void:
+static func tally(inst: Node, r: Dictionary, bundles := true) -> void:
 	for n in inst.find_children("*", "", true, false):
 		if n is Collectible and (n as Collectible).kind == Collectible.Kind.SCRAP_BUNDLE:
-			r["bundles"] += (n as Collectible).scrap_amount
+			if bundles:
+				r["bundles"] += (n as Collectible).scrap_amount
 		elif n is BreakableWall:
 			r["walls"] += (n as BreakableWall).scrap_inside
 		elif n is Enemy and (n as Enemy).data:

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="RoomRemix" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://world/remix/RoomRemix.gd" id="RoomRemix"]
+[ext_resource type="Script" path="res://world/remix/RemixOp.gd" id="RemixOp"]
+[ext_resource type="Resource" path="res://data/enemies/needle_remix.tres" id="needle_remix"]
+[ext_resource type="Resource" path="res://data/enemies/shield_remix.tres" id="shield_remix"]
+
+[sub_resource type="Resource" id="Op1"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/Needle1")
+property = &"data"
+value = ExtResource("needle_remix")
+
+[sub_resource type="Resource" id="Op2"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/Needle2")
+property = &"data"
+value = ExtResource("needle_remix")
+
+[sub_resource type="Resource" id="Op3"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/Needle3")
+property = &"data"
+value = ExtResource("needle_remix")
+
+[sub_resource type="Resource" id="Op4"]
+script = ExtResource("RemixOp")
+kind = 2
+target = NodePath("Enemies/Hopper2")
+scene_kind = "Shield"
+data = ExtResource("shield_remix")
+
+[resource]
+script = ExtResource("RoomRemix")
+room = "res://world/rooms/lowlight/MarketRun.tscn"
+active_when = "flag:ng_remix"
+ops = Array[ExtResource("RemixOp")]([SubResource("Op1"), SubResource("Op2"), SubResource("Op3"), SubResource("Op4")])
+intent = "Faster Needles around a Shield in the stalls."

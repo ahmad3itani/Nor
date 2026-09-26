@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="RoomRemix" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://world/remix/RoomRemix.gd" id="RoomRemix"]
+[ext_resource type="Script" path="res://world/remix/RemixOp.gd" id="RemixOp"]
+[ext_resource type="Resource" path="res://data/enemies/collector_drone_remix.tres" id="collector_drone_remix"]
+
+[sub_resource type="Resource" id="Op1"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/CollectorDrone1")
+property = &"data"
+value = ExtResource("collector_drone_remix")
+
+[sub_resource type="Resource" id="Op2"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/CollectorDrone1/Behavior")
+property = &"phase2_threshold"
+value = 0.6
+
+[sub_resource type="Resource" id="Op3"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/CollectorDrone1/Behavior")
+property = &"phase2_speed_mult"
+value = 1.3
+
+[sub_resource type="Resource" id="Op4"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/CollectorDrone1/Behavior")
+property = &"first_deck"
+value = Array[StringName]([&"collector_tag_volley", &"collector_claw_dive", &"collector_drop_press", &"collector_hook_sweep"])
+
+[sub_resource type="Resource" id="Op5"]
+script = ExtResource("RemixOp")
+kind = 3
+target = NodePath("Enemies/CollectorDrone1/Behavior")
+property = &"rng_seed"
+value = 23
+
+[resource]
+script = ExtResource("RoomRemix")
+room = "res://world/rooms/undercity/CollectorBay.tscn"
+active_when = "flag:ng_remix"
+ops = Array[ExtResource("RemixOp")]([SubResource("Op1"), SubResource("Op2"), SubResource("Op3"), SubResource("Op4"), SubResource("Op5")])
+intent = "A known fight in a new order; phase 2 comes sooner and moves faster."

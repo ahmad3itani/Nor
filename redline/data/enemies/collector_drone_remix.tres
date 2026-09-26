@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
+[ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
+[ext_resource type="Resource" path="res://data/combat/collector_drop_press.tres" id="3_press"]
+[ext_resource type="Resource" path="res://data/combat/collector_tag_volley.tres" id="4_volley"]
+[ext_resource type="Resource" path="res://data/combat/collector_claw_dive.tres" id="5_dive"]
+[ext_resource type="Resource" path="res://data/combat/collector_hook_sweep.tres" id="6_sweep"]
+[ext_resource type="Resource" path="res://data/combat/collector_drop_press_p2.tres" id="7_press_p2"]
+[ext_resource type="Resource" path="res://data/combat/collector_tag_volley_p2.tres" id="8_volley_p2"]
+
+[resource]
+script = ExtResource("2_enemy")
+id = &"collector_drone"
+display_name = "Collector Drone"
+max_health = 420.0
+max_poise = 90.0
+stagger_time = 3.0
+mass = 4.0
+armored = true
+armor_knockback_scale = 0.05
+poise_locked_while_down = true
+ranged_poise_scale = 0.3
+move_speed = 95.0
+accel = 600.0
+friction = 900.0
+gravity = 900.0
+max_fall_speed = 420.0
+flying = true
+body_size = Vector2(40, 24)
+aggro_range = 9999.0
+attacks = Array[ExtResource("1_attack")]([ExtResource("3_press"), ExtResource("4_volley"), ExtResource("5_dive"), ExtResource("6_sweep"), ExtResource("7_press_p2"), ExtResource("8_volley_p2")])
+attack_cooldown = 0.75
+min_telegraph = 0.5
+impact_speed = 9999.0
+reactor_reward = 50.0
+style_value = 200.0
+scrap_drop = 0
+boss = true
+color = Color(0.46, 0.42, 0.3, 1)
+elite = true
+death_time = 1.6
