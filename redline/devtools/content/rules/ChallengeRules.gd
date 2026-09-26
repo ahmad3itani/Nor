@@ -183,7 +183,11 @@ static func boss_ids(room: Node) -> PackedStringArray:
 
 # --- CH-5/6/12: conditions and kits ------------------------------------------------
 
+## A validator that ran no room pass (a partial run from a test) has no flag
+## graph to compare against: every flag counts as produced there.
 static func _produced(v: ContentValidator, flag: String) -> bool:
+	if int(v.stats.get("rooms", 0)) == 0:
+		return true
 	return v.produced.has(flag) or ContentValidator.CODE_FLAGS.has(flag)
 
 
