@@ -169,8 +169,11 @@ static func loaded_catalogs() -> PackedStringArray:
 
 
 ## Back to English with nothing registered; drops the loaded catalogs (exit,
-## tests). R06.4: also removes the Translation Loc added.
+## tests). R06.4: also removes the Translation Loc added. Leaving a non-English
+## locale behaves like set_locale("en"): the theme is invalidated and
+## EventBus.locale_changed fires, so cached text and fonts follow.
 static func clear_cache() -> void:
+	var was := _locale
 	if _active != null:
 		TranslationServer.remove_translation(_active)
 		_active = null
@@ -182,6 +185,9 @@ static func clear_cache() -> void:
 	flag_missing = false
 	LocaleTable.clear_cache()
 	L10nConfig.clear_cache()
+	if was != SOURCE_LOCALE:
+		UiTheme.invalidate()
+		EventBus.locale_changed.emit(SOURCE_LOCALE)
 
 
 static func _resolve(code: String) -> String:

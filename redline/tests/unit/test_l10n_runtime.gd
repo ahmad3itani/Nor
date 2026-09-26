@@ -78,6 +78,66 @@ func test_locale_changed_signal_once() -> void:
 	check(seen == ["en_XA", "en"], "one emit per real change: %s" % [seen])
 
 
+func test_clear_cache_announces_return_to_source() -> void:
+	var seen: Array = []
+	var cb := func(code: String) -> void: seen.append(code)
+	EventBus.locale_changed.connect(cb)
+	Loc.set_locale("en_XA")
+	Loc.clear_cache()
+	Loc.clear_cache()
+	EventBus.locale_changed.disconnect(cb)
+	check(seen == ["en_XA", "en"], "clear_cache leaving en_XA emits once: %s" % [seen])
+	check(Loc.locale() == "en" and TranslationServer.get_locale() == "en", "back on the source locale")
+
+
+func test_locale_table_validate_rejects_bad_rows() -> void:
+	var t := LocaleTable.new()
+	check(Array(t.validate()).any(func(e: String) -> bool: return e.contains("must be the first row")), "empty table")
+	var fr := _row("fr", true)
+	var en := _row("en", true)
+	t.rows = [fr, en]
+	var errs := t.validate()
+	check(Array(errs).any(func(e: String) -> bool: return e.contains("must be the first row")), "en not first: %s" % [errs])
+	check(Array(errs).any(func(e: String) -> bool: return e.contains("'fr' is enabled but has no catalog")), "no fr.po: %s" % [errs])
+	var dup := _row("en_XA", false)
+	var dup2 := _row("en_XA", false)
+	var bad := _row("xx", false)
+	bad.min_font_size = 40
+	bad.reading_scale = 9.0
+	bad.endonym = ""
+	bad.font_paths = PackedStringArray(["res://nope/missing_font.ttf"])
+	var blank := _row("", false)
+	t.rows = [_row("en", true), dup, dup2, bad, blank]
+	errs = t.validate()
+	for want: String in ["'en_XA' listed twice", "min_font_size 40 outside", "reading_scale 9.00 outside",
+			"'xx' has no endonym", "missing_font.ttf does not exist", "has no code"]:
+		check(Array(errs).any(func(e: String) -> bool: return e.contains(want)), "expects '%s': %s" % [want, errs])
+	check(not Array(errs).any(func(e: String) -> bool: return e.contains("first row")), "en first is fine")
+	check(LocaleTable.shared().validate().is_empty(), "the shipped table is clean: %s" % [LocaleTable.shared().validate()])
+
+
+func test_l10n_config_validate_rejects_bad_values() -> void:
+	var c := L10nConfig.new()
+	c.resource_dirs = PackedStringArray(["res://no_such_dir_l10n"])
+	c.pseudo_prefix = ""
+	c.pseudo_pad_char = "~~"
+	c.pseudo_map = {"a": "áá"}
+	c.text_field_pattern = ""
+	var errs := c.validate()
+	for want: String in ["res://no_such_dir_l10n does not exist", "pseudo brackets", "pseudo_map entries",
+			"text_field_pattern"]:
+		check(Array(errs).any(func(e: String) -> bool: return e.contains(want)), "expects '%s': %s" % [want, errs])
+	check(L10nConfig.shared().validate().is_empty(), "the shipped config is clean: %s" % [L10nConfig.shared().validate()])
+
+
+func _row(code: String, enabled: bool) -> LocaleInfo:
+	var r := LocaleInfo.new()
+	r.code = code
+	r.enabled = enabled
+	r.endonym = code
+	return r
+
+
 func test_cli_override_not_saved() -> void:
 	check(Loc.parse_locale_arg(PackedStringArray(["--filter=x", "--locale=en_XA"])) == "en_XA", "--locale parsed")
 	check(Loc.parse_locale_arg(PackedStringArray(["--subtitle-size=2"])) == "", "absent -> ''")
@@ -155,8 +215,12 @@ func test_dev_locale_actions() -> void:
 	check(LocaleDevActions.cycle_locale() == "en", "cycle wraps")
 	check(LocaleDevActions.toggle_flag_missing() and Loc.flag_missing, "flag on")
 	check(not LocaleDevActions.toggle_flag_missing(), "flag off")
-	var report := LocaleDevActions.l10n_report()
+	var r := LocaleDevActions.catalog_report()
+	var report: String = r["report"]
 	check(report.contains("| en_XA |") and report.contains("entries"), "report has the stats table")
+	var n := ExtractStrings.entries_from_pot().size()
+	check(n > 0 and str(r["summary"]).begins_with("%d entries" % n), "summary counts the checked-in POT: %s" % r["summary"])
+	check(str(r["summary"]).contains("en_XA %d/%d" % [n, n]), "en_XA covers the POT: %s" % r["summary"])
 
 
 func test_dev_locale_page_builds() -> void:

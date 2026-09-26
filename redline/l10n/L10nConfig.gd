@@ -67,6 +67,6 @@ func validate() -> PackedStringArray:
 	for k: String in pseudo_map:
 		if k.length() != 1 or str(pseudo_map[k]).length() != 1:
 			errs.append("l10n config: pseudo_map entries map one character to one character ('%s')" % k)
-	if RegEx.create_from_string(text_field_pattern) == null or text_field_pattern == "":
+	if text_field_pattern == "" or not RegEx.create_from_string(text_field_pattern).is_valid():
 		errs.append("l10n config: text_field_pattern is not a valid regex")
 	return errs
