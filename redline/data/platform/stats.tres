@@ -92,6 +92,7 @@ format = 0
 lifetime = true
 profile = true
 shown = true
+reveal_when = "flag:collector_drone_intro_seen"
 
 [sub_resource type="Resource" id="s09"]
 script = ExtResource("1_def")
@@ -102,6 +103,7 @@ format = 0
 lifetime = true
 profile = true
 shown = true
+reveal_when = "flag:warden_krail_intro_seen"
 
 [sub_resource type="Resource" id="s10"]
 script = ExtResource("1_def")
@@ -112,6 +114,7 @@ format = 1
 lifetime = true
 profile = true
 shown = true
+reveal_when = "flag:collector_drone_intro_seen"
 
 [sub_resource type="Resource" id="s11"]
 script = ExtResource("1_def")
@@ -122,6 +125,7 @@ format = 1
 lifetime = true
 profile = true
 shown = true
+reveal_when = "flag:warden_krail_intro_seen"
 
 [sub_resource type="Resource" id="s12"]
 script = ExtResource("1_def")

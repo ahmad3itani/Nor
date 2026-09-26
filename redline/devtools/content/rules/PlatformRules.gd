@@ -4,7 +4,9 @@ extends RefCounted
 ## AchievementRules; this module owns the stat catalog and the no-network ban.
 ##
 ## PL-11  every boss_nohit_* / boss_time_* stat names a BossArena.boss_id found
-##        in a district room (the room pass registers "<boss_id>_intro_seen").
+##        in a district room (the room pass registers "<boss_id>_intro_seen"),
+##        and hides behind reveal_when "flag:<boss_id>_intro_seen" (no boss
+##        name on the Records page before the meeting).
 ## PL-12  StatDef ids unique; api names unique and storefront-safe
 ##        (^[A-Z0-9_]{1,128}$); DERIVED stats are ones StatsTracker computes.
 ## PL-14  no network classes or storefront SDK calls under res://platform or in
@@ -81,8 +83,13 @@ static func boss_stat_errors(cat: StatCatalog, boss_ids: PackedStringArray) -> P
 			continue
 		var id := String(s.id)
 		for prefix in ["boss_nohit_", "boss_time_"]:
-			if id.begins_with(prefix) and not boss_ids.has(id.trim_prefix(prefix)):
-				out.append("stat %s: no district room has a BossArena with boss_id '%s'" % [id, id.trim_prefix(prefix)])
+			if not id.begins_with(prefix):
+				continue
+			var boss := id.trim_prefix(prefix)
+			if not boss_ids.has(boss):
+				out.append("stat %s: no district room has a BossArena with boss_id '%s'" % [id, boss])
+			if s.reveal_when != "flag:%s_intro_seen" % boss:
+				out.append("stat %s: reveal_when must be 'flag:%s_intro_seen' (spoiler guard)" % [id, boss])
 	return out
 
 
