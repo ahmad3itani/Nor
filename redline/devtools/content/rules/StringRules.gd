@@ -7,16 +7,16 @@ extends RefCounted
 ##   generated from glyphs the font has, so a miss is a tool bug);
 ## - ENFORCED (errors once ENFORCE is true, warnings until then): L-1 catalog
 ##   up to date, L-2 field coverage, L-3 hard-coded literals, L-6 source over
-##   its max, L-9 two or more % specs. T13 flips ENFORCE after migrating the
-##   pre-M9 strings; until then the findings are its worklist;
+##   its max, L-9 two or more % specs. On since the T13 migration (every
+##   pre-M9 string moved to Loc): a finding fails the gate;
 ## - always warnings: L-7 translation health of real locales (over-length,
 ##   glyphs), L-8 logic comparing display strings, L-9 Loc.f args.
 ## The repo-wide passes (L-1/2/3/6/8/9) run only in a full content pass (after
 ## scan_references), so unit tests of other modules on an empty validator
 ## stay cheap and quiet.
 
-## T13 sets this to true (then test_catalog_up_to_date and --check gate).
-const ENFORCE := false
+## On since T13 (test_catalog_up_to_date and ExtractStrings --check gate).
+const ENFORCE := true
 ## Display-type fields that logic must not compare with a literal (L-8).
 const DISPLAY_COMPARE := "\\.(district_name|room_name|display_name|boss_title|title)\\s*[!=]=\\s*[\"']"
 

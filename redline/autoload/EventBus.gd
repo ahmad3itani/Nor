@@ -4,6 +4,20 @@ extends Node
 ## Rule (bible §31): only add signals here when two systems genuinely have no
 ## better owner to talk through. Every signal is declared and documented; no
 ## generic "event(name, payload)" dumping ground.
+##
+## Signal text contract (M9 D5 §3.4, D-162: translate at the edge). Text in a
+## payload is one of two kinds, and the kind never changes with the locale:
+## - SOURCE (English, identity data): room_entered(district, room_name),
+##   boss_started(boss, title), dialogue_requested(dialogue, npc_name). Logic
+##   and records may compare them (MusicDirector's Relay check, Playtest
+##   events, PlaytestAnalyzer.boss_key); every display translates them where
+##   it draws (CombatHud banner and boss bar, DialogueBox).
+## - DISPLAY-READY (already translated, composed by the emitter with
+##   Loc.t / Loc.f): hint_requested(text), interact_prompt_changed(text). No
+##   logic reads them; Playtest only counts hints.
+## locale_changed(locale) carries the new code; its listeners re-render from
+## source (MenuHost rebuilds the open menu, CombatHud drops queued hints,
+## DialogueBox / CinematicOverlay redraw the current line, Playtest logs it).
 
 ## A player instance entered the world and is ready to be observed (camera, debug UI).
 signal player_spawned(player: Node2D)
