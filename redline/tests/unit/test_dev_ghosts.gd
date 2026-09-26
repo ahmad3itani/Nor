@@ -35,7 +35,9 @@ func test_dev_ghosts_current() -> void:
 	check(list.size() >= 7, "at least the seven baked challenges ship a rig ghost (%d)" % list.size())
 	for ch in list:
 		var shipped := GhostCodec.load_file(ch.dev_ghost)
-		check(shipped != null and shipped.kind == "dev", "%s: %s is a readable rig ghost" % [ch.id, ch.dev_ghost])
+		check(shipped != null and shipped.kind in ["dev", "dev_hand"], "%s: %s is a readable rig ghost" % [ch.id, ch.dev_ghost])
+		if shipped != null and shipped.kind == "dev_hand":
+			continue # hand-played (promoted PB): no bot bake to match
 		var r: Dictionary = await GhostBake.bake(get_tree(), ch)
 		check(bool(r["ok"]), "%s bakes: %s" % [ch.id, r["failure"]])
 		if bool(r["ok"]):

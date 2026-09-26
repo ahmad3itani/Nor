@@ -6,7 +6,10 @@ extends RefCounted
 ##
 ## They go through the same Challenges API the menus use: a dev start is a
 ## normal run (the profile is sandboxed and restored), only the unlock check
-## is skipped.
+## is skipped. Every entry point is gated on DevActions.available() (D2
+## §8.3). Anything that fabricates progress taints the real profile
+## (dev_tainted, D-145, like DevActions' grants): a start that bypasses an
+## unlock, a made-up finish, and a campaign clock reset.
 
 ## Ghost debug lines on the F1 overlay (segment and frame of every ghost).
 static var ghost_debug: bool = false
@@ -15,6 +18,8 @@ static var ghost_debug: bool = false
 ## Starts `id` ignoring unlocks and reveal state. A world room is the return
 ## point (its default spawn); anywhere else the run just ends in place.
 static func start(id: String) -> bool:
+	if not DevActions.available():
+		return false
 	var ch := ChallengeLibrary.by_id(id)
 	if ch == null:
 		push_warning("ChallengeDevActions.start: unknown challenge '%s'" % id)
@@ -23,7 +28,19 @@ static func start(id: String) -> bool:
 	var ret := {}
 	if room and room.world_room and not Challenges.active():
 		ret = {"room": SceneRouter.current_room_path, "entry": StringName(Game.state.last_entry_id)}
-	return Challenges.start(ch, ret)
+	var bypass := not ChallengeLibrary.unlocked(ch)
+	if not Challenges.start(ch, ret):
+		return false
+	if bypass:
+		taint()
+	return true
+
+
+## Marks the real profile (the held one during a run) as dev-fabricated:
+## lifetime stats and achievements stop counting it (Platform gates).
+static func taint() -> void:
+	var p: GameState = Game.held_profile if Game.held_profile != null else Game.state
+	p.dev_tainted = true
 
 
 ## The value that earns tier `tier` (0 Clear .. 4 Redline) on `ch`, or -1
@@ -40,8 +57,11 @@ static func value_for_tier(ch: ChallengeData, tier: int) -> int:
 ## Ends the live run as a finish worth `tier` (for result-card and
 ## achievement checks). TIME runs set the clock to the tier's frames.
 static func finish_as(tier: int) -> bool:
-	if not Challenges.active() or Challenges.phase() != Challenges.Phase.RUNNING:
+	if not DevActions.available() or not Challenges.active() or Challenges.phase() != Challenges.Phase.RUNNING:
 		return false
+	# Tainted before finish(): its challenge_finished must not reach the
+	# lifetime stats (StatsTracker reads Platform.lifetime_allowed()).
+	taint()
 	var ch := Challenges.current()
 	var v := value_for_tier(ch, tier)
 	if v >= 0 and ch.score_kind == ChallengeData.ScoreKind.TIME:
@@ -52,7 +72,7 @@ static func finish_as(tier: int) -> bool:
 
 ## Ends the live run as a rule failure: &"hit" or &"attack".
 static func fail_now(kind: StringName) -> bool:
-	if not Challenges.active() or Challenges.phase() != Challenges.Phase.RUNNING:
+	if not DevActions.available() or not Challenges.active() or Challenges.phase() != Challenges.Phase.RUNNING:
 		return false
 	var hit := kind == &"hit"
 	Challenges.session.cause = RuleWatch.cause_line("") if hit else Loc.t("Run over: attack used")
@@ -62,11 +82,13 @@ static func fail_now(kind: StringName) -> bool:
 
 ## Forgets one challenge's records ("" = every record and PB ghost).
 static func clear_records(id: String = "") -> void:
-	Challenges.records.clear(id)
+	if DevActions.available():
+		Challenges.records.clear(id)
 
 
 static func set_ghost_debug(on: bool) -> void:
-	ghost_debug = on
+	ghost_debug = on and DevActions.available()
+	on = ghost_debug
 	if on and not DebugOverlay.providers.has(ghost_lines):
 		DebugOverlay.providers.append(ghost_lines)
 	elif not on:
@@ -92,14 +114,18 @@ static func ghost_lines() -> PackedStringArray:
 ## ghost as a hand-played one ("dev_hand": GhostBake --check skips it).
 ## Returns the written path, or "" when there is nothing to promote.
 static func promote_pb_ghost(id: String) -> String:
-	if not OS.has_feature("editor"):
+	if not OS.has_feature("editor") or not DevActions.available():
 		return ""
 	var ch := ChallengeLibrary.by_id(id)
 	if ch == null:
 		return ""
-	var g := Challenges.records.pb_ghost(id, Game.profile_id, ch.revision)
-	if g == null:
+	var src := Challenges.records.pb_ghost(id, Game.profile_id, ch.revision)
+	if src == null:
 		return ""
+	# A copy: the PB ghost itself is never edited.
+	var g := GhostData.new()
+	g.apply_header(src.header())
+	g.samples = src.samples.duplicate()
 	g.kind = "dev_hand"
 	g.profile = 0
 	var path := "%s/%s.ghost" % [GhostBake.DEFAULT_OUT, id]
@@ -119,7 +145,13 @@ static func campaign_summary() -> String:
 		" (last %s)" % last if last != "" else "", "" if s.igt_complete else " · incomplete (pre-M9 save)"]
 
 
-## Zeroes the campaign clock and its splits on the live profile.
+## Zeroes the campaign clock and its splits on the live profile. The clock
+## no longer covers the whole playthrough, so the profile stops counting as
+## a complete M9 campaign (igt_complete off): act1_end never submits a
+## campaign best from a reset clock.
 static func reset_campaign_clock() -> void:
+	if not DevActions.available():
+		return
 	Game.state.igt_frames = 0
 	Game.state.igt_splits = {}
+	Game.state.igt_complete = false

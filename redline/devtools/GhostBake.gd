@@ -8,12 +8,13 @@ extends Node
 ## exits are finish lines and the next room never loads); "boss_blade" /
 ## "boss_pistol" = walk into the arena, then BossBot with that profile.
 ##
-##   godot --headless --fixed-fps 60 res://devtools/GhostBake.tscn -- --challenge=<id>|all [--check] [--out=res://data/challenges/ghosts] [--pacify]
+##   godot --headless --fixed-fps 60 res://devtools/GhostBake.tscn -- --challenge=<id>|all [--check] [--out=res://data/challenges/ghosts] [--pacify] [--force]
 ##
 ## --check re-bakes in memory and exits 1 when a shipped ghost's revision or
 ## frame count differs (exact: headless fixed-fps is deterministic, R08.14),
 ## which test_dev_ghosts_current also runs in-process. Without --check the
-## ghosts are written to --out. Either way it prints the suggested medals;
+## ghosts are written to --out, except over a hand-played (dev_hand) ghost
+## unless --force is given. Either way it prints the suggested medals;
 ## a human copies them into the .tres (data, never auto-written).
 ##
 ## Determinism (R08.4, R08.14): every timing setting is pinned for the bake
@@ -87,6 +88,10 @@ func _main() -> void:
 				print("GhostBake: %s matches the shipped ghost" % id)
 		else:
 			var path := "%s/%s.ghost" % [String(args["out"]), id]
+			if not may_overwrite(path, bool(args["force"])):
+				printerr("GhostBake: %s is a hand-played rig ghost (dev_hand); pass --force to replace it" % path)
+				_exit_code = 1
+				continue
 			var err := GhostCodec.save(path, r["ghost"])
 			if err != OK:
 				printerr("GhostBake: %s could not write %s (%s)" % [id, path, error_string(err)])
@@ -96,16 +101,18 @@ func _main() -> void:
 	get_tree().quit(_exit_code)
 
 
-## {"ids": PackedStringArray, "check": bool, "out": String}. "all" = every
-## challenge with a bot.
+## {"ids": PackedStringArray, "check": bool, "pacify": bool, "force": bool,
+## "out": String}. "all" = every challenge with a bot.
 static func parse_args(args: PackedStringArray) -> Dictionary:
-	var out := {"ids": PackedStringArray(), "check": false, "pacify": false, "out": DEFAULT_OUT}
+	var out := {"ids": PackedStringArray(), "check": false, "pacify": false, "force": false, "out": DEFAULT_OUT}
 	var ids := PackedStringArray()
 	for a in args:
 		if a == "--check":
 			out["check"] = true
 		elif a == "--pacify":
 			out["pacify"] = true
+		elif a == "--force":
+			out["force"] = true
 		elif a.begins_with("--out="):
 			out["out"] = a.trim_prefix("--out=").trim_suffix("/")
 		elif a.begins_with("--challenge="):
@@ -119,6 +126,16 @@ static func parse_args(args: PackedStringArray) -> Dictionary:
 					ids.append(id)
 	out["ids"] = ids
 	return out
+
+
+## False when `path` holds a hand-played ghost (ChallengeDevActions
+## promote_pb_ghost, kind "dev_hand") and `force` is off: a bot bake never
+## silently replaces a human run.
+static func may_overwrite(path: String, force: bool) -> bool:
+	if force or not FileAccess.file_exists(path):
+		return true
+	var g := GhostCodec.load_file(path)
+	return g == null or g.kind != "dev_hand"
 
 
 ## "" when the shipped ghost of `ch` has this revision and frame count, else
