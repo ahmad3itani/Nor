@@ -42,6 +42,9 @@ const ROOM_TABLE := {
 const EXTRA_SPAWNS := [
 	["undercity/Wake", &"start", Vector2(40, 0), 1],
 	["lowlight/Relay", &"start", Vector2(140, 0), 1],
+	# M9 (T08, D-169): the training rig's spawn, where a challenge run started
+	# at the Relay terminal returns Rook.
+	["lowlight/Relay", &"challenges", Vector2(700, 0), 1],
 ]
 
 ## One row per door: [room, exit rect, target room, target entry,

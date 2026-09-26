@@ -167,6 +167,18 @@ r.npc("relay_board", 290, 0, 1)
 # as an actor (SequenceValidation), and act1_close sets act1_complete under
 # its fade, after her line.
 r.npc("mara", 930, 0, 1, present_when=["flag:act1_complete"], name="NPC_mara_door")
+# M9 (T08, D-169): the training rig, a lore-free placeholder entry to the
+# Challenges menu until Bramm (bible §13, the Trainer) takes it over. It is
+# hidden until the Act I close and dark until a challenge unlocks
+# (ChallengeTerminal checks ChallengeLibrary at runtime; nothing here is
+# conditional). On the floor at 740: its 24 px box (728..752) is clear of the
+# pillars (600/900), Mara's workbench (590..630) and Vell (850, on the -80
+# step), and it stands under Vell's first -40 step. The "challenges" spawn
+# (700, facing the rig) is where a run started here returns Rook. Appended
+# last so no numbered name shifts.
+r.ext["challenge_terminal"] = ("Script", "res://interactables/ChallengeTerminal.gd")
+r.raw("Interactables", "ChallengeTerminal", "Area2D", ['position = Vector2(740, 0)', 'script = ExtResource("challenge_terminal")'])
+r.spawn("challenges", 700, 0, 1)
 r.write(OUT + "Relay.tscn")
 
 # ---------------------------------------------------------------- Flooded Alley

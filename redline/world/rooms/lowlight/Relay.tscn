@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://enemies/base/EncounterDirector.gd" id="director"]
 [ext_resource type="Script" path="res://world/graybox/GrayboxBlock.gd" id="block"]
@@ -21,6 +21,7 @@
 [ext_resource type="Resource" path="res://data/sequences/relay_arrival.tres" id="seq_relay_arrival"]
 [ext_resource type="Script" path="res://world/props/SequenceTrigger.gd" id="sequence"]
 [ext_resource type="Resource" path="res://data/npcs/relay_board.tres" id="npc_relay_board"]
+[ext_resource type="Script" path="res://interactables/ChallengeTerminal.gd" id="challenge_terminal"]
 [ext_resource type="Script" path="res://world/rooms/Room.gd" id="room"]
 [ext_resource type="Resource" path="res://data/districts/relay.tres" id="theme"]
 
@@ -688,3 +689,12 @@ script = ExtResource("npc")
 profile = ExtResource("npc_mara")
 facing = 1
 present_when = PackedStringArray("flag:act1_complete")
+
+[node name="ChallengeTerminal" type="Area2D" parent="Interactables"]
+position = Vector2(740, 0)
+script = ExtResource("challenge_terminal")
+
+[node name="Spawn_challenges" type="Marker2D" parent="Spawns"]
+position = Vector2(700, 0)
+script = ExtResource("spawn")
+spawn_id = &"challenges"
