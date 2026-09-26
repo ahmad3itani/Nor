@@ -210,14 +210,23 @@ static func _reload_settings_after_boot() -> void:
 	if s == null or s.is_node_ready():
 		return
 	s.ready.connect(func() -> void:
-		if not redirects_dirs() or s.get("_path") == DEMO_SETTINGS_PATH:
-			return
-		if s.has_method("apply_defaults"):
-			s.call("apply_defaults")
-		var c := config()
-		if c:
-			s.set("playtest_recording", c.recording_default)
-		s.call("load_settings", DEMO_SETTINGS_PATH), CONNECT_ONE_SHOT)
+		if redirects_dirs() and s.get("_path") != DEMO_SETTINGS_PATH:
+			load_demo_settings(s), CONNECT_ONE_SHOT)
+
+
+## Loads a redirected demo's own settings file into `s` from the defaults.
+## first_run follows that file, not the full game's settings.cfg (which
+## Settings.load_settings() decided from): a demo on an origin where the full
+## game already stored settings still shows the first-run row (D-168).
+## `path` is a test seam.
+static func load_demo_settings(s: Node, path: String = DEMO_SETTINGS_PATH) -> void:
+	if s.has_method("apply_defaults"):
+		s.call("apply_defaults")
+	var c := config()
+	if c:
+		s.set("playtest_recording", c.recording_default)
+	s.call("load_settings", path)
+	s.set("first_run", not FileAccess.file_exists(path))
 
 
 ## Puts back every value apply_demo_dirs changed that nothing changed since.
@@ -297,3 +306,7 @@ static func info() -> Dictionary:
 ## no Resource outlives its script at exit).
 static func clear_cache() -> void:
 	_config = null
+	# A pending redirect whose autoload never entered the tree (a tool scene
+	# started with --demo) must not leave the hook connected past exit.
+	_pending.clear()
+	_drop_pending_hook()

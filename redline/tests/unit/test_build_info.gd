@@ -208,3 +208,37 @@ func test_redirect_waits_for_late_autoload() -> void:
 	BuildInfo._restore_dirs()
 	check(probe.text == "", "restored")
 	probe.queue_free()
+
+
+## D-168 in a redirected demo: Settings decided first_run from the full
+## game's settings.cfg; the demo's own file decides it instead, so a demo on
+## an origin (or a dev machine) that already has full-game settings still
+## shows the first-run row, and a demo that saved its file does not.
+func test_demo_first_run_follows_demo_settings_file() -> void:
+	var dir := "user://test_build_info_settings"
+	var path := dir + "/settings.cfg"
+	AtomicJson.remove_tree(dir)
+	BuildInfo.set_force_demo(1)
+	var s := (load("res://autoload/Settings.gd") as GDScript).new() as Node
+	s.set("first_run", false)  # the full game's settings.cfg exists
+	BuildInfo.load_demo_settings(s, path)
+	check(bool(s.get("first_run")), "no demo settings file: first run")
+	check(s.get("_path") == path, "reads and writes the demo file")
+	check(not bool(s.get("playtest_recording")), "demo recording default applied")
+	DirAccess.make_dir_recursive_absolute(dir)
+	check(ConfigFile.new().save(path) == OK, "demo settings written")
+	BuildInfo.load_demo_settings(s, path)
+	check(not bool(s.get("first_run")), "a saved demo settings file retires the row")
+	s.free()
+	AtomicJson.remove_tree(dir)
+
+
+## clear_cache (Cinematics._exit_tree) drops a redirect still waiting for an
+## autoload that never entered the tree, and its root hook.
+func test_clear_cache_drops_pending_hook() -> void:
+	var before := get_tree().root.child_entered_tree.get_connections().size()
+	BuildInfo._redirect("BuildInfoNeverArrives", "text", "x", "")
+	check(BuildInfo._pending_hook.is_valid(), "hooked while pending")
+	BuildInfo.clear_cache()
+	check(BuildInfo._pending.is_empty() and not BuildInfo._pending_hook.is_valid(), "pending and hook dropped")
+	check(get_tree().root.child_entered_tree.get_connections().size() == before, "root signal clean")
