@@ -75,3 +75,18 @@ func test_ui_accept_cancel_have_pad() -> void:
 	InputGlyphs.using_pad = true
 	check(InputGlyphs.label(&"ui_accept") == "A", "pad ui_accept label is '%s'" % InputGlyphs.label(&"ui_accept"))
 	InputGlyphs.using_pad = was_pad
+
+
+## M9 (D6, web): Esc leaves browser fullscreen before the game sees it, so
+## pause also has P; the pad keeps Start. Physical keycodes only.
+func test_pause_has_escape_p_and_start() -> void:
+	var keys: Array[int] = []
+	var start := false
+	for ev in InputMap.action_get_events(&"pause"):
+		if ev is InputEventKey:
+			keys.append((ev as InputEventKey).physical_keycode)
+		elif ev is InputEventJoypadButton and (ev as InputEventJoypadButton).button_index == JOY_BUTTON_START:
+			start = true
+	check(KEY_ESCAPE in keys, "pause lacks physical Escape (%s)" % str(keys))
+	check(KEY_P in keys, "pause lacks physical P (%s)" % str(keys))
+	check(start, "pause has no pad Start")

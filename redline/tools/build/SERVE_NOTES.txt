@@ -1,0 +1,17 @@
+REDLINE {label}: serving the web build
+
+- Single-threaded ("nothreads") export: no SharedArrayBuffer, so no COOP/COEP headers are needed.
+  It runs on itch.io and on any plain static host.
+- Serve .wasm as application/wasm. If you serve the optional .gz sidecars (build.py --gzip-web), set
+  Content-Encoding: gzip and keep the original Content-Type.
+- Local test: python3 -m http.server in the unzipped folder (no gzip), then open http://localhost:8000/.
+- itch.io: upload the web zip, tick "This file will be played in the browser", viewport 960 x 540
+  (2x the 480 x 270 canvas, integer scale), and enable the fullscreen button.
+- Saves, settings and playtest files live in the browser's storage (IndexedDB) for the page's origin.
+  Clearing site data deletes them.
+- The per-feature user dir that keeps a desktop demo apart from the full game does NOT apply on the web:
+  the demo keeps its data under user://demo/ in the browser's storage for that origin, so a demo and the
+  full game served from the same origin never overwrite each other's saves.
+- Esc leaves browser fullscreen before the game sees it: pause with P or the pad's Start button.
+- Browsers expose a gamepad only after its first button press.
+- No network code: the game never contacts a server.

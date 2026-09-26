@@ -1,0 +1,30 @@
+REDLINE {label}
+The demo: the Undercity, from Wake to the Escape Tunnel. Placeholder art and sound. Keyboard or controller.
+The full Act I continues in Lowlight.
+
+RUN
+  Windows: unzip, double-click REDLINE.exe. SmartScreen: "More info" -> "Run anyway" (unsigned).
+  macOS:   unzip, right-click REDLINE.app -> Open (ad-hoc signed; or System Settings > Privacy & Security > Open Anyway).
+  Linux:   chmod +x REDLINE.x86_64 && ./REDLINE.x86_64
+  Web:     open the page; the game starts after the first click.
+
+TITLE SCREEN: New Game starts unarmed in the Undercity (Wake). Cutscenes: hold Space/Enter/K/Z (pad A) or
+pause -> Skip scene. Settings has comfort and accessibility options; every one of them is in the demo.
+
+CONTROLS (keyboard / pad)
+  Move            A D / arrows          left stick / d-pad
+  Jump            Space, K or Z         A
+  Dodge           Shift, L or C         B
+  Light attack    J                     X
+  Heavy attack    I                     Y
+  Ranged          O                     RB
+  Heal            H
+  Interact        E                     d-pad up
+  Map             M                     Back
+  Pause           Esc or P              Start   (in a browser, Esc leaves fullscreen: use P)
+
+SAVES AND SETTINGS (local only, never uploaded; kept apart from the full game)
+  Windows: {user_dir_windows}
+  macOS:   {user_dir_macos}
+  Linux:   {user_dir_linux}
+Playtest recording is off by default in the demo (Settings turns it on; files stay on this computer).

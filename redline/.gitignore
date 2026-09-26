@@ -2,7 +2,8 @@
 .godot/
 /android/
 *.tmp
-export_presets.cfg
+# Export outputs (tools/build/build.py)
+/build/
 
 # Python bytecode (roomgen tools)
 __pycache__/
