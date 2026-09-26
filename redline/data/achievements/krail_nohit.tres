@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "krail_nohit"
+title = "Untouched: Krail"
+description = "Defeat Warden Krail without taking a hit."
+category = 3
+sort = 230
+stat_id = &"boss_nohit_warden_krail"
+stat_target = 1.0
+reveal_when = "flag:warden_krail_intro_seen"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "look_closer"
+title = "Look Closer"
+description = "Find a hidden detail in a memory."
+hidden = true
+hint_when_hidden = "Memories hold more than they show."
+category = 1
+sort = 280
+stat_id = &"memory_details_found"
+stat_target = 1.0
+stat_scope = 1

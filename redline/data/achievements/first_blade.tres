@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "first_blade"
+title = "Armed and Awake"
+description = "Take up the Pulse Blade."
+category = 0
+sort = 10
+conditions = PackedStringArray("flag:got_pulse_blade")

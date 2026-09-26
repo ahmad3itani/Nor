@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "all_fragments"
+title = "What Was Taken"
+description = "Recover every memory fragment in Act I."
+category = 1
+sort = 120
+conditions = PackedStringArray("count:fragments:5")
+completion = true

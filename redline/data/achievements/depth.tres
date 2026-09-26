@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "depth"
+title = "Depth"
+description = "Reach the bottom of the training rig."
+hidden = true
+hint_when_hidden = "The rig at the Relay goes deeper than it looks."
+category = 1
+sort = 300
+conditions = PackedStringArray("flag:null_depth_reached")
+reveal_when = "flag:null_open"

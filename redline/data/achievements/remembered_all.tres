@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "remembered_all"
+title = "I Remember"
+description = "Remember every memory in Act I."
+category = 2
+sort = 150
+conditions = PackedStringArray("atleast:memories_remembered:6")

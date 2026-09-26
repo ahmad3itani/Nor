@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "style_redline"
+title = "REDLINE"
+description = "Reach Style REDLINE."
+category = 3
+sort = 210
+stat_id = &"best_style_rank"
+stat_target = 7.0

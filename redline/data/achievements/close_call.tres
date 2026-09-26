@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "close_call"
+title = "Under the Wire"
+description = "Slip under a power shutter at the last moment."
+category = 3
+sort = 260
+stat_id = &"shutter_close_calls"
+stat_target = 1.0

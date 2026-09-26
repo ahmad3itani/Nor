@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "use_the_city"
+title = "Use the City"
+description = "Defeat an enemy with the environment."
+category = 3
+sort = 180
+stat_id = &"kills_environmental"
+stat_target = 1.0

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "clean_getaway"
+title = "Clean Getaway"
+description = "Finish the Rainline chase without being caught."
+category = 3
+sort = 250
+stat_id = &"chase_clean"
+stat_target = 1.0
+reveal_when = "flag:chase_rainline_done"

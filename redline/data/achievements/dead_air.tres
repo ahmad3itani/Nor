@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "dead_air"
+title = "Dead Air, Live Again"
+description = "Complete “Dead Air”."
+category = 2
+sort = 70
+conditions = PackedStringArray("flag:dead_air_complete")
+reveal_when = "flag:quest_dead_air_started"

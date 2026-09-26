@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SfxBank" load_steps=50 format=3]
+[gd_resource type="Resource" script_class="SfxBank" load_steps=51 format=3]
 
 [ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
 [ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
@@ -615,6 +615,19 @@ volume_db = -14.0
 pitch_jitter = 0.02
 cooldown = 0.3
 
+[sub_resource type="Resource" id="Sfx_achievement"]
+script = ExtResource("1_def")
+id = &"achievement"
+wave = 1
+duration = 0.28
+freq_start = 660.0
+freq_end = 1320.0
+noise_mix = 0.0
+tone = 0.7
+volume_db = -14.0
+pitch_jitter = 0.0
+cooldown = 0.5
+
 [resource]
 script = ExtResource("2_bank")
-sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up"), SubResource("Sfx_anchor"), SubResource("Sfx_scrap_pickup"), SubResource("Sfx_scrap_recover"), SubResource("Sfx_heal_start"), SubResource("Sfx_heal"), SubResource("Sfx_collect"), SubResource("Sfx_wall_break"), SubResource("Sfx_repeater"), SubResource("Sfx_quest_complete"), SubResource("Sfx_ui_tick"), SubResource("Sfx_purchase"), SubResource("Sfx_gate"), SubResource("Sfx_boss_roar"), SubResource("Sfx_boss_slam"), SubResource("Sfx_ability_unlock"), SubResource("Sfx_shoot_revolver"), SubResource("Sfx_radio_static"), SubResource("Sfx_memory_open"), SubResource("Sfx_memory_beat"), SubResource("Sfx_memory_tear"), SubResource("Sfx_memory_detail")])
+sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up"), SubResource("Sfx_anchor"), SubResource("Sfx_scrap_pickup"), SubResource("Sfx_scrap_recover"), SubResource("Sfx_heal_start"), SubResource("Sfx_heal"), SubResource("Sfx_collect"), SubResource("Sfx_wall_break"), SubResource("Sfx_repeater"), SubResource("Sfx_quest_complete"), SubResource("Sfx_ui_tick"), SubResource("Sfx_purchase"), SubResource("Sfx_gate"), SubResource("Sfx_boss_roar"), SubResource("Sfx_boss_slam"), SubResource("Sfx_ability_unlock"), SubResource("Sfx_shoot_revolver"), SubResource("Sfx_radio_static"), SubResource("Sfx_memory_open"), SubResource("Sfx_memory_beat"), SubResource("Sfx_memory_tear"), SubResource("Sfx_memory_detail"), SubResource("Sfx_achievement")])

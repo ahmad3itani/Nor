@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "perfect_reads"
+title = "Perfect Read"
+description = "Perfect-dodge 10 attacks."
+category = 3
+sort = 190
+stat_id = &"perfect_dodges"
+stat_target = 10.0

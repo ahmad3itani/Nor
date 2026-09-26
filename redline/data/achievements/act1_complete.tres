@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "act1_complete"
+title = "Run"
+description = "Finish Act I."
+category = 0
+sort = 50
+conditions = PackedStringArray("flag:act1_complete")
+reveal_when = "flag:met_orr"

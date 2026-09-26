@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "orr_on_air"
+title = "On the Air"
+description = "Help Orr get back on the air."
+category = 2
+sort = 170
+conditions = PackedStringArray("flag:arcbeat_orr_on_air")
+reveal_when = "flag:met_orr"

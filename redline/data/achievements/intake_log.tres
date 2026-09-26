@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "intake_log"
+title = "Intake"
+description = "Read the Undercity intake log."
+hidden = true
+hint_when_hidden = "Not every terminal in the Undercity is dead."
+category = 1
+sort = 270
+conditions = PackedStringArray("flag:read_uc_intake_log")

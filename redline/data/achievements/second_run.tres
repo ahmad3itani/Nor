@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "second_run"
+title = "Second Run"
+description = "Finish Act I in New Game+."
+category = 0
+sort = 90
+conditions = PackedStringArray("flag:ng_cycle", "flag:act1_complete")
+reveal_when = "flag:ng_cycle"

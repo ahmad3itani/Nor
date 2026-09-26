@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "clamp_krail"
+title = "Dropped the Grid"
+description = "Stagger Warden Krail with a Grid Clamp."
+category = 3
+sort = 240
+stat_id = &"clamp_boss_staggers"
+stat_target = 1.0
+reveal_when = "flag:warden_krail_intro_seen"

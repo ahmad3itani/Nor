@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "collector_nohit"
+title = "Untouched: Collector"
+description = "Defeat the Collector Drone without taking a hit."
+category = 3
+sort = 220
+stat_id = &"boss_nohit_collector_drone"
+stat_target = 1.0
+reveal_when = "flag:collector_drone_intro_seen"

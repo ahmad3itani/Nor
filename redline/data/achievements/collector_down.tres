@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://platform/AchievementData.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "collector_down"
+title = "Debt Collected"
+description = "Defeat the Collector Drone."
+category = 0
+sort = 20
+conditions = PackedStringArray("flag:collector_drone_defeated")
+reveal_when = "flag:collector_drone_intro_seen"
