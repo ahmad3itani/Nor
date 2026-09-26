@@ -1,6 +1,8 @@
 extends Node
 ## Renders a scripted tour of the Movement Lab to PNGs for reports/PR review.
-##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=movement|combat|slice|ui|undercity|story]
+##   godot --fixed-fps 60 res://devtools/CaptureTour.tscn -- --out=/abs/dir [--tour=movement|combat|slice|ui|undercity|story|endgame]
+## --tour=endgame (M9) runs devtools/capture/EndgameTour in a TourSandbox and
+## exits 1 when an expected shot is missing ([--only=a,c,n,s,l,d,v]).
 ## Needs a real (or virtual, e.g. xvfb-run) display; headless has no renderer.
 
 const MAIN := preload("res://Main.tscn")
@@ -22,6 +24,8 @@ var _endings_done: Array[String] = []
 var _pumping: bool = false
 ## Marks fired while this is on are dropped (a replay whose marks were shot).
 var _mute_marks: bool = false
+## --tour=endgame: the running EndgameTour (kept alive while it awaits).
+var _endgame: EndgameTour = null
 ## Frames a room settles before a story shot: the area banner and quest
 ## hints raised by a preset have faded by then.
 const STORY_SETTLE := 180
@@ -36,7 +40,7 @@ func _ready() -> void:
 	_settings_snapshot = prepare_session(_tour_name, OS.get_cmdline_user_args())
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	var main := MAIN.instantiate()
-	if _tour_name != "ui":
+	if _tour_name != "ui" and _tour_name != "endgame":
 		main.start_room = "res://world/rooms/CombatLab.tscn" if _tour_name == "combat" else "res://world/rooms/MovementLab.tscn"
 	add_child(main)
 	if _tour_name == "combat":
@@ -49,6 +53,9 @@ func _ready() -> void:
 		_ui_tour.call_deferred()
 	elif _tour_name == "story":
 		_story_tour.call_deferred()
+	elif _tour_name == "endgame":
+		_endgame = EndgameTour.new(self)
+		_endgame.run.call_deferred()
 	else:
 		_tour.call_deferred()
 
@@ -122,9 +129,9 @@ static func restore_session(snap: Dictionary) -> void:
 	AtomicJson.remove_tree("user://tour_sandbox")
 
 
-func _quit() -> void:
+func _quit(code: int = 0) -> void:
 	restore_session(_settings_snapshot)
-	get_tree().quit()
+	get_tree().quit(code)
 
 
 func _frames(n: int) -> void:
