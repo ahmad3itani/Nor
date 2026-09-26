@@ -180,6 +180,12 @@ func test_hud_lines_and_debug_line() -> void:
 	CinematicMode.hud_hidden = false
 	Challenges.hud.show_split(-25)
 	check(Challenges.hud.lines()[-1] == "▼ -0.41", "split delta line (%s)" % [Challenges.hud.lines()])
+	check(Challenges.hud.lines().size() * RunTimerHud.LINE + 2.0 <= RunTimerHud.BLOCK.y, "three lines fit the 24 px block (R04.8)")
+	Challenges.hud._toast_time = 0.0
+	Challenges.hud.show_reset_chip()
+	check(Challenges.reset_needs_hold() and Challenges.hud.lines()[-1].begins_with("Hold "), "the chip asks for a hold before reset was used (%s)" % [Challenges.hud.lines()])
+	Challenges.records.mark_reset_used()
+	check(not Challenges.reset_needs_hold() and not Challenges.hud.lines()[-1].begins_with("Hold "), "a tap once it was used (%s)" % [Challenges.hud.lines()])
 	var dbg := Challenges.debug_lines()
 	check(dbg.size() == 1 and dbg[0].begins_with("RUN fx_trial stage 1/1 f="), "debug overlay line (%s)" % [dbg])
 	check(DebugOverlay.providers.has(Challenges.debug_lines), "registered as a DebugOverlay provider")
@@ -189,3 +195,12 @@ func test_hud_lines_and_debug_line() -> void:
 	Settings.speedrun_timer = 1
 	Game.state.igt_frames = 3661
 	check(Challenges.hud.lines() == PackedStringArray(["IGT 1:01.01"]), "the campaign IGT (%s)" % [Challenges.hud.lines()])
+	Settings.speedrun_timer = 2
+	Challenges.hud._on_speedrun_split("room:WorldA", 100, -3)
+	check(Challenges.hud.lines().size() == 2, "a campaign split line (%s)" % [Challenges.hud.lines()])
+	EventBus.game_state_reset.emit()
+	check(Challenges.hud.lines() == PackedStringArray(["IGT 1:01.01"]), "a load or New Game clears it (%s)" % [Challenges.hud.lines()])
+	var world := SceneRouter.current_room_path
+	SceneRouter.current_room_path = "res://world/rooms/challenge/X.tscn"
+	check(Challenges.hud.lines().is_empty() and not Challenges.hud.showing(), "no campaign IGT off the map (labs are not world rooms either)")
+	SceneRouter.current_room_path = world

@@ -47,13 +47,19 @@ func splits() -> SplitList:
 func counts() -> bool:
 	if Challenges.active() or SceneRouter.transitioning:
 		return false
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree and tree.paused:
+		return false
+	return in_world_room()
+
+
+## The live room is a world room on the map (not a lab, the title backdrop
+## or an off-map room): where campaign IGT counts and shows.
+static func in_world_room() -> bool:
 	if SceneRouter.current_room == null or not is_instance_valid(SceneRouter.current_room):
 		return false
 	var room := SceneRouter.current_room as Room
 	if room == null or not room.world_room:
-		return false
-	var tree := Engine.get_main_loop() as SceneTree
-	if tree and tree.paused:
 		return false
 	return not _off_map(SceneRouter.current_room_path)
 

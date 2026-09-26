@@ -186,8 +186,16 @@ func validate() -> PackedStringArray:
 		EndOn.TIME_LIMIT:
 			if time_limit_s <= 0.0:
 				out.append("%s: TIME_LIMIT needs time_limit_s > 0" % id)
+		EndOn.DEATH:
+			# A death is the run's end only when it finishes it (a survival run).
+			if on_death != OnDeath.FINISH:
+				out.append("%s: DEATH needs on_death FINISH" % id)
 		EndOn.GOAL:
 			pass
+	# Every RoomExit in a run room is off (a run never carries Rook into a
+	# sandboxed world room), so a run finishes in the room it starts in.
+	if finish_room != "" and finish_room != start_room:
+		out.append("%s: finish_room must be empty or the start_room (exits are off in runs)" % id)
 	if start_on == StartOn.BOSS_STARTED and boss_id == "" and stages.all(func(s: ChallengeStage) -> bool: return s == null or s.boss_id == ""):
 		out.append("%s: BOSS_STARTED needs a boss_id" % id)
 	if time_limit_s < 0.0:

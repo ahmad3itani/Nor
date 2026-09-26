@@ -226,6 +226,58 @@ func test_group_notice_blocked_is_dropped() -> void:
 	check(_hints.is_empty(), "a blocked notice is dropped, not queued (%s)" % [_hints])
 
 
+## The real path: the Act I close sets act1_complete under its locking
+## scene. The notice is owed, not dropped, and shows once free play resumes.
+func test_group_notice_owed_through_locking_scene() -> void:
+	var room := await h.goto(H.WORLD_A, &"start")
+	Game.set_flag("collector_drone_defeated")
+	await physics_frames(2)
+	var wait := SeqWait.new()
+	wait.seconds = 0.3
+	var flag := SeqFlag.new()
+	flag.flags = PackedStringArray(["act1_complete"])
+	var tail := SeqWait.new()
+	tail.seconds = 0.3
+	var seq := SequenceData.new()
+	seq.id = "test_rig_close"
+	seq.steps = [wait, flag, tail] as Array[SequenceStep]
+	seq.lock_input = true
+	seq.hide_hud = false
+	seq.letterbox = false
+	CinematicMode.set_mode(CinematicMode.Mode.AUTO)
+	CinematicMode.auto_speed = 1.0
+	var done: Array = []
+	var play := func() -> void: done.append(await Cinematics.play(seq, SequenceContext.for_room(room)))
+	play.call()
+	check(await h.until(func() -> bool: return Game.has_flag("act1_complete"), 120), "the flag is set mid-scene")
+	check(Cinematics.locks_input(), "while the scene locks input")
+	await physics_frames(3)
+	check(_hints.is_empty(), "no notice under the scene (%s)" % [_hints])
+	check(not Challenges.records.group_announced(ChallengeData.Group.TIME_TRIAL), "the group is not marked announced yet")
+	check(await h.until(func() -> bool: return not done.is_empty(), 120), "the scene ends")
+	check(await h.until(func() -> bool: return _hints.size() == 1, 30), "the notice shows in free play (%s)" % [_hints])
+	if _hints.size() == 1:
+		var text: String = _hints[0]
+		check(text.contains("Boss Rematch") and text.contains("Time Trial") and text.contains("Deep Rig"), "names every group opened meanwhile: %s" % text)
+	await physics_frames(20)
+	check(_hints.size() == 1, "once (%s)" % [_hints])
+	CinematicMode.reset()
+
+
+func test_validate_rejects_unreachable_finish_and_death_end() -> void:
+	var ch := H.fx(H.TRIAL)
+	ch.finish_room = ch.start_room
+	check(ch.validate().is_empty(), "finish_room = start_room is fine (%s)" % [ch.validate()])
+	ch.finish_room = H.WORLD_B
+	check(Array(ch.validate()).any(func(e: String) -> bool: return e.contains("finish_room")), "another finish room is unreachable while exits are off")
+	ch.finish_room = ""
+	ch.end_on = ChallengeData.EndOn.DEATH
+	ch.on_death = ChallengeData.OnDeath.END_RUN
+	check(Array(ch.validate()).any(func(e: String) -> bool: return e.contains("DEATH needs")), "DEATH needs on_death FINISH")
+	ch.on_death = ChallengeData.OnDeath.FINISH
+	check(ch.validate().is_empty(), "a survival run validates (%s)" % [ch.validate()])
+
+
 func test_rig_closed_before_act1_complete() -> void:
 	Game.state.flags["collector_drone_defeated"] = true
 	check(not ChallengeLibrary.rig_open() and not ChallengeLibrary.any_unlocked(), "a first playthrough: the rig stays closed")

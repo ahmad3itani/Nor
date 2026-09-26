@@ -75,8 +75,8 @@ func _draw() -> void:
 	draw_rect(Rect2(fx, rect.position.y + 4.0, 2.0, 2.0), outline)
 	var font := ThemeDB.fallback_font
 	var tag := tag_text()
-	var w := font.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
-	draw_string(font, Vector2(-w * 0.5, rect.position.y - 3.0), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, outline)
+	var w := font.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE).x
+	draw_string(font, Vector2(-w * 0.5, rect.position.y - 3.0), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE, outline)
 	if bool(_sample.get("finished", false)):
 		draw_line(Vector2(-6, 2), Vector2(6, 2), outline, width)
 

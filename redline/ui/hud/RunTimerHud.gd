@@ -15,7 +15,9 @@ const LOC_FIELDS := {}
 const ORIGIN := Vector2(6, 6)
 const BLOCK := Vector2(120, 24)
 const FONT_SIZE := 7
-const LINE := 8.0
+## Three lines at most (time, attempt or stage, a delta or the chip) fit the
+## 24 px block: 3 x 7 + 2.
+const LINE := 7.0
 
 var _root: Control
 ## [text, seconds left] of the transient third line (split deltas).
@@ -35,6 +37,7 @@ func _ready() -> void:
 	_root.draw.connect(_draw_hud)
 	add_child(_root)
 	EventBus.speedrun_split.connect(_on_speedrun_split)
+	EventBus.game_state_reset.connect(_on_game_state_reset)
 
 
 func reset() -> void:
@@ -42,6 +45,13 @@ func reset() -> void:
 	_toast_time = 0.0
 	_chip_time = 0.0
 	_campaign_split = ""
+
+
+## New Game, Continue, a load or NG+: the last campaign split belonged to the
+## previous profile or cycle.
+func _on_game_state_reset() -> void:
+	if not Challenges.active():
+		_campaign_split = ""
 
 
 func _process(delta: float) -> void:
@@ -70,14 +80,17 @@ func show_reset_chip() -> void:
 func showing() -> bool:
 	if CinematicMode.hud_hidden or (is_inside_tree() and get_tree().paused):
 		return false
-	return Challenges.active() or Settings.speedrun_timer > 0
+	if Challenges.active():
+		return true
+	# Campaign IGT only where it counts (never in labs or on the title backdrop).
+	return Settings.speedrun_timer > 0 and CampaignClock.in_world_room()
 
 
 ## The text lines the HUD draws now (tests read them).
 func lines() -> PackedStringArray:
 	var out := PackedStringArray()
 	if not Challenges.active():
-		if Settings.speedrun_timer <= 0:
+		if Settings.speedrun_timer <= 0 or not CampaignClock.in_world_room():
 			return out
 		out.append(Loc.f("IGT {time}", {"time": RunClock.format(Game.state.igt_frames)}))
 		if Settings.speedrun_timer >= 2 and _campaign_split != "":
@@ -106,8 +119,17 @@ func lines() -> PackedStringArray:
 	if _toast_time > 0.0 and _toast != "":
 		out.append(_toast)
 	elif _chip_time > 0.0:
-		out.append(Loc.f("{key}: restart", {"key": InputGlyphs.label(&"reset")}))
+		out.append(reset_chip_text())
 	return out
+
+
+## The first-use chip names the gesture the reset needs right now: a hold
+## until the player has used reset once (and past the tap window).
+static func reset_chip_text() -> String:
+	var key := InputGlyphs.label(&"reset")
+	if Challenges.reset_needs_hold():
+		return Loc.f("Hold {key}: restart", {"key": key})
+	return Loc.f("{key}: restart", {"key": key})
 
 
 static func rule_chip(ch: ChallengeData) -> String:
@@ -140,7 +162,7 @@ func _draw_hud() -> void:
 	if ls.is_empty():
 		return
 	var font := ThemeDB.fallback_font
-	var h := LINE * ls.size() + 2.0
+	var h := minf(LINE * ls.size() + 2.0, BLOCK.y)
 	_root.draw_rect(Rect2(ORIGIN - Vector2(2, 1), Vector2(BLOCK.x, h)), Color(0, 0, 0, 0.45))
 	for i in ls.size():
 		var col := Color.WHITE if i == 0 else Color("c9c3d6")
