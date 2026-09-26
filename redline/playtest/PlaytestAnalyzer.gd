@@ -124,6 +124,11 @@ func analyze() -> Dictionary:
 		"endings": {},
 		"standing": {},
 		"act1_complete": 0,
+		# M9 endgame (T14): see _endgame_event / _endgame_markdown.
+		"endgame": {"achievements": [], "achievement_ids": {}, "challenges": {}, "ng_cycles": 0, "ng_remix": 0,
+			"null_runs": 0, "null_restarts": {}, "null_ranks": {}, "rebind_players": 0, "rebind_actions": {},
+			"assist": {"shown": 0, "applied": 0, "opened_settings": 0, "declined": 0}, "demo_sessions": 0,
+			"demo_ends": 0, "demo_end_minutes": [], "locale_switches": 0, "locales": {}},
 	}
 	var hist: Array = []
 	hist.resize(PlaytestSession.BUCKETS.size() + 1)
@@ -145,8 +150,10 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 	var boss_starts := {}
 	var seq_first := {}  # id -> the last seq_start's `first` (for a seq_end without one)
 	var deaths := 0
+	var eg := {"achievements": 0, "rebinds": 0, "demo_end": -1.0}
 	for e: Dictionary in s.data["events"]:
 		var room := String(e.get("room", ""))
+		_endgame_event(e, r["endgame"], eg)
 		match String(e["type"]):
 			"death":
 				deaths += 1
@@ -218,6 +225,7 @@ func _analyze_session(s: PlaytestSession, r: Dictionary, hist: Array) -> void:
 					_inc(r["endings"], "%s%s" % [e.get("id", ""), " (skipped)" if bool(e.get("skipped", false)) else ""])
 	r["deaths_total"] = int(r["deaths_total"]) + deaths
 	v["deaths"] = int(v["deaths"]) + deaths
+	_endgame_session(meta, eg, r["endgame"])
 	for bid: String in boss_starts:
 		_push(r["boss_attempts_by_id"], bid, int(boss_starts[bid]))
 		if bid == "warden_krail":
@@ -535,6 +543,7 @@ func render_markdown(r: Dictionary, title: String = "REDLINE playtest report") -
 	md.append(_timeline_markdown(r["timeline"]))
 	md.append(_set_piece_markdown(r))
 	md.append(_story_markdown(r))
+	md.append(_endgame_markdown(r))
 	md.append("## Confusion signals")
 	md.append("")
 	md.append("| Room | Median time (s) | Visits | Re-entries | Idle spans ≥ %ds |" % roundi(config.idle_seconds))
@@ -881,3 +890,127 @@ static func _table(title: String, d: Dictionary) -> String:
 		out.append("| %s | %s |" % [k if String(k) != "" else "(none)", str(snappedf(float(d[k]), 0.1))])
 	out.append("")
 	return "\n".join(out)
+
+
+# --- M9 endgame lines (T14, the M4 rule: every new signal gets a report line) ---
+
+## One event into the endgame tallies. `eg` holds this session's counters.
+static func _endgame_event(e: Dictionary, g: Dictionary, eg: Dictionary) -> void:
+	var id := String(e.get("id", ""))
+	match String(e["type"]):
+		"achievement":
+			eg["achievements"] = int(eg["achievements"]) + 1
+			_inc(g["achievement_ids"], id)
+		"challenge_start":
+			var started := _challenge_row(g, id)
+			started["attempts"] = int(started["attempts"]) + 1
+			if id.begins_with("null_"):
+				g["null_runs"] = int(g["null_runs"]) + 1
+		"challenge_reset":
+			_inc(_challenge_row(g, id)["resets"], String(e.get("reason", "")))
+			if id.begins_with("null_"):
+				_inc(g["null_restarts"], id)
+		"challenge_end":
+			if int(e.get("outcome", -1)) == ChallengeData.Outcome.FINISHED:
+				var row := _challenge_row(g, id)
+				_inc(row["medals"], RankLadder.name(int(e.get("medal", 0))))
+				(row["values"] as Array).append(int(e.get("value", -1)))
+				if id.begins_with("null_"):
+					_inc(g["null_ranks"], RankLadder.name(int(e.get("medal", 0))))
+		"ng_plus":
+			g["ng_cycles"] = int(g["ng_cycles"]) + 1
+			if bool(e.get("remix", false)):
+				g["ng_remix"] = int(g["ng_remix"]) + 1
+		"rebind":
+			eg["rebinds"] = int(eg["rebinds"]) + 1
+			_inc(g["rebind_actions"], String(e.get("action", "")))
+		"assist_suggested":
+			g["assist"]["shown"] = int(g["assist"]["shown"]) + 1
+		"assist_answered":
+			var a := String(e.get("answer", ""))
+			var k := a if a in ["applied", "opened_settings"] else "declined"
+			g["assist"][k] = int(g["assist"][k]) + 1
+		"demo_end":
+			if float(eg["demo_end"]) < 0.0:
+				eg["demo_end"] = float(e.get("t", 0.0))
+		"locale":
+			g["locale_switches"] = int(g["locale_switches"]) + 1
+			_inc(g["locales"], String(e.get("locale", "")))
+
+
+static func _challenge_row(g: Dictionary, id: String) -> Dictionary:
+	if not (g["challenges"] as Dictionary).has(id):
+		g["challenges"][id] = {"attempts": 0, "resets": {}, "medals": {}, "values": []}
+	return g["challenges"][id]
+
+
+static func _endgame_session(meta: Dictionary, eg: Dictionary, g: Dictionary) -> void:
+	(g["achievements"] as Array).append(int(eg["achievements"]))
+	if int(eg["rebinds"]) > 0:
+		g["rebind_players"] = int(g["rebind_players"]) + 1
+	if String(meta.get("build_kind", "full")) == "demo":
+		g["demo_sessions"] = int(g["demo_sessions"]) + 1
+		if float(eg["demo_end"]) >= 0.0:
+			g["demo_ends"] = int(g["demo_ends"]) + 1
+			(g["demo_end_minutes"] as Array).append(float(eg["demo_end"]) / 60.0)
+
+
+## The Gold target of a challenge as report text ("0:26.00" for times), or "—".
+static func gold_target(id: String) -> String:
+	var ch := ChallengeLibrary.by_id(id)
+	if ch == null or ch.medal_thresholds.size() < 3 or ch.score_kind == ChallengeData.ScoreKind.RANK:
+		return "—"
+	return _value_text(ch, ch.medal_thresholds[2])
+
+
+static func _value_text(ch: ChallengeData, value: int) -> String:
+	if ch != null and ch.score_kind == ChallengeData.ScoreKind.TIME:
+		return "%.2f s" % (value / float(RunClock.FPS))
+	return str(value)
+
+
+func _endgame_markdown(r: Dictionary) -> String:
+	var g: Dictionary = r.get("endgame", {})
+	if g.is_empty():
+		return ""
+	var md: PackedStringArray = ["## Endgame (M9)", ""]
+	var ach: Dictionary = g["achievement_ids"]
+	var top := ach.keys()
+	top.sort_custom(func(a: String, b: String) -> bool: return int(ach[a]) > int(ach[b]) or (int(ach[a]) == int(ach[b]) and a < b))
+	md.append("- Achievements earned per session: %s (most earned: %s)" % [_stats(g["achievements"]),
+		", ".join(PackedStringArray(top.slice(0, 5).map(func(k: String) -> String: return "%s ×%d" % [k, int(ach[k])])))
+		if not top.is_empty() else "none"])
+	md.append("- NG+ cycles started: %d (remix on: %s)" % [int(g["ng_cycles"]),
+		("%d%%" % roundi(100.0 * int(g["ng_remix"]) / int(g["ng_cycles"]))) if int(g["ng_cycles"]) > 0 else "n/a"])
+	md.append("- Deep Rig: %d runs · restarts per stratum: %s · ranks: %s" % [int(g["null_runs"]), _pairs(g["null_restarts"]), _pairs(g["null_ranks"])])
+	md.append("- Rebinds: %d of %d players rebound something · actions: %s" % [int(g["rebind_players"]), int(r["sessions"]), _pairs(g["rebind_actions"])])
+	var a: Dictionary = g["assist"]
+	md.append("- Assist suggestions: shown %d · applied %d · opened Settings %d · declined %d" % [int(a["shown"]), int(a["applied"]),
+		int(a["opened_settings"]), int(a["declined"])])
+	md.append("- Demo end card reached: %d of %d demo sessions · minutes at the card: %s" % [int(g["demo_ends"]), int(g["demo_sessions"]),
+		_stats(g["demo_end_minutes"])])
+	md.append("- Language switches: %d (%s)" % [int(g["locale_switches"]), _pairs(g["locales"])])
+	md.append("")
+	md.append("### Challenges")
+	md.append("")
+	md.append("| Challenge | Attempts | Resets by reason | Finishes by medal | Median result | Gold target |")
+	md.append("|---|---|---|---|---|---|")
+	var ids: Array = (g["challenges"] as Dictionary).keys()
+	ids.sort()
+	for id: String in ids:
+		var row: Dictionary = g["challenges"][id]
+		var vals: Array = row["values"]
+		var med := "—" if vals.is_empty() else _value_text(ChallengeLibrary.by_id(id), roundi(_median(vals)))
+		md.append("| %s | %d | %s | %s | %s | %s |" % [id, int(row["attempts"]), _pairs(row["resets"]), _pairs(row["medals"]), med, gold_target(id)])
+	if ids.is_empty():
+		md.append("| _none recorded_ | | | | | |")
+	return "\n".join(md)
+
+
+## "a 2, b 1" (sorted by key) or "none".
+static func _pairs(d: Dictionary) -> String:
+	if d.is_empty():
+		return "none"
+	var keys := d.keys()
+	keys.sort()
+	return ", ".join(PackedStringArray(keys.map(func(k: Variant) -> String: return "%s %d" % [k, int(d[k])])))

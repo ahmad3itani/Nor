@@ -146,7 +146,10 @@ func _ready() -> void:
 		_event("challenge_stage", {"id": id, "stage": stage, "frames": frames, "hits": hits, "deaths": deaths, "medal": medal}))
 	EventBus.speedrun_split.connect(func(id: String, igt: int, delta: int) -> void:
 		_event("split", {"id": id, "igt": igt, "delta": delta}))
-	EventBus.ng_plus_started.connect(func(cycle: int) -> void: _event("ng_plus", {"cycle": cycle}))
+	# The remix option is read from the new cycle's state (T14: the report's
+	# remix share).
+	EventBus.ng_plus_started.connect(func(cycle: int) -> void:
+		_event("ng_plus", {"cycle": cycle, "remix": bool(Game.state.flags.get(NewGamePlus.config().remix_flag, false))}))
 	EventBus.input_bindings_changed.connect(func(action: StringName) -> void:
 		_event("rebind", {"action": String(action)}))
 	EventBus.assist_suggested.connect(func(context: String, cause: String, deaths: int) -> void:

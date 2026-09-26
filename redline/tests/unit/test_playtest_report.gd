@@ -9,10 +9,8 @@ func after_each() -> void:
 	Playtest.end_session("test_done")
 	Playtest.allow_headless = false
 	Playtest.dir = Playtest.DIR
-	for sub in [TEST_DIR + "/heatmaps", TEST_DIR]:
-		if DirAccess.dir_exists_absolute(sub):
-			for f in DirAccess.get_files_at(sub):
-				DirAccess.remove_absolute("%s/%s" % [sub, f])
+	# The whole folder goes (test_zz_user_dir_clean, T14).
+	AtomicJson.remove_tree(TEST_DIR)
 	await physics_frames(1)
 
 
@@ -133,3 +131,53 @@ func test_map_opens_and_travel_are_reported() -> void:
 	var r := a.analyze()
 	check(int(r["map_opens_by_room"]["MarketRun"]) == 2 and int(r["fast_travels"]) == 1, "map/travel not counted")
 	check(a.render_markdown(r).contains("Map opened, by room"), "map section missing from report")
+
+
+# --- M9 endgame lines (T14) -----------------------------------------------------------
+
+func _m9_session(kind: String, events: Array) -> PlaytestSession:
+	var s := PlaytestSession.new({"variant": "baseline", "build_kind": kind})
+	for e: Array in events:
+		s.add_event(float(e[0]), String(e[1]), "Relay", Vector2.ZERO, e[2] if e.size() > 2 else {})
+	return s
+
+
+func test_endgame_lines_from_fixture_sessions() -> void:
+	var gold := ChallengeLibrary.by_id("tt_neon_roofs").medal_thresholds[2]
+	var a := _analyzer([
+		_m9_session("full", [[1.0, "achievement", {"id": "first_blade", "retro": false}],
+			[2.0, "achievement", {"id": "reach_relay", "retro": false}],
+			[3.0, "challenge_start", {"id": "tt_neon_roofs", "attempt": 1}],
+			[4.0, "challenge_reset", {"id": "tt_neon_roofs", "reason": "reset"}],
+			[5.0, "challenge_end", {"id": "tt_neon_roofs", "outcome": ChallengeData.Outcome.FINISHED, "value": gold - 60, "medal": 3, "new_best": true}],
+			[6.0, "challenge_start", {"id": "null_static_lane", "attempt": 1}],
+			[7.0, "challenge_reset", {"id": "null_static_lane", "reason": "death"}],
+			[8.0, "challenge_end", {"id": "null_static_lane", "outcome": ChallengeData.Outcome.FINISHED, "value": 700, "medal": 2, "new_best": true}],
+			[9.0, "ng_plus", {"cycle": 1, "remix": true}],
+			[10.0, "rebind", {"action": "jump"}],
+			[11.0, "assist_suggested", {"context": "WardenTower", "cause": "boss", "deaths": 4}],
+			[12.0, "assist_answered", {"context": "WardenTower", "answer": "applied", "key": "damage_assist"}],
+			[13.0, "locale", {"locale": "en_XA"}]]),
+		_m9_session("demo", [[1.0, "achievement", {"id": "first_blade", "retro": false}],
+			[300.0, "demo_end", {"from": "EscapeTunnel.tscn", "to": "Relay.tscn"}],
+			[301.0, "assist_suggested", {"context": "CollectorBay", "cause": "boss", "deaths": 4}],
+			[302.0, "assist_answered", {"context": "CollectorBay", "answer": "never", "key": ""}]]),
+		_m9_session("demo", [[1.0, "ng_plus", {"cycle": 1, "remix": false}]]),
+	])
+	var r := a.analyze()
+	var g: Dictionary = r["endgame"]
+	check(g["achievements"] == [2, 1, 0] and int(g["achievement_ids"]["first_blade"]) == 2, "achievements per session %s" % [g["achievements"]])
+	var ch: Dictionary = g["challenges"]["tt_neon_roofs"]
+	check(int(ch["attempts"]) == 1 and int(ch["resets"]["reset"]) == 1 and int(ch["medals"][RankLadder.name(3)]) == 1, "challenge row %s" % ch)
+	check(int(g["ng_cycles"]) == 2 and int(g["ng_remix"]) == 1, "NG+ cycles with the remix share")
+	check(int(g["null_runs"]) == 1 and int(g["null_restarts"]["null_static_lane"]) == 1 and int(g["null_ranks"][RankLadder.name(2)]) == 1, "Deep Rig lines %s" % [g])
+	check(int(g["rebind_players"]) == 1 and int(g["rebind_actions"]["jump"]) == 1, "rebinds")
+	check(g["assist"] == {"shown": 2, "applied": 1, "opened_settings": 0, "declined": 1}, "assist answers %s" % g["assist"])
+	check(int(g["demo_sessions"]) == 2 and int(g["demo_ends"]) == 1 and is_equal_approx(float(g["demo_end_minutes"][0]), 5.0), "demo end card N of M, minutes")
+	check(int(g["locale_switches"]) == 1, "locale switches")
+	var md := a.render_markdown(r)
+	for line in ["## Endgame (M9)", "Achievements earned per session", "NG+ cycles started: 2 (remix on: 50%)", "Deep Rig: 1 runs",
+			"Rebinds: 1 of 3 players", "Assist suggestions: shown 2 · applied 1", "Demo end card reached: 1 of 2 demo sessions",
+			"Language switches: 1", "| tt_neon_roofs | 1 | reset 1 |", "Gold target"]:
+		check(md.contains(line), "report has '%s'" % line)
+	check(md.contains(PlaytestAnalyzer.gold_target("tt_neon_roofs")) and PlaytestAnalyzer.gold_target("tt_neon_roofs").ends_with(" s"), "the Gold target in seconds")
