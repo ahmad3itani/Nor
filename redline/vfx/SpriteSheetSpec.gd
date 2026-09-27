@@ -34,14 +34,31 @@ func offset_for(anim_name: StringName, flipped_h: bool = false, flipped_v: bool 
 
 
 func load_texture() -> Texture2D:
-	if texture_path.begins_with("res://"):
-		return load(texture_path) as Texture2D if ResourceLoader.exists(texture_path) else null
-	var img := Image.load_from_file(texture_path)
+	return SpriteSheetSpec.load_texture_at(texture_path)
+
+
+## A res:// texture (null when missing) or a plain image file (tests, tools).
+static func load_texture_at(path: String) -> Texture2D:
+	if path == "":
+		return null
+	if path.begins_with("res://"):
+		return load(path) as Texture2D if ResourceLoader.exists(path) else null
+	if not FileAccess.file_exists(path):
+		return null
+	var img := Image.load_from_file(path)
 	return ImageTexture.create_from_image(img) if img else null
 
 
-func build_frames() -> SpriteFrames:
-	var tex := load_texture()
+## The tint mask laid out like the sheet (metadata/mask_path), or null.
+func load_mask_texture() -> Texture2D:
+	return SpriteSheetSpec.load_texture_at(str(get_meta(&"mask_path", ""))) if has_meta(&"mask_path") else null
+
+
+## Frames cut from the sheet; `tex` swaps in another texture with the same
+## layout (the tint mask).
+func build_frames(tex: Texture2D = null) -> SpriteFrames:
+	if tex == null:
+		tex = load_texture()
 	if tex == null:
 		return null
 	var frames := SpriteFrames.new()
@@ -72,6 +89,12 @@ func validate() -> PackedStringArray:
 		errors.append("%s: %dx%d is not a multiple of the %dx%d cell" % [texture_path.get_file(), size.x, size.y, cell_size.x, cell_size.y])
 	if origin.x < 0 or origin.y < 0 or origin.x >= cell_size.x or origin.y >= cell_size.y:
 		errors.append("%s: origin %s outside the cell" % [texture_path.get_file(), origin])
+	if has_meta(&"mask_path"):
+		var mask := load_mask_texture()
+		if mask == null:
+			errors.append("%s: mask texture missing: %s" % [texture_path.get_file(), get_meta(&"mask_path")])
+		elif Vector2i(mask.get_size()) != size:
+			errors.append("%s: mask %s is not the sheet's size" % [texture_path.get_file(), str(get_meta(&"mask_path")).get_file()])
 	var cols := size.x / maxi(1, cell_size.x)
 	var rows := size.y / maxi(1, cell_size.y)
 	var seen := {}
