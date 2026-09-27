@@ -206,8 +206,9 @@ def build_sparks():
 
 
 # ================================================================== dust
-def puff(f, cx, cy, r, t, seed):
-    """Shaded dust puff: lit top-left rim (3), body (2), shadow (1); dissolves with t."""
+def puff(f, cx, cy, r, t, seed, dither=True):
+    """Shaded dust puff: lit top-left rim (3), body (2), shadow (1); dissolves with t
+    (dither=False: fades by tone only, no ordered-dither holes)."""
     h, w = f.shape
     if r < 0.6:
         put(f, cx, cy, 2 if t < 0.6 else 1)
@@ -219,7 +220,10 @@ def puff(f, cx, cy, r, t, seed):
     p[m] = 2
     p[m & (d > 0.45)] = 3 if t < 0.5 else 2
     p[m & (d < -0.45)] = 1
-    dissolve(p, max(0.0, (t - 0.55) * 2.0), seed, seed)
+    if dither:
+        dissolve(p, max(0.0, (t - 0.55) * 2.0), seed, seed)
+    elif t > 0.55:
+        p[p > 1] -= 1  # fade by one tone instead of punching dither holes
     return merge(f, p)
 
 
@@ -261,8 +265,12 @@ def build_dust():
     for i in range(4):
         t = i / 3
         f = blank(cw, ch)
-        puff(f, 12 - 6 * t, 29 - 3 * t, 1.8 + 2.0 * t, t, i)
-        puff(f, 15 - 3 * t, 30 - 1 * t, 1.2 + 1.2 * t, t + 0.15, i + 1)
+        # T06 redo: frame 2 was dither noise; it now fades by tone as one
+        # smooth blob (the last frame keeps the dissolve to vanish).
+        smooth_fade = i == 2
+        puff(f, 12 - 6 * t, 29 - 3 * t, 1.8 + 2.0 * t, t, i, dither=not smooth_fade)
+        if not smooth_fade:
+            puff(f, 15 - 3 * t, 30 - 1 * t, 1.2 + 1.2 * t, t + 0.15, i + 1)
         run.append(remove_islands(f))
     rows.append(("run_puff", run))
     slide = []
@@ -1020,7 +1028,11 @@ def build_shockwave():
                 x = x0 - s * k
                 y = 63 - hgt * math.sin(math.pi * min(1.0, (k + 1) / 11) ** 0.8) * (1 - 0.3 * k / 10)
                 line(f, x, 63, x, y, 1)
-                put_over(f, x, y, 3 if k < 4 and t < 0.5 else 2)
+                # T06 redo: a 2-tone crest, a bright lip over a mid-tone
+                # shoulder, so the wave reads as a rolling front, not a fin.
+                put_over(f, x, y, 3 if k < 5 and t < 0.6 else 2)
+                if k < 8 and y + 1 < 63:
+                    put_over(f, x, y + 1, 2)
             puff(f, x0 - s * 6, 61, 1.2 + 1.5 * t, t, i)
         f[63, int(32 - 26 * t - 4):int(32 + 26 * t + 5)] = np.maximum(f[63, int(32 - 26 * t - 4):int(32 + 26 * t + 5)], 1)
         gw.append(f)
