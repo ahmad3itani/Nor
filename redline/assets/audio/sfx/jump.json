@@ -1,0 +1,44 @@
+{
+ "id": "jump",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/jump.mp3",
+  "raw/jump__v2.mp3"
+ ],
+ "takes_found": 2,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.25,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "jump_1.ogg",
+   "dur": 0.257,
+   "lufs": -22.9,
+   "tp": -1.5,
+   "peak_ms": 80.5,
+   "bytes": 6522
+  },
+  {
+   "file": "jump_2.ogg",
+   "dur": 0.26,
+   "lufs": -22.3,
+   "tp": -3.9,
+   "peak_ms": 38.5,
+   "bytes": 6733
+  }
+ ],
+ "ship": true,
+ "override": {
+  "head": [
+   "win",
+   -20.0,
+   0.003,
+   0.002
+  ],
+  "min_take": 0.12,
+  "match_lu": 1.0
+ }
+}

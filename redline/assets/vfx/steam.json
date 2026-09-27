@@ -1,0 +1,25 @@
+{
+ "id": "vfx_steam",
+ "texture": "res://assets/vfx/steam.png",
+ "cell": [
+  16,
+  32
+ ],
+ "origin": [
+  8,
+  31
+ ],
+ "rows": [
+  {
+   "name": "puff",
+   "row": 0,
+   "frames": 6,
+   "fps": 8,
+   "loop": true
+  }
+ ],
+ "row_origins": {},
+ "tint": "fog_light / pale grey (#8a8398)",
+ "notes": "Seamless 6-frame loop (puffs cycle with phase offsets); origin at the vent mouth.",
+ "facing": "+x (flip_h for facing -1)"
+}

@@ -1,0 +1,69 @@
+{
+ "id": "ui_icons",
+ "texture": "res://assets/ui/icons.png",
+ "fill_texture": null,
+ "regions": {
+  "anchor": [
+   0,
+   0,
+   16,
+   16
+  ],
+  "npc": [
+   16,
+   0,
+   16,
+   16
+  ],
+  "shop": [
+   32,
+   0,
+   16,
+   16
+  ],
+  "memory": [
+   48,
+   0,
+   16,
+   16
+  ],
+  "scrap": [
+   64,
+   0,
+   16,
+   16
+  ],
+  "gate": [
+   0,
+   16,
+   16,
+   16
+  ],
+  "boss": [
+   16,
+   16,
+   16,
+   16
+  ],
+  "note": [
+   32,
+   16,
+   16,
+   16
+  ],
+  "circuit": [
+   48,
+   16,
+   16,
+   16
+  ],
+  "weapon": [
+   64,
+   16,
+   16,
+   16
+  ]
+ },
+ "tint": "Palette (map_gate, map_note, scrap, memory ...) or UiTheme text",
+ "notes": "11x11 art inside 16x16 cells, grey masks."
+}

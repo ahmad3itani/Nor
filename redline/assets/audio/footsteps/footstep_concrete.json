@@ -1,0 +1,38 @@
+{
+ "id": "footstep_concrete",
+ "category": "footstep",
+ "preset": "footstep_sheet",
+ "derived": true,
+ "raw": [
+  "raw/land_soft.mp3"
+ ],
+ "takes_found": 3,
+ "wanted": 3,
+ "target_lufs": -22,
+ "duration_s": 0.14,
+ "loop": false,
+ "files": [
+  {
+   "file": "footstep_concrete_1.ogg",
+   "dur": 0.114,
+   "lufs": -24.2,
+   "tp": -1.3,
+   "bytes": 4854
+  },
+  {
+   "file": "footstep_concrete_2.ogg",
+   "dur": 0.119,
+   "lufs": -23.8,
+   "tp": -1.3,
+   "bytes": 5017
+  },
+  {
+   "file": "footstep_concrete_3.ogg",
+   "dur": 0.113,
+   "lufs": -24.5,
+   "tp": -1.3,
+   "bytes": 5005
+  }
+ ],
+ "note": "land_soft thud cut to 0.14 s, varispeed 0/-1.5/+1.2 st"
+}

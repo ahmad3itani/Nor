@@ -1,0 +1,39 @@
+{
+ "id": "vfx_muzzle",
+ "texture": "res://assets/vfx/muzzle.png",
+ "cell": [
+  16,
+  16
+ ],
+ "origin": [
+  2,
+  8
+ ],
+ "rows": [
+  {
+   "name": "pistol",
+   "row": 0,
+   "frames": 2,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "scatter",
+   "row": 1,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "revolver",
+   "row": 2,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "Palette ammo (white core dropped under flash reduction: modulate 0.7)",
+ "notes": "Origin at the barrel tip; flash points +x. 24 fps (2-3 frames = 0.08-0.12 s).",
+ "facing": "+x (flip_h for facing -1)"
+}

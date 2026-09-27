@@ -1,0 +1,25 @@
+{
+ "id": "slide",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/slide.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.5,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "slide.ogg",
+   "dur": 0.75,
+   "lufs": -18.2,
+   "tp": -6.3,
+   "peak_ms": 650.5,
+   "bytes": 11422
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,27 @@
+{
+ "id": "boss_defeat",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "derived": true,
+ "raw": [
+  "raw/burnout.mp3",
+  "raw/enemy_die.mp3",
+  "raw/boss_slam.mp3",
+  "raw/wall_break.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 3.5,
+ "loop": false,
+ "files": [
+  {
+   "file": "boss_defeat.ogg",
+   "dur": 2.93,
+   "lufs": -18.0,
+   "tp": -1.4,
+   "bytes": 32823
+  }
+ ],
+ "note": "layered: burnout -2 st, enemy_die -4 st @0.55 s, boss_slam @1.35 s, wall_break LPF @1.45 s"
+}

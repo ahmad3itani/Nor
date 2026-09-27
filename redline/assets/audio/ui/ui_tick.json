@@ -1,0 +1,51 @@
+{
+ "id": "ui_tick",
+ "category": "ui",
+ "preset": "ui_sheet_slice",
+ "raw": [
+  "raw/ui_tick.mp3",
+  "raw/ui_tick__v2.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 3,
+ "target_lufs": -21,
+ "duration_s": 0.05,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "ui_tick_1.ogg",
+   "dur": 0.031,
+   "lufs": -23.7,
+   "tp": -1.1,
+   "peak_ms": 18.5,
+   "bytes": 4797
+  },
+  {
+   "file": "ui_tick_2.ogg",
+   "dur": 0.028,
+   "lufs": -23.9,
+   "tp": -1.3,
+   "peak_ms": 16.5,
+   "bytes": 4758
+  },
+  {
+   "file": "ui_tick_3.ogg",
+   "dur": 0.034,
+   "lufs": -23.0,
+   "tp": -1.1,
+   "peak_ms": 21.5,
+   "bytes": 4827
+  }
+ ],
+ "ship": true,
+ "override": {
+  "varispeed": [
+   0.0,
+   1.5,
+   -1.5
+  ],
+  "lufs": -21,
+  "match_lu": 1.0
+ }
+}

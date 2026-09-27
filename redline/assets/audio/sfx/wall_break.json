@@ -1,0 +1,25 @@
+{
+ "id": "wall_break",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/wall_break.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.0,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "wall_break.ogg",
+   "dur": 1.48,
+   "lufs": -18.2,
+   "tp": -1.4,
+   "peak_ms": 133.5,
+   "bytes": 20085
+  }
+ ],
+ "ship": true
+}

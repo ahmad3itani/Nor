@@ -1,0 +1,32 @@
+{
+ "id": "vfx_death_burst",
+ "texture": "res://assets/vfx/death_burst.png",
+ "cell": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  24
+ ],
+ "rows": [
+  {
+   "name": "small",
+   "row": 0,
+   "frames": 8,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "large",
+   "row": 1,
+   "frames": 10,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "enemy mid-tone (EnemyData.color after F5) or neutral",
+ "notes": "Code flashes the body to a silhouette for 1 frame first (existing hit-flash), then spawns this. Chunks arc and fall; motes scatter and are re-emitted as homing pulse_motes.",
+ "facing": "+x (flip_h for facing -1)"
+}

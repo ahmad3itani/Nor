@@ -1,0 +1,36 @@
+{
+ "id": "amb_lowlight_street",
+ "category": "ambience",
+ "preset": "amb_loop",
+ "raw": "raw/amb_lowlight_street.mp3",
+ "raw_dur": 30.0,
+ "loop": true,
+ "flags": [],
+ "mono": true,
+ "loop_cut_s": 28.0,
+ "target_lufs": -26,
+ "files": [
+  {
+   "file": "amb_lowlight_street.ogg",
+   "dur": 28.0,
+   "lufs": -26.0,
+   "tp": -13.1,
+   "lra": 0.6,
+   "mmax_minus_i": 0.7,
+   "seam_db": 0.17,
+   "dc": 0.0,
+   "wrap_jump": 0.376,
+   "mono_drop": 0.0,
+   "bytes": 242074,
+   "decoded": {
+    "wrap_step": 0.05063,
+    "p99_step": 0.08713,
+    "p999_step": 0.11329,
+    "wrap_rank": 0.8707,
+    "seam_rms_db": 0.0,
+    "lufs": -25.7,
+    "mono_drop": 0.09
+   }
+  }
+ ]
+}

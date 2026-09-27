@@ -1,0 +1,25 @@
+{
+ "id": "heartbeat",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/heartbeat.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.45,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "heartbeat.ogg",
+   "dur": 0.675,
+   "lufs": -18.9,
+   "tp": -1.2,
+   "peak_ms": 47.5,
+   "bytes": 8965
+  }
+ ],
+ "ship": true
+}

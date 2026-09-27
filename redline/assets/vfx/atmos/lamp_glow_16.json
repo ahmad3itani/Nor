@@ -1,0 +1,10 @@
+{
+ "id": "vfx_lamp_glow",
+ "texture": "res://assets/vfx/atmos/lamp_glow_16.png",
+ "size": [
+  16,
+  16
+ ],
+ "tint": "lamp colour (additive)",
+ "notes": "16x16 halo, 3 quantised alpha steps; blend add. Readable with bloom off."
+}

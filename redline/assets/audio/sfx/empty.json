@@ -1,0 +1,25 @@
+{
+ "id": "empty",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/empty.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.12,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "empty.ogg",
+   "dur": 0.18,
+   "lufs": -27.8,
+   "tp": -3.2,
+   "peak_ms": 3.5,
+   "bytes": 5747
+  }
+ ],
+ "ship": true
+}

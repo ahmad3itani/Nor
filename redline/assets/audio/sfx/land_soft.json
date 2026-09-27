@@ -1,0 +1,25 @@
+{
+ "id": "land_soft",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/land_soft.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.2,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "land_soft.ogg",
+   "dur": 0.153,
+   "lufs": -24.8,
+   "tp": -1.5,
+   "peak_ms": 13.5,
+   "bytes": 5824
+  }
+ ],
+ "ship": true
+}

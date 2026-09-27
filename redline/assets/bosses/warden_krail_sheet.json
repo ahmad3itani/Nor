@@ -1,0 +1,128 @@
+{
+ "id": "warden_krail",
+ "texture": "res://assets/bosses/warden_krail_sheet.png",
+ "cell": [
+  96,
+  80
+ ],
+ "origin": [
+  48,
+  78
+ ],
+ "mask": "res://assets/bosses/warden_krail_sheet_mask.png",
+ "mask_note": "white mask of the baked red visor band (same size as the sheet); tint in code, the baked red is the fallback",
+ "rows": [
+  {
+   "name": "idle",
+   "row": 0,
+   "frames": 8,
+   "fps": 8.0,
+   "loop": true
+  },
+  {
+   "name": "move",
+   "row": 1,
+   "frames": 8,
+   "fps": 12.0,
+   "loop": true
+  },
+  {
+   "name": "windup_baton",
+   "row": 2,
+   "frames": 4,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "baton_1",
+   "row": 3,
+   "frames": 5,
+   "fps": 18.0,
+   "loop": false
+  },
+  {
+   "name": "baton_2",
+   "row": 4,
+   "frames": 5,
+   "fps": 18.0,
+   "loop": false
+  },
+  {
+   "name": "windup_lunge",
+   "row": 5,
+   "frames": 3,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "lunge",
+   "row": 6,
+   "frames": 4,
+   "fps": 20.0,
+   "loop": false
+  },
+  {
+   "name": "windup_burst",
+   "row": 7,
+   "frames": 4,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "burst",
+   "row": 8,
+   "frames": 4,
+   "fps": 16.0,
+   "loop": false
+  },
+  {
+   "name": "windup_slam",
+   "row": 9,
+   "frames": 5,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "slam",
+   "row": 10,
+   "frames": 6,
+   "fps": 16.0,
+   "loop": false
+  },
+  {
+   "name": "backstep",
+   "row": 11,
+   "frames": 4,
+   "fps": 16.0,
+   "loop": false
+  },
+  {
+   "name": "hurt",
+   "row": 12,
+   "frames": 3,
+   "fps": 14.0,
+   "loop": false
+  },
+  {
+   "name": "stagger",
+   "row": 13,
+   "frames": 6,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "phase2_roar",
+   "row": 14,
+   "frames": 10,
+   "fps": 12.0,
+   "loop": false
+  },
+  {
+   "name": "death",
+   "row": 15,
+   "frames": 16,
+   "fps": 12.0,
+   "loop": false
+  }
+ ]
+}

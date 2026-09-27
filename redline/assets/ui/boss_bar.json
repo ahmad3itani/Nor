@@ -1,0 +1,79 @@
+{
+ "id": "ui_boss_bar",
+ "texture": "res://assets/ui/boss_bar.png",
+ "fill_texture": "res://assets/ui/boss_bar_fill.png",
+ "regions": {
+  "bar_3slice": [
+   0,
+   0,
+   232,
+   16
+  ],
+  "fill": [
+   0,
+   18,
+   200,
+   4
+  ],
+  "name_plaque": [
+   0,
+   24,
+   56,
+   9
+  ],
+  "phase_tick": [
+   60,
+   24,
+   3,
+   8
+  ],
+  "tick_shatter_0": [
+   66,
+   24,
+   9,
+   12
+  ],
+  "tick_shatter_1": [
+   76,
+   24,
+   9,
+   12
+  ],
+  "tick_shatter_2": [
+   86,
+   24,
+   9,
+   12
+  ],
+  "tick_shatter_3": [
+   96,
+   24,
+   9,
+   12
+  ]
+ },
+ "three_slice": {
+  "bar_3slice": [
+   16,
+   16
+  ]
+ },
+ "fill_rect_in_bar": [
+  16,
+  6,
+  200,
+  4
+ ],
+ "frames": {
+  "tick_shatter": [
+   "tick_shatter_0",
+   "tick_shatter_1",
+   "tick_shatter_2",
+   "tick_shatter_3"
+  ]
+ },
+ "fps": {
+  "tick_shatter": 12
+ },
+ "notes": "Fill (mask) tinted Palette accent, cropped to HP ratio, drawn at bar + (16,6). phase_tick at 50 %; on phase change play tick_shatter centred on the tick. name_plaque sits centred above the bar."
+}

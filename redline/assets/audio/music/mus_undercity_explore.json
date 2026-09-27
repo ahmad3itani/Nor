@@ -1,0 +1,42 @@
+{
+ "id": "mus_undercity_explore",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_undercity_explore.mp3",
+ "raw_dur": 90.0,
+ "loop": true,
+ "flags": [
+  "intro 8.6 LU quieter than middle; loop start searched past it"
+ ],
+ "mid_lufs": -26.5,
+ "head_lufs": -35.1,
+ "tail_lufs": -30.4,
+ "bpm": null,
+ "loop_start_s": 2.5,
+ "loop_cut_s": 78.58,
+ "loop_score": 1.1230000257492065,
+ "env_corr": 0.49,
+ "spec_corr": 0.985,
+ "level_jump_db": 0.07999999821186066,
+ "width_scale": 0.75,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_undercity_explore.ogg",
+   "dur": 76.08,
+   "lufs": -20.0,
+   "tp": -6.3,
+   "lra": 9.9,
+   "seam_db": 0.91,
+   "dc": 0.0,
+   "wrap_jump": 0.454,
+   "mono_drop": 2.29,
+   "bytes": 857866,
+   "head_mid_tail_lufs": [
+    -19.3,
+    -19.2,
+    -19.2
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "id": "respawn",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/respawn.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.9,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "respawn.ogg",
+   "dur": 1.35,
+   "lufs": -17.9,
+   "tp": -2.7,
+   "peak_ms": 39.5,
+   "bytes": 14560
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,25 @@
+{
+ "id": "jump_slide",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/jump_slide.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "jump_slide.ogg",
+   "dur": 0.45,
+   "lufs": -18.0,
+   "tp": -4.4,
+   "peak_ms": 277.5,
+   "bytes": 8676
+  }
+ ],
+ "ship": true
+}

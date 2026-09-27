@@ -1,0 +1,25 @@
+{
+ "id": "anchor",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/anchor.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.6,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "anchor.ogg",
+   "dur": 2.041,
+   "lufs": -18.0,
+   "tp": -8.3,
+   "peak_ms": 200.5,
+   "bytes": 19016
+  }
+ ],
+ "ship": true
+}

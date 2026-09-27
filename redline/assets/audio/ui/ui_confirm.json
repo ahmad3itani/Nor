@@ -1,0 +1,25 @@
+{
+ "id": "ui_confirm",
+ "category": "ui",
+ "preset": "ui_std",
+ "raw": [
+  "raw/ui_confirm.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -20,
+ "duration_s": 0.2,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "ui_confirm.ogg",
+   "dur": 0.3,
+   "lufs": -22.1,
+   "tp": -4.0,
+   "peak_ms": 13.5,
+   "bytes": 6788
+  }
+ ],
+ "ship": true
+}

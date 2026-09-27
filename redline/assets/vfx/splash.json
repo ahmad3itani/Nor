@@ -1,0 +1,53 @@
+{
+ "id": "vfx_splash",
+ "texture": "res://assets/vfx/splash.png",
+ "cell": [
+  32,
+  32
+ ],
+ "origin": [
+  16,
+  24
+ ],
+ "rows": [
+  {
+   "name": "step",
+   "row": 0,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "land",
+   "row": 1,
+   "frames": 6,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "drip",
+   "row": 2,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "rain_hit",
+   "row": 3,
+   "frames": 3,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "ripple",
+   "row": 4,
+   "frames": 6,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "water: uc water_glint #6f9e90 / ll wet_hi #7a8aa6",
+ "notes": "AD redo: bold rows (crown tips 255, body 176, tails 96). Origin = the point on the water surface (row 24). Ripples are a solid near arc + a back arc, so they read as lying on the surface at 1x.",
+ "facing": "+x (flip_h for facing -1)"
+}

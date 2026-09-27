@@ -1,0 +1,28 @@
+{
+ "id": "player_hurt",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/player_hurt.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.35,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "player_hurt.ogg",
+   "dur": 0.291,
+   "lufs": -19.5,
+   "tp": -1.4,
+   "peak_ms": 6.5,
+   "bytes": 6991
+  }
+ ],
+ "ship": true,
+ "override": {
+  "ceiling": -1.5
+ }
+}

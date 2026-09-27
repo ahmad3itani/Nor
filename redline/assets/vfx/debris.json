@@ -1,0 +1,39 @@
+{
+ "id": "vfx_debris",
+ "texture": "res://assets/vfx/debris.png",
+ "cell": [
+  8,
+  8
+ ],
+ "origin": [
+  4,
+  4
+ ],
+ "rows": [
+  {
+   "name": "concrete",
+   "row": 0,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "glass",
+   "row": 1,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "sparks_fall",
+   "row": 2,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  }
+ ],
+ "row_origins": {},
+ "tint": "concrete: district concrete_2; glass: wet_hi #7a8aa6; sparks: sodium #d9944d",
+ "notes": "Particle textures: spawn 4-10 with gravity from BreakableWall / glass props; frames are tumble cycles.",
+ "facing": "+x (flip_h for facing -1)"
+}

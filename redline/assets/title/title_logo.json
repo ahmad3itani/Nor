@@ -1,0 +1,10 @@
+{
+ "id": "title_logo",
+ "texture": "res://assets/ui/title_logo.png",
+ "crack_mask": "res://assets/ui/title_logo_crack.png",
+ "size": [
+  208,
+  40
+ ],
+ "notes": "AD redo: heavier engraved caps (strokes +2 px), 1 px top-edge bevel highlight, 1 px bg outline. The crack mask is ONE connected 1 px zig-zag path from the R to the final E (it crosses the letter gaps too) plus a dim 96 glow inside the letters; it is tinted Redline red in code with a slow ember crawl (a moving bright window along x, ~20 px/s); static under flash reduction. Letterforms are script-drawn (the manifest's fallback) because image generation was blocked."
+}

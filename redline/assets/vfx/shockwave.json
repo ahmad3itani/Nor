@@ -1,0 +1,37 @@
+{
+ "id": "vfx_shockwave",
+ "texture": "res://assets/vfx/shockwave.png",
+ "cell": [
+  64,
+  64
+ ],
+ "origin": [
+  32,
+  32
+ ],
+ "rows": [
+  {
+   "name": "ring",
+   "row": 0,
+   "frames": 6,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "ground_wave",
+   "row": 1,
+   "frames": 6,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {
+  "ground_wave": [
+   32,
+   63
+  ]
+ },
+ "tint": "Palette danger (enemy) / neutral",
+ "notes": "ring: radial slam; ground_wave: Krail slam / Collector press floor wave, travels both ways (visual only, hitboxes unchanged).",
+ "facing": "+x (flip_h for facing -1)"
+}

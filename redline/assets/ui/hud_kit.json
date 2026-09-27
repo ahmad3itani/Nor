@@ -1,0 +1,185 @@
+{
+ "id": "ui_hud_kit",
+ "texture": "res://assets/ui/hud_kit.png",
+ "fill_texture": "res://assets/ui/hud_kit_fill.png",
+ "regions": {
+  "pip_full": [
+   0,
+   0,
+   11,
+   15
+  ],
+  "pip_empty": [
+   11,
+   0,
+   11,
+   15
+  ],
+  "pip_break_0": [
+   22,
+   0,
+   11,
+   15
+  ],
+  "pip_break_1": [
+   33,
+   0,
+   11,
+   15
+  ],
+  "pip_break_2": [
+   44,
+   0,
+   11,
+   15
+  ],
+  "pip_break_3": [
+   55,
+   0,
+   11,
+   15
+  ],
+  "pip_break_4": [
+   66,
+   0,
+   11,
+   15
+  ],
+  "pip_refill_0": [
+   77,
+   0,
+   11,
+   15
+  ],
+  "pip_refill_1": [
+   88,
+   0,
+   11,
+   15
+  ],
+  "pip_refill_2": [
+   99,
+   0,
+   11,
+   15
+  ],
+  "pip_refill_3": [
+   110,
+   0,
+   11,
+   15
+  ],
+  "injector_full": [
+   0,
+   16,
+   6,
+   9
+  ],
+  "injector_empty": [
+   6,
+   16,
+   6,
+   9
+  ],
+  "ammo_tick_full": [
+   13,
+   16,
+   4,
+   7
+  ],
+  "ammo_tick_empty": [
+   17,
+   16,
+   4,
+   7
+  ],
+  "core_frame": [
+   0,
+   26,
+   72,
+   9
+  ],
+  "core_socket_fill": [
+   3,
+   29,
+   3,
+   3
+  ],
+  "core_fill_flow_0": [
+   0,
+   38,
+   60,
+   3
+  ],
+  "core_fill_flow_1": [
+   64,
+   38,
+   60,
+   3
+  ],
+  "core_fill_flow_2": [
+   0,
+   42,
+   60,
+   3
+  ],
+  "core_fill_flow_3": [
+   64,
+   42,
+   60,
+   3
+  ],
+  "core_fill_flow_4": [
+   0,
+   46,
+   60,
+   3
+  ],
+  "core_fill_flow_5": [
+   64,
+   46,
+   60,
+   3
+  ]
+ },
+ "frames": {
+  "pip_break": [
+   "pip_break_0",
+   "pip_break_1",
+   "pip_break_2",
+   "pip_break_3",
+   "pip_break_4"
+  ],
+  "pip_refill": [
+   "pip_refill_0",
+   "pip_refill_1",
+   "pip_refill_2",
+   "pip_refill_3"
+  ],
+  "core_fill_flow": [
+   "core_fill_flow_0",
+   "core_fill_flow_1",
+   "core_fill_flow_2",
+   "core_fill_flow_3",
+   "core_fill_flow_4",
+   "core_fill_flow_5"
+  ]
+ },
+ "fps": {
+  "pip_break": 12,
+  "pip_refill": 12,
+  "core_fill_flow": 10
+ },
+ "anchors": {
+  "pip": "ampoule 7x9 sits at (2,2) inside each 11x15 cell (room for falling shards)",
+  "core_fill": "fill channel is x10..69, y3..5 of core_frame; crop the flow frame to the Core ratio",
+  "core_socket_fill": "draw at core_frame + (3,3)"
+ },
+ "tint": {
+  "pip fill": "Palette accent (health)",
+  "injector fill": "Palette heal",
+  "ammo": "Palette ammo",
+  "core fill / socket": "Palette accent; critical pulse in code (static under flash reduction)",
+  "frame": "as is (UiTheme may modulate); high contrast: modulate to text colour"
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "id": "dash",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/dash.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.35,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "dash.ogg",
+   "dur": 0.525,
+   "lufs": -18.2,
+   "tp": -7.2,
+   "peak_ms": 219.5,
+   "bytes": 9448
+  }
+ ],
+ "ship": true
+}

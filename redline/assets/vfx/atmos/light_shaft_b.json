@@ -1,0 +1,10 @@
+{
+ "id": "vfx_light_shafts",
+ "texture": "res://assets/vfx/atmos/light_shaft_b.png",
+ "size": [
+  112,
+  200
+ ],
+ "tint": "district light",
+ "notes": "Triple shaft through a grate, for large vertical rooms."
+}

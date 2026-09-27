@@ -1,0 +1,32 @@
+{
+ "id": "vfx_anchor_rest",
+ "texture": "res://assets/vfx/anchor_rest.png",
+ "cell": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  47
+ ],
+ "rows": [
+  {
+   "name": "bloom",
+   "row": 0,
+   "frames": 10,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "embers",
+   "row": 1,
+   "frames": 6,
+   "fps": 8,
+   "loop": true
+  }
+ ],
+ "row_origins": {},
+ "tint": "Palette accent (Redline red) for roots/socket; embers can use lamp_core #e0a060 in the Relay",
+ "notes": "Origin on the floor under the Anchor; socket at (24,14) in the cell. bloom plays once on rest, embers loop while resting.",
+ "facing": "+x (flip_h for facing -1)"
+}

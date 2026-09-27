@@ -1,0 +1,25 @@
+{
+ "id": "shoot_revolver",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/shoot_revolver.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.7,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "shoot_revolver.ogg",
+   "dur": 0.781,
+   "lufs": -18.2,
+   "tp": -1.4,
+   "peak_ms": 29.5,
+   "bytes": 11295
+  }
+ ],
+ "ship": true
+}

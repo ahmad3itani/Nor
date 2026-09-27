@@ -1,0 +1,25 @@
+{
+ "id": "heal_start",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/heal_start.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.4,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "heal_start.ogg",
+   "dur": 0.6,
+   "lufs": -17.9,
+   "tp": -3.6,
+   "peak_ms": 50.5,
+   "bytes": 9274
+  }
+ ],
+ "ship": true
+}

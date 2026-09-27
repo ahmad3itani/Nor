@@ -1,0 +1,10 @@
+{
+ "id": "vfx_fog",
+ "texture": "res://assets/vfx/atmos/fog_band_a.png",
+ "size": [
+  256,
+  64
+ ],
+ "tint": "district fog_light (uc #2b3d38, ll #2e2b45, relay haze #4a3326)",
+ "notes": "256x64, tileable in x, 4 alpha steps. Dense band: between far and mid (0.2 parallax, 3 px/s)."
+}

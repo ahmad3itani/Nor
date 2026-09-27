@@ -1,0 +1,275 @@
+{
+ "id": "rook",
+ "texture": "res://assets/rook/rook_sheet.png",
+ "cell": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  46
+ ],
+ "mask": "res://assets/rook/rook_sheet_mask.png",
+ "mask_note": "white mask of the baked red visor + Core seam (same size as the sheet); tint it in code for colour-blind / high-contrast modes, the baked red stays as the fallback",
+ "rows": [
+  {
+   "name": "idle",
+   "row": 0,
+   "frames": 8,
+   "fps": 8,
+   "loop": true
+  },
+  {
+   "name": "idle_fidget",
+   "row": 1,
+   "frames": 12,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "run",
+   "row": 2,
+   "frames": 8,
+   "fps": 14,
+   "loop": true
+  },
+  {
+   "name": "turn",
+   "row": 3,
+   "frames": 3,
+   "fps": 16,
+   "loop": false
+  },
+  {
+   "name": "jump_rise",
+   "row": 4,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "air",
+   "row": 5,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "jump_fall",
+   "row": 6,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "land",
+   "row": 7,
+   "frames": 3,
+   "fps": 16,
+   "loop": false
+  },
+  {
+   "name": "land_hard",
+   "row": 8,
+   "frames": 5,
+   "fps": 14,
+   "loop": false
+  },
+  {
+   "name": "crouch",
+   "row": 9,
+   "frames": 2,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "slide",
+   "row": 10,
+   "frames": 3,
+   "fps": 14,
+   "loop": false
+  },
+  {
+   "name": "dodge",
+   "row": 11,
+   "frames": 5,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "dash",
+   "row": 12,
+   "frames": 4,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "blade_light_1",
+   "row": 13,
+   "frames": 5,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "blade_light_2",
+   "row": 14,
+   "frames": 5,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "blade_light_3",
+   "row": 15,
+   "frames": 6,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "blade_heavy",
+   "row": 16,
+   "frames": 8,
+   "fps": 16,
+   "loop": false
+  },
+  {
+   "name": "blade_launcher",
+   "row": 17,
+   "frames": 6,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "blade_air_light",
+   "row": 18,
+   "frames": 5,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "blade_air_heavy",
+   "row": 19,
+   "frames": 6,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "katar_light_1",
+   "row": 20,
+   "frames": 4,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_light_2",
+   "row": 21,
+   "frames": 4,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_light_3",
+   "row": 22,
+   "frames": 4,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_light_4",
+   "row": 23,
+   "frames": 4,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_cross",
+   "row": 24,
+   "frames": 6,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_rising",
+   "row": 25,
+   "frames": 6,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_spin",
+   "row": 26,
+   "frames": 8,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "katar_dive",
+   "row": 27,
+   "frames": 6,
+   "fps": 20,
+   "loop": false
+  },
+  {
+   "name": "shoot_pistol",
+   "row": 28,
+   "frames": 3,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "shoot_scatter",
+   "row": 29,
+   "frames": 4,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "shoot_revolver",
+   "row": 30,
+   "frames": 5,
+   "fps": 18,
+   "loop": false
+  },
+  {
+   "name": "hurt",
+   "row": 31,
+   "frames": 3,
+   "fps": 14,
+   "loop": false
+  },
+  {
+   "name": "heal",
+   "row": 32,
+   "frames": 10,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "death",
+   "row": 33,
+   "frames": 12,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "interact",
+   "row": 34,
+   "frames": 4,
+   "fps": 10,
+   "loop": false
+  },
+  {
+   "name": "rest",
+   "row": 35,
+   "frames": 6,
+   "fps": 8,
+   "loop": true
+  },
+  {
+   "name": "title_stand",
+   "row": 36,
+   "frames": 8,
+   "fps": 8,
+   "loop": true
+  }
+ ]
+}

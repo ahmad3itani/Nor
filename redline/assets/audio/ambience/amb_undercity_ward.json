@@ -1,0 +1,36 @@
+{
+ "id": "amb_undercity_ward",
+ "category": "ambience",
+ "preset": "amb_loop",
+ "raw": "raw/amb_undercity_ward.mp3",
+ "raw_dur": 30.0,
+ "loop": true,
+ "flags": [],
+ "mono": true,
+ "loop_cut_s": 27.9983,
+ "target_lufs": -26,
+ "files": [
+  {
+   "file": "amb_undercity_ward.ogg",
+   "dur": 28.0,
+   "lufs": -26.0,
+   "tp": -10.6,
+   "lra": 2.2,
+   "mmax_minus_i": 3.5,
+   "seam_db": 0.64,
+   "dc": 0.0,
+   "wrap_jump": 0.636,
+   "mono_drop": 0.0,
+   "bytes": 198741,
+   "decoded": {
+    "wrap_step": 0.00071,
+    "p99_step": 0.00183,
+    "p999_step": 0.00241,
+    "wrap_rank": 0.7116,
+    "seam_rms_db": 0.61,
+    "lufs": -26.0,
+    "mono_drop": -0.01
+   }
+  }
+ ]
+}

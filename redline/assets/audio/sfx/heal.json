@@ -1,0 +1,25 @@
+{
+ "id": "heal",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/heal.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.6,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "heal.ogg",
+   "dur": 0.9,
+   "lufs": -18.0,
+   "tp": -3.8,
+   "peak_ms": 1.5,
+   "bytes": 12559
+  }
+ ],
+ "ship": true
+}

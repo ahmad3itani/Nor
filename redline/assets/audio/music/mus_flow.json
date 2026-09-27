@@ -1,0 +1,39 @@
+{
+ "id": "mus_flow",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_flow.mp3",
+ "raw_dur": 60.0,
+ "loop": true,
+ "flags": [],
+ "mid_lufs": -11.1,
+ "head_lufs": -12.9,
+ "tail_lufs": -11.5,
+ "bpm": 128.0,
+ "loop_start_s": 7.5,
+ "loop_cut_s": 56.25,
+ "loop_score": 1.4179999828338623,
+ "env_corr": 0.864,
+ "spec_corr": 0.972,
+ "level_jump_db": 0.20000000298023224,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_flow.ogg",
+   "dur": 48.75,
+   "lufs": -20.0,
+   "tp": -8.7,
+   "lra": 2.4,
+   "seam_db": 6.71,
+   "dc": 0.0,
+   "wrap_jump": 0.136,
+   "mono_drop": 0.69,
+   "bytes": 729583,
+   "head_mid_tail_lufs": [
+    -21.3,
+    -19.8,
+    -19.4
+   ]
+  }
+ ]
+}

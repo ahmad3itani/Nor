@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"idle"
+row = 0
+first_frame = 0
+frame_count = 6
+fps = 8.0
+loop = true
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"move"
+row = 1
+first_frame = 0
+frame_count = 8
+fps = 12.0
+loop = true
+
+[sub_resource type="Resource" id="a2"]
+script = ExtResource("2_anim")
+name = &"windup"
+row = 2
+first_frame = 0
+frame_count = 4
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a3"]
+script = ExtResource("2_anim")
+name = &"attack"
+row = 3
+first_frame = 0
+frame_count = 4
+fps = 18.0
+loop = false
+
+[sub_resource type="Resource" id="a4"]
+script = ExtResource("2_anim")
+name = &"hurt"
+row = 4
+first_frame = 0
+frame_count = 3
+fps = 14.0
+loop = false
+
+[sub_resource type="Resource" id="a5"]
+script = ExtResource("2_anim")
+name = &"death"
+row = 5
+first_frame = 0
+frame_count = 8
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a6"]
+script = ExtResource("2_anim")
+name = &"dormant"
+row = 6
+first_frame = 0
+frame_count = 2
+fps = 4.0
+loop = true
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/enemies/needle_sheet.png"
+cell_size = Vector2i(40, 40)
+origin = Vector2i(20, 38)
+animations = Array[ExtResource("2_anim")]([SubResource("a0"), SubResource("a1"), SubResource("a2"), SubResource("a3"), SubResource("a4"), SubResource("a5"), SubResource("a6")])

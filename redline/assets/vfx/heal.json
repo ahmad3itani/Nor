@@ -1,0 +1,25 @@
+{
+ "id": "vfx_heal",
+ "texture": "res://assets/vfx/heal.png",
+ "cell": [
+  32,
+  32
+ ],
+ "origin": [
+  16,
+  31
+ ],
+ "rows": [
+  {
+   "name": "heal_rise",
+   "row": 0,
+   "frames": 8,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "Palette heal",
+ "notes": "AD redo: 5x5 crosses (255 centre, 176 arms, 96 outline) + a vertical shimmer on frames 2-5. Heal-tint mask: plays on injector use at Rook's feet.",
+ "facing": "+x (flip_h for facing -1)"
+}

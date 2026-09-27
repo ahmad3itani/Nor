@@ -1,0 +1,107 @@
+{
+ "id": "rook_weapons",
+ "texture": "res://assets/rook/weapons/weapons_atlas.png",
+ "regions": {
+  "pulse_blade": {
+   "sprite": [
+    0,
+    0,
+    24,
+    12
+   ],
+   "icon": [
+    0,
+    12,
+    16,
+    16
+   ],
+   "icon_mask": [
+    0,
+    28,
+    16,
+    16
+   ]
+  },
+  "split_katars": {
+   "sprite": [
+    24,
+    0,
+    24,
+    12
+   ],
+   "icon": [
+    24,
+    12,
+    16,
+    16
+   ],
+   "icon_mask": [
+    24,
+    28,
+    16,
+    16
+   ]
+  },
+  "service_pistol": {
+   "sprite": [
+    48,
+    0,
+    24,
+    12
+   ],
+   "icon": [
+    48,
+    12,
+    16,
+    16
+   ],
+   "icon_mask": [
+    48,
+    28,
+    16,
+    16
+   ]
+  },
+  "scattergun": {
+   "sprite": [
+    72,
+    0,
+    24,
+    12
+   ],
+   "icon": [
+    72,
+    12,
+    16,
+    16
+   ],
+   "icon_mask": [
+    72,
+    28,
+    16,
+    16
+   ]
+  },
+  "heavy_revolver": {
+   "sprite": [
+    96,
+    0,
+    24,
+    12
+   ],
+   "icon": [
+    96,
+    12,
+    16,
+    16
+   ],
+   "icon_mask": [
+    96,
+    28,
+    16,
+    16
+   ]
+  }
+ },
+ "notes": "row 0: 24x12 side-view sprites (origin bottom-centre); row 1: 16x16 baked steel icons (pause/inventory); row 2: 16x16 white/grey masks (255/176/96) tinted by UiTheme/Palette.color"
+}

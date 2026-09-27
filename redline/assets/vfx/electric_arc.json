@@ -1,0 +1,25 @@
+{
+ "id": "vfx_electric_arc",
+ "texture": "res://assets/vfx/electric_arc.png",
+ "cell": [
+  48,
+  16
+ ],
+ "origin": [
+  0,
+  8
+ ],
+ "rows": [
+  {
+   "name": "arc",
+   "row": 0,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  }
+ ],
+ "row_origins": {},
+ "tint": "baton_arc #cfe4f2 / tube colour",
+ "notes": "Endpoints (0,8) and (47,8): scale x / rotate to span two points. Cycle frames at <= 3 Hz for flashing (hold each 2-4 ticks) per the 3 Hz rule; under flash reduction hold frame 0.",
+ "facing": "+x (flip_h for facing -1)"
+}

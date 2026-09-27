@@ -1,0 +1,24 @@
+{
+ "id": "memory_open",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "derived": true,
+ "raw": [
+  "raw/anchor.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 2.0,
+ "loop": false,
+ "files": [
+  {
+   "file": "memory_open.ogg",
+   "dur": 1.387,
+   "lufs": -18.0,
+   "tp": -8.5,
+   "bytes": 10165
+  }
+ ],
+ "note": "anchor reversed + LPF 1.8 kHz + tape wobble 0.5 Hz"
+}

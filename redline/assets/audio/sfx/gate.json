@@ -1,0 +1,25 @@
+{
+ "id": "gate",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/gate.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.0,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "gate.ogg",
+   "dur": 1.241,
+   "lufs": -18.3,
+   "tp": -2.6,
+   "peak_ms": 62.5,
+   "bytes": 16700
+  }
+ ],
+ "ship": true
+}

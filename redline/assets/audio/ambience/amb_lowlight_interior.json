@@ -1,0 +1,38 @@
+{
+ "id": "amb_lowlight_interior",
+ "category": "ambience",
+ "preset": "amb_loop",
+ "raw": "raw/amb_lowlight_interior.mp3",
+ "raw_dur": 30.0,
+ "loop": true,
+ "flags": [
+  "decoded wrap step > p99 of in-file steps (click risk)"
+ ],
+ "mono": true,
+ "loop_cut_s": 27.9998,
+ "target_lufs": -26,
+ "files": [
+  {
+   "file": "amb_lowlight_interior.ogg",
+   "dur": 28.0,
+   "lufs": -26.0,
+   "tp": -5.4,
+   "lra": 1.2,
+   "mmax_minus_i": 2.5,
+   "seam_db": 2.35,
+   "dc": 0.0,
+   "wrap_jump": 0.632,
+   "mono_drop": 0.0,
+   "bytes": 238445,
+   "decoded": {
+    "wrap_step": 0.03051,
+    "p99_step": 0.02444,
+    "p999_step": 0.04504,
+    "wrap_rank": 0.9954,
+    "seam_rms_db": 2.2,
+    "lufs": -26.3,
+    "mono_drop": -0.01
+   }
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "id": "vfx_grade_vignette",
+ "rule": "bg_modulate applies to background ParallaxPlanes only, never the gameplay canvas (F11)",
+ "districts": {
+  "undercity": {
+   "bg_modulate": "#dfeee8",
+   "fog": "#2b3d38",
+   "shaft": "#9eccb8",
+   "dust": "#46574f"
+  },
+  "lowlight": {
+   "bg_modulate": "#e2e0f2",
+   "fog": "#2e2b45",
+   "shaft": "#b8925a",
+   "dust": "#4a4660"
+  },
+  "relay": {
+   "bg_modulate": "#fff0e0",
+   "fog": "#4a3326",
+   "shaft": "#e0a060",
+   "dust": "#63503f"
+  },
+  "null": {
+   "bg_modulate": "#e4e4ec",
+   "fog": "#1b1c20",
+   "shaft": "#dbdee6",
+   "dust": "#4c4f59"
+  },
+  "title": {
+   "bg_modulate": "#dcdcf4",
+   "fog": "#2e2b4d",
+   "shaft": "#4a4870",
+   "dust": "#5c6b80"
+  }
+ }
+}

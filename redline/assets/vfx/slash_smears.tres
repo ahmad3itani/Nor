@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"light"
+row = 0
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"heavy"
+row = 1
+first_frame = 0
+frame_count = 4
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a2"]
+script = ExtResource("2_anim")
+name = &"launcher"
+row = 2
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a3"]
+script = ExtResource("2_anim")
+name = &"air"
+row = 3
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a4"]
+script = ExtResource("2_anim")
+name = &"spike"
+row = 4
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a5"]
+script = ExtResource("2_anim")
+name = &"katar"
+row = 5
+first_frame = 0
+frame_count = 2
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a6"]
+script = ExtResource("2_anim")
+name = &"katar_spin"
+row = 6
+first_frame = 0
+frame_count = 4
+fps = 24.0
+loop = false
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/vfx/slash_smears.png"
+cell_size = Vector2i(48, 48)
+origin = Vector2i(24, 24)
+animations = Array[Resource("res://vfx/SpriteAnim.gd")]([SubResource("a0"), SubResource("a1"), SubResource("a2"), SubResource("a3"), SubResource("a4"), SubResource("a5"), SubResource("a6")])

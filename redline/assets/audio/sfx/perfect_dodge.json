@@ -1,0 +1,34 @@
+{
+ "id": "perfect_dodge",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/perfect_dodge.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.7,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "perfect_dodge.ogg",
+   "dur": 0.208,
+   "lufs": -18.1,
+   "tp": -3.0,
+   "peak_ms": 79.5,
+   "bytes": 6321
+  }
+ ],
+ "ship": true,
+ "override": {
+  "peak_start": [
+   0.12,
+   0.003
+  ],
+  "cap": 1.2,
+  "tail": -60
+ },
+ "cap_s": 1.2
+}

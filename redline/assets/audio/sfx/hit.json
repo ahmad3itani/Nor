@@ -1,0 +1,36 @@
+{
+ "id": "hit",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/hit.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 3,
+ "target_lufs": -18,
+ "duration_s": 0.18,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "hit_1.ogg",
+   "dur": 0.21,
+   "lufs": -18.3,
+   "tp": -3.0,
+   "peak_ms": 3.5,
+   "bytes": 6564
+  }
+ ],
+ "ship": true,
+ "override": {
+  "raws": [
+   "raw/hit.mp3"
+  ],
+  "variations": 1,
+  "multi": true,
+  "cap": 0.21,
+  "cap_fade": 0.06,
+  "force_cap": true
+ },
+ "cap_s": 0.21
+}

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"pistol"
+row = 0
+first_frame = 0
+frame_count = 2
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"scatter"
+row = 1
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[sub_resource type="Resource" id="a2"]
+script = ExtResource("2_anim")
+name = &"revolver"
+row = 2
+first_frame = 0
+frame_count = 3
+fps = 24.0
+loop = false
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/vfx/muzzle.png"
+cell_size = Vector2i(16, 16)
+origin = Vector2i(2, 8)
+animations = Array[Resource("res://vfx/SpriteAnim.gd")]([SubResource("a0"), SubResource("a1"), SubResource("a2")])

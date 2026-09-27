@@ -1,0 +1,41 @@
+{
+ "id": "mus_relay",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_relay.mp3",
+ "raw_dur": 90.0,
+ "loop": true,
+ "flags": [
+  "intro 24.8 LU quieter than middle; loop start searched past it"
+ ],
+ "mid_lufs": -14.9,
+ "head_lufs": -39.7,
+ "tail_lufs": -14.7,
+ "bpm": 96.0,
+ "loop_start_s": 5.0,
+ "loop_cut_s": 87.5,
+ "loop_score": 1.4240000247955322,
+ "env_corr": 0.89,
+ "spec_corr": 0.98,
+ "level_jump_db": 0.800000011920929,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_relay.ogg",
+   "dur": 82.5,
+   "lufs": -20.0,
+   "tp": -6.2,
+   "lra": 2.4,
+   "seam_db": 4.06,
+   "dc": 0.0,
+   "wrap_jump": 0.087,
+   "mono_drop": 0.09,
+   "bytes": 984988,
+   "head_mid_tail_lufs": [
+    -21.7,
+    -20.3,
+    -19.7
+   ]
+  }
+ ]
+}

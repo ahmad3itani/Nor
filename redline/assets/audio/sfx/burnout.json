@@ -1,0 +1,25 @@
+{
+ "id": "burnout",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/burnout.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.9,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "burnout.ogg",
+   "dur": 1.35,
+   "lufs": -18.1,
+   "tp": -3.7,
+   "peak_ms": 296.5,
+   "bytes": 16974
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,25 @@
+{
+ "id": "land_hard",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/land_hard.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.45,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "land_hard.ogg",
+   "dur": 0.403,
+   "lufs": -21.4,
+   "tp": -1.3,
+   "peak_ms": 20.5,
+   "bytes": 8294
+  }
+ ],
+ "ship": true
+}

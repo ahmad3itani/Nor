@@ -1,0 +1,65 @@
+{
+ "id": "vfx_dust",
+ "texture": "res://assets/vfx/dust.png",
+ "cell": [
+  32,
+  32
+ ],
+ "origin": [
+  16,
+  31
+ ],
+ "rows": [
+  {
+   "name": "land",
+   "row": 0,
+   "frames": 5,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "land_hard",
+   "row": 1,
+   "frames": 6,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "run_puff",
+   "row": 2,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "slide",
+   "row": 3,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "dash_trail",
+   "row": 4,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  },
+  {
+   "name": "wall_scrape",
+   "row": 5,
+   "frames": 4,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {
+  "wall_scrape": [
+   17,
+   16
+  ]
+ },
+ "tint": "district dust: uc concrete_3 #46574f, ll concrete_3 #4a4660, relay stone_3 #63503f",
+ "notes": "Floor at y=31. Puffs drift toward -x (behind): flip with facing. wall_scrape origin is the wall contact (wall on +x side). Flooded floors use splash.png instead.",
+ "facing": "+x (flip_h for facing -1)"
+}

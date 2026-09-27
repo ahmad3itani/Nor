@@ -1,0 +1,10 @@
+{
+ "id": "vfx_grade_vignette",
+ "texture": "res://assets/vfx/atmos/vignette.png",
+ "size": [
+  480,
+  270
+ ],
+ "tint": "black (as is)",
+ "notes": "480x270 screen vignette, 4 alpha steps, ordered dither. Sits above the background planes only (under the playfield) so gameplay pixels are never darkened; Background dim may scale its alpha."
+}

@@ -1,0 +1,25 @@
+{
+ "id": "boss_roar",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/boss_roar.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.8,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "boss_roar.ogg",
+   "dur": 2.081,
+   "lufs": -18.1,
+   "tp": -7.5,
+   "peak_ms": 1128.5,
+   "bytes": 25285
+  }
+ ],
+ "ship": true
+}

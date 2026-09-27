@@ -1,0 +1,31 @@
+{
+ "id": "shoot_scatter",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/shoot_scatter.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.55,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "shoot_scatter.ogg",
+   "dur": 0.82,
+   "lufs": -24.4,
+   "tp": -1.6,
+   "peak_ms": 7.5,
+   "bytes": 12475
+  }
+ ],
+ "ship": true,
+ "override": {
+  "cap": 0.82,
+  "cap_fade": 0.04,
+  "ceiling": -1.5
+ },
+ "cap_s": 0.82
+}

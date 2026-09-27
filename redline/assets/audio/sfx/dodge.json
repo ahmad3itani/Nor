@@ -1,0 +1,31 @@
+{
+ "id": "dodge",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/dodge.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.25,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "dodge.ogg",
+   "dur": 0.238,
+   "lufs": -21.8,
+   "tp": -1.5,
+   "peak_ms": 52.5,
+   "bytes": 6706
+  }
+ ],
+ "ship": true,
+ "override": {
+  "peak_start": [
+   0.045,
+   0.004
+  ]
+ }
+}

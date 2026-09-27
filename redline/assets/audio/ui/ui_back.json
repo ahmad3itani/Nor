@@ -1,0 +1,24 @@
+{
+ "id": "ui_back",
+ "category": "ui",
+ "preset": "ui_std",
+ "derived": true,
+ "raw": [
+  "raw/ui_confirm.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -20,
+ "duration_s": 0.2,
+ "loop": false,
+ "files": [
+  {
+   "file": "ui_back.ogg",
+   "dur": 0.3,
+   "lufs": -22.1,
+   "tp": -3.2,
+   "bytes": 6320
+  }
+ ],
+ "note": "ui_confirm varispeed -3 st + LPF 5 kHz"
+}

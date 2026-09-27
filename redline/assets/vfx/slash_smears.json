@@ -1,0 +1,67 @@
+{
+ "id": "vfx_slash_smears",
+ "texture": "res://assets/vfx/slash_smears.png",
+ "cell": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  24
+ ],
+ "rows": [
+  {
+   "name": "light",
+   "row": 0,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "heavy",
+   "row": 1,
+   "frames": 4,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "launcher",
+   "row": 2,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "air",
+   "row": 3,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "spike",
+   "row": 4,
+   "frames": 3,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "katar",
+   "row": 5,
+   "frames": 2,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "katar_spin",
+   "row": 6,
+   "frames": 4,
+   "fps": 24,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "pale steel / weapon colour (modulate)",
+ "notes": "Cell centre = world_hitbox centre; each smear stays within its AttackData hitbox + 2 px (light=blade_light_2, heavy=blade_heavy, launcher, air=blade_air_light, spike=blade_air_heavy, katar=katar_light_*, katar_spin). Play at 24 fps (the active window is 0.06-0.12 s). Replaces SlashArc._draw when present.",
+ "facing": "+x (flip_h for facing -1)"
+}

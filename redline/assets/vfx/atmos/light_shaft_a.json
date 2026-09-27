@@ -1,0 +1,10 @@
+{
+ "id": "vfx_light_shafts",
+ "texture": "res://assets/vfx/atmos/light_shaft_a.png",
+ "size": [
+  48,
+  160
+ ],
+ "tint": "district light (uc sea_tube #9eccb8 / ll window_warm #b8925a / relay lamp_core #e0a060)",
+ "notes": "Single slanted god-ray, 3 alpha steps, draw with blend add or mix at 1.0. Pair with ambient 'mote' particles drifting inside the shaft. No Light2D."
+}

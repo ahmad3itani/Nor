@@ -1,0 +1,25 @@
+{
+ "id": "ability_unlock",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/ability_unlock.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 2.5,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "ability_unlock.ogg",
+   "dur": 2.492,
+   "lufs": -18.2,
+   "tp": -5.7,
+   "peak_ms": 1549.5,
+   "bytes": 28361
+  }
+ ],
+ "ship": true
+}

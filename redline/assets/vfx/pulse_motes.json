@@ -1,0 +1,32 @@
+{
+ "id": "vfx_pulse_motes",
+ "texture": "res://assets/vfx/pulse_motes.png",
+ "cell": [
+  24,
+  8
+ ],
+ "origin": [
+  12,
+  4
+ ],
+ "rows": [
+  {
+   "name": "mote",
+   "row": 0,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "absorb_stream",
+   "row": 1,
+   "frames": 4,
+   "fps": 1,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "pale white-violet (char_rook coat_2 #d8d4e0); last frame before absorption -> Palette accent (Core red)",
+ "notes": "mote: 4-frame twinkle loop, spawn 3-8 per kill, drift then home into Rook's chest seam over 0.4 s. absorb_stream: 1 frame (row padded with empty cells), a comet streak whose head sits on the origin; rotate to the velocity. Use frame 0 only.",
+ "facing": "+x (flip_h for facing -1)"
+}

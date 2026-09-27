@@ -1,0 +1,25 @@
+{
+ "id": "block",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/block.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "block.ogg",
+   "dur": 0.202,
+   "lufs": -19.0,
+   "tp": -1.5,
+   "peak_ms": 22.5,
+   "bytes": 6662
+  }
+ ],
+ "ship": true
+}

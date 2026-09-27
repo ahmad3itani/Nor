@@ -1,0 +1,51 @@
+{
+ "id": "vfx_ambient_particles",
+ "texture": "res://assets/vfx/ambient_particles.png",
+ "cell": [
+  8,
+  8
+ ],
+ "origin": [
+  4,
+  4
+ ],
+ "rows": [
+  {
+   "name": "mote",
+   "row": 0,
+   "frames": 2,
+   "fps": 4,
+   "loop": true
+  },
+  {
+   "name": "spore",
+   "row": 1,
+   "frames": 3,
+   "fps": 6,
+   "loop": true
+  },
+  {
+   "name": "ash",
+   "row": 2,
+   "frames": 2,
+   "fps": 6,
+   "loop": true
+  },
+  {
+   "name": "drip",
+   "row": 3,
+   "frames": 4,
+   "fps": 8,
+   "loop": false
+  }
+ ],
+ "row_origins": {
+  "drip": [
+   4,
+   0
+  ]
+ },
+ "tint": "per district: uc motes sea_tube #9eccb8 + spores bone_0 #7d7766; ll ash/rain #8ca3cc; relay dust lamp_core #e0a060",
+ "notes": "Use frames as CPUParticles2D textures (AtlasTexture per row) or pooled Sprite2Ds; cap per room and scale by the ambient-motion setting (F7). drip plays once from a ceiling point, then the drop falls in code and ends with splash.drip.",
+ "facing": "+x (flip_h for facing -1)"
+}

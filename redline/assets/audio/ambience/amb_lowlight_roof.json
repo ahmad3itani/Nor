@@ -1,0 +1,36 @@
+{
+ "id": "amb_lowlight_roof",
+ "category": "ambience",
+ "preset": "amb_loop",
+ "raw": "raw/amb_lowlight_roof.mp3",
+ "raw_dur": 30.0,
+ "loop": true,
+ "flags": [],
+ "mono": true,
+ "loop_cut_s": 27.9999,
+ "target_lufs": -26,
+ "files": [
+  {
+   "file": "amb_lowlight_roof.ogg",
+   "dur": 28.0,
+   "lufs": -26.0,
+   "tp": -3.5,
+   "lra": 5.4,
+   "mmax_minus_i": 6.5,
+   "seam_db": 0.07,
+   "dc": 0.0,
+   "wrap_jump": 0.419,
+   "mono_drop": 0.0,
+   "bytes": 232860,
+   "decoded": {
+    "wrap_step": 0.01335,
+    "p99_step": 0.01344,
+    "p999_step": 0.01774,
+    "wrap_rank": 0.9896,
+    "seam_rms_db": 0.18,
+    "lufs": -26.1,
+    "mono_drop": -0.01
+   }
+  }
+ ]
+}

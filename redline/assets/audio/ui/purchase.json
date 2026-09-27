@@ -1,0 +1,36 @@
+{
+ "id": "purchase",
+ "category": "ui",
+ "preset": "ui_std",
+ "raw": [
+  "raw/purchase.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -20,
+ "duration_s": 0.4,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "purchase.ogg",
+   "dur": 0.6,
+   "lufs": -20.1,
+   "tp": -3.8,
+   "peak_ms": 122.5,
+   "bytes": 11110
+  }
+ ],
+ "ship": true,
+ "override": {
+  "head": [
+   "win",
+   -24.0,
+   0.003,
+   0.002
+  ],
+  "cap": 0.6,
+  "cap_fade": 0.04
+ },
+ "cap_s": 0.6
+}

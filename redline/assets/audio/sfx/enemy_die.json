@@ -1,0 +1,25 @@
+{
+ "id": "enemy_die",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/enemy_die.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.8,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "enemy_die.ogg",
+   "dur": 0.486,
+   "lufs": -18.3,
+   "tp": -5.6,
+   "peak_ms": 33.5,
+   "bytes": 9683
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,25 @@
+{
+ "id": "vfx_death_burst",
+ "texture": "res://assets/vfx/death_burst_boss.png",
+ "cell": [
+  96,
+  96
+ ],
+ "origin": [
+  48,
+  48
+ ],
+ "rows": [
+  {
+   "name": "boss",
+   "row": 0,
+   "frames": 16,
+   "fps": 12,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "neutral / boss accent",
+ "notes": "Frames 0-2 implode, 3-4 are the held freeze (hitstop), 5-15 burst with a double ring, 6 chunks, motes and falling debris. No full-white area (flash-reduction safe). Separate file: 96x96 cells.",
+ "facing": "+x (flip_h for facing -1)"
+}

@@ -1,0 +1,25 @@
+{
+ "id": "reload",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/reload.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.45,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "reload.ogg",
+   "dur": 0.675,
+   "lufs": -21.1,
+   "tp": -1.6,
+   "peak_ms": 256.5,
+   "bytes": 12968
+  }
+ ],
+ "ship": true
+}

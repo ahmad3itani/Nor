@@ -1,0 +1,25 @@
+{
+ "id": "quest_complete",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/quest_complete.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.8,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "quest_complete.ogg",
+   "dur": 2.0,
+   "lufs": -18.0,
+   "tp": -1.3,
+   "peak_ms": 3.5,
+   "bytes": 20629
+  }
+ ],
+ "ship": true
+}

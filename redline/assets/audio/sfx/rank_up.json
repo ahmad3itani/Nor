@@ -1,0 +1,25 @@
+{
+ "id": "rank_up",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/rank_up.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.4,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "rank_up.ogg",
+   "dur": 0.6,
+   "lufs": -18.0,
+   "tp": -5.8,
+   "peak_ms": 10.5,
+   "bytes": 10452
+  }
+ ],
+ "ship": true
+}

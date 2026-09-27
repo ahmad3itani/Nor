@@ -1,0 +1,25 @@
+{
+ "id": "boss_slam",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/boss_slam.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 1.0,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "boss_slam.ogg",
+   "dur": 1.48,
+   "lufs": -20.8,
+   "tp": -2.6,
+   "peak_ms": 5.5,
+   "bytes": 16793
+  }
+ ],
+ "ship": true
+}

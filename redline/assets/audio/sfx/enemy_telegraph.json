@@ -1,0 +1,25 @@
+{
+ "id": "enemy_telegraph",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/enemy_telegraph.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "enemy_telegraph.ogg",
+   "dur": 0.389,
+   "lufs": -18.3,
+   "tp": -7.3,
+   "peak_ms": 160.5,
+   "bytes": 8512
+  }
+ ],
+ "ship": true
+}

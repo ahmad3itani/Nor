@@ -1,0 +1,10 @@
+{
+ "id": "vfx_lamp_glow",
+ "texture": "res://assets/vfx/atmos/lamp_glow_tube.png",
+ "size": [
+  40,
+  12
+ ],
+ "tint": "neon tube colour (NeonSign), additive",
+ "notes": "40x12 capsule halo for neon tubes / strip lamps; 9-slice-able horizontally (margins 8)."
+}

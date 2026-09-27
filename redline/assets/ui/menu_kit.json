@@ -1,0 +1,75 @@
+{
+ "id": "ui_menu_frame",
+ "texture": "res://assets/ui/menu_kit.png",
+ "fill_texture": "res://assets/ui/menu_kit_fill.png",
+ "regions": {
+  "panel_9slice": [
+   0,
+   0,
+   64,
+   64
+  ],
+  "divider": [
+   0,
+   66,
+   96,
+   5
+  ],
+  "cursor_0": [
+   66,
+   0,
+   7,
+   7
+  ],
+  "cursor_1": [
+   74,
+   0,
+   7,
+   7
+  ],
+  "cursor_2": [
+   82,
+   0,
+   7,
+   7
+  ],
+  "cursor_3": [
+   90,
+   0,
+   7,
+   7
+  ],
+  "row_bar_3slice": [
+   66,
+   10,
+   48,
+   9
+  ]
+ },
+ "nine_slice": {
+  "panel_9slice": [
+   16,
+   16,
+   16,
+   16
+  ]
+ },
+ "three_slice": {
+  "row_bar_3slice": [
+   8,
+   8
+  ]
+ },
+ "frames": {
+  "cursor": [
+   "cursor_0",
+   "cursor_1",
+   "cursor_2",
+   "cursor_3"
+  ]
+ },
+ "fps": {
+  "cursor": 6
+ },
+ "notes": "cursor + row bar are masks tinted Redline accent (replaces the flat red row highlight); cursor holds frame 0 under flash reduction. District banner uses `divider` under the name."
+}

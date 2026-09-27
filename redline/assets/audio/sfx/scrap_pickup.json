@@ -1,0 +1,34 @@
+{
+ "id": "scrap_pickup",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/scrap_pickup.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 3,
+ "target_lufs": -18,
+ "duration_s": 0.15,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "scrap_pickup.ogg",
+   "dur": 0.225,
+   "lufs": -20.6,
+   "tp": -1.4,
+   "peak_ms": 100.5,
+   "bytes": 6961
+  }
+ ],
+ "ship": true,
+ "override": {
+  "head": [
+   "sample",
+   -24.0,
+   0.005,
+   0.002
+  ],
+  "ceiling": -1.5
+ }
+}

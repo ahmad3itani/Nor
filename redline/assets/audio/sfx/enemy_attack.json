@@ -1,0 +1,25 @@
+{
+ "id": "enemy_attack",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/enemy_attack.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "enemy_attack.ogg",
+   "dur": 0.264,
+   "lufs": -18.5,
+   "tp": -1.5,
+   "peak_ms": 54.5,
+   "bytes": 6874
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,25 @@
+{
+ "id": "slash_heavy",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/slash_heavy.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.4,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "slash_heavy.ogg",
+   "dur": 0.44,
+   "lufs": -18.1,
+   "tp": -5.1,
+   "peak_ms": 142.5,
+   "bytes": 8449
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"scrap_spin"
+row = 0
+first_frame = 0
+frame_count = 6
+fps = 12.0
+loop = true
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"scrap_cache"
+row = 1
+first_frame = 0
+frame_count = 1
+fps = 1.0
+loop = false
+
+[sub_resource type="Resource" id="a2"]
+script = ExtResource("2_anim")
+name = &"memory_shard"
+row = 2
+first_frame = 0
+frame_count = 8
+fps = 8.0
+loop = true
+
+[sub_resource type="Resource" id="a3"]
+script = ExtResource("2_anim")
+name = &"core_shard"
+row = 3
+first_frame = 0
+frame_count = 8
+fps = 8.0
+loop = true
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/props/pickups_fill.png"
+cell_size = Vector2i(16, 16)
+origin = Vector2i(8, 8)
+animations = Array[Resource("res://vfx/SpriteAnim.gd")]([SubResource("a0"), SubResource("a1"), SubResource("a2"), SubResource("a3")])

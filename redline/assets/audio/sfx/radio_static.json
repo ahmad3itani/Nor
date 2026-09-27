@@ -1,0 +1,25 @@
+{
+ "id": "radio_static",
+ "category": "sfx",
+ "preset": "sfx_std",
+ "raw": [
+  "raw/radio_static.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.6,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "radio_static.ogg",
+   "dur": 0.877,
+   "lufs": -18.2,
+   "tp": -2.8,
+   "peak_ms": 700.5,
+   "bytes": 13268
+  }
+ ],
+ "ship": true
+}

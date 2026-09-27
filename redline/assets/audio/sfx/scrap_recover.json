@@ -1,0 +1,25 @@
+{
+ "id": "scrap_recover",
+ "category": "stinger",
+ "preset": "stinger_std",
+ "raw": [
+  "raw/scrap_recover.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -18,
+ "duration_s": 0.9,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "scrap_recover.ogg",
+   "dur": 1.35,
+   "lufs": -18.2,
+   "tp": -4.7,
+   "peak_ms": 890.5,
+   "bytes": 18656
+  }
+ ],
+ "ship": true
+}

@@ -1,0 +1,25 @@
+{
+ "id": "enemy_shoot",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/enemy_shoot.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "enemy_shoot.ogg",
+   "dur": 0.337,
+   "lufs": -18.8,
+   "tp": -1.2,
+   "peak_ms": 38.5,
+   "bytes": 7230
+  }
+ ],
+ "ship": true
+}

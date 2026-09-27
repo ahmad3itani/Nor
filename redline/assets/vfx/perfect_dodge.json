@@ -1,0 +1,25 @@
+{
+ "id": "vfx_perfect_dodge",
+ "texture": "res://assets/vfx/perfect_dodge.png",
+ "cell": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  24
+ ],
+ "rows": [
+  {
+   "name": "flourish",
+   "row": 0,
+   "frames": 6,
+   "fps": 18,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "flourish: white / Palette accent",
+ "notes": "Flourish only (approved). The afterimage is NOT baked: code copies the live Rook sprite frame (same texture/region/flip), modulates it coat_1 #a9a3b8 at 40 % alpha and fades it over ~0.25 s.",
+ "facing": "+x (flip_h for facing -1)"
+}

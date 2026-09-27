@@ -1,0 +1,56 @@
+{
+ "id": "ui_style_ranks",
+ "texture": "res://assets/ui/style_ranks.png",
+ "regions": {
+  "D": [
+   0,
+   0,
+   24,
+   16
+  ],
+  "C": [
+   24,
+   0,
+   24,
+   16
+  ],
+  "B": [
+   48,
+   0,
+   24,
+   16
+  ],
+  "A": [
+   72,
+   0,
+   24,
+   16
+  ],
+  "S": [
+   96,
+   0,
+   24,
+   16
+  ],
+  "SS": [
+   120,
+   0,
+   24,
+   16
+  ],
+  "SSS": [
+   144,
+   0,
+   24,
+   16
+  ],
+  "REDLINE": [
+   168,
+   0,
+   72,
+   16
+  ]
+ },
+ "tint": "rank colour from StyleMeter (masks); existing flash rules apply",
+ "notes": "7x12 chiselled glyphs (2 px strokes, lit top-left bevel). REDLINE spans a 72x16 region. Rank letters are exempt from translation (D-163)."
+}

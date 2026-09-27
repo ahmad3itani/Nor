@@ -1,0 +1,42 @@
+{
+ "id": "slash",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/slash.mp3",
+  "pilot/slash.wav"
+ ],
+ "takes_found": 2,
+ "wanted": 3,
+ "target_lufs": -18,
+ "duration_s": 0.22,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "slash_1.ogg",
+   "dur": 0.33,
+   "lufs": -19.0,
+   "tp": -1.4,
+   "peak_ms": 55.5,
+   "bytes": 7634
+  },
+  {
+   "file": "slash_2.ogg",
+   "dur": 0.33,
+   "lufs": -18.7,
+   "tp": -6.4,
+   "peak_ms": 188.5,
+   "bytes": 7626
+  }
+ ],
+ "ship": true,
+ "override": {
+  "extra": [
+   "pilot/slash.wav"
+  ],
+  "variations": 1,
+  "multi": true,
+  "match_lu": 1.0
+ }
+}

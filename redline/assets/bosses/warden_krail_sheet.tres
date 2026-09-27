@@ -1,0 +1,157 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"idle"
+row = 0
+first_frame = 0
+frame_count = 8
+fps = 8.0
+loop = true
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"move"
+row = 1
+first_frame = 0
+frame_count = 8
+fps = 12.0
+loop = true
+
+[sub_resource type="Resource" id="a2"]
+script = ExtResource("2_anim")
+name = &"windup_baton"
+row = 2
+first_frame = 0
+frame_count = 4
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a3"]
+script = ExtResource("2_anim")
+name = &"baton_1"
+row = 3
+first_frame = 0
+frame_count = 5
+fps = 18.0
+loop = false
+
+[sub_resource type="Resource" id="a4"]
+script = ExtResource("2_anim")
+name = &"baton_2"
+row = 4
+first_frame = 0
+frame_count = 5
+fps = 18.0
+loop = false
+
+[sub_resource type="Resource" id="a5"]
+script = ExtResource("2_anim")
+name = &"windup_lunge"
+row = 5
+first_frame = 0
+frame_count = 3
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a6"]
+script = ExtResource("2_anim")
+name = &"lunge"
+row = 6
+first_frame = 0
+frame_count = 4
+fps = 20.0
+loop = false
+
+[sub_resource type="Resource" id="a7"]
+script = ExtResource("2_anim")
+name = &"windup_burst"
+row = 7
+first_frame = 0
+frame_count = 4
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a8"]
+script = ExtResource("2_anim")
+name = &"burst"
+row = 8
+first_frame = 0
+frame_count = 4
+fps = 16.0
+loop = false
+
+[sub_resource type="Resource" id="a9"]
+script = ExtResource("2_anim")
+name = &"windup_slam"
+row = 9
+first_frame = 0
+frame_count = 5
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a10"]
+script = ExtResource("2_anim")
+name = &"slam"
+row = 10
+first_frame = 0
+frame_count = 6
+fps = 16.0
+loop = false
+
+[sub_resource type="Resource" id="a11"]
+script = ExtResource("2_anim")
+name = &"backstep"
+row = 11
+first_frame = 0
+frame_count = 4
+fps = 16.0
+loop = false
+
+[sub_resource type="Resource" id="a12"]
+script = ExtResource("2_anim")
+name = &"hurt"
+row = 12
+first_frame = 0
+frame_count = 3
+fps = 14.0
+loop = false
+
+[sub_resource type="Resource" id="a13"]
+script = ExtResource("2_anim")
+name = &"stagger"
+row = 13
+first_frame = 0
+frame_count = 6
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a14"]
+script = ExtResource("2_anim")
+name = &"phase2_roar"
+row = 14
+first_frame = 0
+frame_count = 10
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a15"]
+script = ExtResource("2_anim")
+name = &"death"
+row = 15
+first_frame = 0
+frame_count = 16
+fps = 12.0
+loop = false
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/bosses/warden_krail_sheet.png"
+cell_size = Vector2i(96, 80)
+origin = Vector2i(48, 78)
+animations = Array[ExtResource("2_anim")]([SubResource("a0"), SubResource("a1"), SubResource("a2"), SubResource("a3"), SubResource("a4"), SubResource("a5"), SubResource("a6"), SubResource("a7"), SubResource("a8"), SubResource("a9"), SubResource("a10"), SubResource("a11"), SubResource("a12"), SubResource("a13"), SubResource("a14"), SubResource("a15")])
+metadata/mask_path = "res://assets/bosses/warden_krail_sheet_mask.png"
+metadata/mask_note = "white mask of the baked red visor band; tint in code for colour-blind / high-contrast modes, the baked red stays as the fallback"

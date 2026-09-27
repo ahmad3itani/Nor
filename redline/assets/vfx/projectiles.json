@@ -1,0 +1,65 @@
+{
+ "id": "vfx_projectiles",
+ "texture": "res://assets/vfx/projectiles.png",
+ "cell": [
+  16,
+  16
+ ],
+ "origin": [
+  8,
+  8
+ ],
+ "rows": [
+  {
+   "name": "pistol_bolt",
+   "row": 0,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "pellet",
+   "row": 1,
+   "frames": 1,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "revolver_round",
+   "row": 2,
+   "frames": 2,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "enemy_bolt",
+   "row": 3,
+   "frames": 3,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "collector_tag",
+   "row": 4,
+   "frames": 3,
+   "fps": 12,
+   "loop": true
+  },
+  {
+   "name": "ground_wave",
+   "row": 5,
+   "frames": 4,
+   "fps": 12,
+   "loop": true
+  }
+ ],
+ "row_origins": {
+  "ground_wave": [
+   8,
+   15
+  ]
+ },
+ "tint": "player shots: Palette ammo; enemy shots: Palette danger; collector_tag: Palette collector_warning",
+ "notes": "Travel direction +x (rotate or flip). ground_wave sits on the floor (origin bottom-centre).",
+ "facing": "+x (flip_h for facing -1)"
+}

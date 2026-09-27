@@ -1,0 +1,75 @@
+{
+ "id": "ui_dialogue_frame",
+ "texture": "res://assets/ui/dialogue_frame.png",
+ "fill_texture": "res://assets/ui/dialogue_frame_fill.png",
+ "regions": {
+  "panel_9slice": [
+   0,
+   0,
+   48,
+   48
+  ],
+  "nameplate_9slice": [
+   48,
+   0,
+   32,
+   12
+  ],
+  "cable_flourish": [
+   48,
+   14,
+   20,
+   10
+  ],
+  "continue_ember_0": [
+   48,
+   26,
+   7,
+   7
+  ],
+  "continue_ember_1": [
+   56,
+   26,
+   7,
+   7
+  ],
+  "continue_ember_2": [
+   64,
+   26,
+   7,
+   7
+  ],
+  "continue_ember_3": [
+   72,
+   26,
+   7,
+   7
+  ]
+ },
+ "nine_slice": {
+  "panel_9slice": [
+   12,
+   12,
+   12,
+   12
+  ],
+  "nameplate_9slice": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ "frames": {
+  "continue_ember": [
+   "continue_ember_0",
+   "continue_ember_1",
+   "continue_ember_2",
+   "continue_ember_3"
+  ]
+ },
+ "fps": {
+  "continue_ember": 6
+ },
+ "notes": "Panel alpha from UiTheme.BG (opaque in high contrast). cable_flourish hangs from the panel's top-left corner at offset (-2,-1). Portrait slot optional (P3)."
+}

@@ -1,0 +1,25 @@
+{
+ "id": "achievement",
+ "category": "ui",
+ "preset": "ui_std",
+ "raw": [
+  "raw/achievement.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 1,
+ "target_lufs": -20,
+ "duration_s": 0.9,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "achievement.ogg",
+   "dur": 1.2,
+   "lufs": -19.9,
+   "tp": -2.6,
+   "peak_ms": 8.5,
+   "bytes": 14457
+  }
+ ],
+ "ship": true
+}

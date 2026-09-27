@@ -1,0 +1,32 @@
+{
+ "id": "interact_pickups",
+ "texture": "res://assets/props/pickups.png",
+ "fill_texture": "res://assets/props/pickups_fill.png",
+ "cell": [
+  16,
+  16
+ ],
+ "origin": [
+  8,
+  8
+ ],
+ "rows": {
+  "scrap_spin": 6,
+  "scrap_cache": 1,
+  "memory_shard": 8,
+  "core_shard": 8
+ },
+ "row_origins": {
+  "scrap_cache": [
+   8,
+   15
+  ]
+ },
+ "tint": {
+  "scrap_spin": "Palette scrap",
+  "scrap_cache latch": "Palette scrap",
+  "memory_shard": "Palette memory",
+  "core_shard": "Palette accent"
+ },
+ "notes": "pickups.png holds baked parts (the cache crate); pickups_fill.png holds the tinted masks in the same layout. The .tres points at the fill sheet (the animated part)."
+}

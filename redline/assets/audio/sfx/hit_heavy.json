@@ -1,0 +1,25 @@
+{
+ "id": "hit_heavy",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/hit_heavy.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.4,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "hit_heavy.ogg",
+   "dur": 0.561,
+   "lufs": -18.3,
+   "tp": -1.2,
+   "peak_ms": 37.5,
+   "bytes": 9852
+  }
+ ],
+ "ship": true
+}

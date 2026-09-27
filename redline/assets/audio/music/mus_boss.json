@@ -1,0 +1,39 @@
+{
+ "id": "mus_boss",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_boss.mp3",
+ "raw_dur": 60.0,
+ "loop": true,
+ "flags": [],
+ "mid_lufs": -11.6,
+ "head_lufs": -12.6,
+ "tail_lufs": -16.8,
+ "bpm": 140.0,
+ "loop_start_s": 6.857,
+ "loop_cut_s": 49.714,
+ "loop_score": 1.4900000095367432,
+ "env_corr": 0.936,
+ "spec_corr": 0.993,
+ "level_jump_db": 0.18000000715255737,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_boss.ogg",
+   "dur": 42.86,
+   "lufs": -20.0,
+   "tp": -8.1,
+   "lra": 2.6,
+   "seam_db": 0.48,
+   "dc": 0.0,
+   "wrap_jump": 0.259,
+   "mono_drop": 0.99,
+   "bytes": 596916,
+   "head_mid_tail_lufs": [
+    -21.2,
+    -20.0,
+    -18.9
+   ]
+  }
+ ]
+}

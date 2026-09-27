@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="SpriteSheetSpec" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://vfx/SpriteSheetSpec.gd" id="1_spec"]
+[ext_resource type="Script" path="res://vfx/SpriteAnim.gd" id="2_anim"]
+
+[sub_resource type="Resource" id="a0"]
+script = ExtResource("2_anim")
+name = &"ring"
+row = 0
+first_frame = 0
+frame_count = 6
+fps = 12.0
+loop = false
+
+[sub_resource type="Resource" id="a1"]
+script = ExtResource("2_anim")
+name = &"ground_wave"
+row = 1
+first_frame = 0
+frame_count = 6
+fps = 12.0
+loop = false
+origin = Vector2i(32, 63)
+
+[resource]
+script = ExtResource("1_spec")
+texture_path = "res://assets/vfx/shockwave.png"
+cell_size = Vector2i(64, 64)
+origin = Vector2i(32, 32)
+animations = Array[Resource("res://vfx/SpriteAnim.gd")]([SubResource("a0"), SubResource("a1")])

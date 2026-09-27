@@ -1,0 +1,29 @@
+{
+ "id": "shoot_pistol",
+ "category": "sfx",
+ "preset": "sfx_sheet_slice",
+ "raw": [
+  "raw/shoot_pistol.mp3"
+ ],
+ "takes_found": 1,
+ "wanted": 2,
+ "target_lufs": -18,
+ "duration_s": 0.3,
+ "loop": false,
+ "measured": "decoded OGG",
+ "files": [
+  {
+   "file": "shoot_pistol.ogg",
+   "dur": 0.294,
+   "lufs": -25.8,
+   "tp": -1.0,
+   "peak_ms": 255.5,
+   "bytes": 7938
+  }
+ ],
+ "ship": false,
+ "hold_reason": "weak take (3 small clicks, peak at 254 ms, -25.8 LUFS); keep SfxSynth placeholder until regenerated",
+ "override": {
+  "hold": "weak take (3 small clicks, peak at 254 ms, -25.8 LUFS); keep SfxSynth placeholder until regenerated"
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "id": "mus_lowlight_explore",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_lowlight_explore.mp3",
+ "raw_dur": 90.0,
+ "loop": true,
+ "flags": [],
+ "mid_lufs": -13.1,
+ "head_lufs": -17.5,
+ "tail_lufs": -13.8,
+ "bpm": 96.0,
+ "loop_start_s": 10.0,
+ "loop_cut_s": 87.5,
+ "loop_score": 1.5260000228881836,
+ "env_corr": 0.924,
+ "spec_corr": 0.924,
+ "level_jump_db": 0.10999999940395355,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_lowlight_explore.ogg",
+   "dur": 77.5,
+   "lufs": -20.0,
+   "tp": -6.9,
+   "lra": 2.4,
+   "seam_db": 11.63,
+   "dc": 0.0,
+   "wrap_jump": 0.13,
+   "mono_drop": 0.19,
+   "bytes": 975966,
+   "head_mid_tail_lufs": [
+    -21.0,
+    -20.0,
+    -19.5
+   ]
+  }
+ ]
+}

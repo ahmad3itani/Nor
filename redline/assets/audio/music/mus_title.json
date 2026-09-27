@@ -1,0 +1,39 @@
+{
+ "id": "mus_title",
+ "category": "music",
+ "preset": "music_loop",
+ "raw": "raw/mus_title.mp3",
+ "raw_dur": 90.0,
+ "loop": true,
+ "flags": [],
+ "mid_lufs": -13.1,
+ "head_lufs": -12.8,
+ "tail_lufs": -13.2,
+ "bpm": 96.0,
+ "loop_start_s": 2.5,
+ "loop_cut_s": 82.5,
+ "loop_score": 0.9520000219345093,
+ "env_corr": 0.305,
+ "spec_corr": 0.997,
+ "level_jump_db": 0.07000000029802322,
+ "target_lufs": -20,
+ "files": [
+  {
+   "file": "mus_title.ogg",
+   "dur": 80.0,
+   "lufs": -20.0,
+   "tp": -8.5,
+   "lra": 0.7,
+   "seam_db": 0.01,
+   "dc": 0.0,
+   "wrap_jump": 0.369,
+   "mono_drop": 0.09,
+   "bytes": 983407,
+   "head_mid_tail_lufs": [
+    -19.9,
+    -20.1,
+    -20.1
+   ]
+  }
+ ]
+}

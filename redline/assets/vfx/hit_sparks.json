@@ -1,0 +1,46 @@
+{
+ "id": "vfx_hit_sparks",
+ "texture": "res://assets/vfx/hit_sparks.png",
+ "cell": [
+  32,
+  32
+ ],
+ "origin": [
+  16,
+  16
+ ],
+ "rows": [
+  {
+   "name": "spark_small",
+   "row": 0,
+   "frames": 4,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "spark_heavy",
+   "row": 1,
+   "frames": 5,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "spark_guard",
+   "row": 2,
+   "frames": 4,
+   "fps": 24,
+   "loop": false
+  },
+  {
+   "name": "spark_crit",
+   "row": 3,
+   "frames": 5,
+   "fps": 24,
+   "loop": false
+  }
+ ],
+ "row_origins": {},
+ "tint": "hit colour via Palette (guard = Palette guard)",
+ "notes": "Drawn for hit.direction = +x; rotate the sprite to the hit direction (snap to 45 deg to keep pixels crisp). Under flash reduction modulate tone 3 down (multiply 0.7) so no white core shows.",
+ "facing": "+x (flip_h for facing -1)"
+}
