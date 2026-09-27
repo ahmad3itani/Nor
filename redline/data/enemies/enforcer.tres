@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/brains/enforcer.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/enforcer_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Baton2"]
 script = ExtResource("1_attack")
@@ -72,6 +73,7 @@ attack_cooldown = 1.0
 reactor_reward = 25.0
 scrap_drop = 20
 style_value = 90.0
-color = Color(0.7, 0.28, 0.3, 1)
+color = Color(0.352941, 0.164706, 0.188235, 1)
 elite = true
 attacks = Array[ExtResource("1_attack")]([SubResource("Baton1"), SubResource("Lunge")])
+sprite = ExtResource("t05_sprite")

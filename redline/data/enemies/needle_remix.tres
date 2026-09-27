@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/brains/needle.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/needle_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Attack"]
 script = ExtResource("1_attack")
@@ -37,5 +38,7 @@ attack_cooldown = 0.8
 reactor_reward = 12.0
 scrap_drop = 0
 style_value = 40.0
-color = Color(0.82, 0.38, 0.38, 1)
+color = Color(0.788235, 0.760784, 0.705882, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])
+sprite = ExtResource("t05_sprite")
+sprite_modulate = Color(0.92, 0.84, 1, 1)

@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/brains/hopper.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/hopper_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Pounce"]
 script = ExtResource("1_attack")
@@ -40,3 +41,4 @@ scrap_drop = 5
 style_value = 40.0
 color = Color(0.46, 0.7, 0.48, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Pounce")])
+sprite = ExtResource("t05_sprite")

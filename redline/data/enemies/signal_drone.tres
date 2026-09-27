@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
 [ext_resource type="Resource" path="res://data/enemies/brains/signal_drone.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/signal_drone_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Proj"]
 script = ExtResource("3_proj")
@@ -51,3 +52,4 @@ scrap_drop = 7
 style_value = 50.0
 color = Color(0.3, 0.55, 0.62, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])
+sprite = ExtResource("t05_sprite")

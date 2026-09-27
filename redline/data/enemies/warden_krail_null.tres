@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
+[ext_resource type="Resource" path="res://assets/bosses/warden_krail_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Arc"]
 script = ExtResource("3_proj")
@@ -150,3 +151,6 @@ color = Color(0.36, 0.34, 0.48, 1)
 elite = true
 death_time = 1.4
 attacks = Array[ExtResource("1_attack")]([SubResource("Baton1"), SubResource("Lunge"), SubResource("Burst"), SubResource("Slam"), SubResource("Backstep")])
+sprite = ExtResource("t05_sprite")
+sprite_modulate = Color(0.78, 0.8, 0.9, 1)
+metadata/mask_tint = Color(1, 1, 1, 1)

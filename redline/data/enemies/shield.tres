@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/brains/shield.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/shield_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="Attack"]
 script = ExtResource("1_attack")
@@ -41,3 +42,4 @@ scrap_drop = 9
 style_value = 60.0
 color = Color(0.55, 0.52, 0.66, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Attack")])
+sprite = ExtResource("t05_sprite")

@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
 [ext_resource type="Script" path="res://combat/ProjectileData.gd" id="3_proj"]
 [ext_resource type="Resource" path="res://data/enemies/brains/watcher.tres" id="brain_res"]
+[ext_resource type="Resource" path="res://assets/enemies/watcher_sheet.tres" id="t05_sprite"]
 
 [sub_resource type="Resource" id="P"]
 script = ExtResource("3_proj")
@@ -51,3 +52,4 @@ scrap_drop = 4
 style_value = 35.0
 color = Color(0.42, 0.4, 0.5, 1)
 attacks = Array[ExtResource("1_attack")]([SubResource("Bolt")])
+sprite = ExtResource("t05_sprite")

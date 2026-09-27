@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://combat/AttackData.gd" id="1_attack"]
 [ext_resource type="Script" path="res://enemies/base/EnemyData.gd" id="2_enemy"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/combat/collector_hook_sweep.tres" id="6_sweep"]
 [ext_resource type="Resource" path="res://data/combat/collector_drop_press_p2.tres" id="7_press_p2"]
 [ext_resource type="Resource" path="res://data/combat/collector_tag_volley_p2.tres" id="8_volley_p2"]
+[ext_resource type="Resource" path="res://assets/bosses/collector_drone_sheet.tres" id="t05_sprite"]
 
 [resource]
 script = ExtResource("2_enemy")
@@ -40,3 +41,4 @@ boss = true
 color = Color(0.46, 0.42, 0.3, 1)
 elite = true
 death_time = 1.6
+sprite = ExtResource("t05_sprite")
