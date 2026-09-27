@@ -355,6 +355,13 @@ func _die(hit: HitInfo) -> void:
 
 
 func _pop() -> void:
+	# Presentation (T05): the visual leaves a detached corpse and a sprite
+	# death burst; the HitSpark bursts stay the fallback when no burst sheet
+	# could spawn. Visual only: timers, state and physics are unchanged.
+	var visual := get_node_or_null(^"Visual")
+	if visual and visual.has_method(&"spawn_death_visuals") and visual.spawn_death_visuals(get_parent()):
+		queue_free()
+		return
 	var bursts := 4 if data.death_time > DEATH_FLIGHT_TIME else 1
 	for i in bursts:
 		HitSpark.spawn(get_parent(), global_position + Vector2(randf_range(-8, 8) * i, -data.body_size.y * 0.5), Vector2.UP, data.color, 16, 160.0 + 40.0 * i)

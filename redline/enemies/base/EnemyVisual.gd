@@ -10,55 +10,323 @@ extends Node2D
 ## tint and the wind-up pulse holds still. High contrast: a 1 px white body
 ## outline and 2 px telegraph lines. Elites always carry corner notches, so
 ## "elite" is a shape, not only the gold outline.
+##
+## Presentation overhaul (T05), sprite mode (EnemyData.sprite set and found):
+## - animation: the behavior's anim_names() first (boss families), then the
+##   generic map; wind-up poses are non-looping and hold their last frame for
+##   the whole telegraph;
+## - hit reactions: a `hurt` one-shot on every damaging hit that does not
+##   already stagger, the hit flash tint, a 1-2 px knock of the sprite along
+##   the hit direction for 0.08 s; `guard_break` when the guard module
+##   reports a break; the stagger tint stays;
+## - accessibility: the wind-up tint on the sprite (held still under flash
+##   reduction) and, under high contrast, a 1 px flat outline silhouette made
+##   of 4 offset copies of the current frame behind the sprite;
+## - death: spawn_death_visuals() leaves a detached, darkened corpse that
+##   finishes the `death` animation after the body is freed, plus a
+##   death_burst tinted by burst_tint(EnemyData.color).
+## Telegraphs, the "!", health bars, elite notches and the behaviors' code
+## cues (guard rim, eye pupil, boss lamps and floor tells) draw on top. With
+## no sprite (or a missing sheet) the placeholder body draws as before.
 
 const TELEGRAPH_COLOR := Color("ff3b4f")
 const FLASH_COLOR := Color.WHITE
 const ELITE_COLOR := Color("ffcf5a")
 ## Wind-up pulse in rad/s (about 6.4 Hz): only without flash reduction.
 const WINDUP_PULSE_RATE := 40.0
+## Hit knock: sprite offset along the hit direction (visual only).
+const KNOCK_TIME := 0.08
+## Death corpse: held on the last death frame, then faded; darkened like the
+## placeholder DEAD body (darkened(0.6)).
+const CORPSE_HOLD := 0.6
+const CORPSE_FADE := 0.3
+const CORPSE_DIM := 0.6
+## Death-burst tint: the enemy colour lifted toward this pale neutral until
+## its brightest tone (the sheet's 255) reads at L* >= BURST_MIN_LSTAR.
+const BURST_PALE := Color("d8d4e0")
+const BURST_MIN_LSTAR := 60.0
+const OUTLINE_SHADER := "shader_type canvas_item;\nuniform vec4 flat_color : source_color = vec4(1.0);\nvoid fragment() {\n\tCOLOR = vec4(flat_color.rgb, flat_color.a * texture(TEXTURE, UV).a);\n}\n"
+const OUTLINE_OFFSETS: Array[Vector2] = [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1)]
+
+static var _outline_shader: Shader
 
 @onready var enemy: Enemy = get_parent()
 var actor: SpriteActor
+## High-contrast outline copies (created on first use, sprite mode only).
+var outline_nodes: Array[Sprite2D] = []
+## [ai, attack, anim] the last pose was asked in: a new state or attack
+## restarts a non-looping pose.
+var _anim_key: Array = []
+var _knock := Vector2.ZERO
+var _knock_t: float = 0.0
+## Presentation-only randomness (hitstop shake in sprite mode): never the
+## global RNG.
+var _rng := RandomNumberGenerator.new()
+var _guard: GuardModule
 
 
 func _ready() -> void:
+	_rng.seed = 5
 	if enemy.data and enemy.data.sprite:
 		actor = SpriteActor.create(enemy.data.sprite)
 		if actor:
+			actor.name = "Sprite"
+			# Telegraphs, bars and code cues (this node's _draw) stay on top.
+			actor.show_behind_parent = true
+			actor.modulate = enemy.data.sprite_modulate
 			add_child(actor)
+			EventBus.enemy_damaged.connect(_on_enemy_damaged)
+			# The data's brain (children are ready before the Enemy sets up
+			# its behavior, so ask the data, not the behavior).
+			var brain := enemy.data.brain
+			if brain and brain.guard:
+				_guard = brain.guard
+				_guard.guard_broken.connect(_on_guard_broken)
+
+
+func _exit_tree() -> void:
+	# Guard modules are shared resources: never leave a callable behind.
+	if _guard and _guard.guard_broken.is_connected(_on_guard_broken):
+		_guard.guard_broken.disconnect(_on_guard_broken)
 
 
 func uses_sprite() -> bool:
 	return actor != null
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if actor:
-		_update_actor()
+		_update_actor(delta)
 	queue_redraw()
 
 
 ## AI state -> animation, with fallbacks so partial art sets still play.
-func _update_actor() -> void:
+func _update_actor(delta: float) -> void:
 	actor.face(enemy.facing)
-	var moving := absf(enemy.velocity.x) > 5.0 or (enemy.data.flying and enemy.velocity.length() > 5.0)
-	match enemy.ai:
-		Enemy.AI.WINDUP:
-			actor.play_first([&"windup", &"attack", &"idle"])
-		Enemy.AI.ACTIVE:
-			actor.play_first([&"attack", &"idle"])
-		Enemy.AI.STAGGER, Enemy.AI.LAUNCHED:
-			actor.play_first([&"hurt", &"idle"])
-		Enemy.AI.DEAD:
-			actor.play_first([&"death", &"hurt", &"idle"])
-		_:
-			actor.play_first([&"move", &"idle"] if moving else [&"idle"])
+	var one_shot := actor.is_playing_one_shot()
+	if one_shot and (enemy.ai == Enemy.AI.WINDUP or enemy.ai == Enemy.AI.ACTIVE or enemy.ai == Enemy.AI.DEAD):
+		one_shot = false  # a telegraph or a death always shows at once
+	if not one_shot:
+		_play(anim_names_now())
+	# Tint: hit flash > stagger > wind-up warning (T05 repair a).
 	var tint := Color.WHITE
 	if enemy.flash_timer > 0.0:
 		tint = hit_tint(Settings.flash_reduction)
 	elif enemy.ai == Enemy.AI.STAGGER or enemy.ai == Enemy.AI.LAUNCHED:
 		tint = Color(0.65, 0.65, 0.65)
+	elif enemy.ai == Enemy.AI.WINDUP:
+		tint = windup_tint(enemy.ai_time, Settings.flash_reduction)
 	actor.self_modulate = tint
+	if actor.mask and enemy.data.has_meta(&"mask_tint"):
+		# A variant's own visor colour (Krail Null: white) over the palette key.
+		actor.mask.modulate = enemy.data.get_meta(&"mask_tint")
+	# Knock and hitstop shake (visual only).
+	_knock_t = maxf(_knock_t - delta, 0.0)
+	var pos := _knock if _knock_t > 0.0 else Vector2.ZERO
+	if enemy.hitstop_timer > 0.0:
+		pos.x += roundf(_rng.randf_range(-1.0, 1.0))
+	actor.position = pos
+	_update_outline()
+
+
+## The names to try now: the behavior's (bosses, per attack family), then
+## the generic map.
+func anim_names_now() -> Array[StringName]:
+	var out: Array[StringName] = []
+	if is_instance_valid(enemy.behavior):
+		out.append_array(enemy.behavior.anim_names(enemy.ai, enemy.current_attack))
+	out.append_array(generic_anim_names(enemy.ai, enemy.current_attack, enemy.ai_enabled, _moving()))
+	return out
+
+
+func _moving() -> bool:
+	return absf(enemy.velocity.x) > 5.0 or (enemy.data.flying and enemy.velocity.length() > 5.0)
+
+
+## The shared map. Attack ids containing "lunge" ask for the lunge pair
+## first, the rest for the baton pair (Enforcer); sheets without them fall
+## back to the plain windup/attack rows. A dormant practice dummy (AI off,
+## needle_dormant) plays dormant.
+static func generic_anim_names(ai: int, attack: AttackData, ai_enabled: bool, moving: bool) -> Array[StringName]:
+	var lunge := attack != null and String(attack.id).contains("lunge")
+	match ai:
+		Enemy.AI.WINDUP:
+			return [&"windup_lunge" if lunge else &"windup_baton", &"windup", &"attack", &"idle"]
+		Enemy.AI.ACTIVE:
+			return [&"attack_lunge" if lunge else &"attack_baton", &"attack", &"idle"]
+		Enemy.AI.STAGGER, Enemy.AI.LAUNCHED:
+			return [&"hurt", &"idle"]
+		Enemy.AI.DEAD:
+			return [&"death", &"hurt", &"idle"]
+		Enemy.AI.IDLE:
+			if not ai_enabled:
+				return [&"dormant", &"idle"]
+	if moving:
+		return [&"move", &"idle"]
+	return [&"idle"]
+
+
+## Plays the first existing name. A non-looping pose holds its last frame
+## (AnimatedSprite2D.play would restart a finished one); it restarts only
+## when the name, the AI state or the attack changes.
+func _play(names: Array[StringName]) -> void:
+	var n := &""
+	for item in names:
+		if actor.sprite_frames.has_animation(item):
+			n = item
+			break
+	if n == &"":
+		return
+	var key := [enemy.ai, enemy.current_attack, n]
+	var loops := actor.sprite_frames.get_animation_loop(n)
+	var state_changed: bool = _anim_key.size() != 3 or _anim_key[0] != key[0] or _anim_key[1] != key[1]
+	if actor.animation != n or (not loops and state_changed and _anim_key != key):
+		actor.stop()
+		actor.play(n)
+		actor.frame = 0
+		actor.frame_progress = 0.0
+	elif loops and not actor.is_playing():
+		actor.play(n)
+	_anim_key = key
+
+
+# --- Hit reactions -----------------------------------------------------------------
+
+func _on_enemy_damaged(who: Node2D, hit: HitInfo, result: int) -> void:
+	if who != enemy or actor == null or result != CombatResult.HIT:
+		return
+	var d := Vector2(-enemy.facing, 0)
+	if hit and hit.direction != Vector2.ZERO:
+		d = hit.direction
+	var px := 2.0 if hit and hit.attack and hit.attack.hitstop >= 0.08 else 1.0
+	_knock = (d.normalized() * px).round()
+	_knock_t = KNOCK_TIME
+	# A stagger plays its own row through the map; a telegraph never hides.
+	if enemy.ai in [Enemy.AI.STAGGER, Enemy.AI.LAUNCHED, Enemy.AI.WINDUP, Enemy.AI.ACTIVE]:
+		return
+	actor.play_once_first([&"hurt"])
+	_anim_key = []
+
+
+func _on_guard_broken(who: Enemy) -> void:
+	if who != enemy or actor == null:
+		return
+	actor.play_once_first([&"guard_break", &"hurt"])
+	_anim_key = []
+
+
+# --- Accessibility in sprite mode (T05 repair a) ----------------------------------
+
+## Sprite tint during a wind-up: toward Palette danger by 0.35..0.7 (held at
+## 0.525 under flash reduction), the blend the placeholder body uses.
+static func windup_tint(t: float, reduced: bool) -> Color:
+	return Color.WHITE.lerp(Palette.color(&"danger"), 0.35 + 0.35 * windup_pulse(t, reduced))
+
+
+func _update_outline() -> void:
+	if not UiTheme.high_contrast():
+		for s in outline_nodes:
+			s.visible = false
+		return
+	if outline_nodes.is_empty():
+		if _outline_shader == null:
+			_outline_shader = Shader.new()
+			_outline_shader.code = OUTLINE_SHADER
+		var mat := ShaderMaterial.new()
+		mat.shader = _outline_shader
+		for off in OUTLINE_OFFSETS:
+			var s := Sprite2D.new()
+			s.name = "HcOutline"
+			s.show_behind_parent = true
+			s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			s.centered = true
+			s.material = mat
+			s.set_meta(&"offset", off)
+			add_child(s)
+			move_child(s, 0)  # behind the actor
+			outline_nodes.append(s)
+	var tex := actor.sprite_frames.get_frame_texture(actor.animation, actor.frame)
+	(outline_nodes[0].material as ShaderMaterial).set_shader_parameter(&"flat_color", body_outline_color(enemy.data.elite, true))
+	for s in outline_nodes:
+		s.visible = actor.visible
+		s.texture = tex
+		s.offset = actor.offset
+		s.flip_h = actor.flip_h
+		s.position = actor.position + (s.get_meta(&"offset") as Vector2)
+
+
+# --- Death (T05) -----------------------------------------------------------------------
+
+## Called by Enemy._pop as the body is freed. Spawns the detached corpse
+## (sprite mode) and the death burst into `parent`. Returns false when no
+## burst could spawn, so Enemy keeps its HitSpark fallback.
+func spawn_death_visuals(parent: Node) -> bool:
+	if parent == null or not is_instance_valid(parent):
+		return false
+	spawn_corpse(parent)
+	var data := enemy.data
+	var id := &"death_burst_boss" if data.boss else &"death_burst"
+	var anim := burst_anim(data)
+	var at := _local_in(parent, enemy.global_position + Vector2(0, -data.body_size.y * 0.5))
+	return VfxOneShot.spawn(parent, id, anim, at, {"facing": enemy.facing, "tint": burst_tint(data.color)}) != null
+
+
+## death_burst row: small for regular enemies, large for elites, the boss
+## sheet's single row for bosses.
+static func burst_anim(data: EnemyData) -> StringName:
+	if data.boss:
+		return &"boss"
+	return &"large" if data.elite else &"small"
+
+
+## The corpse: the enemy's frames on `death`, continuing from the body's
+## current death frame, held CORPSE_HOLD s, faded CORPSE_FADE s, darkened.
+## No collision; frees itself. Null without a sprite or a death row.
+func spawn_corpse(parent: Node) -> VfxOneShot:
+	if actor == null or not actor.sprite_frames.has_animation(&"death"):
+		return null
+	var m := enemy.data.sprite_modulate
+	var fx := VfxOneShot.spawn_frames(parent, actor.sprite_frames, &"death", _local_in(parent, enemy.global_position), {
+		"facing": enemy.facing, "offset": actor.spec.offset_for(&"death"), "hold_last": true,
+		"tint": Color(m.r * CORPSE_DIM, m.g * CORPSE_DIM, m.b * CORPSE_DIM, m.a), "z_index": enemy.z_index})
+	if fx == null:
+		return null
+	fx.name = "EnemyCorpse"
+	var count := actor.sprite_frames.get_frame_count(&"death")
+	fx.sprite.frame = clampi(actor.frame if actor.animation == &"death" else 0, 0, count - 1)
+	var fps := maxf(actor.sprite_frames.get_animation_speed(&"death"), 1.0)
+	var remaining := float(count - fx.sprite.frame) / fps
+	fx.lifetime = remaining + CORPSE_HOLD + CORPSE_FADE + 0.05
+	var tw := fx.create_tween()
+	tw.tween_interval(remaining + CORPSE_HOLD)
+	tw.tween_property(fx, "modulate:a", 0.0, CORPSE_FADE)
+	return fx
+
+
+static func _local_in(parent: Node, global: Vector2) -> Vector2:
+	return (parent as Node2D).to_local(global) if parent is Node2D else global
+
+
+## EnemyData.color lifted toward BURST_PALE (half-way at least) until its
+## brightest tone reaches BURST_MIN_LSTAR, so a dark maroon or slate enemy
+## still bursts in a readable tone.
+static func burst_tint(c: Color) -> Color:
+	var t := 0.5
+	var out := c.lerp(BURST_PALE, t)
+	while lstar(out) < BURST_MIN_LSTAR and t < 1.0:
+		t = minf(t + 0.05, 1.0)
+		out = c.lerp(BURST_PALE, t)
+	return Color(out, 1.0)
+
+
+## CIE L* (0..100) of an sRGB colour.
+static func lstar(c: Color) -> float:
+	var y := 0.2126 * _lin(c.r) + 0.7152 * _lin(c.g) + 0.0722 * _lin(c.b)
+	return 116.0 * pow(y, 1.0 / 3.0) - 16.0 if y > 0.008856 else 903.3 * y
+
+
+static func _lin(v: float) -> float:
+	return v / 12.92 if v <= 0.04045 else pow((v + 0.055) / 1.055, 2.4)
 
 
 func _draw() -> void:
@@ -86,7 +354,9 @@ func _draw() -> void:
 		draw_rect(body, body_outline_color(data.elite, hc), false, 1.0)
 		var eye_x := 1.0 if enemy.facing > 0 else -4.0
 		draw_rect(Rect2(Vector2(eye_x, -size.y + 4.0) + shake, Vector2(3, 2)), Color("1a1320"))
-		enemy.behavior.draw_extras(self)
+	# Sprite mode too: the behaviors' code cues (guard rim, pupil, boss lamps,
+	# floor tells); their placeholder body parts skip themselves (uses_sprite).
+	enemy.behavior.draw_extras(self)
 	if data.elite:
 		_draw_elite_notches(body)
 
