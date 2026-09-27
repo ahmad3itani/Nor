@@ -1,0 +1,105 @@
+{
+ "anchor_rule": "bottom = origin at the bottom-centre (sits below the floor line); top = origin at the top-centre (hangs into the top 40 px)",
+ "note": "Undercity foreground silhouettes (hanging chains, curtain rail, pipe end, rubble, railing)",
+ "palette": "uc_env",
+ "regions": [
+  {
+   "anchor": "top",
+   "name": "chain_long",
+   "origin": [
+    6,
+    0
+   ],
+   "rect": [
+    0,
+    0,
+    12,
+    104
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "chain_short",
+   "origin": [
+    6,
+    0
+   ],
+   "rect": [
+    14,
+    0,
+    12,
+    60
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "curtain_rail",
+   "origin": [
+    36,
+    0
+   ],
+   "rect": [
+    28,
+    0,
+    72,
+    56
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "pipe_end",
+   "origin": [
+    20,
+    0
+   ],
+   "rect": [
+    102,
+    0,
+    40,
+    64
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "rubble_a",
+   "origin": [
+    32,
+    22
+   ],
+   "rect": [
+    144,
+    0,
+    64,
+    22
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "rubble_b",
+   "origin": [
+    20,
+    16
+   ],
+   "rect": [
+    210,
+    0,
+    40,
+    16
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "railing_broken",
+   "origin": [
+    36,
+    24
+   ],
+   "rect": [
+    0,
+    106,
+    72,
+    24
+   ]
+  }
+ ]
+}

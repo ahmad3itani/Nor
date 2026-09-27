@@ -1,0 +1,77 @@
+{
+ "anchor_rule": "bottom = origin at the bottom-centre (sits below the floor line); top = origin at the top-centre (hangs into the top 40 px)",
+ "note": "Relay foreground silhouettes (cloth strips, bulb strings, crates)",
+ "palette": "relay_env",
+ "regions": [
+  {
+   "anchor": "top",
+   "name": "cloth_strips_wide",
+   "origin": [
+    28,
+    0
+   ],
+   "rect": [
+    0,
+    0,
+    56,
+    64
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "cloth_strips_narrow",
+   "origin": [
+    14,
+    0
+   ],
+   "rect": [
+    58,
+    0,
+    28,
+    64
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "bulb_string_wide",
+   "origin": [
+    64,
+    0
+   ],
+   "rect": [
+    88,
+    0,
+    128,
+    30
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "bulb_string_narrow",
+   "origin": [
+    36,
+    0
+   ],
+   "rect": [
+    0,
+    66,
+    72,
+    22
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "crates",
+   "origin": [
+    18,
+    28
+   ],
+   "rect": [
+    74,
+    66,
+    36,
+    28
+   ]
+  }
+ ]
+}

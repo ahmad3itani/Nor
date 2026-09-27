@@ -1,0 +1,66 @@
+{
+ "cell": [
+  16,
+  16
+ ],
+ "facing": "+x (flip_h for facing -1)",
+ "id": "life_critters",
+ "notes": "Ambient life, visual only. No dark outline and a value at or below the playfield face, so critters never read as small enemies. eel_ripple uses the lower 16x8 of its cell.",
+ "origin": [
+  8,
+  15
+ ],
+ "palette": "ll_env",
+ "rows": [
+  {
+   "fps": 12,
+   "frames": 4,
+   "loop": true,
+   "name": "moth_flutter",
+   "row": 0
+  },
+  {
+   "fps": 6,
+   "frames": 2,
+   "loop": true,
+   "name": "rat_idle",
+   "row": 1
+  },
+  {
+   "fps": 14,
+   "frames": 4,
+   "loop": true,
+   "name": "rat_run",
+   "row": 2
+  },
+  {
+   "fps": 4,
+   "frames": 2,
+   "loop": true,
+   "name": "gull_idle",
+   "row": 3
+  },
+  {
+   "fps": 10,
+   "frames": 3,
+   "loop": false,
+   "name": "gull_peck",
+   "row": 4
+  },
+  {
+   "fps": 12,
+   "frames": 4,
+   "loop": true,
+   "name": "gull_fly",
+   "row": 5
+  },
+  {
+   "fps": 10,
+   "frames": 6,
+   "loop": false,
+   "name": "eel_ripple",
+   "row": 6
+  }
+ ],
+ "texture": "res://assets/props/life_critters.png"
+}

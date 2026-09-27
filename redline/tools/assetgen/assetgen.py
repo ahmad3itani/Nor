@@ -48,6 +48,7 @@ BUILDERS = [
     ("fx_vfx.py", []),
     ("fx_ui.py", []),
     ("tiles_null.py", []),
+    ("paint_env.py", []),
 ]
 # validators on the committed files: (script, args)
 CHECKS = [

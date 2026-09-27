@@ -1,0 +1,91 @@
+{
+ "anchor_rule": "bottom = origin at the bottom-centre (sits below the floor line); top = origin at the top-centre (hangs into the top 40 px)",
+ "note": "Lowlight foreground silhouettes (antenna tops, cable loops, awning, dish railing)",
+ "palette": "ll_env",
+ "regions": [
+  {
+   "anchor": "bottom",
+   "name": "antenna_tall",
+   "origin": [
+    14,
+    72
+   ],
+   "rect": [
+    0,
+    0,
+    28,
+    72
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "antenna_short",
+   "origin": [
+    14,
+    44
+   ],
+   "rect": [
+    30,
+    0,
+    28,
+    44
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "cable_loop_wide",
+   "origin": [
+    60,
+    0
+   ],
+   "rect": [
+    60,
+    0,
+    120,
+    46
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "cable_loop_narrow",
+   "origin": [
+    32,
+    0
+   ],
+   "rect": [
+    182,
+    0,
+    64,
+    32
+   ]
+  },
+  {
+   "anchor": "top",
+   "name": "awning",
+   "origin": [
+    32,
+    0
+   ],
+   "rect": [
+    0,
+    74,
+    64,
+    20
+   ]
+  },
+  {
+   "anchor": "bottom",
+   "name": "dish_railing",
+   "origin": [
+    20,
+    26
+   ],
+   "rect": [
+    66,
+    74,
+    40,
+    26
+   ]
+  }
+ ]
+}
