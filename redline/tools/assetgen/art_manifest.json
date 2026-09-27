@@ -1,0 +1,2168 @@
+[
+ {
+  "id": "title_sky",
+  "category": "title",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "title",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title screen sky only: a vast night sky over an unseen megacity, heavy low rain clouds lit from below by a faint cold city glow, one pale hazy break in the clouds upper right, slanted rain veils, deep indigo to violet-grey, very low contrast, no buildings, 16:9.",
+  "post_process": "center-crop 16:9, box-downscale to 480x270, ordered-dither allowed (Bayer 4x4, sky only), quantize to palette (title) max 20 colours, clamp brightness so top 30% <= far layer value, no alpha",
+  "out": "assets/title/title_sky.png",
+  "used_by": "TitleBackdrop (new layered title scene)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "title_far_spires",
+  "category": "title",
+  "target_px": [
+   480,
+   200
+  ],
+  "palette_ref": "title",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title far layer: the distant vertical megacity Veyra as a wall of impossibly tall stacked towers and spires connected by thin sky-bridges and cables, a few tiny muted warm and cold window lights, silhouettes in dark blue-violet fading into rain haze, one tall central spire slightly off-centre. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (title) max 12 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/title/title_far.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "title_mid_rooftops",
+  "category": "title",
+  "target_px": [
+   480,
+   180
+  ],
+  "palette_ref": "title",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title middle layer: a ragged line of wet rooftops, water tanks, antenna masts, hanging cable arcs and a dead elevated rail line crossing the frame, dark slate violet with a thin cold rim light on top edges, sparse muted lit windows. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (title) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/title/title_mid.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "title_near_ledge",
+  "category": "title",
+  "target_px": [
+   480,
+   120
+  ],
+  "palette_ref": "title",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title near layer: the foreground edge of a broken concrete rooftop ledge on the right third with a bent railing, a dead lamp post and drooping cables, near-black with a faint cold rim light, left two thirds empty magenta (the title menu sits there). The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (title) max 10 colours, value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/title/title_near.png",
+  "notes": "Rook stands on this ledge as a code-rigged silhouette (rook sheet 'title_stand' pose), coat and scarf animated.",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "title_logo",
+  "category": "title",
+  "target_px": [
+   208,
+   40
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "est_generations": 2,
+  "source": "ai",
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. A single game title wordmark reading exactly 'REDLINE' in tall condensed industrial capital letters with sharp chiselled serifs, a thin horizontal crack running through all letters like a healed scar, pixel art, white on magenta, very wide aspect.",
+  "post_process": "chroma-key, box-downscale to 208x40, threshold to 3 greys, hand/script cleanup of letterforms; the crack line becomes a separate 1 px mask tinted Redline red in code with a slow ember crawl; fallback: script-drawn pixel wordmark if letters garble",
+  "out": "assets/ui/title_logo.png",
+  "frames": {},
+  "est_credits": 380
+ },
+ {
+  "id": "uc_sky_vault",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Underground: the dark vaulted ceiling of a colossal flooded cistern seen from far below, ribbed concrete arches dissolving into black, faint sea-green haze and a few thin light shafts falling from broken grates far above, no floor visible, extremely dark and low contrast, 16:9.",
+  "post_process": "center-crop 16:9, box-downscale to 480x270, ordered-dither allowed (Bayer 4x4, sky only), quantize to palette (uc_env) max 20 colours, clamp brightness so top 30% <= far layer value, no alpha",
+  "out": "assets/undercity/uc_sky.png",
+  "used_by": "DistrictBackdrop sky (Undercity, screen-fixed)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_far_cistern",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   200
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity far layer: distant rows of enormous cylindrical concrete columns and sluice gates of a flooded civic disposal complex, standing in still black water, silhouettes in dark sea-green grey fading into mist, a few tiny dim sea-green service tubes, very low contrast. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (uc_env) max 10 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/undercity/uc_far.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_mid_pipeworks",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity middle layer: rusted giant pipes, pump housings, catwalk railings and hanging chains over flood water, rust and wet concrete, sea-green fog between elements, one or two small dim sodium lamps, reflections on still water at the bottom edge. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (uc_env) max 16 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/undercity/uc_mid.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_near_columns",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity near background layer: a few massive stained concrete pillars and sagging cable bundles, hanging algae strands and drip stains, dark sea-green concrete with rust streaks, widely spaced with lots of empty magenta between them. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (uc_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/undercity/uc_near.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_fg_silhouettes",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Foreground silhouette kit, near-black shapes only with a faint sea-green rim: hanging chains, broken pipe ends dangling from above, a sagging cable, rubble mounds and a rusted rail stub for the bottom edge, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "chroma-key, box-downscale by the same factor as uc_near, hard alpha, 2-3 colours (near-black + rim), slice to separate FG sprites (top-hanging and bottom-rising); placed only above y-top 40 px or below the floor line, never over the player's collision band",
+  "out": "assets/undercity/uc_fg_*.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_shaft_near",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity vertical shaft background: a deep square maintenance shaft wall with ladder rungs, cable trays, pipe runs and a stopped lift counterweight rail, continuous from top edge to bottom edge so it tiles vertically, dark sea-green concrete, dim. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (uc_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour, make_tileable_y too",
+  "out": "assets/undercity/uc_shaft_near.png",
+  "used_by": "Maintenance Shaft, Broken Lift (tall rooms: y-tiled near layer)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_backwall_ward",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity interior back wall at 0.9 depth: a derelict medical intake ward wall, tiled lower half with missing tiles, stained upper concrete, empty gurney bays, pipe runs, a boarded observation window, damp sea-green light, low contrast, continuous horizontally. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, quantize to palette (uc_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/undercity/uc_backwall_ward.png",
+  "used_by": "Wake, Medical Ruin",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_boss_bay",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Collector Bay backdrop: a cavernous sorting bay with a huge circular ceiling hatch far above (closed, dark), conveyor gantries, stacked cargo cages, a spotlight rig pointing down, all in dark sea-green and rust, no red anywhere, 16:9.",
+  "post_process": "center-crop 16:9, box-downscale to 480x270, ordered-dither allowed (Bayer 4x4, sky only), quantize to palette (uc_env) max 20 colours, clamp brightness so top 30% <= far layer value, no alpha",
+  "out": "assets/undercity/uc_boss_bay.png",
+  "used_by": "Collector Bay (single-screen arena: full backdrop)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_sky_night",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight night sky: low heavy rain clouds over a megacity, lit from below by a diffuse cold blue-violet city glow, distant searchlight haze, falling rain veils, no buildings, very low contrast, 16:9.",
+  "post_process": "center-crop 16:9, box-downscale to 480x270, ordered-dither allowed (Bayer 4x4, sky only), quantize to palette (ll_env) max 20 colours, clamp brightness so top 30% <= far layer value, no alpha",
+  "out": "assets/lowlight/ll_sky.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_sky_storm",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Storm sky for an elevated rail chase: torn racing clouds, heavier diagonal rain, a faint internal cloud glow suggesting distant lightning, cold violet-grey, 16:9, no buildings.",
+  "post_process": "center-crop 16:9, box-downscale to 480x270, ordered-dither allowed (Bayer 4x4, sky only), quantize to palette (ll_env) max 20 colours, clamp brightness so top 30% <= far layer value, no alpha",
+  "out": "assets/lowlight/ll_sky_storm.png",
+  "used_by": "Rainline Chase, Neon Roofs; lightning = code flash layer, static tint under flash reduction",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_far_skyline",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   200
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight far layer: a dense distant skyline of tall residential slab towers and stacked housing blocks with a few spires, hazy blue-violet silhouettes in the rain, tiny muted warm and teal window dots, a distant elevated rail viaduct crossing low, very low contrast. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 10 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_far.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_mid_blocks",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight middle layer: wet apartment block facades, fire escapes, laundry lines, AC units, water tanks and small unlit sign frames, slate and dark brick, cold rim light from the wet sky, sparse muted warm and teal windows, rain haze. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 16 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_mid.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_near_street",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight near background layer at street level: shuttered shopfronts, a dead market stall frame, drainpipes, overhead cable bundles and a sodium street lamp, wet concrete, puddle reflections along the bottom, widely spaced elements with empty magenta between. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 16 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_near_street.png",
+  "used_by": "Flooded Alley, Market Run, Smuggler Route",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_mid_roofs",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight rooftop middle layer: a sea of wet flat rooftops, stairwell huts, satellite dishes, antenna forests, billboard backs (no text), water tanks and cable arcs between buildings, cold violet night. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 16 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_mid_roofs.png",
+  "used_by": "Neon Roofs, Rainline Chase, Security Station roof",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_fg_silhouettes",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Foreground silhouette kit, near-black shapes with a faint cold rim: hanging cable loops, a dangling unlit sign bracket, drainpipe, railing stubs, a traffic-light pole top, broken gutter, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "as uc_fg_silhouettes (palette ll_env)",
+  "out": "assets/lowlight/ll_fg_*.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_tower_near",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight vertical background: the inner lightwell of a tall apartment tower / bell tower, stacked balconies, stair landings, cables and bell rope pulleys, continuous top to bottom so it tiles vertically, wet slate and brick, dim. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour, make_tileable_y too",
+  "out": "assets/lowlight/ll_tower_near.png",
+  "used_by": "Apartment Stack, Bell Tower, Power Block (tall rooms)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_backwall_interior",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight interior back wall at 0.9 depth: a municipal substation / security station interior wall, cable trays, breaker cabinets, conduit, grimy tile, caged ceiling lights (unlit), continuous horizontally, low contrast slate violet. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, quantize to palette (ll_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_backwall_interior.png",
+  "used_by": "Power Block, Security Station interiors",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_far_bell_tower",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight landmark far layer: the silhouette of a tall old bell tower with an industrial freight lift cage clinging to its side, rising above the rooftops, Warden banners hanging from it (blank, no symbols), rain haze, blue-violet. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 10 colours, value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_far_bell.png",
+  "used_by": "Rainline Chase, Neon Roofs horizon (single landmark placed once at a fixed x)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_canal_mid",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 3,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Smuggler canal middle layer: a flooded canal between leaning buildings, a rusted floodgate far off, moored flat boats, rope lines, dripping undersides of walkways, blue-violet with faint violet chalk marks (no symbols readable). The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 14 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/lowlight/ll_canal_mid.png",
+  "used_by": "Smuggler Route",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_train_far",
+  "category": "prop",
+  "target_px": [
+   160,
+   24
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. A long distant elevated commuter train silhouette of three cars with a row of small lit windows, seen from the side, very simple dark blue-violet shape.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (ll_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/lowlight/ll_train_far.png",
+  "notes": "Ambient life: crosses the far layer every 40-70 s with a faint rumble; windows muted warm.",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "relay_backwall",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "relay_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. The Relay: back wall of an abandoned underground transit interchange turned into a warm resistance settlement, tiled station arches, a dead departures board frame (blank), patched tarps, strings of small warm bulbs, rust and old wood, warm sodium haze, lived-in, continuous horizontally. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, quantize to palette (relay_env) max 18 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/relay/relay_backwall.png",
+  "used_by": "Relay (backwall layer 0.85)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "relay_mid_concourse",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   220
+  ],
+  "palette_ref": "relay_env",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. The Relay middle layer: the far side of a transit concourse, stopped escalators, an upper gallery with railings, hanging cloth partitions, stacked salvage crates and a derelict train car used as housing, warm lamplight pools, rust and ochre. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (relay_env) max 16 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/relay/relay_mid.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "relay_fg",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "relay_env",
+  "owner": "env",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Relay foreground silhouettes, near-black warm-brown shapes with a faint amber rim: hanging cloth strips, a string of bulbs dipping in, a pipe, a stack of crates at the bottom edge, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "as uc_fg_silhouettes (palette relay_env)",
+  "out": "assets/relay/relay_fg_*.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "null_far_strata",
+  "category": "bg_layer",
+  "target_px": [
+   480,
+   200
+  ],
+  "palette_ref": "null_env",
+  "owner": "env",
+  "priority": 3,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Abstract deep industrial shaft far layer: stacked black machine strata, gantries and vertical rails fading into darkness, near-black with thin grey-white edge lines, stark, minimal. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges.",
+  "post_process": "crop to band, box-downscale to 480 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (null_env) max 6 colours, make_tileable_x (32 px mirrored cross-fade at seam before quantize), value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/null/null_far.png",
+  "used_by": "Deep Rig (kept graybox-stark on purpose)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "pit_rig_near",
+  "category": "bg_layer",
+  "target_px": [
+   640,
+   270
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 3,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Training pit near layer: a sunken concrete test pit under a rain canopy, rig lamp towers (unlit housings), bleachers of stacked crates, chain-link, blue-violet. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it.",
+  "post_process": "crop to band, box-downscale to 640 wide, chroma-key #FF00FF (tolerance 90, then despill fringe to nearest palette colour), hard alpha 0/255, remove islands < 4 px, quantize to palette (ll_env) max 14 colours, value-compress so max value is >= 2 steps below the tileset edge colour",
+  "out": "assets/challenge/pit_near.png",
+  "used_by": "Pulse Pit (single 640x270 screen)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "uc_tiles",
+  "category": "tileset",
+  "target_px": [
+   128,
+   96
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "source": "ai_texture+script",
+  "frames": {},
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: cast concrete slabs with rust-streaked joints, algae in the cracks, a waterline stain band. Even lighting, no objects, no horizon, no vignette.",
+  "post_process": "centre 1024 crop, box-downscale to 128x128 material swatch, quantize to palette (uc_env) 3 values + edge, then script-cut into a 16 px autotile sheet (top edge / face / fill x4 / underside / corners / one-way L-M-R) with the theme edge_color as a 1 px top highlight; seamless wrap check on fill tiles",
+  "out": "assets/undercity/uc_tiles.png",
+  "used_by": "Undercity rooms (GrayboxBlock textured fill); GrayboxBlock draws the atlas when the room theme names one, else the flat placeholder",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_tiles",
+  "category": "tileset",
+  "target_px": [
+   128,
+   96
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "source": "ai_texture+script",
+  "frames": {},
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: wet slate-violet concrete and dark brick, rain streaks, drain grates. Even lighting, no objects, no horizon, no vignette.",
+  "post_process": "centre 1024 crop, box-downscale to 128x128 material swatch, quantize to palette (ll_env) 3 values + edge, then script-cut into a 16 px autotile sheet (top edge / face / fill x4 / underside / corners / one-way L-M-R) with the theme edge_color as a 1 px top highlight; seamless wrap check on fill tiles",
+  "out": "assets/lowlight/ll_tiles.png",
+  "used_by": "Lowlight rooms; GrayboxBlock draws the atlas when the room theme names one, else the flat placeholder",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "relay_tiles",
+  "category": "tileset",
+  "target_px": [
+   128,
+   96
+  ],
+  "palette_ref": "relay_env",
+  "owner": "env",
+  "priority": 1,
+  "source": "ai_texture+script",
+  "frames": {},
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: warm old station floor tiles, worn stone, brass trims and wooden patch boards. Even lighting, no objects, no horizon, no vignette.",
+  "post_process": "centre 1024 crop, box-downscale to 128x128 material swatch, quantize to palette (relay_env) 3 values + edge, then script-cut into a 16 px autotile sheet (top edge / face / fill x4 / underside / corners / one-way L-M-R) with the theme edge_color as a 1 px top highlight; seamless wrap check on fill tiles",
+  "out": "assets/relay/relay_tiles.png",
+  "used_by": "Relay; GrayboxBlock draws the atlas when the room theme names one, else the flat placeholder",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_roof_tiles",
+  "category": "tileset",
+  "target_px": [
+   128,
+   96
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "source": "ai_texture+script",
+  "frames": {},
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: tar-paper rooftop with gravel, metal flashing edges and puddles. Even lighting, no objects, no horizon, no vignette.",
+  "post_process": "centre 1024 crop, box-downscale to 128x128 material swatch, quantize to palette (ll_env) 3 values + edge, then script-cut into a 16 px autotile sheet (top edge / face / fill x4 / underside / corners / one-way L-M-R) with the theme edge_color as a 1 px top highlight; seamless wrap check on fill tiles",
+  "out": "assets/lowlight/ll_roof_tiles.png",
+  "used_by": "Neon Roofs, Rainline Chase, rooftop blocks; GrayboxBlock draws the atlas when the room theme names one, else the flat placeholder",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "null_tiles",
+  "category": "tileset",
+  "target_px": [
+   128,
+   96
+  ],
+  "palette_ref": "null_env",
+  "owner": "env",
+  "priority": 3,
+  "source": "code",
+  "generation_prompt": "none (procedural: grey slab with 1 px white-grey edge and a faint 16 px grid scribe)",
+  "post_process": "tools/tiles_null.py draws it",
+  "out": "assets/null/null_tiles.png",
+  "frames": {},
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "uc_props",
+  "category": "prop",
+  "target_px": [
+   32,
+   48
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Undercity set: a square concrete pillar segment, a sodium lamp on a wall bracket, a sea-green service tube fixture (unlit housing), a rusted hospital gurney, a slab bench, stacked rusted crates, a pipe run segment with valve wheels, a hanging cable bundle, a wall grate, a drain outlet dripping, a disposal bin, a broken intake terminal. Dark sea-green concrete, rust and steel.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (uc_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/undercity/props/*.png",
+  "used_by": "Decor kinds PILLAR/LAMP/CRATES/BENCH/PIPES/CABLES + NeonSign housings (Decor draws the sprite when present)",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "uc_landmarks",
+  "category": "prop",
+  "target_px": [
+   128,
+   128
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 2,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Undercity landmarks, larger objects: a giant pump wheel with spokes, a hanging freight lift car on cables, a derailed maintenance tram car tilted on its side, an extraction-pit machine with a claw crane over a pit rim, a large round ceiling hatch seen from below (closed).",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (uc_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/undercity/landmarks/*.png",
+  "used_by": "Maintenance Shaft pump wheel (turns, code), Broken Lift car (sways), Escape Tunnel tram, Medical Ruin pit, First Pursuit hatch (ring lit red only by code)",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "ll_props",
+  "category": "prop",
+  "target_px": [
+   32,
+   48
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Lowlight street set: a sodium street lamp post, a rooftop AC unit with fan, a planter box with scraggly weeds, a wet park bench, stacked cargo crates, a laundry line, an overhead cable span, a drainpipe with gutter, a fire escape segment, a newspaper box, a market stall awning frame, a water tank on stilts. Slate, dark brick, wet metal.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (ll_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/lowlight/props/*.png",
+  "used_by": "Decor kinds LAMP/AC_UNIT/PLANTER/BENCH/CRATES/CABLES/BANNER",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "ll_neon_plates",
+  "category": "prop",
+  "target_px": [
+   32,
+   12
+  ],
+  "palette_ref": "ll_neon",
+  "owner": "env",
+  "priority": 1,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Six empty neon sign frames of different shapes (long bar, square, vertical blade, arrow, circle, stacked two-line) with bent glass tubes forming abstract glyph-like strokes that are NOT letters, tubes drawn in pure white on dark metal backing plates.",
+  "post_process": "chroma-key, downscale, tubes -> white mask layer, backing -> ll_env metal; NeonSign tints the tube mask with its colour and keeps flicker/broken logic; glow halo drawn by code (8 px quantized falloff)",
+  "out": "assets/lowlight/neon/*.png",
+  "used_by": "NeonSign (all districts; Undercity SEA tubes use the bar plate)",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ll_landmarks",
+  "category": "prop",
+  "target_px": [
+   128,
+   128
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Lowlight landmarks: a large transformer core with coils and insulators, a security monitor wall of blank CRT screens in a steel frame, a canal floodgate with a wheel mechanism, a heavy bronze bell in a steel yoke, a derelict elevated-rail car.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (ll_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/lowlight/landmarks/*.png",
+  "used_by": "Power Block Transformer Core (arcs by code: red->cyan per flag), Security Station Monitor Wall (screens flicker by code), Smuggler floodgate, Bell Tower bell, Rainline car",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "relay_props",
+  "category": "prop",
+  "target_px": [
+   48,
+   48
+  ],
+  "palette_ref": "relay_env",
+  "owner": "env",
+  "priority": 1,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. The Relay hub set, warm and lived-in: a mechanic's workbench with vice and tools, a radio operator desk with a big valve radio and a small on-air lamp housing, a map table with pinned papers, a market stall with a patched awning, a circuit-broker's display case of small cards, stacked crates with rope, a bunk curtain, a bench made of a train seat, hanging bulb strings, a brazier drum.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (relay_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas",
+  "out": "assets/relay/props/*.png",
+  "used_by": "Decor WORKBENCH/RADIO/TRAIN_CAR/BENCH; WorldStateSwitch props (IkoStall, MaraBench, NixTowerSheet, OrrOnAir lamp)",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "interact_anchor",
+  "category": "prop",
+  "target_px": [
+   32,
+   48
+  ],
+  "palette_ref": "uc_env",
+  "owner": "env",
+  "priority": 1,
+  "frames": {
+   "idle": 8,
+   "rest": 10,
+   "active": 8
+  },
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. An 'Anchor' rest shrine: a squat reinforced conduit pylon with a cradle socket in its chest where a small core would sit, cables flowing into the floor like roots, a worn step to kneel on; three variants: dormant, awakening, active (socket drawn empty, the glow is added in-engine).",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (uc_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas; socket glow = code-driven red mask (Anchor.CORE_COLOR), 8-frame breathe loop at 8 fps; neutral palette so it sits in every district",
+  "out": "assets/props/anchor.png",
+  "used_by": "world/anchors/Anchor.gd",
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "interact_grid",
+  "category": "prop",
+  "target_px": [
+   32,
+   64
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 1,
+  "frames": {
+   "breaker_idle": 4,
+   "breaker_hit": 5,
+   "shutter_panel": 1,
+   "gate": 1
+  },
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Grid machinery: a wall-mounted industrial circuit breaker box with a big lever (off and on positions), a heavy segmented steel roller shutter panel with warning chevrons (grey, no colour), a sliding blast gate door, a clamp press head with pistons.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (ll_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas; state lights on breakers are code masks tinted from Palette (warning/danger), never baked",
+  "out": "assets/props/grid/*.png",
+  "used_by": "Breaker, PowerShutter, Gate, GridClamp",
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "interact_pickups",
+  "category": "prop",
+  "target_px": [
+   16,
+   16
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "scrap_spin": 6,
+   "scrap_cache": 1,
+   "memory_shard": 8,
+   "core_shard": 8
+  },
+  "generation_prompt": "none (code-drawn 8-16 px pixel sprites: Scrap = gold #ffd36b nugget tinted by Palette currency; memory = pale-blue shard tinted memory; cache = crate with gold latch)",
+  "post_process": "tools/pickups.py draws masks; tints at runtime",
+  "out": "assets/props/pickups.png",
+  "used_by": "ScrapPickup, ScrapCache, Collectible",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "interact_misc",
+  "category": "prop",
+  "target_px": [
+   32,
+   48
+  ],
+  "palette_ref": "ll_env",
+  "owner": "env",
+  "priority": 2,
+  "est_generations": 2,
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Misc interactables: a wall weapon rack with an empty blade cradle, a small device pedestal (for an ability module), a rooftop signal repeater antenna box, a challenge terminal kiosk with a blank screen, a cracked breakable concrete wall section in three damage stages, a floor spike strip, a ceiling scanner emitter head.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (ll_env), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas; scanner beam and spike danger tint stay code-drawn Palette colours",
+  "out": "assets/props/misc/*.png",
+  "used_by": "WeaponPickup/PulseBladeRack, AbilityPickup/DashModule, SignalRepeater, ChallengeTerminal, BreakableWall, SpikeHazard, ScannerBeam",
+  "frames": {},
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "collector_eye",
+  "category": "prop",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "char_boss_collector",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "cell": [
+   32,
+   32
+  ],
+  "origin": [
+   16,
+   4
+  ],
+  "frames": {
+   "dormant": 1,
+   "emerge": 6,
+   "track": 4,
+   "lock": 2,
+   "fire": 3,
+   "retract": 6,
+   "gone": 1
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A ceiling-rail surveillance eye pod: a brass-olive armoured housing hanging from a rail trolley, a round iris shutter lens (lens dark, no colour), cables trailing; poses: retracted, half emerged, fully emerged looking down-left, down, down-right.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 20 px, hard alpha, quantize to palette (char_boss_collector) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 32x32, origin (16,4) rail point; ValidateContent sheet check",
+  "out": "assets/undercity/collector_eye.png",
+  "used_by": "CeilingTracker (cone + red lens stay code-drawn)",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "sweeper_pursuer",
+  "category": "prop",
+  "target_px": [
+   64,
+   146
+  ],
+  "palette_ref": "ll_env",
+  "owner": "char",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "cell": [
+   80,
+   160
+  ],
+  "origin": [
+   40,
+   158
+  ],
+  "frames": {
+   "parked": 1,
+   "warn": 4,
+   "chase": 6,
+   "regroup": 3,
+   "derail": 8
+  },
+  "generation_prompt": "Pixel art machine design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game machine. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Sweeper: a tall rail-hung track-cleaning machine hanging from an overhead rail, a slab body with rotating brush drums and scraper blades at the bottom, hazard lamp housings (unlit), grime and rain streaks; poses: idle, leaning into motion, tipped off the rail.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 146 px, hard alpha, quantize to palette (ll_env) <= 20 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 80x160, origin (40,158); ValidateContent sheet check; headlight cone + lamps stay code (Palette chase_*)",
+  "out": "assets/lowlight/sweeper.png",
+  "used_by": "world/hazards/Pursuer.gd",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "life_critters",
+  "category": "prop",
+  "target_px": [
+   16,
+   16
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "env",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "cell": [
+   16,
+   16
+  ],
+  "origin": [
+   8,
+   15
+  ],
+  "frames": {
+   "moth_flutter": 4,
+   "rat_idle": 2,
+   "rat_run": 4,
+   "gull_idle": 2,
+   "gull_peck": 4,
+   "gull_fly": 4,
+   "eel_ripple": 4
+  },
+  "generation_prompt": "Pixel art tiny creature sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. Tiny ambient creatures, each about 6 to 12 pixels: a pale moth (wings open and closed), a grey sewer rat (standing, running), a scruffy city gull (standing, pecking, wings up, wings down), a thin dark eel ripple in water.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 8 px, hard alpha, quantize to palette (char_enemy) <= 10 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 16x16, origin (8,15); ValidateContent sheet check; if downscale is unreadable, hand-pixel from the concept (they are 4-12 px)",
+  "out": "assets/life/critters.png",
+  "used_by": "AmbientLife spawner (new, visual-only, no collision): moths at lamps, rats on floors, gulls on roofs (scatter when Rook runs near)",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "rook",
+  "category": "character",
+  "target_px": [
+   40,
+   44
+  ],
+  "palette_ref": "char_rook",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 4,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "idle_fidget": 12,
+   "run": 8,
+   "turn": 3,
+   "jump_rise": 2,
+   "air": 2,
+   "jump_fall": 2,
+   "land": 3,
+   "land_hard": 5,
+   "crouch": 2,
+   "slide": 3,
+   "dodge": 5,
+   "dash": 4,
+   "blade_light_1": 5,
+   "blade_light_2": 5,
+   "blade_light_3": 6,
+   "blade_heavy": 8,
+   "blade_launcher": 6,
+   "blade_air_light": 5,
+   "blade_air_heavy": 6,
+   "katar_light_1": 4,
+   "katar_light_2": 4,
+   "katar_light_3": 4,
+   "katar_light_4": 4,
+   "katar_cross": 6,
+   "katar_rising": 6,
+   "katar_spin": 8,
+   "katar_dive": 6,
+   "shoot_pistol": 3,
+   "shoot_scatter": 4,
+   "shoot_revolver": 5,
+   "hurt": 3,
+   "heal": 10,
+   "death": 12,
+   "interact": 4,
+   "rest": 6,
+   "title_stand": 8
+  },
+  "fps": {
+   "idle": 8,
+   "idle_fidget": 12,
+   "run": 14,
+   "turn": 16,
+   "land": 16,
+   "land_hard": 14,
+   "dodge": 20,
+   "dash": 24,
+   "blade_*": 18,
+   "blade_heavy": 16,
+   "katar_*": 20,
+   "shoot_*": 18,
+   "hurt": 14,
+   "heal": 12,
+   "death": 12,
+   "rest": 8,
+   "title_stand": 8
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The protagonist Rook, a lean wiry survivor about 7 heads tall: a close-fitting charcoal undersuit with worn straps, a long pale bone-white field coat with a torn asymmetric tail that flows behind, a short ragged scarf-collar, a smooth featureless dark helmet-mask with a single narrow horizontal red visor slit, a small red glowing seam scar on the chest where an implanted core shows through, a short single-edged blade held low. No horns, no cape hood, no big head. Poses: idle, run contact, run passing, jump rise, fall, landing crouch, slide, dash lean, slash wind-up, slash follow-through, heavy overhead, hurt recoil.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 42 px, hard alpha, quantize to palette (char_rook) <= 20 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; gen 1-2 = turnaround + key poses, gen 3-4 = rerolls/weapon poses; rig parts: head, visor(mask), torso+Core seam, coat tail (3-segment verlet, 1 px), scarf (2-segment), upper/lower arms, legs, blade; smears are separate vfx_slash_smears",
+  "out": "assets/rook/rook.png + rook.tres (SpriteSheetSpec)",
+  "used_by": "PlayerPlaceholderVisual.sprite (swap-in, no code change for state anims; turn/land/land_hard/idle_fidget need small hooks)",
+  "est_credits": 760
+ },
+ {
+  "id": "rook_weapons",
+  "category": "character",
+  "target_px": [
+   24,
+   12
+  ],
+  "palette_ref": "char_rook",
+  "owner": "char",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "frames": {
+   "pulse_blade": 1,
+   "split_katars": 1,
+   "service_pistol": 1,
+   "scattergun": 1,
+   "heavy_revolver": 1
+  },
+  "generation_prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Five weapons for a pixel-art hero, side view, each separate: a short single-edged pulse blade with a hollow channel down the blade, a pair of split punch-katars, a compact service pistol, a sawn-off scattergun, a heavy long-barrel revolver. Steel and dark grip wrap, pale edge highlights.",
+  "post_process": "chroma-key #FF00FF, box-downscale each cell so the object matches target_px, hard alpha, quantize to palette (char_rook), no outline, 1 px top-edge highlight from edge colour, origin bottom-centre, slice to individual PNGs + one atlas; weapons are separate rig layers so one Rook sheet serves every loadout; also used as 16x16 UI icons",
+  "out": "assets/rook/weapons/*.png",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "needle",
+  "category": "enemy",
+  "target_px": [
+   32,
+   30
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   40,
+   40
+  ],
+  "origin": [
+   20,
+   38
+  ],
+  "frames": {
+   "idle": 6,
+   "move": 8,
+   "windup": 4,
+   "attack": 4,
+   "hurt": 3,
+   "death": 8,
+   "dormant": 2
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Needle: a decommissioned medical orderly automaton, thin and hunched, cracked porcelain faceplate with one dark slit, stained grey-teal scrub tabard, one forearm ending in a long syringe lance, backward-bent legs. Poses: idle hunch, walk, lance drawn back (wind-up), lunge stab, recoil, collapsing, slumped dormant.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 30 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 40x40, origin (20, 38); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/needle.png + needle.tres",
+  "used_by": "EnemyData.sprite in data/enemies/needle*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "shield",
+  "category": "enemy",
+  "target_px": [
+   40,
+   34
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 6,
+   "move": 8,
+   "windup": 4,
+   "attack": 4,
+   "hurt": 3,
+   "guard_break": 5,
+   "death": 8
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Shield: a squat Warden riot trooper in slate-violet padded armour, a full-height rectangular riot slab shield (plain steel, no colour) held forward, a domed helmet with a dark faceplate. Poses: guard stance, shuffling advance, shield pulled back (wind-up), shield bash, staggered with shield knocked aside, falling.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 34 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24, 46); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/shield.png + shield.tres",
+  "used_by": "EnemyData.sprite in data/enemies/shield*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "hopper",
+  "category": "enemy",
+  "target_px": [
+   24,
+   20
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   32,
+   32
+  ],
+  "origin": [
+   16,
+   30
+  ],
+  "frames": {
+   "idle": 4,
+   "move": 6,
+   "windup": 4,
+   "attack": 3,
+   "hurt": 2,
+   "death": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Hopper: a small feral scavenger machine like a rusty mechanical frog-louse, khaki-olive plated shell, two big coiled spring legs, a single pale lamp eye, antenna whisker. Poses: crouched idle, hop up, deep compressed crouch (wind-up), mid-pounce stretched, flipped over.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 20 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 32x32, origin (16, 30); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/hopper.png + hopper.tres",
+  "used_by": "EnemyData.sprite in data/enemies/hopper*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "scout_drone",
+  "category": "enemy",
+  "target_px": [
+   24,
+   18
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   32,
+   32
+  ],
+  "origin": [
+   16,
+   26
+  ],
+  "frames": {
+   "idle": 4,
+   "move": 4,
+   "windup": 4,
+   "attack": 3,
+   "hurt": 2,
+   "death": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Scout Drone: a small dented surveillance drone, dull brass hull the size of a lantern, one big lens eye (dark glass), a single top rotor, dangling antenna and a hooked tail sensor. Poses: hover, tilt forward, lens iris tightening (wind-up), recoil after firing, spinning and falling.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 18 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 32x32, origin (16, 26); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/scout_drone.png + scout_drone.tres",
+  "used_by": "EnemyData.sprite in data/enemies/scout_drone*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "watcher",
+  "category": "enemy",
+  "target_px": [
+   16,
+   16
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   24,
+   24
+  ],
+  "origin": [
+   12,
+   22
+  ],
+  "frames": {
+   "idle": 4,
+   "windup": 4,
+   "attack": 3,
+   "hurt": 2,
+   "death": 5
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Watcher: a wall-mounted sentry lamp, an old municipal camera housing on a bracket with an iris shutter (lens dark), cable conduit, rust. Poses: shutters closed, open, open wide (wind-up), recoil, broken hanging.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 16 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 24x24, origin (12, 22); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/watcher.png + watcher.tres",
+  "used_by": "EnemyData.sprite in data/enemies/watcher*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "enforcer",
+  "category": "enemy",
+  "target_px": [
+   40,
+   36
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 6,
+   "move": 8,
+   "windup_baton": 4,
+   "attack_baton": 5,
+   "windup_lunge": 3,
+   "attack_lunge": 4,
+   "hurt": 3,
+   "death": 10
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Enforcer: a tall elite Warden officer in a long dark maroon rain coat with a slate armoured collar, a peaked helmet with a dark visor band, a heavy shock baton (steel, no glow). Poses: idle, stride, baton raised, baton swing, low lunge wind-up, lunge thrust, recoil, falling to knees.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24, 46); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/enforcer.png + enforcer.tres",
+  "used_by": "EnemyData.sprite in data/enemies/enforcer*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "signal_drone",
+  "category": "enemy",
+  "target_px": [
+   24,
+   18
+  ],
+  "palette_ref": "char_enemy",
+  "owner": "char",
+  "priority": 3,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   32,
+   32
+  ],
+  "origin": [
+   16,
+   26
+  ],
+  "frames": {
+   "idle": 4,
+   "move": 4,
+   "windup": 4,
+   "attack": 3,
+   "hurt": 2,
+   "death": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Signal Drone: a slender relay drone with a dish antenna and trailing cable, teal-grey hull, one lens. Poses: hover, tilt, charging, recoil, falling.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 18 px, hard alpha, quantize to palette (char_enemy) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 32x32, origin (16, 26); ValidateContent sheet check; windup's last frame is held for the whole telegraph (>= 0.3 s); telegraph '!' and hitbox outline stay code; hurt flash via self_modulate",
+  "out": "assets/enemies/signal_drone.png + signal_drone.tres",
+  "used_by": "EnemyData.sprite in data/enemies/signal_drone*.tres (remix/null variants: palette swap in code)",
+  "est_credits": 380
+ },
+ {
+  "id": "collector_drone",
+  "category": "boss",
+  "target_px": [
+   72,
+   56
+  ],
+  "palette_ref": "char_boss_collector",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 3,
+  "cell": [
+   96,
+   96
+  ],
+  "origin": [
+   48,
+   64
+  ],
+  "frames": {
+   "idle": 6,
+   "move": 6,
+   "windup_press": 4,
+   "press": 4,
+   "windup_volley": 4,
+   "volley": 3,
+   "windup_dive": 4,
+   "dive": 3,
+   "windup_sweep": 4,
+   "sweep": 6,
+   "hurt": 3,
+   "phase2": 10,
+   "rotors_cut": 4,
+   "death": 14
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. The Collector Drone, a hulking municipal corpse-collection drone: a heavy dented brass-olive hull like a hearse crossed with a garbage hopper, four stubby rotors on outriggers, a single large lamp-eye housing at the front (lens dark, no colour), two folded grabber claws underneath, a hook on a chain, a flat press plate on its belly, a hanging cargo cage holding three glass salvage cells. Poses: hovering idle, claws open diving, press plate slammed down, hook swinging, damaged with two rotors torn off, breaking apart.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 48 px, hard alpha, quantize to palette (char_boss_collector) <= 24 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 96x96, origin (48,64) body bottom; cage hangs below; ValidateContent sheet check; the eye lamp, cone and cell glow stay code-drawn (Palette danger/collector_warning); cells recoloured away from heal green",
+  "out": "assets/bosses/collector_drone.png + .tres",
+  "used_by": "data/enemies/collector_drone.tres sprite; CollectorDroneBehavior should request family-specific anim names (small hook)",
+  "est_credits": 570
+ },
+ {
+  "id": "warden_krail",
+  "category": "boss",
+  "target_px": [
+   56,
+   56
+  ],
+  "palette_ref": "char_boss_krail",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 3,
+  "cell": [
+   96,
+   80
+  ],
+  "origin": [
+   48,
+   78
+  ],
+  "frames": {
+   "idle": 8,
+   "move": 8,
+   "windup_baton": 4,
+   "baton_1": 5,
+   "baton_2": 5,
+   "windup_lunge": 3,
+   "lunge": 4,
+   "windup_burst": 4,
+   "burst": 4,
+   "windup_slam": 5,
+   "slam": 6,
+   "backstep": 4,
+   "hurt": 3,
+   "stagger": 6,
+   "phase2_roar": 10,
+   "death": 16
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. Warden Krail, a towering district warden: a long heavy slate-violet rain greatcoat with a split tail, one massive riveted pauldron, a tall cylindrical helm with a single narrow red visor band, a gorget, heavy boots, and a long shock baton (dark steel shaft, pale tip). Imposing, stiff, disciplined. Poses: idle at attention, stride, baton raised overhead, horizontal baton sweep, crouched lunge wind-up, lunge thrust, both arms raised to slam the ground, kneeling staggered, head thrown back roaring, collapsing.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 54 px, hard alpha, quantize to palette (char_boss_krail) <= 24 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 96x80, origin (48,78); ValidateContent sheet check; baton crackle + phase-2 arc stay code (crackle_lit 2.5 Hz rule); WardenKrailNull = palette swap to null_env greys",
+  "out": "assets/bosses/warden_krail.png + .tres",
+  "used_by": "data/enemies/warden_krail*.tres sprite",
+  "est_credits": 570
+ },
+ {
+  "id": "npc_orr",
+  "category": "npc",
+  "target_px": [
+   32,
+   36
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "talk": 4,
+   "tune_radio": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A non-hostile hub character for a warm lamp-lit underground settlement. Orr, an older radio operator: hunched, grey stubble, big padded headphones around the neck, a blanket poncho over a patched jumpsuit, fingerless gloves, sitting-height stool pose and standing pose, one pose turning a radio dial.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_npc) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; idle includes a 2-frame blink and a slow breath",
+  "out": "assets/npcs/orr.png + .tres",
+  "used_by": "NPC.gd (figure=true) draws the sheet when the profile has one; pending tick stays code",
+  "est_credits": 380
+ },
+ {
+  "id": "npc_mara",
+  "category": "npc",
+  "target_px": [
+   32,
+   36
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 1,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "talk": 4,
+   "work": 8
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A non-hostile hub character for a warm lamp-lit underground settlement. Mara, a stocky mechanic woman in her forties: rolled sleeves, heavy scorched leather apron, welding goggles pushed up on short cropped hair, a wrench in a belt loop; poses: standing arms crossed, gesturing while talking, hammering at a bench.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_npc) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; idle includes a 2-frame blink and a slow breath",
+  "out": "assets/npcs/mara.png + .tres",
+  "used_by": "NPC.gd (figure=true) draws the sheet when the profile has one; pending tick stays code",
+  "est_credits": 380
+ },
+ {
+  "id": "npc_nix",
+  "category": "npc",
+  "target_px": [
+   32,
+   36
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "talk": 4,
+   "draw": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A non-hostile hub character for a warm lamp-lit underground settlement. Nix, a lanky cartographer: long layered coat pinned with scraps of hand-drawn maps, a long scarf, a brass lens monocle on a cord, pencil behind ear; poses: standing, talking with a rolled map, sketching on a board.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_npc) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; idle includes a 2-frame blink and a slow breath",
+  "out": "assets/npcs/nix.png + .tres",
+  "used_by": "NPC.gd (figure=true) draws the sheet when the profile has one; pending tick stays code",
+  "est_credits": 380
+ },
+ {
+  "id": "npc_vell",
+  "category": "npc",
+  "target_px": [
+   32,
+   36
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "talk": 4,
+   "shuffle": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A non-hostile hub character for a warm lamp-lit underground settlement. Vell, a thin sly circuit broker: long dark green-grey coat lined inside with rows of small circuit cards, narrow face, slicked hair, long fingers; poses: standing with coat held open, talking, shuffling cards between hands.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_npc) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; idle includes a 2-frame blink and a slow breath",
+  "out": "assets/npcs/vell.png + .tres",
+  "used_by": "NPC.gd (figure=true) draws the sheet when the profile has one; pending tick stays code",
+  "est_credits": 380
+ },
+ {
+  "id": "npc_iko",
+  "category": "npc",
+  "target_px": [
+   32,
+   36
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 2,
+  "source": "ai_concept+rig",
+  "est_generations": 2,
+  "cell": [
+   48,
+   48
+  ],
+  "origin": [
+   24,
+   46
+  ],
+  "frames": {
+   "idle": 8,
+   "talk": 4,
+   "lean": 6
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. A non-hostile hub character for a warm lamp-lit underground settlement. Iko, a young canal smuggler: hooded oilskin cape in dark violet, a chalk eye symbol on the hood, rope coil over shoulder, boots, crates nearby; poses: leaning on a crate, talking with a shrug, glancing over shoulder.",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 36 px, hard alpha, quantize to palette (char_npc) <= 16 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,46); ValidateContent sheet check; idle includes a 2-frame blink and a slow breath",
+  "out": "assets/npcs/iko.png + .tres",
+  "used_by": "NPC.gd (figure=true) draws the sheet when the profile has one; pending tick stays code",
+  "est_credits": 380
+ },
+ {
+  "id": "portraits",
+  "category": "portrait",
+  "target_px": [
+   48,
+   48
+  ],
+  "palette_ref": "char_npc",
+  "owner": "char",
+  "priority": 3,
+  "est_generations": 2,
+  "frames": {
+   "rook": 1,
+   "orr": 2,
+   "mara": 2,
+   "nix": 2,
+   "vell": 2,
+   "iko": 2,
+   "krail": 1
+  },
+  "generation_prompt": "Pixel art character design sheet for a 2D side-scrolling action game, strict side view facing right, head-and-shoulders bust portraits, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. Bust portraits in a row, 3/4 view facing right: Rook (dark helmet-mask with red visor slit, bone-white coat collar), Orr (headphones, poncho), Mara (goggles on forehead), Nix (monocle, scarf), Vell (slicked hair, card-lined collar), Iko (violet hood), Warden Krail (cylindrical helm, red visor band).",
+  "post_process": "chroma-key #FF00FF, box-downscale each pose so body height = 48 px, hard alpha, quantize to palette (char_npc) <= 24 colours, 1 px outline pass (per-region darkest ramp colour, never pure black), stray-pixel removal; poses become the rig's key frames (tools/rig_*.py builds the full strip: layered parts + procedural secondary motion), cell 48x48, origin (24,47); ValidateContent sheet check; second frame per NPC = talk/blink variant hand-edited",
+  "out": "assets/portraits/*.png",
+  "used_by": "Dialogue box (optional portrait slot, new)",
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "vfx_slash_smears",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "light": 3,
+   "heavy": 4,
+   "launcher": 3,
+   "air": 3,
+   "spike": 3,
+   "katar": 2,
+   "katar_spin": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Crescent smear sprites generated per attack from AttackData hitbox (<= 2 px beyond hitbox, Art Bible 6); 3-tone white/pale-steel, tail dissolves in dither; replaces SlashArc drawing when present",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/slash_smears.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_hit_sparks",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "spark_small": 4,
+   "spark_heavy": 5,
+   "spark_guard": 4,
+   "spark_crit": 5
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Directional star-burst + 1-2 px shards along hit.direction; guard spark uses Palette guard blue; white core suppressed under flash reduction (HitSpark rules)",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/hit_sparks.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_dust",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "land": 5,
+   "land_hard": 6,
+   "run_puff": 4,
+   "slide": 4,
+   "dash_trail": 4,
+   "wall_scrape": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Pixel puff sprites in district dust colour (uc concrete_3 / ll concrete_3 / relay stone_3); water districts swap to splash",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/dust.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_splash",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "step": 4,
+   "land": 6,
+   "drip": 4,
+   "rain_hit": 3,
+   "ripple": 6
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Water splash/ripple for flooded floors and puddles, rain impact ticks on top edges",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/splash.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_pulse_motes",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "mote": 4,
+   "absorb_stream": 1
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Pulse residue: 1-2 px pale motes drift from kills/destroyed props and stream into Rook's chest seam (homing, 0.4 s); pale white-violet body, the last pixel before absorption flicks Core red",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/pulse_motes.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_death_burst",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "small": 8,
+   "large": 10,
+   "boss": 16
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Enemy death: body flashes to silhouette, splits into 2-3 chunks + motes + a shock ring; boss version adds a held white-free freeze frame and debris rain",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/death_burst.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_projectiles",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "pistol_bolt": 2,
+   "pellet": 1,
+   "revolver_round": 2,
+   "enemy_bolt": 3,
+   "collector_tag": 3,
+   "ground_wave": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Projectile sprites; enemy shots use Palette danger via mask tint (colour-blind safe)",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/projectiles.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_muzzle",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "pistol": 2,
+   "scatter": 3,
+   "revolver": 3
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Muzzle flashes 2-3 frames, white core suppressed under flash reduction",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/muzzle.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_shockwave",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "source": "code",
+  "frames": {
+   "ring": 6,
+   "ground_wave": 6
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Expanding 1 px rings / ground shock (Krail slam, Collector press wave)",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/shockwave.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_heal",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "heal_rise": 8
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Heal: rising pixel crosses and a ring in Palette heal (mask tint)",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/heal.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_anchor_rest",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "bloom": 10,
+   "embers": 6
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Anchor rest: roots light up floor-to-socket, embers rise, gentle quantized radial glow",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/anchor_rest.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_perfect_dodge",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "source": "code",
+  "frames": {
+   "flourish": 6,
+   "afterimage": 1
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Perfect dodge / parry flourish: a sharp 4-point glint + afterimage silhouette (Rook sheet frame recoloured coat_1 at 40 %); needs a combat event hook",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/perfect_dodge.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_electric_arc",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "source": "code",
+  "frames": {
+   "arc": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Procedural jagged polyline arcs (Krail baton, Transformer Core, broken tubes); obeys 3 Hz flash rule",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/electric_arc.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_steam",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "source": "code",
+  "frames": {
+   "puff": 6
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Steam vents: slow rising quantized puffs",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/steam.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_debris",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "source": "code",
+  "frames": {
+   "concrete": 4,
+   "glass": 4,
+   "sparks_fall": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): BreakableWall chunks, glass shards, falling sparks",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/debris.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_light_shafts",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {},
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): God-ray quads: quantized 3-step alpha trapezoids with slow dust motes inside; per-room placement data; not Light2D (no dynamic-light budget used)",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/light_shafts.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_fog",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {},
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Tileable fog band textures 256x64 (4 alpha steps, quantized noise) scrolling 3-8 px/s at two depths",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/fog.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_lamp_glow",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {},
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Additive halo sprites (8/16/32 px, 3 quantized steps) for lamps and neon; bloom-free readability",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/lamp_glow.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_grade_vignette",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {},
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Per-district backdrop grade (CanvasModulate on background layers only, never on the gameplay layer) + 1 soft vignette texture; reserved colours stay exact",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/grade_vignette.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_ambient_particles",
+  "category": "vfx",
+  "target_px": [
+   32,
+   32
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "source": "code",
+  "frames": {
+   "mote": 2,
+   "spore": 3,
+   "ash": 2,
+   "drip": 4
+  },
+  "generation_prompt": "none (procedural, tools/vfx_*.py or runtime code): Drifting motes/spores/ash per district (Undercity drips + spores, Lowlight rain + ash, Relay dust in lamp light); pooled CPUParticles2D; density follows the proposed ambient-motion setting",
+  "post_process": "authored by script on the 1 px grid; masks tinted at runtime from Palette where a gameplay colour is meant",
+  "out": "assets/vfx/ambient_particles.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "vfx_style_board",
+  "category": "vfx",
+  "target_px": [
+   480,
+   270
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "generation_prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A pixel-art VFX reference board on a dark background: crescent sword slash smears, star-burst impact sparks, dust puffs, water splashes, electric arcs, tiny drifting glowing motes streaming toward a point, shock rings, arranged in a grid, white and pale steel only.",
+  "post_process": "reference only (not shipped): pick shapes for the vfx_* scripts",
+  "out": "art/source/vfx_board.png",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ui_hud_kit",
+  "category": "ui",
+  "target_px": [
+   160,
+   48
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "est_generations": 2,
+  "frames": {
+   "pip_full": 1,
+   "pip_empty": 1,
+   "pip_break": 5,
+   "pip_refill": 4,
+   "injector_full": 1,
+   "injector_empty": 1,
+   "core_frame": 1,
+   "core_fill_flow": 6,
+   "ammo_tick": 2
+  },
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. HUD pieces: a row of small vertical ampoule-shaped health cells with steel caps (one full, one empty, one cracking), small syringe-injector icons, a long thin ornate meter frame with riveted end caps and a tiny core socket at its left end, small ammo tick marks.",
+  "post_process": "chroma-key #FF00FF, box-downscale to target, snap to 1 px lines, quantize to palette (ui) greyscale masks only (state colours are applied in-engine via Palette.color), 9-slice margins as noted; pips 7x9, injector 4x7, core frame 72x9 (fill = scrolling 6-frame mask), ammo 2x5; everything tinted in CombatHud from Palette (accent/heal/ammo) so colour-blind modes work",
+  "out": "assets/ui/hud_kit.png",
+  "used_by": "CombatHud (texture path when present, draw_rect fallback)",
+  "source": "ai",
+  "est_credits": 380
+ },
+ {
+  "id": "ui_dialogue_frame",
+  "category": "ui",
+  "target_px": [
+   48,
+   48
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. A dialogue box frame: a dark translucent panel with a thin double steel border, small riveted corner brackets, a short hanging cable flourish from the top-left corner, and a separate small speaker name plate tab.",
+  "post_process": "chroma-key #FF00FF, box-downscale to target, snap to 1 px lines, quantize to palette (ui) greyscale masks only (state colours are applied in-engine via Palette.color), 9-slice margins as noted; 9-slice 48x48 with 12 px margins; name plate 9-slice 32x12 with 4 px margins; panel alpha from UiTheme.BG (HC = opaque)",
+  "out": "assets/ui/dialogue_frame.png",
+  "used_by": "DialogueBox / subtitles",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ui_menu_frame",
+  "category": "ui",
+  "target_px": [
+   64,
+   64
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 1,
+  "frames": {
+   "cursor": 4
+  },
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. A menu panel kit: a large panel frame with ornamental steel corner pieces and a thin divider line ornament with a small central diamond seam, a small flame-like cursor pip in four flicker stages, a selected-row bar with tapered ends.",
+  "post_process": "chroma-key #FF00FF, box-downscale to target, snap to 1 px lines, quantize to palette (ui) greyscale masks only (state colours are applied in-engine via Palette.color), 9-slice margins as noted; panel 9-slice 64x64 16 px margins, divider 96x5, cursor 7x7 x4 frames (static under flash reduction), row bar 3-slice",
+  "out": "assets/ui/menu_kit.png",
+  "used_by": "MenuScreen/UiTheme (all menus)",
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ui_boss_bar",
+  "category": "ui",
+  "target_px": [
+   232,
+   16
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 2,
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. A long horizontal boss health bar frame with heavy ornamental end caps shaped like clamps, a thin centre tick, and a small plaque above the middle for a name.",
+  "post_process": "chroma-key #FF00FF, box-downscale to target, snap to 1 px lines, quantize to palette (ui) greyscale masks only (state colours are applied in-engine via Palette.color), 9-slice margins as noted; 3-slice (caps 16 px), fill tinted accent, phase tick at 50 %",
+  "out": "assets/ui/boss_bar.png",
+  "used_by": "CombatHud boss bar",
+  "frames": {},
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ },
+ {
+  "id": "ui_style_ranks",
+  "category": "ui",
+  "target_px": [
+   24,
+   16
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 3,
+  "source": "code",
+  "frames": {
+   "D": 1,
+   "C": 1,
+   "B": 1,
+   "A": 1,
+   "S": 1,
+   "SS": 1,
+   "SSS": 1,
+   "REDLINE": 1
+  },
+  "generation_prompt": "none (code-drawn pixel letterforms with a chiselled bevel; rank letters are exempt from translation, D-163)",
+  "post_process": "tools/ui_ranks.py",
+  "out": "assets/ui/style_ranks.png",
+  "est_generations": 0,
+  "est_credits": 0
+ },
+ {
+  "id": "ui_icons",
+  "category": "ui",
+  "target_px": [
+   16,
+   16
+  ],
+  "palette_ref": "ui",
+  "owner": "fx_ui",
+  "priority": 3,
+  "frames": {
+   "anchor": 1,
+   "npc": 1,
+   "shop": 1,
+   "memory": 1,
+   "scrap": 1,
+   "gate": 1,
+   "boss": 1,
+   "note": 1,
+   "circuit": 1,
+   "weapon": 1
+  },
+  "generation_prompt": "Pixel art user-interface kit for a dark atmospheric 2D action game, crisp hard pixels, no anti-aliasing, ornamental but restrained industrial filigree: thin double steel lines, small riveted corner brackets, hairline cable flourishes, a tiny glowing seam motif. Elements drawn in white and light grey only (they are tinted in-engine), each element separate on one flat solid pure magenta (#FF00FF) background, no text, no letters, no numbers, no icons of real brands. A set of ten tiny map and menu icons in a grid: a pylon shrine, a person bust, a shop awning, a crystal shard, a nugget, a barred gate, a skull-like mask, a pinned note, a circuit card, a blade.",
+  "post_process": "chroma-key #FF00FF, box-downscale to target, snap to 1 px lines, quantize to palette (ui) greyscale masks only (state colours are applied in-engine via Palette.color), 9-slice margins as noted; 11x11 inside 16x16 cells; map colours from Palette (map_gate, map_note)",
+  "out": "assets/ui/icons.png",
+  "used_by": "MapMenu, JournalMenu, LoadoutMenu",
+  "source": "ai",
+  "est_generations": 1,
+  "est_credits": 190
+ }
+]

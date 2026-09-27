@@ -1,0 +1,289 @@
+[
+ {
+  "id": "title_far_spires",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title far layer: the distant vertical megacity Veyra as a wall of impossibly tall stacked towers and spires connected by thin sky-bridges and cables, a few tiny muted warm and cold window lights, silhouettes in dark blue-violet fading into rain haze, one tall central spire slightly off-centre. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "title_mid_rooftops",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title middle layer: a ragged line of wet rooftops, water tanks, antenna masts, hanging cable arcs and a dead elevated rail line crossing the frame, dark slate violet with a thin cold rim light on top edges, sparse muted lit windows. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "title_near_ledge",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Title near layer: the foreground edge of a broken concrete rooftop ledge on the right third with a bent railing, a dead lamp post and drooping cables, near-black with a faint cold rim light, left two thirds empty magenta (the title menu sits there). The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "uc_sky_vault",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Underground: the dark vaulted ceiling of a colossal flooded cistern seen from far below, ribbed concrete arches dissolving into black, faint sea-green haze and a few thin light shafts falling from broken grates far above, no floor visible, extremely dark and low contrast, 16:9."
+ },
+ {
+  "id": "uc_mid_pipeworks",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity middle layer: rusted giant pipes, pump housings, catwalk railings and hanging chains over flood water, rust and wet concrete, sea-green fog between elements, one or two small dim sodium lamps, reflections on still water at the bottom edge. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "uc_near_columns",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity near background layer: a few massive stained concrete pillars and sagging cable bundles, hanging algae strands and drip stains, dark sea-green concrete with rust streaks, widely spaced with lots of empty magenta between them. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "uc_fg_silhouettes",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Foreground silhouette kit, near-black shapes only with a faint sea-green rim: hanging chains, broken pipe ends dangling from above, a sagging cable, rubble mounds and a rusted rail stub for the bottom edge, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "ll_sky_night",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight night sky: low heavy rain clouds over a megacity, lit from below by a diffuse cold blue-violet city glow, distant searchlight haze, falling rain veils, no buildings, very low contrast, 16:9."
+ },
+ {
+  "id": "ll_far_skyline",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight far layer: a dense distant skyline of tall residential slab towers and stacked housing blocks with a few spires, hazy blue-violet silhouettes in the rain, tiny muted warm and teal window dots, a distant elevated rail viaduct crossing low, very low contrast. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "ll_mid_blocks",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight middle layer: wet apartment block facades, fire escapes, laundry lines, AC units, water tanks and small unlit sign frames, slate and dark brick, cold rim light from the wet sky, sparse muted warm and teal windows, rain haze. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "ll_near_street",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight near background layer at street level: shuttered shopfronts, a dead market stall frame, drainpipes, overhead cable bundles and a sodium street lamp, wet concrete, puddle reflections along the bottom, widely spaced elements with empty magenta between. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "ll_mid_roofs",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight rooftop middle layer: a sea of wet flat rooftops, stairwell huts, satellite dishes, antenna forests, billboard backs (no text), water tanks and cable arcs between buildings, cold violet night. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "ll_fg_silhouettes",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Foreground silhouette kit, near-black shapes with a faint cold rim: hanging cable loops, a dangling unlit sign bracket, drainpipe, railing stubs, a traffic-light pole top, broken gutter, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "relay_backwall",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. The Relay: back wall of an abandoned underground transit interchange turned into a warm resistance settlement, tiled station arches, a dead departures board frame (blank), patched tarps, strings of small warm bulbs, rust and old wood, warm sodium haze, lived-in, continuous horizontally. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "relay_mid_concourse",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. The Relay middle layer: the far side of a transit concourse, stopped escalators, an upper gallery with railings, hanging cloth partitions, stacked salvage crates and a derelict train car used as housing, warm lamplight pools, rust and ochre. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "uc_tiles",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: cast concrete slabs with rust-streaked joints, algae in the cracks, a waterline stain band. Even lighting, no objects, no horizon, no vignette."
+ },
+ {
+  "id": "ll_tiles",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: wet slate-violet concrete and dark brick, rain streaks, drain grates. Even lighting, no objects, no horizon, no vignette."
+ },
+ {
+  "id": "relay_tiles",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: warm old station floor tiles, worn stone, brass trims and wooden patch boards. Even lighting, no objects, no horizon, no vignette."
+ },
+ {
+  "id": "uc_props",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Undercity set: a square concrete pillar segment, a sodium lamp on a wall bracket, a sea-green service tube fixture (unlit housing), a rusted hospital gurney, a slab bench, stacked rusted crates, a pipe run segment with valve wheels, a hanging cable bundle, a wall grate, a drain outlet dripping, a disposal bin, a broken intake terminal. Dark sea-green concrete, rust and steel."
+ },
+ {
+  "id": "ll_props",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Lowlight street set: a sodium street lamp post, a rooftop AC unit with fan, a planter box with scraggly weeds, a wet park bench, stacked cargo crates, a laundry line, an overhead cable span, a drainpipe with gutter, a fire escape segment, a newspaper box, a market stall awning frame, a water tank on stilts. Slate, dark brick, wet metal."
+ },
+ {
+  "id": "ll_neon_plates",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Six empty neon sign frames of different shapes (long bar, square, vertical blade, arrow, circle, stacked two-line) with bent glass tubes forming abstract glyph-like strokes that are NOT letters, tubes drawn in pure white on dark metal backing plates."
+ },
+ {
+  "id": "relay_props",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. The Relay hub set, warm and lived-in: a mechanic's workbench with vice and tools, a radio operator desk with a big valve radio and a small on-air lamp housing, a map table with pinned papers, a market stall with a patched awning, a circuit-broker's display case of small cards, stacked crates with rope, a bunk curtain, a bench made of a train seat, hanging bulb strings, a brazier drum."
+ },
+ {
+  "id": "interact_anchor",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. An 'Anchor' rest shrine: a squat reinforced conduit pylon with a cradle socket in its chest where a small core would sit, cables flowing into the floor like roots, a worn step to kneel on; three variants: dormant, awakening, active (socket drawn empty, the glow is added in-engine)."
+ },
+ {
+  "id": "interact_grid",
+  "priority": 1,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Grid machinery: a wall-mounted industrial circuit breaker box with a big lever (off and on positions), a heavy segmented steel roller shutter panel with warning chevrons (grey, no colour), a sliding blast gate door, a clamp press head with pistons."
+ },
+ {
+  "id": "uc_shaft_near",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity vertical shaft background: a deep square maintenance shaft wall with ladder rungs, cable trays, pipe runs and a stopped lift counterweight rail, continuous from top edge to bottom edge so it tiles vertically, dark sea-green concrete, dim. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "uc_backwall_ward",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Undercity interior back wall at 0.9 depth: a derelict medical intake ward wall, tiled lower half with missing tiles, stained upper concrete, empty gurney bays, pipe runs, a boarded observation window, damp sea-green light, low contrast, continuous horizontally. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "uc_boss_bay",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Collector Bay backdrop: a cavernous sorting bay with a huge circular ceiling hatch far above (closed, dark), conveyor gantries, stacked cargo cages, a spotlight rig pointing down, all in dark sea-green and rust, no red anywhere, 16:9."
+ },
+ {
+  "id": "ll_sky_storm",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Storm sky for an elevated rail chase: torn racing clouds, heavier diagonal rain, a faint internal cloud glow suggesting distant lightning, cold violet-grey, 16:9, no buildings."
+ },
+ {
+  "id": "ll_tower_near",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight vertical background: the inner lightwell of a tall apartment tower / bell tower, stacked balconies, stair landings, cables and bell rope pulleys, continuous top to bottom so it tiles vertically, wet slate and brick, dim. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "ll_backwall_interior",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight interior back wall at 0.9 depth: a municipal substation / security station interior wall, cable trays, breaker cabinets, conduit, grimy tile, caged ceiling lights (unlit), continuous horizontally, low contrast slate violet. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "ll_far_bell_tower",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Lowlight landmark far layer: the silhouette of a tall old bell tower with an industrial freight lift cage clinging to its side, rising above the rooftops, Warden banners hanging from it (blank, no symbols), rain haze, blue-violet. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "ll_train_far",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. A long distant elevated commuter train silhouette of three cars with a row of small lit windows, seen from the side, very simple dark blue-violet shape."
+ },
+ {
+  "id": "relay_fg",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Relay foreground silhouettes, near-black warm-brown shapes with a faint amber rim: hanging cloth strips, a string of bulbs dipping in, a pipe, a stack of crates at the bottom edge, each shape separate. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ },
+ {
+  "id": "ll_roof_tiles",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. A flat seamless material texture swatch, straight-on, filling the whole square: tar-paper rooftop with gravel, metal flashing edges and puddles. Even lighting, no objects, no horizon, no vignette."
+ },
+ {
+  "id": "uc_landmarks",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Undercity landmarks, larger objects: a giant pump wheel with spokes, a hanging freight lift car on cables, a derailed maintenance tram car tilted on its side, an extraction-pit machine with a claw crane over a pit rim, a large round ceiling hatch seen from below (closed)."
+ },
+ {
+  "id": "ll_landmarks",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Lowlight landmarks: a large transformer core with coils and insulators, a security monitor wall of blank CRT screens in a steel frame, a canal floodgate with a wheel mechanism, a heavy bronze bell in a steel yoke, a derelict elevated-rail car."
+ },
+ {
+  "id": "interact_misc",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 2,
+  "prompt": "Pixel art prop sheet for a 2D side-scrolling metroidvania, strict side view, each object separate and evenly spaced in a grid with generous empty space, crisp hard pixel clusters, no outline on environment props, three value steps per material plus a thin top-edge highlight, top-left key light, limited palette, on one flat solid pure magenta (#FF00FF) background, no shadows on the background, no text, no letters, no logos, no people. Original design, grimy decaying civic infrastructure of a rain-soaked megacity. Misc interactables: a wall weapon rack with an empty blade cradle, a small device pedestal (for an ability module), a rooftop signal repeater antenna box, a challenge terminal kiosk with a blank screen, a cracked breakable concrete wall section in three damage stages, a floor spike strip, a ceiling scanner emitter head."
+ },
+ {
+  "id": "life_critters",
+  "priority": 2,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Pixel art tiny creature sheet for a 2D side-scrolling action game, strict side view facing right, full body, crisp hard pixel clusters, a 1-pixel dark plum outline, no anti-aliasing, flat cel shading with a top-left key light, limited palette, poses evenly spaced in a grid with generous empty space between them, on one flat solid pure magenta (#FF00FF) background, no ground shadow, no text, no labels, no numbers, no UI. Original design that does not resemble any existing game character. Mood: melancholic, grimy, hand-crafted, readable silhouette at very small size. Tiny ambient creatures, each about 6 to 12 pixels: a pale moth (wings open and closed), a grey sewer rat (standing, running), a scruffy city gull (standing, pecking, wings up, wings down), a thin dark eel ripple in water."
+ },
+ {
+  "id": "ll_canal_mid",
+  "priority": 3,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Smuggler canal middle layer: a flooded canal between leaning buildings, a rusted floodgate far off, moored flat boats, rope lines, dripping undersides of walkways, blue-violet with faint violet chalk marks (no symbols readable). The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "null_far_strata",
+  "priority": 3,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Abstract deep industrial shaft far layer: stacked black machine strata, gantries and vertical rails fading into darkness, near-black with thin grey-white edge lines, stark, minimal. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it. The composition must continue off both the left and right edges so it can tile horizontally; no framing objects at the edges."
+ },
+ {
+  "id": "pit_rig_near",
+  "priority": 3,
+  "model": "gpt-image-2",
+  "est_generations": 1,
+  "prompt": "Hand-crafted 2D pixel art for a side-scrolling metroidvania, strict side-on orthographic view with no perspective vanishing lines, crisp hard-edged pixel clusters, no anti-aliasing, no blur, no gradients banding, limited palette, depth from value and atmospheric haze only, melancholic hushed mood, damp air, original design. No text, no letters, no logos, no readable signage, no people, no creatures, no UI, no border, no watermark. World: Veyra, a vertical rain-soaked megacity of decaying brutalist civic infrastructure: stained concrete, riveted steel, rust, hanging cables, pipes, old transit lines. Training pit near layer: a sunken concrete test pit under a rain canopy, rig lamp towers (unlit housings), bleachers of stacked crates, chain-link, blue-violet. The entire background behind the shapes is one flat solid pure magenta (#FF00FF) with no gradient, no shadow, no texture and no magenta tint on the shapes; shapes have clean hard edges against it."
+ }
+]

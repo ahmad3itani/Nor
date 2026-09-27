@@ -1,0 +1,15 @@
+[
+ {"id":"player_hurt","node":"KKJejB4H5fmsENzwjPZS","runs":2,"dur":0.5,"pi":0.7,"credits_each":5,"post":"sfx_sheet_slice, ceiling -1.5 dBTP","accept":"centroid < 3 kHz, attack < 10 ms, decoded TP <= -1.0","note":"director asked 0.4 s; node minimum used 0.5 s (5 credits measured)"},
+ {"id":"hit","node":"H0dFOkSEsg9pSZohyk9Z","runs":2,"dur":0.5,"pi":0.6,"credits_each":5,"post":"sfx_sheet_slice","accept":"peak inside 10 ms, energy after 200 ms >= 15 dB below peak"},
+ {"id":"enemy_telegraph","node":"iu2kpiItus65bnKobcvk","runs":2,"dur":0.5,"pi":0.75,"credits_each":5,"post":"sfx_sheet_slice, target 0.3-0.4 s","accept":"last 100 ms >= first 100 ms + 6 dB, centroid 1-3.5 kHz, TP <= -1"},
+ {"id":"shoot_pistol","node":"30gLmtdiGuLsfTnNDt9C","runs":2,"dur":0.6,"pi":0.6,"credits_each":6,"post":"sfx_sheet_slice, cap 0.35 s","accept":"peak inside 15 ms, LUFS -18..-21 padded; then remove OVR hold"},
+ {"id":"scrap_pickup","node":"PZQLMn6rRyysP5OHBmBM","runs":2,"dur":"existing node","pi":0.6,"credits_each":8,"post":"existing OVR (head trim, ceiling -1.5)","accept":"within 1 LU of take 1"},
+ {"id":"perfect_dodge","node":"cuKqVQk5gb1ccriUj7p1","runs":1,"dur":1.2,"pi":0.6,"credits_each":12,"post":"stinger_std, drop peak_start OVR if the ping is at the head; cap 1.2","accept":"peak within 130 ms, ring to -60 dB"},
+ {"id":"dodge","node":"l5pbt7ShUfgXAki5PZj1","runs":1,"dur":"existing node","pi":0.6,"credits_each":8,"post":"existing OVR","accept":"peak within 60 ms"},
+ {"id":"footstep_concrete","node":"LCUaJt1IukTNoum2facW","runs":1,"dur":3,"pi":0.6,"credits_each":30,"post":"footstep_sheet + OVR select=consistent (like footstep_metal); replaces derive_sfx recipe","accept":"3 steps <= 0.25 s, within 2 LU, ~-22"},
+ {"id":"footstep_water","node":"rvKyde61NkQtwfFN67xx","runs":1,"dur":3,"pi":0.6,"credits_each":30,"post":"footstep_sheet + OVR select=consistent","accept":"3 steps within 2 LU, ~-22"},
+ {"id":"memory_beat","node":"LuuAwZwU97t5Xg0LHL8u","runs":1,"dur":0.8,"pi":0.6,"credits_each":8,"post":"sfx_std, cap 0.75, tail -60, LPF ~5 kHz","accept":"A-minor centre, same family as memory_open"},
+ {"id":"memory_tear","node":"pTssc34u4q55txANZ0l8","runs":1,"dur":1.2,"pi":0.6,"credits_each":12,"post":"stinger_std, cap 1.2","accept":"memory family timbre"},
+ {"id":"memory_detail","node":"EjBWpP3Vx9Roo6qMjaBe","runs":1,"dur":1.5,"pi":0.6,"credits_each":15,"post":"stinger_std, cap 1.8","accept":"memory family timbre"},
+ {"id":"ui_tick","node":"a6dKp6q40A9xix2owHa9","runs":3,"dur":0.5,"pi":0.6,"credits_each":5,"post":"ui_sheet_slice; drop varispeed OVR","accept":"3 takes within 1 LU, ~-21"}
+]

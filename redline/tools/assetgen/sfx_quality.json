@@ -1,0 +1,206 @@
+{
+ "hit": [
+  "usable",
+  "hit_1 only (hit_2 had no transient), cut to 0.21 s (60 ms fade from 150 ms); still thin (centroid ~6.8 kHz): regen staged"
+ ],
+ "jump": [
+  "good",
+  "jump_1 head-trimmed (peak 140->80 ms, onset -33->-16 dB); both takes -22.9/-22.3 (peak-limited)"
+ ],
+ "ui_tick": [
+  "usable",
+  "3 takes: original + varispeed +1.5/-1.5 st; -23.7/-23.9/-23.0 (peak-limited), 0.9 LU spread"
+ ],
+ "jump_slide": [
+  "good",
+  ""
+ ],
+ "land_soft": [
+  "usable",
+  "1 of 2 takes, short muted thud"
+ ],
+ "land_hard": [
+  "good",
+  "1 of 2 takes, clear low impact + debris"
+ ],
+ "slide": [
+  "good",
+  "0.75 s scrape, fades"
+ ],
+ "dodge": [
+  "usable",
+  "cut 45 ms before peak (peak 52 ms), 4 ms fade-in; -21.8 LUFS peak-limited"
+ ],
+ "dash": [
+  "good",
+  "punchy onset, decaying tail"
+ ],
+ "respawn": [
+  "good",
+  "rising hum into chime (trimmed to 1.35 s cap)"
+ ],
+ "slash": [
+  "usable",
+  "2 takes: slash_1 (gen, peak 55 ms) + slash_2 (pilot slash.wav, peak 188 ms, softer build), 0.2 LU apart"
+ ],
+ "slash_heavy": [
+  "good",
+  "restored (was deleted by the slash_* glob); 0.44 s, -18.1 LUFS"
+ ],
+ "hit_heavy": [
+  "good",
+  "1 of 2 takes, crunch + crackle tail"
+ ],
+ "block": [
+  "usable",
+  "1 of 2 takes, short clang 0.2 s"
+ ],
+ "shoot_pistol": [
+  "weak (HOLD)",
+  "not shipped: keep SfxSynth placeholder until regenerated (3 tiny clicks, onset -49 dB)"
+ ],
+ "shoot_scatter": [
+  "usable",
+  "0.82 s cap + 40 ms fade, TP -1.6 decoded; peak-limited -24.4"
+ ],
+ "shoot_revolver": [
+  "good",
+  "crack + ring"
+ ],
+ "empty": [
+  "good",
+  "tiny dry click"
+ ],
+ "reload": [
+  "good",
+  "clear sequence of mechanical clicks"
+ ],
+ "heal_start": [
+  "good",
+  "restored (was deleted by the heal_* glob); 0.60 s, -17.9 LUFS, TP -3.6"
+ ],
+ "heal": [
+  "good",
+  "warm shimmer"
+ ],
+ "player_hurt": [
+  "weak",
+  "TP now -1.4 (ceiling -1.5); timbre still too bright/close to hit (centroid ~4.6 kHz): regen staged, quota 0"
+ ],
+ "perfect_dodge": [
+  "weak (interim)",
+  "re-cut 120 ms before peak: peak at 35 ms, 0.21 s; raw has NO post-peak ring (peak at 1.14 s of 1.2 s) -> regen staged"
+ ],
+ "heartbeat": [
+  "good",
+  "clean lub-dub, two thumps"
+ ],
+ "burnout": [
+  "good",
+  ""
+ ],
+ "rank_up": [
+  "usable",
+  "chime, cut to 0.6 s cap"
+ ],
+ "enemy_telegraph": [
+  "usable",
+  "1 of 2 takes; steady whine 0.4 s, less 'rising glint' than asked"
+ ],
+ "enemy_attack": [
+  "good",
+  "1 of 2 takes"
+ ],
+ "enemy_shoot": [
+  "good",
+  "1 of 2 takes, zap"
+ ],
+ "enemy_die": [
+  "good",
+  "1 of 2 takes, break + crackle + clatter"
+ ],
+ "boss_roar": [
+  "usable",
+  "dense 2.1 s howl, few dynamics"
+ ],
+ "boss_slam": [
+  "good",
+  "big impact + rumble"
+ ],
+ "anchor": [
+  "good",
+  "bell bloom, long decay"
+ ],
+ "scrap_pickup": [
+  "usable",
+  "head trim at peak-24 dB sample (+5 ms), 2 ms fade-in, TP -1.4; first tinkle at -11 dB inside 10 ms, main peak still ~100 ms"
+ ],
+ "scrap_recover": [
+  "good",
+  ""
+ ],
+ "collect": [
+  "good",
+  "glassy chime"
+ ],
+ "wall_break": [
+  "good",
+  ""
+ ],
+ "repeater": [
+  "usable",
+  "clunk + buzz, peak-limited -23"
+ ],
+ "gate": [
+  "good",
+  "grind + clank"
+ ],
+ "quest_complete": [
+  "usable",
+  "warm chime, decays early (not clearly a 3-note motif)"
+ ],
+ "ability_unlock": [
+  "good",
+  "2.5 s swell"
+ ],
+ "purchase": [
+  "good",
+  "head trim at peak-24 dB (+3 ms), 0.60 s cap, 40 ms fade; -20.1 LUFS"
+ ],
+ "radio_static": [
+  "good",
+  "static burst, no voices audible in envelope"
+ ],
+ "achievement": [
+  "good",
+  ""
+ ],
+ "secret_found": [
+  "good",
+  "rising glassy swell"
+ ],
+ "ui_confirm": [
+  "good",
+  ""
+ ],
+ "footstep_metal": [
+  "good",
+  "re-picked 3 of 8 steps: -25.6/-24.0/-25.6 LUFS (1.6 LU spread), peaks <= 23 ms"
+ ],
+ "ui_back": [
+  "usable",
+  "ui_confirm varispeed -3 st + LPF; distinct but same family"
+ ],
+ "boss_defeat": [
+  "usable",
+  "layered collapse 2.9 s from burnout/enemy_die/boss_slam/wall_break; shorter than the 3.5 s target"
+ ],
+ "memory_open": [
+  "usable",
+  "reversed anchor bell, muffled, tape wobble; no piano as asked"
+ ],
+ "footstep_concrete": [
+  "usable",
+  "3 pitch takes of the land_soft thud; not real steps"
+ ]
+}

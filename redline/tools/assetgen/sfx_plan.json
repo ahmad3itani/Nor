@@ -1,0 +1,732 @@
+[
+ {
+  "id": "jump",
+  "priority": 1,
+  "prompt": "Light agile jump push-off: a quick cloth-and-coat whoosh with a soft rubber boot scuff on wet concrete and a faint electric crackle from a chest reactor. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "jump_slide",
+  "priority": 1,
+  "prompt": "Low sliding jump out of a floor slide: boot sole squeak releasing from concrete, heavier coat whoosh rising upward, tiny electric crackle. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "land_soft",
+  "priority": 1,
+  "prompt": "Soft landing of a light-footed person on wet concrete: a muted boot thud with a small splash-free scuff and coat settle. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "land_hard",
+  "priority": 1,
+  "prompt": "Heavy hard landing from a high fall onto concrete: deep boot impact thump, low body-weight crunch, grit and small debris skitter, short low rumble tail. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.9,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 18
+ },
+ {
+  "id": "slide",
+  "priority": 1,
+  "prompt": "Fast floor slide: rubber boots and a long coat scraping across gritty wet concrete, a smooth friction hiss that fades out. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "dodge",
+  "priority": 1,
+  "prompt": "Quick evasive sidestep: sharp short air whoosh of a coat, a light electric shimmer as a body phases, very fast and airy. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "dash",
+  "priority": 1,
+  "prompt": "Powerful forward dash burst: a charged electric thrust ignition, tight air rip and a short whooshing tail, cyberpunk energy boost, punchy. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "respawn",
+  "priority": 1,
+  "prompt": "Reconstitution at a checkpoint: a soft rising electric hum that swells and resolves into a gentle warm chime, reactor heartbeat restarting, hopeful but restrained. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "slash",
+  "priority": 1,
+  "prompt": "Fast energy-blade sword slash: a thin sharp air swipe with a crackling electric edge hum, quick and light, no impact. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 3,
+  "est": 24
+ },
+ {
+  "id": "slash_heavy",
+  "priority": 1,
+  "prompt": "Heavy two-handed energy-blade swing: deep wide air swoosh, a charged electric roar building through the arc, weighty, no impact. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "hit",
+  "priority": 1,
+  "prompt": "Blade hit confirm on an armoured android: crisp metallic flesh-and-plate impact, a bright electric spark crack, tight and punchy, very short. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 3,
+  "est": 24
+ },
+ {
+  "id": "hit_heavy",
+  "priority": 1,
+  "prompt": "Heavy crushing hit on an armoured machine body: deep metal crunch, low boom, electric discharge crackle tail, powerful and satisfying. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "block",
+  "priority": 1,
+  "prompt": "Attack blocked by an energy guard: a hard bright metallic clang with a glassy electric shield ring, short deflect ping. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "shoot_pistol",
+  "priority": 1,
+  "prompt": "Compact sci-fi service pistol shot: tight snappy electric-kinetic crack, short mechanical slide click, small room slap, no long echo. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "shoot_scatter",
+  "priority": 1,
+  "prompt": "Sci-fi scattergun blast: wide heavy spread shot with a thick boom, rattling pellets of energy, pump-like mechanical clack after. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "shoot_revolver",
+  "priority": 1,
+  "prompt": "Heavy magnum revolver shot with a charged energy round: loud deep crack, heavy low thump, metallic ring and short concrete-alley echo tail. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.2,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 12
+ },
+ {
+  "id": "empty",
+  "priority": 1,
+  "prompt": "Dry fire click of an empty gun: a small light metallic trigger click with a tiny electronic denial blip. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "reload",
+  "priority": 1,
+  "prompt": "Quick gun reload: magazine slides out and clicks in, slide racked, crisp small mechanical metal clicks. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "heal_start",
+  "priority": 1,
+  "prompt": "Beginning to channel healing energy: a soft low electric hum starting to rise, gentle breathy energy intake. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "heal",
+  "priority": 1,
+  "prompt": "Healing completed: a warm rising shimmer of soft bioelectric light, gentle crystalline chime, soothing resolution. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "player_hurt",
+  "priority": 1,
+  "prompt": "Player takes damage: a sharp painful electric zap and body impact thud, reactor glitch stutter, short distorted crunch. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "perfect_dodge",
+  "priority": 1,
+  "prompt": "Perfect dodge time-slow flourish: a crisp reverse whoosh into a bright crystalline ring with a deep sub drop, time freezing for a moment, elegant. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.2,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 12
+ },
+ {
+  "id": "heartbeat",
+  "priority": 1,
+  "prompt": "Single heavy mechanical-organic heartbeat: deep low double thump lub-dub with a faint electric pulse, muffled, close. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "burnout",
+  "priority": 1,
+  "prompt": "Reactor burnout: an overloaded electric core shorting out with a sputtering crackle, a descending power-down whine and a hiss of steam. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "rank_up",
+  "priority": 1,
+  "prompt": "Style rank up: a short punchy rising synth chime with an electric sparkle, rhythmic and confident, arcade-like but tasteful. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "enemy_telegraph",
+  "priority": 1,
+  "prompt": "Enemy attack warning: a sharp rising metallic glint and a short charging electric whine, piercing and clear, a split-second tell. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "enemy_attack",
+  "priority": 1,
+  "prompt": "Android enemy melee strike: a fast mechanical servo swing whoosh with a sharp metal blade swish, aggressive. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "enemy_shoot",
+  "priority": 1,
+  "prompt": "Hostile drone fires an energy bolt: a buzzy electric zap launch with a thin pew, slightly hollow and synthetic. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "enemy_die",
+  "priority": 1,
+  "prompt": "Android enemy destroyed: a crunching metal break, electric short-circuit burst, sparks and small parts clattering, powering down whine. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 1.6,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 32
+ },
+ {
+  "id": "boss_roar",
+  "priority": 1,
+  "prompt": "Huge security machine boss roar: a distorted mechanical howl made of grinding servos, a siren wail and a deep electrical growl, menacing, with a long metallic reverb tail. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 25
+ },
+ {
+  "id": "boss_slam",
+  "priority": 1,
+  "prompt": "Massive heavy industrial press slam: a gigantic metal impact on concrete, deep sub boom, debris and chains rattling, short rumble tail. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "anchor",
+  "priority": 1,
+  "prompt": "Activating a checkpoint beacon: a deep resonant electric bell tone blooming open, a warm reactor hum that settles into calm, sacred and safe. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 25
+ },
+ {
+  "id": "scrap_pickup",
+  "priority": 1,
+  "prompt": "Tiny metal scrap pickup: a small bright tinkling of metal bits collected with a soft magnetic zip. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 3,
+  "est": 24
+ },
+ {
+  "id": "scrap_recover",
+  "priority": 1,
+  "prompt": "Recovering a lost cache of scrap: a flurry of metal pieces magnetically pulled together with a rising whoosh and a satisfying clink. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "collect",
+  "priority": 1,
+  "prompt": "Collectible found: a delicate music-box-like glassy chime with a soft electric shimmer, curious and rewarding. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "wall_break",
+  "priority": 1,
+  "prompt": "Breakable concrete wall shattering: chunks of concrete and rebar crumbling, dust pouring, heavy debris falling. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "repeater",
+  "priority": 1,
+  "prompt": "Old signal repeater or breaker switched on: a heavy electrical relay clunk, a buzzing surge of current, radio tone locking in. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "gate",
+  "priority": 1,
+  "prompt": "Heavy industrial shutter door moving: a big metal gate grinding on rails with a hydraulic hiss and a final clank. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "quest_complete",
+  "priority": 1,
+  "prompt": "Quest completed: a short warm uplifting three-note motif on muted electric piano with a soft tape-warm synth pad, noir, resolving. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "ability_unlock",
+  "priority": 1,
+  "prompt": "Acquiring a powerful new ability: a deep rising surge of electric energy, a choir-like synth swell and a resonant metallic ring, triumphant yet mysterious. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 3.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 30
+ },
+ {
+  "id": "purchase",
+  "priority": 1,
+  "prompt": "Buying an item at a scrap shop: a satisfying mechanical cash register-like clack of metal tokens with a small bright confirm chime. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "radio_static",
+  "priority": 1,
+  "prompt": "Old handheld radio tuning: a short burst of crackling analog static with a faint squelch and whistle, no voices. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "achievement",
+  "priority": 1,
+  "prompt": "Achievement unlocked: an elegant short bright two-note chime with a soft sparkling tail, understated. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.2,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 12
+ },
+ {
+  "id": "ui_tick",
+  "priority": 1,
+  "prompt": "Very soft short menu cursor tick: a tiny muted mechanical click like a quality switch, subtle and clean. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 3,
+  "est": 24
+ },
+ {
+  "id": "memory_open",
+  "priority": 1,
+  "prompt": "Entering a memory: a slow reversed piano note swelling into a soft underwater shimmer, distant muffled rain, dreamlike and melancholic. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 25
+ },
+ {
+  "id": "memory_beat",
+  "priority": 1,
+  "prompt": "Soft memory fragment pulse: a single gentle muffled piano key with a faint glassy halo, quiet. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "memory_tear",
+  "priority": 1,
+  "prompt": "Memory tearing apart: a tape stretching and ripping, a glitchy distorted rewind and a descending digital crackle. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.2,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 12
+ },
+ {
+  "id": "memory_detail",
+  "priority": 1,
+  "prompt": "Noticing a hidden detail in a memory: a high delicate crystalline bell with a slow shimmering tail, intimate and quiet. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 15
+ },
+ {
+  "id": "footstep_concrete",
+  "priority": 1,
+  "prompt": "Footsteps of one light-footed runner in rubber-soled boots on wet gritty concrete, individual steps, soft heel-toe, slight damp scuff. A short sequence of separate footsteps with small gaps, steady pace, no music, no voice.",
+  "duration": 3.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 30
+ },
+ {
+  "id": "footstep_metal",
+  "priority": 1,
+  "prompt": "Footsteps of one light runner in boots on a hollow steel catwalk grate, individual steps, light metallic ring and rattle. A short sequence of separate footsteps with small gaps, steady pace, no music, no voice.",
+  "duration": 3.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 30
+ },
+ {
+  "id": "footstep_water",
+  "priority": 1,
+  "prompt": "Footsteps of one runner splashing through ankle-deep puddle water on concrete, individual steps, small splashes. A short sequence of separate footsteps with small gaps, steady pace, no music, no voice.",
+  "duration": 3.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 30
+ },
+ {
+  "id": "footstep_wood",
+  "priority": 2,
+  "prompt": "Footsteps of one light runner in boots on old creaky wooden planks, individual steps, soft hollow knock. A short sequence of separate footsteps with small gaps, steady pace, no music, no voice.",
+  "duration": 3.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 30
+ },
+ {
+  "id": "land_water",
+  "priority": 2,
+  "prompt": "Landing in shallow water from a jump: a splash with boot thud and droplets. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "wall_slide_scrape",
+  "priority": 3,
+  "prompt": "Sliding down a concrete wall: glove and boot friction scrape, continuous. Continuous seamless ambience loop, steady density, no sudden events, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": true,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "hit_spark_tail",
+  "priority": 2,
+  "prompt": "Short electric spark crackle and fizzle, small arcs of current dying out. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "enemy_stagger",
+  "priority": 2,
+  "prompt": "Armoured android staggered: a heavy servo stutter, metal plates rattling and a glitchy power dip. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "enemy_alert",
+  "priority": 2,
+  "prompt": "Security android notices an intruder: a short two-tone electronic chirp and a servo head-turn whir. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "drone_rotor_loop",
+  "priority": 3,
+  "prompt": "Small hovering security drone: a buzzing electric rotor hum, steady. Continuous seamless ambience loop, steady density, no sudden events, no music, no voice, no speech.",
+  "duration": 4.0,
+  "loop": true,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 40
+ },
+ {
+  "id": "boss_defeat",
+  "priority": 1,
+  "prompt": "A giant machine boss collapses: a long overload whine, cascading explosions of sparks, huge metal body crashing down, then a settling hiss and silence. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 4.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 40
+ },
+ {
+  "id": "boss_phase",
+  "priority": 2,
+  "prompt": "Boss enters an enraged second phase: a violent power surge, alarm sweep and a deep distorted machine scream. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "boss_roar_collector",
+  "priority": 3,
+  "prompt": "Hovering collector drone boss screech: a cold synthetic siren sweep and grinding hook chains, surgical and inhuman. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "boss_roar_krail",
+  "priority": 3,
+  "prompt": "Armoured warden enforcer boss battle cry through a voice modulator: a distorted mechanical bellow with riot-gear metal clatter, no words. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "secret_found",
+  "priority": 1,
+  "prompt": "A hidden passage revealed: a soft mysterious rising glassy shimmer with a deep resonant hum, curious and magical, understated. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ },
+ {
+  "id": "flow_enter",
+  "priority": 2,
+  "prompt": "Entering a high-energy zone: a fast rising electric whoosh and a pulse of reactor power spinning up. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.2,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 12
+ },
+ {
+  "id": "area_title",
+  "priority": 2,
+  "prompt": "District name reveal: a slow deep cinematic boom with a long dark metallic resonance, solemn, noir. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 3.5,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 35
+ },
+ {
+  "id": "breaker_countdown",
+  "priority": 3,
+  "prompt": "Electric timer tick: a crisp relay click with a faint buzz, mechanical. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 2,
+  "est": 16
+ },
+ {
+  "id": "lift_loop",
+  "priority": 3,
+  "prompt": "Old industrial cargo lift moving: cables humming, motor whine, rattling cage. Continuous seamless ambience loop, steady density, no sudden events, no music, no voice, no speech.",
+  "duration": 5.0,
+  "loop": true,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 50
+ },
+ {
+  "id": "ui_confirm",
+  "priority": 1,
+  "prompt": "Menu confirm: a soft clean mechanical click with a small warm electric tone, pleasant and quiet. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "ui_back",
+  "priority": 1,
+  "prompt": "Menu back or cancel: a soft muted lower mechanical click with a tiny descending tone. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "ui_open",
+  "priority": 2,
+  "prompt": "Pause menu opening: a smooth soft CRT power-on whoosh with a faint electric hum rising. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "ui_close",
+  "priority": 2,
+  "prompt": "Pause menu closing: a soft CRT power-down whoosh, descending hum. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 1.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 10
+ },
+ {
+  "id": "ui_dialogue_blip",
+  "priority": 2,
+  "prompt": "Soft short typewriter-like electronic text blip, very subtle. Single isolated one-shot sound effect, one event only, close-mic, dry, clean, on total digital silence with no background hiss or room tone, no music, no voice, no speech.",
+  "duration": 0.8,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 3,
+  "est": 24
+ },
+ {
+  "id": "ui_title_start",
+  "priority": 2,
+  "prompt": "Pressing start on a title screen: a deep soft boom and a rising electric swell into silence. Isolated single sound effect, close-mic, dry, clean, no music, no voice, no speech.",
+  "duration": 2.0,
+  "loop": false,
+  "prompt_influence": 0.6,
+  "runs": 1,
+  "est": 20
+ }
+]
