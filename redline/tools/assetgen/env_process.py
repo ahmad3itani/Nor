@@ -382,6 +382,11 @@ def uc_far_post(q, alpha, names, prgb, t, allowed):
 # ---------------------------------------------------------------- recipes
 # L ranges from the ART_DIRECTION value ladder (slightly widened at the top so
 # rim light survives). allowed_max_L filters the palette for the layer.
+# T02: every `out` below is the file-contract name that the code-painted layer
+# (paint_env.py) also writes, at the contract size. Dropping a raw download into
+# art/source/raw/<id>.png makes env_process own that file (paint_env.py then leaves the
+# item alone), so an AI layer replaces a painted one with no code change. An AI layer
+# must still pass paint_env.py --check (value ladder, character contrast) to ship.
 
 RECIPES = {
     # id: dict(mode, palette, size, colors, L=(lo,hi), accents=[names], out)
@@ -389,78 +394,82 @@ RECIPES = {
     "title_sky": dict(mode="sky", pal="title", size=(480, 270), colors=20, L=(3, 14),
                       out="title/title_sky.png", dither=4.0, derain=True, derain_passes=2,
                       break_boost=(98.8, 99.9), allow_hi=33, p_hi=96),
-    "uc_sky_vault": dict(mode="sky", pal="uc_env", size=(480, 270), colors=20, L=(2, 14),
-                         out="undercity/uc_sky.png", dither=5.0),
-    "ll_sky_night": dict(mode="sky", pal="ll_env", size=(480, 270), colors=20, L=(2, 16),
-                         out="lowlight/ll_sky.png", dither=5.0),
-    "ll_sky_storm": dict(mode="sky", pal="ll_env", size=(480, 270), colors=20, L=(2, 20),
+    "uc_sky_vault": dict(mode="sky", pal="uc_env", size=(480, 270), colors=20, L=(2, 10),
+                         out="undercity/uc_sky_vault.png", dither=5.0),
+    "ll_sky_night": dict(mode="sky", pal="ll_env", size=(480, 270), colors=20, L=(2, 10),
+                         out="lowlight/ll_sky_night.png", dither=5.0),
+    "ll_sky_storm": dict(mode="sky", pal="ll_env", size=(480, 270), colors=20, L=(2, 12),
                          out="lowlight/ll_sky_storm.png", dither=5.0),
-    "uc_boss_bay": dict(mode="sky", pal="uc_env", size=(480, 270), colors=20, L=(3, 26),
+    "uc_boss_bay": dict(mode="sky", pal="uc_env", size=(480, 270), colors=20, L=(3, 16),
                         out="undercity/uc_boss_bay.png", dither=3.0),
-    "title_far_spires": dict(mode="band", pal="title", h=200, colors=12, L=(5, 16),
+    "title_far_spires": dict(mode="band", pal="title", h=160, colors=12, L=(5, 14),
                              accents=["window_warm_far", "window_cold", "window_rose"],
-                             out="title/title_far.png", tile=True),
-    "title_mid_rooftops": dict(mode="band", pal="title", h=180, colors=14, L=(4, 24),
+                             out="title/title_far_spires.png", tile=True),
+    "title_mid_rooftops": dict(mode="band", pal="title", h=150, colors=14, L=(4, 20),
                                accents=["window_warm", "window_warm_far", "window_cold", "rim"],
-                               out="title/title_mid.png", tile=True),
-    "title_near_ledge": dict(mode="band", pal="title", h=120, colors=10, L=(2, 18),
-                             accents=["rim"], out="title/title_near.png", tile=False),
+                               out="title/title_mid_rooftops.png", tile=True),
+    "title_near_ledge": dict(mode="band", pal="title", h=120, w=200, colors=10, L=(2, 18),
+                             accents=["rim"], out="title/title_near_ledge.png", tile=False),
     "uc_far_cistern": dict(mode="band", pal="uc_env", h=200, colors=10, L=(5, 15),
                            accents=["sea_dim"], out="undercity/uc_far.png", tile=True,
                            pre=lambda rgb, cov: uc_far_pre(rgb, cov), post_remap=lambda t, a: uc_far_falloff(t, a),
                            post=lambda *a: uc_far_post(*a)),
-    "uc_mid_pipeworks": dict(mode="band", pal="uc_env", h=220, colors=16, L=(8, 22),
+    "uc_mid_pipeworks": dict(mode="band", pal="uc_env", h=180, colors=16, L=(8, 18),
                              accents=["sodium_dim", "sodium", "water_glint"],
-                             out="undercity/uc_mid.png", tile=True),
-    "uc_near_columns": dict(mode="band", pal="uc_env", h=270, colors=14, L=(10, 27),
-                            accents=["water_glint"], out="undercity/uc_near.png", tile=True),
-    "uc_shaft_near": dict(mode="band", pal="uc_env", h=270, colors=14, L=(8, 25),
+                             out="undercity/uc_mid_pipeworks.png", tile=True),
+    "uc_near_columns": dict(mode="band", pal="uc_env", h=220, colors=14, L=(10, 18),
+                            accents=["water_glint"], out="undercity/uc_near_columns.png", tile=True),
+    "uc_shaft_near": dict(mode="band", pal="uc_env", h=270, colors=14, L=(8, 18),
                           out="undercity/uc_shaft_near.png", tile=True, tile_y=True),
-    "uc_backwall_ward": dict(mode="wall", pal="uc_env", h=270, colors=14, L=(8, 26),
+    "uc_backwall_ward": dict(mode="wall", pal="uc_env", h=270, colors=14, L=(4, 20),
                              out="undercity/uc_backwall_ward.png", tile=True),
-    "ll_far_skyline": dict(mode="band", pal="ll_env", h=200, colors=10, L=(5, 15),
+    "uc_tunnel_mid": dict(mode="band", pal="uc_env", h=160, colors=14, L=(8, 18),
+                          accents=["water_glint"], out="undercity/uc_tunnel_mid.png", tile=True),
+    "ll_far_skyline": dict(mode="band", pal="ll_env", h=160, colors=10, L=(5, 12),
                            accents=["window_warm_far", "window_cold_far"],
-                           out="lowlight/ll_far.png", tile=True),
-    "ll_mid_blocks": dict(mode="band", pal="ll_env", h=220, colors=16, L=(8, 22),
+                           out="lowlight/ll_far_skyline.png", tile=True),
+    "ll_mid_blocks": dict(mode="band", pal="ll_env", h=190, colors=16, L=(8, 18),
                           accents=["window_warm", "window_warm_far", "window_cold", "window_rose"],
-                          out="lowlight/ll_mid.png", tile=True),
-    "ll_mid_roofs": dict(mode="band", pal="ll_env", h=220, colors=16, L=(8, 22),
+                          out="lowlight/ll_mid_blocks.png", tile=True),
+    "ll_mid_roofs": dict(mode="band", pal="ll_env", h=150, colors=16, L=(8, 18),
                          accents=["window_warm_far", "window_cold_far", "window_rose"],
                          out="lowlight/ll_mid_roofs.png", tile=True),
-    "ll_near_street": dict(mode="band", pal="ll_env", h=270, colors=16, L=(10, 27),
+    "ll_near_street": dict(mode="band", pal="ll_env", h=200, colors=16, L=(10, 18),
                            accents=["sodium_street", "window_warm", "wet_hi"],
                            out="lowlight/ll_near_street.png", tile=True),
-    "ll_canal_mid": dict(mode="band", pal="ll_env", h=220, colors=14, L=(8, 22),
+    "ll_canal_mid": dict(mode="band", pal="ll_env", h=150, colors=14, L=(8, 18),
                          accents=["violet_muted", "window_warm_far"],
                          out="lowlight/ll_canal_mid.png", tile=True),
-    "ll_tower_near": dict(mode="band", pal="ll_env", h=270, colors=14, L=(8, 25),
+    "ll_tower_near": dict(mode="band", pal="ll_env", h=270, colors=14, L=(8, 18),
                           accents=["window_warm"], out="lowlight/ll_tower_near.png",
                           tile=True, tile_y=True),
-    "ll_backwall_interior": dict(mode="wall", pal="ll_env", h=270, colors=14, L=(8, 26),
+    "ll_backwall_interior": dict(mode="wall", pal="ll_env", h=270, colors=14, L=(4, 20),
                                  out="lowlight/ll_backwall_interior.png", tile=True),
-    "ll_far_bell_tower": dict(mode="band", pal="ll_env", h=220, colors=10, L=(5, 17),
-                              accents=["window_warm_far"], out="lowlight/ll_far_bell.png", tile=False),
-    "relay_backwall": dict(mode="wall", pal="relay_env", h=270, colors=18, L=(8, 28),
+    "ll_far_bell_tower": dict(mode="band", pal="ll_env", h=160, w=64, colors=10, L=(5, 14),
+                              accents=["window_warm_far"], out="lowlight/ll_far_bell_tower.png", tile=False),
+    "relay_backwall": dict(mode="wall", pal="relay_env", h=270, colors=18, L=(4, 20),
                            accents=["lamp_core", "lamp_warm"], out="relay/relay_backwall.png", tile=True),
-    "relay_mid_concourse": dict(mode="band", pal="relay_env", h=220, colors=16, L=(7, 24),
+    "relay_mid_concourse": dict(mode="band", pal="relay_env", h=180, colors=16, L=(7, 18),
                                 accents=["lamp_core", "lamp_warm", "lamp_spill"],
-                                out="relay/relay_mid.png", tile=True),
-    "null_far_strata": dict(mode="band", pal="null_env", h=200, colors=6, L=(1, 14),
-                            out="null/null_far.png", tile=True),
-    "pit_rig_near": dict(mode="band", pal="ll_env", h=270, w=640, colors=14, L=(8, 26),
-                         out="challenge/pit_near.png", tile=False),
-    # tilesets: ramp = 3 face values darkest->lightest, edge = top highlight
-    "uc_tiles": dict(mode="swatch", pal="uc_env", ramp=["concrete_0", "concrete_1", "concrete_2"],
+                                out="relay/relay_mid_concourse.png", tile=True),
+    "null_far_strata": dict(mode="band", pal="null_env", h=200, colors=6, L=(1, 12),
+                            out="null/null_far_strata.png", tile=True),
+    "pit_rig_near": dict(mode="band", pal="ll_env", h=200, colors=14, L=(8, 18),
+                         out="challenge/pit_rig_near.png", tile=True),
+    # tilesets: ramp = 3 face values darkest->lightest, edge = top highlight (T02 targets:
+    # face L* 24-30, edge 45-55; Lowlight uses "oneway", the edge colour's family at L* 46.8)
+    "uc_tiles": dict(mode="swatch", pal="uc_env", ramp=["concrete_1", "concrete_2", "concrete_3"],
                      extra=["algae_0", "rust_1"], edge="edge", under="void", out="undercity/uc_tiles.png"),
-    "ll_tiles": dict(mode="swatch", pal="ll_env", ramp=["concrete_0", "concrete_1", "concrete_2"],
-                     extra=["brick_1", "metal_1"], edge="edge", under="sky_top", out="lowlight/ll_tiles.png"),
+    "ll_tiles": dict(mode="swatch", pal="ll_env", ramp=["concrete_2", "brick_2", "concrete_3"],
+                     extra=["brick_1", "metal_1"], edge="oneway", under="sky_top", out="lowlight/ll_tiles.png"),
     "ll_roof_tiles": dict(mode="swatch", pal="ll_env", ramp=["metal_0", "concrete_1", "concrete_2"],
                           extra=["puddle_1", "brick_0"], edge="wet_hi", under="sky_top",
                           out="lowlight/ll_roof_tiles.png"),
-    "relay_tiles": dict(mode="swatch", pal="relay_env", ramp=["stone_0", "stone_1", "stone_2"],
-                        extra=["wood_1", "brass"], edge="edge", under="sky_top", out="relay/relay_tiles.png"),
+    "relay_tiles": dict(mode="swatch", pal="relay_env", ramp=["wood_0", "wood_1", "wood_2"],
+                        extra=["stone_1", "brass"], edge="edge", under="sky_top", out="relay/relay_tiles.png"),
 }
-# prop / silhouette sheets: target box, palette, colour cap
+# prop / silhouette sheets: target box, palette, colour cap. `atlas` (T02) = the contract
+# file the painted set also writes; the AI sheet's atlas replaces it there.
 SHEETS = {
     "uc_props": dict(pal="uc_env", box=(32, 48), colors=14, out="undercity/props"),
     "ll_props": dict(pal="ll_env", box=(32, 48), colors=14, out="lowlight/props"),
@@ -471,13 +480,14 @@ SHEETS = {
     "interact_misc": dict(pal="ll_env", box=(32, 48), colors=12, out="props/misc"),
     "uc_landmarks": dict(pal="uc_env", box=(128, 128), colors=16, out="undercity/landmarks"),
     "ll_landmarks": dict(pal="ll_env", box=(128, 128), colors=16, out="lowlight/landmarks"),
-    "ll_train_far": dict(pal="ll_env", box=(160, 24), colors=8, out="lowlight/train", L=(5, 18)),
+    "ll_train_far": dict(pal="ll_env", box=(160, 16), colors=8, out="lowlight/train", L=(5, 18),
+                         atlas="lowlight/ll_train_far.png"),
     "uc_fg_silhouettes": dict(pal="uc_env", box=(160, 120), colors=3, out="undercity/fg",
-                              fg=["void", "vault", "fog_dark"]),
+                              fg=["void", "vault", "fog_dark"], atlas="undercity/uc_fg_set.png"),
     "ll_fg_silhouettes": dict(pal="ll_env", box=(160, 120), colors=3, out="lowlight/fg",
-                              fg=["sky_top", "sky_1", "fog_dark"]),
+                              fg=["sky_top", "sky_1", "fog_dark"], atlas="lowlight/ll_fg_set.png"),
     "relay_fg": dict(pal="relay_env", box=(160, 120), colors=3, out="relay/fg",
-                     fg=["sky_top", "sky_bottom", "lamp_spill"]),
+                     fg=["sky_top", "sky_bottom", "lamp_spill"], atlas="relay/relay_fg_set.png"),
 }
 
 
@@ -846,6 +856,14 @@ def run_sheet(i, s, factor=None, min_area_frac=0.002, merge=6):
     atlas = Image.new("RGBA", (AW, y + rowh), (0, 0, 0, 0))
     for sp, (px, py), m in zip(sprites, pos, meta):
         atlas.paste(sp, (px, py)); m["atlas_xy"] = [px, py]
+    if s.get("atlas"):
+        # T02 file contract: the atlas replaces the painted set of the same name (paint_env.py)
+        p = save(atlas, s["atlas"])
+        regions = [{"name": "%s_%02d" % (i, k), "rect": m["atlas_xy"] + [m["w"], m["h"]],
+                    "anchor": "bottom", "origin": [m["w"] // 2, m["h"]]} for k, m in enumerate(meta)]
+        json.dump({"regions": regions, "palette": s["pal"], "note": "AI sheet %s (env_process.py)" % i},
+                  open(p.replace(".png", ".json"), "w"), indent=1)
+        return p
     p = save(atlas, "%s/%s_atlas.png" % (outdir, i))
     json.dump({"factor": factor, "sprites": meta}, open(p.replace(".png", ".json"), "w"), indent=1)
     return p
