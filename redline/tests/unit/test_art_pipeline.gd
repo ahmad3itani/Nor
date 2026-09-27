@@ -62,6 +62,64 @@ func test_bad_sheets_are_rejected() -> void:
 	check(Array(spec.validate()).any(func(e: String) -> bool: return e.contains("outside the sheet")), "animation overrun not caught")
 
 
+## T01: single-word names are valid (phase-A files such as dust.png and
+## icons.png are a contract for later tasks); capitals and dashes are not.
+func test_name_rule_allows_single_words() -> void:
+	var v := ArtValidator.new()
+	v.check_image(_sheet("dust.png"))
+	check(not Array(v.errors).any(func(e: String) -> bool: return e.contains("snake_case")), "single-word name rejected: %s" % v.errors)
+	for bad in ["NeedleIdle.png", "foo-bar.png", "_dust.png", "dust_.png"]:
+		v = ArtValidator.new()
+		v.check_image(_sheet(bad))
+		check(Array(v.errors).any(func(e: String) -> bool: return e.contains("snake_case")), "%s should be rejected" % bad)
+
+
+## T01: atmosphere textures (assets/vfx/atmos/) may use up to 4 alpha levels
+## besides 0/255; any other asset keeps hard alpha.
+func test_atmos_textures_allow_few_alpha_levels() -> void:
+	DirAccess.make_dir_recursive_absolute(DIR + "/vfx/atmos")
+	var img := Image.create(16, 4, false, Image.FORMAT_RGBA8)
+	img.fill(Color(1, 1, 1, 0))
+	for x in 4:
+		img.set_pixel(x, 0, Color8(255, 255, 255, 40 + x * 40))
+	var ok_path := DIR + "/vfx/atmos/fog_test.png"
+	img.save_png(ok_path)
+	var v := ArtValidator.new()
+	v.check_image(ok_path)
+	check(v.errors.is_empty(), "4 alpha levels in atmos flagged: %s" % v.errors)
+	img.set_pixel(5, 0, Color8(255, 255, 255, 230))
+	var bad_path := DIR + "/vfx/atmos/fog_many.png"
+	img.save_png(bad_path)
+	v = ArtValidator.new()
+	v.check_image(bad_path)
+	check(Array(v.errors).any(func(e: String) -> bool: return e.contains("alpha levels")), "5 alpha levels not caught")
+	var flat := DIR + "/fog_flat.png"
+	img.save_png(flat)
+	v = ArtValidator.new()
+	v.check_image(flat)
+	check(Array(v.errors).any(func(e: String) -> bool: return e.contains("semi-transparent")), "soft alpha outside atmos not caught")
+	for f in DirAccess.get_files_at(DIR + "/vfx/atmos"):
+		DirAccess.remove_absolute("%s/vfx/atmos/%s" % [DIR, f])
+	DirAccess.remove_absolute(DIR + "/vfx/atmos")
+	DirAccess.remove_absolute(DIR + "/vfx")
+
+
+## T01: tint masks (_mask / _fill) may hold a reserved colour without a warning.
+func test_masks_skip_the_reserved_colour_warning() -> void:
+	var img := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+	img.fill(Color("ff3b4f"))
+	var m := DIR + "/rook_sheet_mask.png"
+	img.save_png(m)
+	var v := ArtValidator.new()
+	v.check_image(m)
+	check(v.warnings.is_empty(), "mask warned: %s" % v.warnings)
+	var d := DIR + "/rook_decal.png"
+	img.save_png(d)
+	v = ArtValidator.new()
+	v.check_image(d)
+	check(Array(v.warnings).any(func(w: String) -> bool: return w.contains("reserved")), "reserved colour in decoration not warned")
+
+
 func test_repo_art_and_project_filter_are_valid() -> void:
 	var v := ArtValidator.new().run()
 	check(v.ok(), "art validation errors: %s" % v.errors)

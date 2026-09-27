@@ -35,7 +35,8 @@ extends RefCounted
 
 ## Top-level folders that hold no game content (D6 §5.2 X-6). locale/ holds
 ## PO files only (StringRules lints them).
-const IGNORED_DIRS: PackedStringArray = ["res://tests", "res://tools", "res://.godot", "res://locale"]
+## res://art: art sources (art/.gdignore), never imported or shipped.
+const IGNORED_DIRS: PackedStringArray = ["res://tests", "res://tools", "res://.godot", "res://locale", "res://art"]
 ## Scripts allowed a raw DirAccess scan, and why (X-5).
 const ALLOWED_RAW_SCANS := {
 	"res://progression/DataDir.gd": "the export-safe scanner itself",

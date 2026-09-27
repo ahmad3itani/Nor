@@ -11,7 +11,9 @@ const SCAN_DIRS: PackedStringArray = ["res://autoload", "res://bosses", "res://c
 	"res://playtest", "res://progression", "res://quests", "res://ui", "res://vfx", "res://weapons", "res://world",
 	"res://audio", "res://cinematics", "res://story",
 	# M9
-	"res://platform", "res://challenges", "res://release", "res://accessibility", "res://input", "res://l10n"]
+	"res://platform", "res://challenges", "res://release", "res://accessibility", "res://input", "res://l10n",
+	# presentation overhaul: SpriteSheetSpec and AudioStreamRandomizer .tres next to the art
+	"res://assets"]
 const ROOM_DIRS: PackedStringArray = ["res://world/rooms", "res://world/rooms/lowlight", "res://world/rooms/undercity",
 	"res://world/rooms/challenge"]
 ## Room folders whose world rooms are never on the world map (M9 challenge

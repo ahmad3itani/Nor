@@ -4,9 +4,17 @@ extends RefCounted
 ## must be checked against the Art Bible"): naming, crisp alpha, sheet
 ## sizes vs their SpriteSheetSpec, palette size, reserved gameplay colours
 ## outside UI/VFX, and the project's nearest-neighbour filtering.
+##
+## Presentation overhaul (T01): single-word names (dust.png, icons.png) are
+## valid, so the rule is <subject>[_<action>[_variant]]. Atmosphere textures
+## under assets/vfx/atmos/ (fog, light shafts, lamp glows, vignette) are
+## textures, not sprites: they may use a few quantised alpha levels.
 
 const ASSET_DIR := "res://assets"
-const NAME_RULE := "^[a-z0-9]+(_[a-z0-9]+)+\\.png$"
+const NAME_RULE := "^[a-z0-9]+(_[a-z0-9]+)*\\.png$"
+## Folder whose textures may use soft alpha, and how many levels besides 0/255.
+const ATMOS_DIR := "/vfx/atmos/"
+const ATMOS_MAX_ALPHA_LEVELS := 4
 const MAX_COLORS := 64
 ## Art Bible §3: colours reserved for gameplay meaning.
 const RESERVED: Array[Color] = [Color("ff3b4f"), Color("7fd7ff"), Color("7dff9a"), Color("ffd36b"), Color("9fd8ff")]
@@ -34,7 +42,7 @@ func run(asset_dir: String = ASSET_DIR) -> ArtValidator:
 func check_image(path: String) -> void:
 	var file := path.get_file()
 	if not RegEx.create_from_string(NAME_RULE).search(file):
-		errors.append("%s: name must be snake_case <subject>_<action>[_variant].png" % file)
+		errors.append("%s: name must be snake_case <subject>[_<action>[_variant]].png" % file)
 	var img := Image.load_from_file(path) if not path.begins_with("res://") or not ResourceLoader.exists(path) else (load(path) as Texture2D).get_image()
 	if img == null:
 		errors.append("%s: cannot be read" % file)
@@ -43,19 +51,26 @@ func check_image(path: String) -> void:
 		img.decompress()
 	var colors := {}
 	var soft_alpha := 0
+	var alpha_levels := {}
 	var reserved_hits := 0
-	var ui_or_vfx := path.contains("/ui/") or path.contains("/vfx/")
+	# Tint masks (grey/white, recoloured in code) may sit on any value.
+	var mask := path.contains("/ui/") or path.contains("/vfx/") or file.ends_with("_mask.png") or file.ends_with("_fill.png")
+	var atmos := path.contains(ATMOS_DIR)
 	for y in img.get_height():
 		for x in img.get_width():
 			var c := img.get_pixel(x, y)
 			if c.a8 != 0 and c.a8 != 255:
 				soft_alpha += 1
+				alpha_levels[c.a8] = true
 			if c.a8 == 0:
 				continue
 			colors[c.to_rgba32()] = true
-			if not ui_or_vfx and RESERVED.any(func(r: Color) -> bool: return r.to_rgba32() == Color(c.r, c.g, c.b, 1.0).to_rgba32()):
+			if not mask and RESERVED.any(func(r: Color) -> bool: return r.to_rgba32() == Color(c.r, c.g, c.b, 1.0).to_rgba32()):
 				reserved_hits += 1
-	if soft_alpha > 0:
+	if atmos:
+		if alpha_levels.size() > ATMOS_MAX_ALPHA_LEVELS:
+			errors.append("%s: %d alpha levels (atmosphere textures allow %d besides 0/255)" % [file, alpha_levels.size(), ATMOS_MAX_ALPHA_LEVELS])
+	elif soft_alpha > 0:
 		errors.append("%s: %d semi-transparent pixels (pixel art needs alpha 0 or 255; no anti-aliasing)" % [file, soft_alpha])
 	if colors.size() > MAX_COLORS:
 		warnings.append("%s: %d colours (> %d): check palette discipline" % [file, colors.size(), MAX_COLORS])
