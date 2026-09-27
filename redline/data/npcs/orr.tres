@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=27 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
 [ext_resource type="Resource" path="res://data/arcs/arc_orr.tres" id="arc_orr"]
+[ext_resource type="Resource" path="res://assets/npcs/orr_sheet.tres" id="sprite_orr"]
+[ext_resource type="Texture2D" path="res://assets/portraits/portrait_orr.png" id="portrait_orr"]
 
 [sub_resource type="Resource" id="orr_iko_l0"]
 script = ExtResource("line")
@@ -127,3 +129,6 @@ map_label = "Radio"
 color = Color(0.55, 0.62, 0.78, 1)
 rules = Array[ExtResource("rule")]([SubResource("rule_iko"), SubResource("rule_rainline"), SubResource("rule_1"), SubResource("rule_intro_undercity"), SubResource("rule_3")])
 arc = ExtResource("arc_orr")
+sprite = ExtResource("sprite_orr")
+signature_anim = &"tune_radio"
+portrait = ExtResource("portrait_orr")

@@ -26,6 +26,17 @@ const LOC_FIELDS := {"display_name": 24, "map_label": 24, "verb": 16}
 ## shows the pending tick while the dialogue it would play now has not been
 ## heard (NPC sets the code flag heard_<dialogue id> when it closes).
 @export var cue_new_lines: bool = false
+## Presentation overhaul: the NPC's sprite sheet (idle, talk and a signature
+## animation). Null keeps the placeholder figure; bodiless voices stay null.
+@export var sprite: SpriteSheetSpec
+## The idle-life animation NPC plays now and then (tune_radio, work, ...).
+@export var signature_anim: StringName = &""
+## Dialogue portrait strip (48x48 cells: frame 0 neutral, frame 1 talk); null = none.
+@export var portrait: Texture2D
+
+## display name -> NpcProfile (every profile in data/npcs, loaded once).
+static var _by_name: Dictionary = {}
+static var _by_name_loaded: bool = false
 
 
 ## Pick order with an arc: story rules (every rule but the fallback: intros,
@@ -50,6 +61,18 @@ func pick_dialogue() -> DialogueData:
 	return fb.dialogue if fb.dialogue and fb.matches() else null
 
 
+## The profile whose display_name is `n` (the speaker of a dialogue line),
+## or null. Profiles come from DataDir.list (export-safe), cached.
+static func find_by_display_name(n: String) -> NpcProfile:
+	if not _by_name_loaded:
+		_by_name_loaded = true
+		for path in DataDir.list("res://data/npcs"):
+			var p := load(path) as NpcProfile
+			if p and p.display_name != "" and not _by_name.has(p.display_name):
+				_by_name[p.display_name] = p
+	return _by_name.get(n) as NpcProfile
+
+
 func validate() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if npc_id == "" or display_name == "":
@@ -67,4 +90,12 @@ func validate() -> PackedStringArray:
 			errors.append_array(r.dialogue.validate())
 	if arc and arc.npc_id != npc_id:
 		errors.append("%s: arc belongs to '%s'" % [npc_id, arc.npc_id])
+	if sprite:
+		for e in sprite.validate():
+			errors.append("%s sprite: %s" % [npc_id, e])
+		for a in [&"idle", &"talk", signature_anim]:
+			if a != &"" and not sprite.animations.any(func(s: SpriteAnim) -> bool: return s != null and s.name == a):
+				errors.append("%s sprite has no '%s' animation" % [npc_id, a])
+	elif signature_anim != &"":
+		errors.append("%s: signature_anim without a sprite" % npc_id)
 	return errors

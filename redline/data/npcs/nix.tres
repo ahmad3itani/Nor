@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="NpcProfile" load_steps=18 format=3]
+[gd_resource type="Resource" script_class="NpcProfile" load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://dialogue/NpcProfile.gd" id="profile"]
 [ext_resource type="Script" path="res://dialogue/NpcDialogueRule.gd" id="rule"]
 [ext_resource type="Script" path="res://dialogue/DialogueData.gd" id="dialogue"]
 [ext_resource type="Script" path="res://dialogue/DialogueLine.gd" id="line"]
 [ext_resource type="Resource" path="res://data/arcs/arc_nix.tres" id="arc_nix"]
+[ext_resource type="Resource" path="res://assets/npcs/nix_sheet.tres" id="sprite_nix"]
+[ext_resource type="Texture2D" path="res://assets/portraits/portrait_nix.png" id="portrait_nix"]
 
 [sub_resource type="Resource" id="nix_report_l0"]
 script = ExtResource("line")
@@ -79,3 +81,6 @@ color = Color(0.45, 0.72, 0.62, 1)
 map_label = "Cartographer"
 rules = Array[ExtResource("rule")]([SubResource("rule_0"), SubResource("rule_1"), SubResource("rule_3")])
 arc = ExtResource("arc_nix")
+sprite = ExtResource("sprite_nix")
+signature_anim = &"draw"
+portrait = ExtResource("portrait_nix")
