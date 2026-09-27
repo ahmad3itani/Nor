@@ -28,6 +28,12 @@ COATB = [K["coat_0"], K["coat_1"], K["coat_2"]]
 ARM = [K["armor_0"], K["armor_1"], K["armor_2"]]
 LEA = [K["leather_0"], K["leather_1"]]
 PAL.setdefault("_allowed", {})["warden_krail"] = ["#e8283c"]  # visor band: sanctioned Warden red
+# T05 repair (b): cold rim light. A light slate that keeps the palettes.py rule (RGB distance
+# >= MIN_DIST from every reserved gameplay colour); checked here so a retune cannot slip.
+RIM_COLD = "#8a93a8"
+RIM_ROWS = (0, 44)  # helm, shoulders, pauldron and a raised baton arm; never the coat skirt
+from palettes import RESERVED as _RES, MIN_DIST as _MIN, dist as _dist  # noqa: E402
+assert all(_dist(RIM_COLD, r) >= _MIN for r in _RES.values()), "RIM_COLD too close to a reserved colour"
 
 sk = Skeleton(dict(hip=(44, 50), thigh=12.0, shin=12.5, foot=4.2, torso=15.0, neck=5.6, head_r=4.0,
                    uarm=8.5, farm=8.0, shoulder_drop=2.0, ground=77.6))
@@ -109,7 +115,11 @@ S = dict(W=W, H=H, sk=sk, outline=O,
          skirt=dict(ramp=COAT, fseg=6.4, bseg=7.8, n=3, base=-22, fbase=14, width_f=6.2, width_b=7.0, jag=1.0, amp=3.5, split=6, grow=0.1),
          # 1 px rim light along the back edge of the coat (coat_3) and the helm (rain sheen)
          rim=[dict(colour=K["coat_3"], only=[K["coat_1"], K["coat_2"], K["coat_0"]], top=False),
-              dict(colour=K["armor_2"], only=[K["armor_0"], K["armor_1"]], top=True, back=True)],
+              dict(colour=K["armor_2"], only=[K["armor_0"], K["armor_1"]], top=True, back=True),
+              # T05 repair (b): a cold slate rim on the top / back edges of the helm, shoulders and
+              # the baton arm (upper body rows only), so Krail separates from dark slate backdrops
+              dict(colour=RIM_COLD, only=[K["coat_1"], K["coat_2"], K["coat_3"], K["armor_0"], K["armor_1"], K["armor_2"]],
+                   top=True, back=True, rows=RIM_ROWS)],
          head=head, detail=detail, front=front)
 
 
