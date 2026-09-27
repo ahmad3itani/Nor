@@ -10,6 +10,13 @@ extends Node2D
 ## Coordinates: rail_min/rail_max/wake_x/lost_x are in the parent's space (room
 ## x, since room groups sit at the origin); the node's y is the rail height.
 ## Numbers live in a TrackerConfig (data/props/collector_eye.tres).
+##
+## Presentation (T05): when the Collector eye sheet exists, a SpriteActor
+## draws the hatch, arm and housing (rail point origin (16,4) on this node):
+## emerge and retract follow the drop, fire plays once at the start of
+## COOLDOWN, then track. The red eye, the cone, the lock fill and the "!"
+## stay code-drawn on top. The editor never builds the sprite (@tool), and a
+## missing sheet keeps the placeholder housing.
 
 enum State { DORMANT, EMERGE, TRACK, LOCK, COOLDOWN, RETRACT, GONE }
 const STATE_NAMES: PackedStringArray = ["DORMANT", "EMERGE", "TRACK", "LOCK", "COOLDOWN", "RETRACT", "GONE"]
@@ -34,6 +41,15 @@ const DROP := 12.0
 const AMBER := Color(1.0, 0.72, 0.3, 0.12)
 const RED := Color(1.0, 0.23, 0.31, 1.0)
 const HOUSING := Color(0.12, 0.1, 0.12, 1.0)
+const SPRITE_PATH := "res://assets/undercity/collector_eye_sheet.tres"
+## Sprite mode: the lens centre sits this far under the rail point when the
+## eye hangs fully out (the placeholder eye hangs DROP px).
+const SPRITE_LENS_DROP := 18.0
+## State -> sheet row (COOLDOWN opens with a one-shot fire, then tracks).
+const STATE_ANIMS := {
+	State.DORMANT: &"dormant", State.EMERGE: &"emerge", State.TRACK: &"track",
+	State.LOCK: &"lock", State.COOLDOWN: &"track", State.RETRACT: &"retract", State.GONE: &"gone",
+}
 
 @export var rail_min: float = 0.0:
 	set(v):
@@ -72,6 +88,9 @@ var bolts_fired: int = 0
 var _drop: float = 0.0
 var _spawn_checked: bool = false
 var _sweep_from: float = 0.0
+## Sheet to draw with (tests point it at a missing file for the fallback).
+var sprite_path: String = SPRITE_PATH
+var actor: SpriteActor
 
 
 func _ready() -> void:
@@ -80,6 +99,12 @@ func _ready() -> void:
 	if not Game.check_condition(visible_when):
 		queue_free()
 		return
+	if ResourceLoader.exists(sprite_path):
+		actor = SpriteActor.create(load(sprite_path) as SpriteSheetSpec)
+		if actor:
+			actor.name = "Sprite"
+			actor.show_behind_parent = true  # code cues draw on top
+			add_child(actor)
 	position.x = rail_min
 	_set_state(State.DORMANT)
 
@@ -119,7 +144,36 @@ func _physics_process(delta: float) -> void:
 				_run_active(p, px, delta)
 		State.RETRACT:
 			_run_retract()
+	_update_actor()
 	queue_redraw()
+
+
+func uses_sprite() -> bool:
+	return actor != null
+
+
+## The sheet row for a state.
+static func anim_for(s: State) -> StringName:
+	return STATE_ANIMS.get(s, &"track")
+
+
+func _update_actor() -> void:
+	if actor == null:
+		return
+	if state == State.COOLDOWN and state_time < 0.05 and actor.animation != &"fire":
+		actor.play_once_first([&"fire"])
+		return
+	if actor.is_playing_one_shot():
+		return
+	var anim := anim_for(state)
+	if actor.animation != anim or (not actor.is_playing() and actor.sprite_frames.get_animation_loop(anim)):
+		actor.play(anim)
+	if state == State.EMERGE or state == State.RETRACT:
+		# The hatch opens and closes with the drop (visual clock = gameplay clock).
+		var n := actor.sprite_frames.get_frame_count(anim)
+		var t := _drop if state == State.EMERGE else 1.0 - _drop
+		actor.pause()
+		actor.frame = clampi(int(t * n), 0, n - 1)
 
 
 func _run_active(p: Player, px: float, delta: float) -> void:
@@ -263,13 +317,15 @@ func _draw() -> void:
 		return
 	if state == State.DORMANT or state == State.GONE or config == null:
 		return
-	var eye := Vector2(0, DROP * _drop)
+	var eye := Vector2(0, (SPRITE_LENS_DROP if actor else DROP) * _drop)
 	# The hatch housing on the ceiling, always visible while the eye is out.
-	draw_rect(Rect2(-10, -6, 20, 6), HOUSING)
+	if actor == null:
+		draw_rect(Rect2(-10, -6, 20, 6), HOUSING)
 	if state in [State.TRACK, State.LOCK, State.COOLDOWN, State.RETRACT] and _drop > 0.99:
 		_draw_cone(eye)
-	draw_line(Vector2(0, -2), eye, HOUSING, 2.0)
-	draw_circle(eye, 5.0, HOUSING)
+	if actor == null:
+		draw_line(Vector2(0, -2), eye, HOUSING, 2.0)
+		draw_circle(eye, 5.0, HOUSING)
 	draw_circle(eye, 2.5, RED)
 	if state == State.LOCK:
 		var font := ThemeDB.fallback_font
