@@ -2487,6 +2487,14 @@ msgid "Combat, movement and world sounds."
 msgstr "[Çómbáť, móvéméñť áñď ŵóŕĺď šóúñďš.~~~~~~~~~~~~]"
 
 #: data/settings/pages/audio.tres
+msgid "Ambience volume"
+msgstr "[Ámbíéñçé vóĺúmé~~~~~~]"
+
+#: data/settings/pages/audio.tres
+msgid "Rain, hum, drips and other room sounds."
+msgstr "[Ŕáíñ, ĥúm, ďŕípš áñď óťĥéŕ ŕóóm šóúñďš.~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/audio.tres
 msgid "Interface sounds"
 msgstr "[Íñťéŕfáçé šóúñďš~~~~~~]"
 
@@ -2861,6 +2869,22 @@ msgstr "[Ďáŕķéñš ťĥé fáŕ báçķďŕóp šó ťĥé pĺáý ĺáýé
 #: data/settings/pages/visual.tres
 msgid "Some"
 msgstr "[Šómé~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Ambient motion"
+msgstr "[Ámbíéñť móťíóñ~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Drifting fog, particles, critters and swaying cloth. Combat effects always play."
+msgstr "[Ďŕífťíñğ fóğ, páŕťíçĺéš, çŕíťťéŕš áñď šŵáýíñğ çĺóťĥ. Çómbáť éfféçťš áĺŵáýš pĺáý.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Full"
+msgstr "[Fúĺĺ~~]"
+
+#: data/settings/pages/visual.tres
+msgid "Reduced"
+msgstr "[Ŕéďúçéď~~~~]"
 
 #: data/shops/shop_iko.tres
 msgid "Iko  —  Black Market"

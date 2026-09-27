@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SettingsPageData" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
 [ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
@@ -105,12 +105,29 @@ preview = &""
 action = &""
 persisted = true
 
+[sub_resource type="Resource" id="Def_ambient_motion"]
+script = ExtResource("2_def")
+key = &"ambient_motion"
+section = "accessibility"
+cfg_key = ""
+kind = 1
+choices = PackedStringArray("Full", "Reduced", "Off")
+steps = PackedFloat32Array()
+label = "Ambient motion"
+description = "Drifting fog, particles, critters and swaying cloth. Combat effects always play."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &""
+action = &""
+persisted = true
+
 [resource]
 script = ExtResource("1_page")
 id = &"visual"
 title = "VISUAL & COMFORT"
 link_label = "Visual & comfort…"
-rows = Array[ExtResource("2_def")]([SubResource("Def_screen_shake_scale"), SubResource("Def_hitstop_scale"), SubResource("Def_flash_reduction"), SubResource("Def_high_contrast"), SubResource("Def_colorblind_mode"), SubResource("Def_background_dim")])
+rows = Array[ExtResource("2_def")]([SubResource("Def_screen_shake_scale"), SubResource("Def_hitstop_scale"), SubResource("Def_flash_reduction"), SubResource("Def_high_contrast"), SubResource("Def_colorblind_mode"), SubResource("Def_background_dim"), SubResource("Def_ambient_motion")])
 row_keys = PackedStringArray()
 show_assist_header = false
 reset_row = true

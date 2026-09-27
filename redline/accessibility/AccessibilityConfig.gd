@@ -57,6 +57,9 @@ const LOC_EXEMPT := ["damage_exempt_sources"]
 @export var background_dim: PackedFloat32Array = [0.0, 0.3, 0.55]
 ## With flash reduction on, nothing flashes faster than this (WCAG 2.3.1).
 @export var flash_max_hz: float = 3.0
+## index = Settings.ambient_motion (Full, Reduced, Off): ambient particle and
+## critter count scale (Motion.count_scale()).
+@export var ambient_motion_scale: PackedFloat32Array = [1.0, 0.5, 0.0]
 
 @export_group("Input")
 ## index = Settings.rebind_wait: seconds a rebind capture listens before it
@@ -165,6 +168,11 @@ func validate() -> PackedStringArray:
 	for d in background_dim:
 		if d < 0.0 or d >= 1.0:
 			out.append("background dim %.2f outside [0, 1)" % d)
+	if ambient_motion_scale.size() != 3:
+		out.append("ambient motion needs 3 count scales (Full, Reduced, Off)")
+	elif not (ambient_motion_scale[0] >= ambient_motion_scale[1] and ambient_motion_scale[1] >= ambient_motion_scale[2]
+			and ambient_motion_scale[0] <= 1.0 and ambient_motion_scale[2] >= 0.0):
+		out.append("ambient motion scales must fall from Full to Off inside [0, 1]")
 	if flash_max_hz <= 0.0 or flash_max_hz > 3.0:
 		out.append("flash_max_hz %.1f outside (0, 3] (WCAG 2.3.1)" % flash_max_hz)
 	if rebind_timeout_sec.size() != 3:

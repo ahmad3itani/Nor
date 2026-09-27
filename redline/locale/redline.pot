@@ -1430,6 +1430,7 @@ msgstr ""
 #. key: data/settings/pages/subtitles.tres::rows[6].choices[0]
 #. key: data/settings/pages/visual.tres::rows[4].choices[0]
 #. key: data/settings/pages/visual.tres::rows[5].choices[0]
+#. key: data/settings/pages/visual.tres::rows[6].choices[2]
 #. key: ui/menus/AchievementsMenu.gd::Loc.t
 #. key: ui/menus/NgPlusMenu.gd::Loc.t
 #. key: ui/menus/SettingsMenu.gd::Loc.t
@@ -4606,10 +4607,24 @@ msgstr ""
 #. SettingDef
 #. max 40 chars
 #: data/settings/pages/audio.tres
-msgid "Interface sounds"
+msgid "Ambience volume"
 msgstr ""
 
 #. key: data/settings/pages/audio.tres::rows[3].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/audio.tres
+msgid "Rain, hum, drips and other room sounds."
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[4].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/audio.tres
+msgid "Interface sounds"
+msgstr ""
+
+#. key: data/settings/pages/audio.tres::rows[4].description
 #. SettingDef
 #. max 90 chars
 #: data/settings/pages/audio.tres
@@ -5264,6 +5279,34 @@ msgstr ""
 #. max 20 chars
 #: data/settings/pages/visual.tres
 msgid "Some"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[6].label
+#. SettingDef
+#. max 40 chars
+#: data/settings/pages/visual.tres
+msgid "Ambient motion"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[6].description
+#. SettingDef
+#. max 90 chars
+#: data/settings/pages/visual.tres
+msgid "Drifting fog, particles, critters and swaying cloth. Combat effects always play."
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[6].choices[0]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/visual.tres
+msgid "Full"
+msgstr ""
+
+#. key: data/settings/pages/visual.tres::rows[6].choices[1]
+#. SettingDef
+#. max 20 chars
+#: data/settings/pages/visual.tres
+msgid "Reduced"
 msgstr ""
 
 #. key: data/shops/shop_iko.tres::title

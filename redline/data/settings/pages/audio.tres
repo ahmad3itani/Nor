@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SettingsPageData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="SettingsPageData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://ui/settings/SettingsPageData.gd" id="1_page"]
 [ext_resource type="Script" path="res://ui/settings/SettingDef.gd" id="2_def"]
@@ -71,12 +71,29 @@ preview = &"sfx"
 action = &""
 persisted = true
 
+[sub_resource type="Resource" id="Def_ambience_volume"]
+script = ExtResource("2_def")
+key = &"ambience_volume"
+section = "audio"
+cfg_key = ""
+kind = 2
+choices = PackedStringArray()
+steps = PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+label = "Ambience volume"
+description = "Rain, hum, drips and other room sounds."
+assist_tag = &""
+dev_only = false
+emits_settings_changed = true
+preview = &"sfx"
+action = &""
+persisted = true
+
 [resource]
 script = ExtResource("1_page")
 id = &"audio"
 title = "AUDIO"
 link_label = "Audio…"
-rows = Array[ExtResource("2_def")]([SubResource("Def_master_volume"), SubResource("Def_music_volume"), SubResource("Def_sfx_volume"), SubResource("Def_ui_volume")])
+rows = Array[ExtResource("2_def")]([SubResource("Def_master_volume"), SubResource("Def_music_volume"), SubResource("Def_sfx_volume"), SubResource("Def_ambience_volume"), SubResource("Def_ui_volume")])
 row_keys = PackedStringArray()
 show_assist_header = false
 reset_row = true

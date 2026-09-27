@@ -68,6 +68,10 @@ var memories_at_anchors: bool = true
 ## [audio] Menu and UI sounds (the "UI" bus).
 var ui_volume: float = 0.8:
 	set(v): ui_volume = clampf(v, 0.0, 1.0)
+## [audio] Ambience beds and room sounds (presentation overhaul; the
+## AmbienceDirector applies it).
+var ambience_volume: float = 0.8:
+	set(v): ambience_volume = clampf(v, 0.0, 1.0)
 ## [accessibility] High-contrast UI and world cues.
 var high_contrast: bool = false
 ## [accessibility] 0 Off / 1 Red-green / 2 Blue-yellow (shape cues + palette).
@@ -76,6 +80,11 @@ var colorblind_mode: int = 0:
 ## [accessibility] 0 Off / 1 Some / 2 Strong dimming of the backdrop.
 var background_dim: int = 0:
 	set(v): background_dim = clampi(v, 0, 2)
+## [accessibility] 0 Full / 1 Reduced / 2 Off: ambient life, particles,
+## fog drift, cloth and parallax bob (Motion.gd). Never gameplay VFX or
+## telegraphs. Presentation overhaul (ART_DIRECTION F7).
+var ambient_motion: int = 0:
+	set(v): ambient_motion = clampi(v, 0, 2)
 ## [accessibility] 0 100 % / 1 125 % / 2 150 % UI scale.
 var ui_scale: int = 0:
 	set(v): ui_scale = clampi(v, 0, 2)
