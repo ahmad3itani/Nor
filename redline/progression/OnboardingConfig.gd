@@ -11,6 +11,8 @@ extends Resource
 ## (0 = none). The source stays English here; Loc translates at display.
 const LOC_FIELDS := {"title_subtitle": 60}
 
+const WORLD_MAP_INDEX := "res://world/map/WorldMapIndex.gd"
+
 ## Off: New Game = the legacy slice start. On: the campaign start below.
 @export var enforce: bool = false
 ## Where a campaign New Game drops Rook (the Undercity's Wake once it exists).
@@ -32,7 +34,10 @@ func validate() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if not ResourceLoader.exists(campaign_start_room):
 		errors.append("onboarding start room %s does not exist" % campaign_start_room)
-	elif not WorldMapIndex.room_info(campaign_start_room)["spawns"].has(String(campaign_start_entry)):
+	# WorldMapIndex is loaded, not named: it reads the Game autoload, and Game
+	# preloads onboarding.tres, so a static reference closes a load cycle that
+	# the exported (binary) resource loader cannot resolve (M9 gate).
+	elif not load(WORLD_MAP_INDEX).room_info(campaign_start_room)["spawns"].has(String(campaign_start_entry)):
 		# Room._ready would quietly fall back to the default spawn.
 		errors.append("onboarding start entry %s is not a spawn in %s" % [campaign_start_entry, campaign_start_room.get_file()])
 	var catalog := load("res://data/catalog.tres") as ItemCatalog

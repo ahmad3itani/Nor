@@ -497,6 +497,11 @@ def smoke(binary, kind, debug, min_locales=1):
         errs = smoke_problems(info, kind, debug, min_locales)
         if r.returncode != 0:
             errs.append("exit code %d" % r.returncode)
+        # A script that compiles in the editor can still fail in an export (a
+        # resource load cycle the binary loader cannot resolve, M9 gate).
+        script_errors = [l for l in (r.stdout + "\n" + r.stderr).splitlines() if "SCRIPT ERROR" in l]
+        if script_errors:
+            errs.append("%d SCRIPT ERROR line(s), first: %s" % (len(script_errors), script_errors[0].strip()))
         if info:
             print("  %s: version %s, locales %s, ghosts %s, data %s" % (kind, info.get("version"), info.get("locales"),
                   info.get("data", {}).get("ghosts"), info.get("data")))
