@@ -24,6 +24,23 @@ extends EnemyBehavior
 ## reduction the arc is drawn steady instead of blinking.
 const CRACKLE_PERIOD_FRAMES := 24
 const CRACKLE_ON_FRAMES := 2
+## Presentation (T05, F4): the baton is a dark steel shaft with a pale tip,
+## off the reserved guard blue.
+const BATON_SHAFT := Color("3a3f4a")
+const BATON_TIP := Color("cfe4f2")
+## Sprite mode: where the phase-2 electric_arc crackle sits (from the feet,
+## x toward the facing) and its length scale (the arc row spans 48 px).
+const ARC_AT := Vector2(8, -34)
+const ARC_SCALE := 0.5
+## Attack id -> [wind-up pose, strike pose] on the sprite sheet.
+const ANIMS := {
+	&"krail_baton_1": [&"windup_baton", &"baton_1"],
+	&"krail_baton_2": [&"baton_2", &"baton_2"],
+	&"krail_shock_lunge": [&"windup_lunge", &"lunge"],
+	&"krail_arc_burst": [&"windup_burst", &"burst"],
+	&"krail_ground_slam": [&"windup_slam", &"slam"],
+	&"krail_backstep": [&"backstep", &"backstep"],
+}
 
 var phase: int = 1
 var _last_attack: StringName = &""
@@ -32,6 +49,9 @@ var _home: Vector2
 var _rng := RandomNumberGenerator.new()
 ## Physics frames since setup (the crackle clock).
 var _frame: int = 0
+## Presentation only (T05): the phase-2 arc effect and the slam's one wave.
+var _arc: VfxOneShot
+var _slam_fx: AttackData
 
 
 func setup(owner_enemy: Enemy) -> void:
@@ -50,6 +70,7 @@ func attack(id: StringName) -> AttackData:
 func tick(_delta: float) -> void:
 	_frame += 1
 	_check_phase()
+	_tick_vfx()
 
 
 func engage_velocity(delta: float) -> Vector2:
@@ -96,6 +117,7 @@ func _check_phase() -> void:
 	AudioManager.play_sfx(&"boss_roar")
 	EventBus.camera_shake_requested.emit(0.45)
 	EventBus.boss_phase_changed.emit(enemy, 2)
+	_spawn_arc()
 	if summon_scene:
 		for off in summon_offsets:
 			var e := summon_scene.instantiate() as Enemy
@@ -104,10 +126,13 @@ func _check_phase() -> void:
 
 
 func draw_extras(canvas: Node2D) -> void:
+	if LookModule.sprite_mode(canvas):
+		return  # the sheet draws baton and visor; the arc is an effect
 	var size := enemy.data.body_size
-	# Shock baton on the facing side; crackles in phase 2.
+	# Shock baton on the facing side (steel, pale tip); crackles in phase 2.
 	var x := size.x * 0.5 if enemy.facing > 0 else -size.x * 0.5 - 3.0
-	canvas.draw_rect(Rect2(x, -size.y + 12.0, 3, 20), Color("7fd7ff"))
+	canvas.draw_rect(Rect2(x, -size.y + 12.0, 3, 20), BATON_SHAFT)
+	canvas.draw_rect(Rect2(x, -size.y + 12.0, 3, 4), BATON_TIP)
 	# Warden's visor.
 	canvas.draw_rect(Rect2(-size.x * 0.5 + 3, -size.y + 5, size.x - 6, 3), Color("e8283c"))
 	if crackle_visible():
@@ -122,3 +147,73 @@ func crackle_visible() -> bool:
 ## Pure: the crackle at physics frame `frame` (steady when reduced).
 static func crackle_lit(frame: int, reduced: bool) -> bool:
 	return reduced or posmod(frame, CRACKLE_PERIOD_FRAMES) < CRACKLE_ON_FRAMES
+
+
+# --- Presentation (T05) ----------------------------------------------------------------
+
+## Sheet rows: the attack's wind-up / strike pose (RECOVER holds the strike's
+## last frame), stagger on a poise break or a Grid Clamp, the roar during
+## the phase-2 pause, death. [] = EnemyVisual's generic map (idle, move).
+func anim_names(ai: int, a: AttackData) -> Array[StringName]:
+	match ai:
+		Enemy.AI.DEAD:
+			return [&"death"]
+		Enemy.AI.STAGGER, Enemy.AI.LAUNCHED:
+			return [&"stagger", &"hurt"]
+		Enemy.AI.WINDUP, Enemy.AI.ACTIVE, Enemy.AI.RECOVER:
+			if a and ANIMS.has(a.id):
+				var pair: Array = ANIMS[a.id]
+				return [pair[0] if ai == Enemy.AI.WINDUP else pair[1]]
+	if phase == 2 and _pause > 0.0:
+		return [&"phase2_roar"]
+	return []
+
+
+func _visual_uses_sprite() -> bool:
+	var v := enemy.get_node_or_null(^"Visual")
+	return v != null and v.has_method(&"uses_sprite") and bool(v.call(&"uses_sprite"))
+
+
+## Phase 2: an electric_arc on the baton in sprite mode (the placeholder
+## keeps its code line). Lit by crackle_lit (2.5 Hz), steady on frame 0
+## under flash reduction.
+func _spawn_arc() -> void:
+	if not _visual_uses_sprite() or is_instance_valid(_arc):
+		return
+	_arc = VfxOneShot.spawn(enemy.get_parent(), &"electric_arc", &"arc", enemy.position, {"facing": enemy.facing})
+	if _arc:
+		_arc.scale = Vector2(ARC_SCALE, 1.0)
+		_arc.z_index = 1
+
+
+func _tick_vfx() -> void:
+	if enemy == null:
+		return  # a bare behavior (crackle clock tests)
+	if is_instance_valid(_arc):
+		if enemy.is_dead():
+			_arc.stop()
+			_arc = null
+		else:
+			_arc.position = enemy.position + Vector2(ARC_AT.x * enemy.facing, ARC_AT.y)
+			_arc.sprite.flip_h = enemy.facing < 0
+			if _arc.spec:
+				_arc.sprite.offset = _arc.spec.offset_for(&"arc", enemy.facing < 0)
+			_arc.visible = crackle_visible()
+			if Settings.flash_reduction:
+				_arc.sprite.pause()
+				_arc.sprite.frame = 0
+			elif not _arc.sprite.is_playing():
+				_arc.sprite.play()
+	# The ground slam's impact: one shockwave ground wave at his feet.
+	var a := enemy.current_attack
+	if enemy.ai == Enemy.AI.ACTIVE and a and a.id == &"krail_ground_slam":
+		if _slam_fx != a:
+			_slam_fx = a
+			VfxOneShot.spawn(enemy.get_parent(), &"shockwave", &"ground_wave", enemy.position, {"facing": enemy.facing})
+	else:
+		_slam_fx = null
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE and is_instance_valid(_arc):
+		_arc.stop()

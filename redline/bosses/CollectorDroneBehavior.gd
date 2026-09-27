@@ -27,6 +27,13 @@ const RED := Color("ff3b4f")
 const AMBER := Color(1.0, 0.62, 0.2)
 ## The volley-tell lamp blink (6 Hz): only without flash reduction.
 const LAMP_BLINK_HZ := 6.0
+## Presentation (T05, F3): the salvage cells, pale sea-white (off heal green).
+const CELL_COLOR := Color("b8e0d0")
+## Phase-2 cage flare: the cells glow bright and fade over this long (a
+## single fade, never a blink, so flash reduction keeps it).
+const CAGE_FLARE_TIME := 1.2
+## Sprite mode: the lamp lens on the sheet (from the feet, facing right).
+const SPRITE_LAMP_AT := Vector2(18, -15)
 
 @export_group("Lanes (room y)")
 @export var cruise_y: float = -144.0
@@ -138,6 +145,9 @@ var _grounded: bool = false
 var _prev_ai: int = -1
 var _sag_from: float = 0.0
 var _look_host: ModularBehavior
+## Presentation only (T05): cage flare timer and the press touchdown wave.
+var _flare: float = 0.0
+var _press_fx: AttackData
 
 
 func setup(owner_enemy: Enemy) -> void:
@@ -219,6 +229,7 @@ func tick(delta: float) -> void:
 				_grounded = true
 	_settle(delta)
 	_vent_sag(delta)
+	_tick_vfx(delta)
 
 
 func _on_ai_changed() -> void:
@@ -333,6 +344,8 @@ func _check_phase() -> void:
 	AudioManager.play_sfx(&"boss_roar")
 	EventBus.camera_shake_requested.emit(0.45)
 	EventBus.boss_phase_changed.emit(enemy, 2)
+	_flare = CAGE_FLARE_TIME
+	VfxOneShot.spawn(enemy.get_parent(), &"shockwave", &"ring", enemy.position + Vector2(0, 4), {"tint": CELL_COLOR})
 
 
 # --- Movement -----------------------------------------------------------------------
@@ -573,18 +586,36 @@ func debug_text() -> String:
 func draw_extras(canvas: Node2D) -> void:
 	var size := enemy.data.body_size
 	var floor_y := -room_pos().y
-	# Cargo cage of salvage cells (brighter once phase 2 cracks it open).
+	var sprite := LookModule.sprite_mode(canvas)
+	# Cargo cage of salvage cells (brighter once phase 2 cracks it open). The
+	# sheet draws cage and cells; the phase-2 flare glows over either.
 	var cage := Rect2(-10, 0, 20, 7)
-	canvas.draw_rect(cage, Color(0.12, 0.11, 0.14))
-	var cell := Color(0.55, 1.0, 0.75, 0.35 if phase == 1 else 0.8)
-	for i in 3:
-		canvas.draw_rect(Rect2(-8 + i * 6, 2, 4, 3), cell)
-	canvas.draw_rect(cage, Color(0.35, 0.33, 0.3), false, 1.0)
+	if not sprite:
+		canvas.draw_rect(cage, Color(0.12, 0.11, 0.14))
+		var cell := Color(CELL_COLOR, 0.35 if phase == 1 else 0.8)
+		for i in 3:
+			canvas.draw_rect(Rect2(-8 + i * 6, 2, 4, 3), cell)
+		canvas.draw_rect(cage, Color(0.35, 0.33, 0.3), false, 1.0)
+	if _flare > 0.0:
+		var glow := Color(CELL_COLOR, 0.8 * _flare / CAGE_FLARE_TIME)
+		if sprite:
+			# Over the sheet's hanging cage (x -4..12 facing right, y 4..18).
+			var f := float(enemy.facing)
+			var sc := Rect2(minf(-4.0 * f, 12.0 * f), 4, 16, 14)
+			canvas.draw_rect(sc.grow(1.0), Color(glow, glow.a * 0.35))
+			for i in 3:
+				canvas.draw_rect(Rect2(f * (-1 + i * 5) - (3.0 if f < 0 else 0.0), 8, 3, 7), glow)
+		else:
+			canvas.draw_rect(cage.grow(2.0), Color(glow, glow.a * 0.35))
+			for i in 3:
+				canvas.draw_rect(Rect2(-8 + i * 6, 2, 4, 3), glow)
 	# The eye lamp says the state by shape as well as colour (always on, bible
 	# §24): an amber ring while it watches, a filled red disc while an attack
 	# winds up. The volley tell also blinks it white (steady under flash
 	# reduction).
 	var lamp_at := Vector2(enemy.facing * (size.x * 0.5 - 4), -size.y + 4.5)
+	if sprite:
+		lamp_at = SPRITE_LAMP_AT * Vector2(enemy.facing, 1)  # on the sheet's lens housing
 	if lamp_locked():
 		var lamp := Palette.color(&"danger")
 		if _active_family == &"volley" and lamp_blink(enemy.ai_time, Settings.flash_reduction):
@@ -595,6 +626,8 @@ func draw_extras(canvas: Node2D) -> void:
 	if _look_host:
 		var cut := rotors_cut()
 		for look in looks.looks:
+			if sprite and (look is LookRotor or look is LookEye):
+				continue  # the sheet has rotors (and a rotors_cut row); the lamp is its eye
 			if cut and look is LookRotor:
 				_draw_cut_rotor(canvas, (look as LookRotor).color)
 			else:
@@ -706,3 +739,46 @@ func _draw_crack(canvas: Node2D, progress: float) -> void:
 	var reach := 20.0 + 40.0 * progress
 	canvas.draw_line(Vector2(-reach, -1), Vector2(reach, -1), c, 2.0)
 	canvas.draw_line(Vector2(-reach * 0.6, -3), Vector2(reach * 0.6, -3), c, 1.0)
+
+
+# --- Presentation (T05) ----------------------------------------------------------------
+
+## Sheet rows per card family: windup_<family> through the tell, <family>
+## for the strike and its recovery (held on the last frame). The Press drop
+## falls with rotors_cut until it touches down; its phase-2 wave sits in the
+## press pose. phase2 during the roar pause, hurt while knocked down, death.
+## [] = EnemyVisual's generic map (idle, move).
+func anim_names(ai: int, a: AttackData) -> Array[StringName]:
+	match ai:
+		Enemy.AI.DEAD:
+			return [&"death"]
+		Enemy.AI.STAGGER, Enemy.AI.LAUNCHED:
+			return [&"hurt"]
+		Enemy.AI.WINDUP, Enemy.AI.ACTIVE, Enemy.AI.RECOVER:
+			var f := family_of(a.id) if a else &""
+			if f == &"":
+				return []
+			if ai == Enemy.AI.WINDUP:
+				if _is_follow_up(a):
+					return [StringName(f)]
+				return [StringName("windup_%s" % f)]
+			if ai == Enemy.AI.ACTIVE and rotors_cut() and not _grounded:
+				return [&"rotors_cut", StringName(f)]
+			return [StringName(f)]
+	if phase == 2 and _pause > 0.0:
+		return [&"phase2"]
+	return []
+
+
+func _tick_vfx(delta: float) -> void:
+	if enemy == null:
+		return
+	_flare = maxf(_flare - delta, 0.0)
+	# The Press touchdown: one shockwave ring at the press plate.
+	var a := enemy.current_attack
+	if enemy.ai == Enemy.AI.ACTIVE and a and family_of(a.id) == &"press" and not _is_follow_up(a) and _grounded:
+		if _press_fx != a:
+			_press_fx = a
+			VfxOneShot.spawn(enemy.get_parent(), &"shockwave", &"ring", enemy.position, {"facing": enemy.facing})
+	elif enemy.ai != Enemy.AI.ACTIVE:
+		_press_fx = null
