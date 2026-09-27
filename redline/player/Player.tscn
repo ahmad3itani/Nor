@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://player/controller/Player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/movement/default_movement.tres" id="2_config"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://player/style/PlayerStyle.gd" id="17_style"]
 [ext_resource type="Resource" path="res://data/style/default_style.tres" id="18_style_cfg"]
 [ext_resource type="Script" path="res://player/controller/PlayerInteractor.gd" id="19_interactor"]
+[ext_resource type="Resource" path="res://assets/rook/rook_sheet.tres" id="20_rook_sheet"]
 
 [sub_resource type="RectangleShape2D" id="Rect_stand"]
 size = Vector2(12, 34)
@@ -48,6 +49,7 @@ collision_mask = 1
 
 [node name="Visual" type="Node2D" parent="."]
 script = ExtResource("3_visual")
+sprite = ExtResource("20_rook_sheet")
 
 [node name="Feedback" type="Node" parent="."]
 script = ExtResource("4_feedback")
