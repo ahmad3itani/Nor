@@ -13,6 +13,10 @@ extends Interactable
 ## UiTheme.ACCENT (Redline red is reserved).
 const PENDING_TICK_COLOR := UiTheme.TEXT
 const PENDING_TICK_OUTLINE := UiTheme.PANEL
+## Presentation (T05): seconds of idle between signature animations.
+const SIGNATURE_GAP := Vector2(8.0, 14.0)
+## A signature plays at least this long (one loop of its row otherwise).
+const SIGNATURE_MIN := 1.5
 
 @export var profile: NpcProfile:
 	set(v):
@@ -30,6 +34,14 @@ const PENDING_TICK_OUTLINE := UiTheme.PANEL
 ## cue_new_lines profiles: the dialogue opened by the last interact, marked
 ## heard (heard_<id>) when it closes.
 var _awaiting_heard: DialogueData = null
+## Presentation (T05): the figure's sprite (profile.sprite on a figure; never
+## in the editor), idle -> talk while its dialogue is open, and the signature
+## animation every SIGNATURE_GAP s of idle. Its own RNG, seeded from npc_id.
+var actor: SpriteActor
+var talking: bool = false
+var _sig_rng := RandomNumberGenerator.new()
+var _sig_wait: float = 0.0
+var _sig_left: float = 0.0
 
 
 func _ready() -> void:
@@ -40,7 +52,52 @@ func _ready() -> void:
 	EventBus.flag_changed.connect(_on_flag_changed)
 	EventBus.game_state_reset.connect(_refresh_presence)
 	EventBus.dialogue_finished.connect(_on_dialogue_finished)
+	EventBus.dialogue_requested.connect(_on_dialogue_requested)
+	_build_actor()
 	_refresh_presence()
+
+
+func _build_actor() -> void:
+	if profile == null or profile.sprite == null or not profile.figure:
+		return
+	actor = SpriteActor.create(profile.sprite)
+	if actor == null:
+		return  # missing sheet: the placeholder figure stays
+	actor.name = "Sprite"
+	actor.show_behind_parent = true  # the pending tick draws on top
+	actor.face(facing)
+	add_child(actor)
+	_sig_rng.seed = hash(profile.npc_id)
+	_sig_wait = _sig_rng.randf_range(SIGNATURE_GAP.x, SIGNATURE_GAP.y)
+	actor.play_first([&"idle"])
+
+
+func _process(delta: float) -> void:
+	if actor == null:
+		return
+	actor.face(facing)
+	if talking:
+		actor.play_first([&"talk", &"idle"])
+		return
+	if _sig_left > 0.0:
+		_sig_left -= delta
+		if _sig_left > 0.0:
+			return
+		_sig_wait = _sig_rng.randf_range(SIGNATURE_GAP.x, SIGNATURE_GAP.y)
+	_sig_wait -= delta
+	if _sig_wait <= 0.0 and profile.signature_anim != &"" and actor.sprite_frames.has_animation(profile.signature_anim):
+		var a := profile.signature_anim
+		actor.play_once_first([a])
+		var fps := maxf(actor.sprite_frames.get_animation_speed(a), 1.0)
+		_sig_left = maxf(actor.sprite_frames.get_frame_count(a) / fps, SIGNATURE_MIN)
+		return
+	actor.play_first([&"idle"])
+
+
+func _on_dialogue_requested(_d: Resource, npc_name: String) -> void:
+	if actor and profile and npc_name == profile.display_name:
+		talking = true
+		_sig_left = 0.0
 
 
 ## Same rule as the map pin, so the room and the map never disagree.
@@ -97,6 +154,7 @@ static func heard_flag(d: DialogueData) -> String:
 
 
 func _on_dialogue_finished(d: Resource) -> void:
+	talking = false
 	if _awaiting_heard == null or d != _awaiting_heard:
 		return
 	_awaiting_heard = null
@@ -125,7 +183,7 @@ func _refresh_presence() -> void:
 func _draw() -> void:
 	if has_pending_beat():
 		_draw_tick(Vector2(0, -height - 16) if draws_figure() else Vector2(0, -16))
-	if not draws_figure():
+	if not draws_figure() or actor != null:
 		return
 	var color := profile.color
 	# Placeholder figure: body, head and a facing mark. The prompt names them.
