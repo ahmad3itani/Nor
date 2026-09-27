@@ -70,6 +70,10 @@ const LOC_FIELDS := {"display_name": 32}
 ## Final art (Art Bible): when set and the texture exists, the sprite
 ## replaces the placeholder body. Telegraphs and health bars stay.
 @export var sprite: SpriteSheetSpec
+## Visual only (presentation overhaul T05): multiplies the sprite, so a
+## variant (Null greys, remix) is a palette swap of the same sheet. No effect
+## on the placeholder body, gameplay, saves or the economy.
+@export var sprite_modulate: Color = Color.WHITE
 ## Seconds between death and removal; bosses linger for a readable finish.
 @export var death_time: float = 0.45
 

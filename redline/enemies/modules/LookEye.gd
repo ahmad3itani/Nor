@@ -11,4 +11,8 @@ func draw(b: ModularBehavior, canvas: Node2D) -> void:
 	var look := Vector2.ZERO
 	if is_instance_valid(e.target):
 		look = (e.target.global_position + Vector2(0, -16) - e.global_position - c).normalized() * 2.0
+	if sprite_mode(canvas):
+		# Sprite: the sheet draws the lens; the tracking pupil stays code.
+		canvas.draw_rect(Rect2(c + look - Vector2(1, 1), Vector2(2, 2)), color)
+		return
 	canvas.draw_rect(Rect2(c + look - Vector2(2, 2), Vector2(4, 4)), color)

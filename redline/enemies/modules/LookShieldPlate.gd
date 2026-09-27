@@ -12,4 +12,10 @@ func draw(b: ModularBehavior, canvas: Node2D) -> void:
 	var e := b.enemy
 	var h := e.data.body_size.y
 	var x := e.data.body_size.x * 0.5 if e.facing > 0 else -e.data.body_size.x * 0.5 - 4.0
+	if sprite_mode(canvas):
+		# Sprite: the sheet draws a plain steel slab; the guard-up cue stays a
+		# code rim in guard blue on its outer edge (Art Bible guard colour).
+		var outer := x + 4.0 if e.facing > 0 else x - 1.0
+		canvas.draw_rect(Rect2(outer, -h + 1.0, 1.0, h - 2.0), color)
+		return
 	canvas.draw_rect(Rect2(x, -h + 2.0, 4.0, h - 4.0), color)

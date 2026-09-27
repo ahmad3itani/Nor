@@ -32,6 +32,13 @@ func blocks(_hit: HitInfo) -> bool:
 	return false
 
 
+## Presentation hook (T05): animation names to try for this AI state and
+## attack, most specific first. [] = EnemyVisual's generic map. Visual only:
+## never change state here.
+func anim_names(_ai: int, _attack: AttackData) -> Array[StringName]:
+	return []
+
+
 ## Optional extra drawing (shield plate, eye) on the enemy's visual.
 func draw_extras(_canvas: Node2D) -> void:
 	pass

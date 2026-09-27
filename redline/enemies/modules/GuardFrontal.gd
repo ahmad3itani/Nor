@@ -20,4 +20,7 @@ func blocks(b: ModularBehavior, hit: HitInfo) -> bool:
 	if from.y < e.global_position.y - e.data.body_size.y - over_top_margin:
 		return false
 	var incoming_side := signf(from.x - e.global_position.x)
-	return incoming_side == e.facing or is_zero_approx(incoming_side)
+	var blocked := incoming_side == e.facing or is_zero_approx(incoming_side)
+	if blocked:
+		note_block(b, hit)
+	return blocked

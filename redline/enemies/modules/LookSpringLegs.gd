@@ -6,6 +6,8 @@ extends LookModule
 
 
 func draw(b: ModularBehavior, canvas: Node2D) -> void:
+	if sprite_mode(canvas):
+		return  # the sheet's windup squats
 	var squat := 3.0 if b.enemy.ai == Enemy.AI.WINDUP else 0.0
 	var w := b.enemy.data.body_size.x
 	canvas.draw_rect(Rect2(-w * 0.5 - 2, -3 + squat, 3, 3), color)
