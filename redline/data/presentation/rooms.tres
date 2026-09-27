@@ -1,0 +1,291 @@
+[gd_resource type="Resource" script_class="PresentationIndex" load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://world/presentation/PresentationIndex.gd" id="1_idx"]
+[ext_resource type="Script" path="res://world/presentation/RoomPresentation.gd" id="1_pres"]
+
+[sub_resource type="Resource" id="room_Wake"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_ward"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"ward"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_MedicalRuin"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_ward"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"ward"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_FirstPursuit"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_pursuit"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"shaft"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_EscapeTunnel"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_tunnel"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"tunnel"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_MaintenanceShaft"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_shaft"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"shaft"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_BrokenLift"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_shaft"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"shaft"
+footstep_surface = &"metal"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_CollectorBay"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_boss_bay"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"ward"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="room_FloodedAlley"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_street"
+ambience = &"amb_lowlight_street"
+ambience_layer = &""
+reverb = &"street"
+footstep_surface = &"water"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_MarketRun"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_street"
+ambience = &"amb_lowlight_street"
+ambience_layer = &""
+reverb = &"street"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_SmugglerRoute"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_canal"
+ambience = &"amb_lowlight_street"
+ambience_layer = &""
+reverb = &"street"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_ApartmentStack"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_interior"
+ambience = &"amb_lowlight_interior"
+ambience_layer = &""
+reverb = &"interior"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_PowerBlock"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_interior"
+ambience = &"amb_lowlight_interior"
+ambience_layer = &""
+reverb = &"interior"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_SecurityStation"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_interior"
+ambience = &"amb_lowlight_interior"
+ambience_layer = &""
+reverb = &"interior"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_NeonRoofs"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_roof"
+ambience = &"amb_lowlight_roof"
+ambience_layer = &""
+reverb = &"roof"
+footstep_surface = &"metal"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_RainlineChase"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_roof"
+ambience = &"amb_lowlight_roof"
+ambience_layer = &""
+reverb = &"roof"
+footstep_surface = &"metal"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_BellTower"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_tower"
+ambience = &"amb_lowlight_interior"
+ambience_layer = &""
+reverb = &"interior"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_WardenTower"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_tower"
+ambience = &"amb_lowlight_street"
+ambience_layer = &""
+reverb = &"street"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="room_Relay"]
+script = ExtResource("1_pres")
+backdrop_kind = &"relay_hub"
+ambience = &"amb_relay_hub"
+ambience_layer = &""
+reverb = &"relay"
+footstep_surface = &"concrete"
+music_district = &"relay"
+
+[sub_resource type="Resource" id="room_NullBreakerRun"]
+script = ExtResource("1_pres")
+backdrop_kind = &"null_rig"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[sub_resource type="Resource" id="room_NullFloor"]
+script = ExtResource("1_pres")
+backdrop_kind = &"null_rig"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[sub_resource type="Resource" id="room_NullStaticLane"]
+script = ExtResource("1_pres")
+backdrop_kind = &"null_rig"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[sub_resource type="Resource" id="room_PulsePit"]
+script = ExtResource("1_pres")
+backdrop_kind = &"pulse_pit"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[sub_resource type="Resource" id="room_TitleBackdrop"]
+script = ExtResource("1_pres")
+backdrop_kind = &"title"
+ambience = &""
+ambience_layer = &""
+reverb = &""
+footstep_surface = &""
+music_district = &"title"
+
+[sub_resource type="Resource" id="district_undercity"]
+script = ExtResource("1_pres")
+backdrop_kind = &"uc_ward"
+ambience = &"amb_undercity_ward"
+ambience_layer = &""
+reverb = &"ward"
+footstep_surface = &"concrete"
+music_district = &"undercity"
+
+[sub_resource type="Resource" id="district_lowlight"]
+script = ExtResource("1_pres")
+backdrop_kind = &"ll_street"
+ambience = &"amb_lowlight_street"
+ambience_layer = &""
+reverb = &"street"
+footstep_surface = &"concrete"
+music_district = &"lowlight"
+
+[sub_resource type="Resource" id="district_the_relay"]
+script = ExtResource("1_pres")
+backdrop_kind = &"relay_hub"
+ambience = &"amb_relay_hub"
+ambience_layer = &""
+reverb = &"relay"
+footstep_surface = &"concrete"
+music_district = &"relay"
+
+[sub_resource type="Resource" id="district_deep_rig"]
+script = ExtResource("1_pres")
+backdrop_kind = &"null_rig"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[sub_resource type="Resource" id="district_training_pit"]
+script = ExtResource("1_pres")
+backdrop_kind = &"pulse_pit"
+ambience = &""
+ambience_layer = &""
+reverb = &"void"
+footstep_surface = &"metal"
+music_district = &"deep_rig"
+
+[resource]
+script = ExtResource("1_idx")
+rooms = {
+"res://world/rooms/undercity/Wake.tscn": SubResource("room_Wake"),
+"res://world/rooms/undercity/MedicalRuin.tscn": SubResource("room_MedicalRuin"),
+"res://world/rooms/undercity/FirstPursuit.tscn": SubResource("room_FirstPursuit"),
+"res://world/rooms/undercity/EscapeTunnel.tscn": SubResource("room_EscapeTunnel"),
+"res://world/rooms/undercity/MaintenanceShaft.tscn": SubResource("room_MaintenanceShaft"),
+"res://world/rooms/undercity/BrokenLift.tscn": SubResource("room_BrokenLift"),
+"res://world/rooms/undercity/CollectorBay.tscn": SubResource("room_CollectorBay"),
+"res://world/rooms/lowlight/FloodedAlley.tscn": SubResource("room_FloodedAlley"),
+"res://world/rooms/lowlight/MarketRun.tscn": SubResource("room_MarketRun"),
+"res://world/rooms/lowlight/SmugglerRoute.tscn": SubResource("room_SmugglerRoute"),
+"res://world/rooms/lowlight/ApartmentStack.tscn": SubResource("room_ApartmentStack"),
+"res://world/rooms/lowlight/PowerBlock.tscn": SubResource("room_PowerBlock"),
+"res://world/rooms/lowlight/SecurityStation.tscn": SubResource("room_SecurityStation"),
+"res://world/rooms/lowlight/NeonRoofs.tscn": SubResource("room_NeonRoofs"),
+"res://world/rooms/lowlight/RainlineChase.tscn": SubResource("room_RainlineChase"),
+"res://world/rooms/lowlight/BellTower.tscn": SubResource("room_BellTower"),
+"res://world/rooms/lowlight/WardenTower.tscn": SubResource("room_WardenTower"),
+"res://world/rooms/lowlight/Relay.tscn": SubResource("room_Relay"),
+"res://world/rooms/challenge/NullBreakerRun.tscn": SubResource("room_NullBreakerRun"),
+"res://world/rooms/challenge/NullFloor.tscn": SubResource("room_NullFloor"),
+"res://world/rooms/challenge/NullStaticLane.tscn": SubResource("room_NullStaticLane"),
+"res://world/rooms/challenge/PulsePit.tscn": SubResource("room_PulsePit"),
+"res://world/rooms/TitleBackdrop.tscn": SubResource("room_TitleBackdrop")
+}
+districts = {
+"Undercity": SubResource("district_undercity"),
+"Lowlight": SubResource("district_lowlight"),
+"The Relay": SubResource("district_the_relay"),
+"Deep Rig": SubResource("district_deep_rig"),
+"Training Pit": SubResource("district_training_pit")
+}
