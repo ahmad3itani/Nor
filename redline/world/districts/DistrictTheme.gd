@@ -20,6 +20,17 @@ const LOC_FIELDS := {"district_name": 24}
 @export var solid_color: Color = Color("2c2636")
 @export var edge_color: Color = Color("5c5470")
 @export var one_way_color: Color = Color("56727f")
+@export_group("Presentation")
+## Backdrop kind (data/presentation/backdrops/<kind>.tres) for rooms that
+## have no RoomPresentation entry.
+@export var backdrop_kind_default: StringName = &""
+## 16 px autotile atlas (8x6, the tiles_null.py layout) GrayboxBlock draws
+## instead of its flat fill; empty or missing = the flat fill.
+@export var tileset_path: String = ""
+## The atlas's layout sidecar (.json names, checked by tests).
+@export var tileset_layout_path: String = ""
+## Ambient dust / particle tint (district_grades.json "dust").
+@export var dust_color: Color = Color("46574f")
 @export_group("Weather")
 @export var rain: bool = true
 @export var rain_color: Color = Color(0.6, 0.7, 0.9, 0.35)

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_sky_night.png"
+motion = Vector2(0, 0)
+opaque = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_far_skyline.png"
+alt_path = "res://assets/lowlight/ll_far_skyline_b.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -70
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_canal_mid.png"
+motion = Vector2(0.3, 0.07)
+y_anchor = -40
+
+[sub_resource type="Resource" id="p3"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_fg_set.png"
+motion = Vector2(1.2, 1.2)
+is_foreground = true
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3")])
+fog_color = Color(0.1804, 0.1686, 0.2706, 1)
+fog_alpha_a = 0.75
+fog_alpha_b = 0.9
+fog_drift_a = 5
+fog_drift_b = 8
+grade = Color(0.8863, 0.8784, 0.949, 1)
+vignette_alpha = 0.15
+shaft_count = 0
+shaft_color = Color(0.7216, 0.5725, 0.3529, 1)
+ambient_particle = &"ash"
+particle_count = 16
+particle_color = Color(0.549, 0.6392, 0.8, 0.8)
+life = Array[StringName]([&"moth", &"rat", &"eel", &"train"])

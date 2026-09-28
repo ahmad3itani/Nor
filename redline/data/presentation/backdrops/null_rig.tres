@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/null/null_far_strata.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -40
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0")])
+fog_color = Color(0.1059, 0.1098, 0.1255, 1)
+fog_alpha_a = 0
+fog_alpha_b = 0
+fog_drift_a = 0
+fog_drift_b = 0
+grade = Color(0.8941, 0.8941, 0.9255, 1)
+vignette_alpha = 0
+shaft_count = 0
+shaft_color = Color(0.8588, 0.8706, 0.902, 1)
+ambient_particle = &"mote"
+particle_count = 16
+particle_color = Color(0.4784, 0.4902, 0.5333, 0.8)
+life = Array[StringName]([])

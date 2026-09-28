@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/undercity/uc_sky_vault.png"
+motion = Vector2(0, 0)
+opaque = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/undercity/uc_far.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -70
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/undercity/uc_mid_pipeworks.png"
+alt_path = "res://assets/undercity/uc_mid_pipeworks_b.png"
+motion = Vector2(0.3, 0.07)
+y_anchor = -50
+
+[sub_resource type="Resource" id="p3"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/undercity/uc_near_columns.png"
+alt_path = "res://assets/undercity/uc_near_columns_b.png"
+motion = Vector2(0.55, 0.2)
+y_anchor = -24
+
+[sub_resource type="Resource" id="p4"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/undercity/uc_fg_set.png"
+motion = Vector2(1.2, 1.2)
+is_foreground = true
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4")])
+fog_color = Color(0.1686, 0.2392, 0.2196, 1)
+fog_alpha_a = 0.7
+fog_alpha_b = 0.8
+fog_drift_a = -3
+fog_drift_b = -6
+grade = Color(0.8745, 0.9333, 0.9098, 1)
+vignette_alpha = 0.18
+shaft_count = 2
+shaft_color = Color(0.6196, 0.8, 0.7216, 1)
+ambient_particle = &"spore"
+particle_count = 20
+particle_color = Color(0.4902, 0.4667, 0.4, 0.8)
+life = Array[StringName]([&"moth", &"rat", &"drip"])

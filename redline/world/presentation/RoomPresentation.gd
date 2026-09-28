@@ -20,6 +20,9 @@ extends Resource
 @export var footstep_surface: StringName = &""
 ## Which district's music set plays here (PresentationIndex.MUSIC_DISTRICTS).
 @export var music_district: StringName = &""
+## Foreground silhouettes allowed (T03 REPAIR a). Off where ceiling hazards,
+## flyers or the Collector eye use the top of the screen.
+@export var foreground: bool = true
 
 
 func validate() -> PackedStringArray:

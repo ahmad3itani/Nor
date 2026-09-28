@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_sky_storm.png"
+motion = Vector2(0, 0)
+opaque = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_far_skyline_b.png"
+alt_path = "res://assets/lowlight/ll_far_skyline.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -70
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_far_bell_tower.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -60
+spacing = 1100
+x_offset = 320
+
+[sub_resource type="Resource" id="p3"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_mid_roofs.png"
+alt_path = "res://assets/lowlight/ll_mid_roofs_b.png"
+motion = Vector2(0.3, 0.07)
+y_anchor = -50
+
+[sub_resource type="Resource" id="p4"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/lowlight/ll_fg_set.png"
+motion = Vector2(1.2, 1.2)
+is_foreground = true
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4")])
+fog_color = Color(0.1804, 0.1686, 0.2706, 1)
+fog_alpha_a = 0.75
+fog_alpha_b = 0.9
+fog_drift_a = 5
+fog_drift_b = 8
+grade = Color(0.8863, 0.8784, 0.949, 1)
+vignette_alpha = 0.15
+shaft_count = 0
+shaft_color = Color(0.7216, 0.5725, 0.3529, 1)
+lightning = true
+lightning_period = Vector2(8, 15)
+ambient_particle = &"ash"
+particle_count = 20
+particle_color = Color(0.549, 0.6392, 0.8, 0.8)
+life = Array[StringName]([&"gull", &"moth", &"train"])
+rain_override = 130

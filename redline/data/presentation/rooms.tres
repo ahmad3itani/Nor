@@ -11,6 +11,7 @@ ambience_layer = &""
 reverb = &"ward"
 footstep_surface = &"concrete"
 music_district = &"undercity"
+foreground = false
 
 [sub_resource type="Resource" id="room_MedicalRuin"]
 script = ExtResource("1_pres")
@@ -29,6 +30,7 @@ ambience_layer = &""
 reverb = &"shaft"
 footstep_surface = &"concrete"
 music_district = &"undercity"
+foreground = false
 
 [sub_resource type="Resource" id="room_EscapeTunnel"]
 script = ExtResource("1_pres")
@@ -38,6 +40,7 @@ ambience_layer = &""
 reverb = &"tunnel"
 footstep_surface = &"concrete"
 music_district = &"undercity"
+foreground = false
 
 [sub_resource type="Resource" id="room_MaintenanceShaft"]
 script = ExtResource("1_pres")
@@ -56,6 +59,7 @@ ambience_layer = &""
 reverb = &"shaft"
 footstep_surface = &"metal"
 music_district = &"undercity"
+foreground = false
 
 [sub_resource type="Resource" id="room_CollectorBay"]
 script = ExtResource("1_pres")
@@ -65,6 +69,7 @@ ambience_layer = &""
 reverb = &"ward"
 footstep_surface = &"concrete"
 music_district = &"undercity"
+foreground = false
 
 [sub_resource type="Resource" id="room_FloodedAlley"]
 script = ExtResource("1_pres")

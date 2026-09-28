@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/relay/relay_backwall.png"
+motion = Vector2(0.3, 0.07)
+tile_y = true
+opaque = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/relay/relay_mid_concourse.png"
+alt_path = "res://assets/relay/relay_mid_concourse_b.png"
+motion = Vector2(0.55, 0.2)
+y_anchor = -20
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/relay/relay_fg_set.png"
+motion = Vector2(1.2, 1.2)
+is_foreground = true
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2")])
+fog_color = Color(0.2902, 0.2, 0.149, 1)
+fog_alpha_a = 0.4
+fog_alpha_b = 0
+fog_drift_a = -2
+fog_drift_b = -3
+fog_a_index = 1
+grade = Color(1, 0.9412, 0.8784, 1)
+vignette_alpha = 0.12
+shaft_count = 2
+shaft_color = Color(0.8784, 0.6275, 0.3765, 1)
+ambient_particle = &"mote"
+particle_count = 16
+particle_color = Color(0.8784, 0.6275, 0.3765, 0.8)
+life = Array[StringName]([&"moth", &"rat"])
+rain_override = 0

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/title/title_sky.png"
+motion = Vector2(0, 0)
+opaque = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/title/title_far_spires.png"
+motion = Vector2(0.12, 0.03)
+y_anchor = -40
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2_plane")
+texture_path = "res://assets/title/title_mid_rooftops.png"
+motion = Vector2(0.3, 0.07)
+
+[resource]
+script = ExtResource("1_set")
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2")])
+fog_color = Color(0.1804, 0.1686, 0.302, 1)
+fog_alpha_a = 0.7
+fog_alpha_b = 0
+fog_drift_a = 3
+fog_drift_b = 6
+fog_anchor_a = -100
+grade = Color(0.8627, 0.8627, 0.9569, 1)
+vignette_alpha = 0.15
+shaft_count = 0
+shaft_color = Color(0.2902, 0.2824, 0.4392, 1)
+lightning = true
+lightning_period = Vector2(18, 22)
+ambient_particle = &"ash"
+particle_count = 10
+particle_color = Color(0.3608, 0.4196, 0.502, 0.8)
+life = Array[StringName]([&"train"])
+train_period = Vector2(18, 22)
