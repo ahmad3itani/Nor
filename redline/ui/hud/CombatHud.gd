@@ -24,6 +24,15 @@ extends CanvasLayer
 ## arrive display-ready from their emitters; the hint queue is dropped on a
 ## switch (queued lines were composed in the old language). Rank letters are
 ## exempt (D-163).
+##
+## Presentation overhaul (T07): with the UI kit (assets/ui/hud_kit, boss_bar,
+## style_ranks via UiKit) the pips are 7x9 ampoules that break (5 frames) when
+## lost and refill (4 frames) on a heal, injectors are 4x7 syringes (empty
+## ones hollow), ammo ticks 2x5, the Core sits in a 72x9 frame with a flowing
+## fill (held on frame 0 under flash reduction), the boss bar is a 3-slice
+## frame with a name plaque and a 50 % tick that shatters on the phase change,
+## and the rank is a chiselled glyph. Fills are masks tinted from Palette at
+## draw time. Without the kit (kit_on() false) everything draws the M9 way.
 
 const FONT_SIZE := 6
 const PIP := Vector2(6, 6)
@@ -47,6 +56,24 @@ const COMPACT_WIDTH := 440.0
 ## sits in the top-right corner).
 const BOSS_SIDE_CLEAR := 78.0
 const BOSS_BAR_W := 220.0
+## UI kit geometry (T07), relative to layout()["base"].
+const KIT_PIP := Vector2(7, 9)
+const KIT_PIP_STEP := 9.0
+const KIT_PIP_Y := -4.0
+## The ampoule sits at (2, 2) in its 11x15 cell (room for falling shards).
+const KIT_PIP_CELL := Vector2(2, 2)
+const KIT_INJ := Vector2(4, 7)
+const KIT_INJ_STEP := 6.0
+const KIT_INJ_GAP := 4.0
+const KIT_CORE := Vector2(72, 9)
+const KIT_CORE_Y := 5.0
+## The Core frame's fill channel (hud_kit.json anchors).
+const KIT_CORE_FILL := Rect2(10, 3, 60, 3)
+## The boss frame's caps reach this far past the fill on each side.
+const KIT_BOSS_CAP := 16.0
+const KIT_PLAQUE_H := 9.0
+## Rank glyph region offset from the rank anchor (glyph art is centred in its cell).
+const KIT_RANK_OFFSET := Vector2(-8, -14)
 
 var _player: Player
 var _root: Control
@@ -86,6 +113,12 @@ const CORE_ONLINE_SECONDS := 2.0
 var _core_hidden: bool = false
 var _core_reveal: float = 0.0
 var _core_online: float = 0.0
+## Pip animations (kit): pip index -> [anim (&"pip_break" / &"pip_refill"), seconds].
+var _pip_anims: Dictionary = {}
+var _last_health: int = -1
+## Boss bar (kit): the 50 % tick shattered (phase 2), and the shatter's clock.
+var _phase_broken: bool = false
+var _shatter_t: float = -1.0
 
 
 func _ready() -> void:
@@ -117,14 +150,19 @@ func _ready() -> void:
 	_apply_scale()
 	EventBus.player_spawned.connect(func(p: Node2D) -> void:
 		_player = p as Player
-		_prompt = "")
+		_prompt = ""
+		_pip_anims.clear()
+		_last_health = -1)
 	EventBus.reactor_changed.connect(func(_c: float, _m: float, critical: bool) -> void: _critical = critical)
 	EventBus.style_changed.connect(func(_p: float, _r: int) -> void: _rank_flash = 0.3)
 	EventBus.interact_prompt_changed.connect(func(t: String) -> void: _prompt = t)
 	EventBus.hint_requested.connect(request_hint)
 	EventBus.boss_started.connect(func(b: Node2D, title: String) -> void:
 		_boss = b as Enemy
-		_boss_title = title)
+		_boss_title = title
+		_phase_broken = false
+		_shatter_t = -1.0)
+	EventBus.boss_phase_changed.connect(_on_boss_phase_changed)
 	EventBus.boss_defeated.connect(func(_id: String) -> void: _boss = null)
 	EventBus.memory_fragment_found.connect(func(f: Resource) -> void:
 		var frag := f as MemoryFragmentData
@@ -257,7 +295,59 @@ func _process(delta: float) -> void:
 	if _critical:
 		target_alpha = 0.35 if Settings.flash_reduction else 0.25 + 0.3 * (0.5 + 0.5 * sin(_time * 7.0))
 	_vignette.modulate.a = lerpf(_vignette.modulate.a, target_alpha, 1.0 - exp(-8.0 * delta))
+	_tick_kit(delta)
 	_root.queue_redraw()
+
+
+## Whether the HUD draws with the UI kit (T07); false = the M9 flat look.
+static func kit_on() -> bool:
+	return UiKit.has_atlas("hud_kit")
+
+
+## Pip break / refill animations follow health, and the phase tick's shatter
+## runs its frames (process delta: the HUD keeps its clock while paused).
+func _tick_kit(delta: float) -> void:
+	if _shatter_t >= 0.0:
+		_shatter_t += delta
+		if UiKit.once_frame("boss_bar", "tick_shatter", _shatter_t) < 0:
+			_shatter_t = -1.0
+	for i: int in _pip_anims.keys():
+		var a: Array = _pip_anims[i]
+		a[1] = float(a[1]) + delta
+		if UiKit.once_frame("hud_kit", String(a[0]), a[1]) < 0:
+			_pip_anims.erase(i)
+	if _player == null or not is_instance_valid(_player) or _player.combat == null:
+		return
+	track_health(_player.combat.health)
+
+
+## Starts the break animation on every pip lost since the last call and the
+## refill animation on every pip gained (the first call only records).
+func track_health(health: int) -> void:
+	if _last_health >= 0 and health != _last_health:
+		var kind := &"pip_break" if health < _last_health else &"pip_refill"
+		for i in range(mini(health, _last_health), maxi(health, _last_health)):
+			_pip_anims[i] = [kind, 0.0]
+	_last_health = health
+
+
+## [anim, frame] a pip plays now, or [] (tests, drawing).
+func pip_anim(i: int) -> Array:
+	if not _pip_anims.has(i):
+		return []
+	var a: Array = _pip_anims[i]
+	return [a[0], maxi(UiKit.once_frame("hud_kit", String(a[0]), a[1]), 0)]
+
+
+func _on_boss_phase_changed(boss: Node2D, _phase: int) -> void:
+	if boss == _boss and not _phase_broken:
+		_phase_broken = true
+		_shatter_t = 0.0
+
+
+## The Core fill's flow frame at time t (frame 0, still, under flash reduction).
+static func core_flow_frame(t: float, reduced: bool) -> int:
+	return UiKit.loop_frame("hud_kit", "core_fill_flow", t, reduced)
 
 
 func _draw_hud() -> void:
@@ -274,7 +364,10 @@ func _draw_hud() -> void:
 
 	# Health pips; the next pip to go shows the damage-assist carry.
 	var combat := _player.combat
-	for i in combat.config.max_health:
+	var kit := kit_on()
+	if kit:
+		_draw_kit_pips(base, hc, red)
+	for i in (0 if kit else combat.config.max_health):
 		var r := Rect2(base + Vector2(i * (PIP.x + 2), 0), PIP)
 		var fill := pip_fill(i, combat.health, combat.damage_carry)
 		if fill >= 1.0:
@@ -299,6 +392,9 @@ func _draw_hud() -> void:
 		var ax := ammo_x(font, wname, base.x)
 		var ammo_col := Palette.color(&"ammo")
 		for i in w.ammo_max:
+			if kit:
+				_draw_kit_tick(Vector2(ax + i * 4, y - 5), i < ammo, hc, ammo_col)
+				continue
 			_draw_pip(Rect2(ax + i * 4, y - 5, 2, 5), i < ammo, false, hc, ammo_col)
 	else:
 		_root.draw_rect(Rect2(base.x, y - 6, 56, 7), HOLLOW if hc else DIM, false, 1.0)
@@ -310,7 +406,12 @@ func _draw_hud() -> void:
 	# Injectors (green pips after health): full = filled, empty = hollow.
 	var inj_x := base.x + combat.config.max_health * (PIP.x + 2) + 6
 	var heal := Palette.color(&"heal")
+	if kit:
+		inj_x = base.x + combat.config.max_health * KIT_PIP_STEP + KIT_INJ_GAP
 	for i in combat.injector_capacity():
+		if kit:
+			_draw_kit_injector(Vector2(inj_x + i * KIT_INJ_STEP, base.y + KIT_PIP_Y + 1), i < combat.injectors, hc, heal)
+			continue
 		_draw_pip(Rect2(Vector2(inj_x + i * 5, base.y + 1), Vector2(3, 5)), i < combat.injectors, true, hc, heal)
 
 	# Scrap (banked + unbanked, unbanked shown dimmer).
@@ -343,18 +444,28 @@ func _draw_hud() -> void:
 	if _boss and is_instance_valid(_boss) and not _boss.is_dead():
 		var bar_r: Rect2 = lay["boss_bar"]
 		var bw := bar_r.size.x
-		_draw_centered(font, Loc.t(_boss_title), bar_r.position.y - 3, fs(), Color.WHITE)
-		_root.draw_rect(bar_r, DIM)
-		var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
-		_root.draw_rect(Rect2(bar_r.position, Vector2(bw * f, 4)), red)
-		if hc:
-			_root.draw_rect(bar_r, HC_OUTLINE, false, 1.0)
-		_root.draw_rect(Rect2(bar_r.position + Vector2(bw * 0.5, -1), Vector2(1, 6)), Color.WHITE)
+		if kit and UiKit.has_atlas("boss_bar"):
+			_draw_kit_boss(font, bar_r, hc, red)
+		else:
+			_draw_flat_boss(font, bar_r, bw, hc, red)
 		if _boss.ai == Enemy.AI.STAGGER:
 			_draw_centered(font, Loc.t("STAGGERED"), bar_r.end.y + 8, fs() - 1, Color("ffcf5a"))
 	elif _boss and (not is_instance_valid(_boss) or _boss.is_dead()):
 		_boss = null
+	_draw_banner_and_rank(font, lay, red)
 
+
+func _draw_flat_boss(font: Font, bar_r: Rect2, bw: float, hc: bool, red: Color) -> void:
+	_draw_centered(font, Loc.t(_boss_title), bar_r.position.y - 3, fs(), Color.WHITE)
+	_root.draw_rect(bar_r, DIM)
+	var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
+	_root.draw_rect(Rect2(bar_r.position, Vector2(bw * f, 4)), red)
+	if hc:
+		_root.draw_rect(bar_r, HC_OUTLINE, false, 1.0)
+	_root.draw_rect(Rect2(bar_r.position + Vector2(bw * 0.5, -1), Vector2(1, 6)), Color.WHITE)
+
+
+func _draw_banner_and_rank(font: Font, lay: Dictionary, red: Color) -> void:
 	# Room banner on entry.
 	if _banner_time > 0.0:
 		var a := clampf(minf(_banner_time, BANNER_SECONDS - _banner_time) * 3.0, 0.0, 1.0)
@@ -370,7 +481,8 @@ func _draw_hud() -> void:
 	if meter.points < 1.0:
 		col = DIM
 	col = rank_color(col, _rank_flash > 0.0, Settings.flash_reduction)
-	_root.draw_string(font, pos, rank, HORIZONTAL_ALIGNMENT_LEFT, -1, rank_size, col)
+	if not (kit_on() and UiKit.draw_fill(_root, "style_ranks", rank, pos + KIT_RANK_OFFSET, col)):
+		_root.draw_string(font, pos, rank, HORIZONTAL_ALIGNMENT_LEFT, -1, rank_size, col)
 	var mbar := Rect2(pos + Vector2(0, 4), Vector2(62, 2))
 	_root.draw_rect(mbar, DIM)
 	_root.draw_rect(Rect2(mbar.position, Vector2(mbar.size.x * meter.rank_progress(), 2)), col)
@@ -440,7 +552,8 @@ static func layout(view: Vector2) -> Dictionary:
 	if compact:
 		# The bottom band belongs to the pips, Core, weapon and Scrap; the
 		# boss bar moves to the top centre, clear of the style rank.
-		var bw := minf(BOSS_BAR_W, view.x - 2.0 * BOSS_SIDE_CLEAR)
+		var cap := KIT_BOSS_CAP if kit_on() else 0.0
+		var bw := minf(BOSS_BAR_W, view.x - 2.0 * (BOSS_SIDE_CLEAR + cap))
 		out["boss_bar"] = Rect2((view.x - bw) * 0.5, 14, bw, 4)
 		var cw := minf(300.0, view.x - 16.0)
 		out["lore_card"] = Rect2((view.x - cw) * 0.5, minf(90.0, hint_y - 10.0 - 58.0), cw, 58)
@@ -495,14 +608,20 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 	var out := {}
 	var hp := int(content.get("max_health", 0))
 	var inj := int(content.get("injectors", 0))
-	if hp > 0:
+	var kit := kit_on()
+	if hp > 0 and kit:
+		var right := base.x + hp * KIT_PIP_STEP - 2
+		if inj > 0:
+			right = base.x + hp * KIT_PIP_STEP + KIT_INJ_GAP + (inj - 1) * KIT_INJ_STEP + KIT_INJ.x
+		out["health"] = Rect2(base + Vector2(0, KIT_PIP_Y), Vector2(right - base.x, KIT_PIP.y))
+	elif hp > 0:
 		var right := base.x + hp * (PIP.x + 2) - 2
 		if inj > 0:
 			right = base.x + hp * (PIP.x + 2) + 6 + (inj - 1) * 5 + 3
 		out["health"] = Rect2(base, Vector2(right - base.x, PIP.y))
 	if content.has("core_label"):
-		var bar := Rect2(base + Vector2(0, 9), Vector2(92, 4))
-		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], bar.position + Vector2(bar.size.x + 4, 5), fs()))
+		var bar := kit_core_rect(base) if kit else Rect2(base + Vector2(0, 9), Vector2(92, 4))
+		out["core"] = bar.merge(_left_text_rect(font, content["core_label"], core_label_pos(bar, kit), fs()))
 	var y := base.y + 21
 	if content.has("weapon"):
 		var wname := Loc.upper(String(content["weapon"]))
@@ -519,6 +638,8 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		var bar_r: Rect2 = lay["boss_bar"]
 		var r := bar_r.merge(text_rect(font, content["boss_title"], bar_r.position.y - 3, fs(), view))
 		r = r.merge(Rect2(bar_r.position + Vector2(bar_r.size.x * 0.5, -1), Vector2(1, 6)))
+		if kit and UiKit.has_atlas("boss_bar"):
+			r = r.merge(kit_boss_frame(bar_r)).merge(kit_plaque_rect(font, content["boss_title"], bar_r))
 		if content.get("staggered", false):
 			r = r.merge(text_rect(font, Loc.t("STAGGERED"), bar_r.end.y + 8, fs() - 1, view))
 		out["boss"] = r
@@ -527,6 +648,8 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		var rank: String = content["rank"]
 		var size := 16 if rank.length() <= 3 else 11
 		var r := _left_text_rect(font, rank, pos, size).merge(Rect2(pos + Vector2(0, 4), Vector2(62, 2)))
+		if kit and UiKit.has_region("style_ranks", rank):
+			r = r.merge(Rect2(pos + KIT_RANK_OFFSET, UiKit.region("style_ranks", rank).size))
 		out["rank"] = r.merge(_left_text_rect(font, style_label(9999), pos + Vector2(0, 12), fs() - 1))
 	if content.has("banner"):
 		var r := text_rect(font, content["banner"], lay["banner_y"], 12, view)
@@ -536,9 +659,88 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 	return out
 
 
+## The Core frame's box (kit layout).
+static func kit_core_rect(base: Vector2) -> Rect2:
+	return Rect2(base + Vector2(0, KIT_CORE_Y), KIT_CORE)
+
+
+## Where the Core label's baseline starts, right of the bar or frame.
+static func core_label_pos(bar: Rect2, kit: bool) -> Vector2:
+	return bar.position + Vector2(bar.size.x + 4, 7 if kit else 5)
+
+
+## The boss bar's 3-slice frame around the fill rect.
+static func kit_boss_frame(bar_r: Rect2) -> Rect2:
+	return Rect2(bar_r.position + Vector2(-KIT_BOSS_CAP, -6), Vector2(bar_r.size.x + 2.0 * KIT_BOSS_CAP, 16))
+
+
+## The name plaque centred above the bar, wide enough for the title.
+static func kit_plaque_rect(font: Font, title: String, bar_r: Rect2) -> Rect2:
+	var w := maxf(UiKit.region("boss_bar", "name_plaque").size.x, ceilf(font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs()).x) + 12.0)
+	return Rect2(roundf(bar_r.get_center().x - w * 0.5), bar_r.position.y - 11, w, KIT_PLAQUE_H)
+
+
+func _draw_kit_pips(base: Vector2, hc: bool, red: Color) -> void:
+	var combat := _player.combat
+	for i in combat.config.max_health:
+		var at := base + Vector2(i * KIT_PIP_STEP, KIT_PIP_Y)
+		var cell := at - KIT_PIP_CELL
+		var anim := pip_anim(i)
+		if not anim.is_empty():
+			UiKit.draw_layered(_root, "hud_kit", String(anim[0]), cell, red, int(anim[1]))
+			continue
+		var fill := pip_fill(i, combat.health, combat.damage_carry)
+		if fill >= 1.0:
+			UiKit.draw_layered(_root, "hud_kit", "pip_full", cell, red)
+			if hc:
+				_root.draw_rect(Rect2(at, KIT_PIP), HC_OUTLINE, false, 1.0)
+			continue
+		# Empty ampoules are hollow glass (the M9 shape cue); the damage-
+		# assist carry fills the next one from the bottom.
+		UiKit.draw_region(_root, "hud_kit", "pip_empty", cell, 0, HC_OUTLINE if hc else Color.WHITE)
+		if fill > 0.0:
+			var h := ceilf(KIT_PIP.y * fill)
+			var bottom := KIT_PIP_CELL.y + KIT_PIP.y
+			UiKit.draw_fill(_root, "hud_kit", "pip_full", cell, red, 0, Rect2(0, bottom - h, 11, h))
+
+
+func _draw_kit_injector(at: Vector2, full: bool, hc: bool, tint: Color) -> void:
+	UiKit.draw_layered(_root, "hud_kit", "injector_full" if full else "injector_empty", at - Vector2.ONE, tint, 0, HC_OUTLINE if hc and not full else Color.WHITE)
+	if hc and full:
+		_root.draw_rect(Rect2(at, KIT_INJ), HC_OUTLINE, false, 1.0)
+
+
+func _draw_kit_tick(at: Vector2, full: bool, hc: bool, tint: Color) -> void:
+	UiKit.draw_layered(_root, "hud_kit", "ammo_tick_full" if full else "ammo_tick_empty", at - Vector2.ONE, tint, 0, HC_OUTLINE if hc and not full else Color.WHITE)
+	if hc and full:
+		_root.draw_rect(Rect2(at, Vector2(2, 5)), HC_OUTLINE, false, 1.0)
+
+
+func _draw_kit_boss(font: Font, bar_r: Rect2, hc: bool, red: Color) -> void:
+	var frame_tint := HC_OUTLINE if hc else Color.WHITE
+	UiKit.draw_three(_root, "boss_bar", "bar_3slice", kit_boss_frame(bar_r), frame_tint)
+	var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
+	var src := UiKit.region("boss_bar", "fill")
+	var tex: Texture2D = UiKit.atlas("boss_bar")["fill"]
+	if tex != null and f > 0.0:
+		_root.draw_texture_rect_region(tex, Rect2(bar_r.position, Vector2(bar_r.size.x * f, src.size.y)), Rect2(src.position, Vector2(src.size.x * f, src.size.y)), red)
+	# The 50 % tick (3x8) straddles the fill; its shatter (9x12) is centred on it.
+	var tick := bar_r.position + Vector2(roundf(bar_r.size.x * 0.5) - 1, -2)
+	if _shatter_t >= 0.0:
+		var fr := UiKit.once_frame("boss_bar", "tick_shatter", _shatter_t)
+		if fr >= 0:
+			UiKit.draw_region(_root, "boss_bar", "tick_shatter", tick - Vector2(3, 2), fr)
+	elif not _phase_broken:
+		UiKit.draw_region(_root, "boss_bar", "phase_tick", tick)
+	var title := Loc.t(_boss_title)
+	UiKit.draw_stretched(_root, "boss_bar", "name_plaque", kit_plaque_rect(font, title, bar_r), [6.0, 0.0, 6.0, 0.0], frame_tint)
+	_draw_centered(font, title, bar_r.position.y - 3, fs(), Color.WHITE)
+
+
 func _draw_core(font: Font, base: Vector2) -> void:
 	var reactor := _player.reactor
-	var bar := Rect2(base + Vector2(0, 9), Vector2(92, 4))
+	var kit := kit_on()
+	var bar := kit_core_rect(base) if kit else Rect2(base + Vector2(0, 9), Vector2(92, 4))
 	var frac := reactor.charge / reactor.config.max_charge
 	# First reveal: the bar visibly fills from empty over CORE_REVEAL_SECONDS.
 	if _core_reveal > 0.0:
@@ -547,12 +749,21 @@ func _draw_core(font: Font, base: Vector2) -> void:
 	var fill_color := red
 	if reactor.is_critical() and reactor.in_flow() and not Settings.flash_reduction:
 		fill_color = red.lerp(Color.WHITE, 0.5 + 0.5 * sin(_time * 12.0))
-	_root.draw_rect(bar, DIM)
-	_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)
-	if UiTheme.high_contrast():
-		_root.draw_rect(bar, HC_OUTLINE, false, 1.0)
+	if kit:
+		var hc := UiTheme.high_contrast()
+		UiKit.draw_region(_root, "hud_kit", "core_frame", bar.position, 0, HC_OUTLINE if hc else Color.WHITE)
+		UiKit.draw_fill(_root, "hud_kit", "core_socket_fill", bar.position + Vector2(3, 3), fill_color)
+		var flow := core_flow_frame(_time, Settings.flash_reduction)
+		var w := roundf(KIT_CORE_FILL.size.x * frac)
+		if w > 0.0:
+			UiKit.draw_fill(_root, "hud_kit", "core_fill_flow", bar.position + KIT_CORE_FILL.position, fill_color, flow, Rect2(0, 0, w, KIT_CORE_FILL.size.y))
+	else:
+		_root.draw_rect(bar, DIM)
+		_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)
+		if UiTheme.high_contrast():
+			_root.draw_rect(bar, HC_OUTLINE, false, 1.0)
 	var label := core_label(int(reactor.charge), reactor.in_flow(), _core_online > 0.0)
-	_root.draw_string(font, bar.position + Vector2(bar.size.x + 4, 5), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color.WHITE)
+	_root.draw_string(font, core_label_pos(bar, kit), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs(), Color.WHITE)
 
 
 func _draw_centered(font: Font, text: String, y: float, size: int, color: Color) -> void:
