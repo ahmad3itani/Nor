@@ -191,14 +191,51 @@ func test_guard_break_plays_on_a_broken_guard() -> void:
 
 
 func test_shield_rim_sits_on_the_sheet_plate() -> void:
-	var img := (load("res://assets/enemies/shield_sheet.png") as Texture2D).get_image()
-	var x := 24 + int(LookShieldPlate.SPRITE_RIM_X)
-	var top := 46 + int(LookShieldPlate.SPRITE_RIM_TOP)
-	var bottom := 46 + int(LookShieldPlate.SPRITE_RIM_BOTTOM)
-	for y in range(top, bottom):
-		check(img.get_pixel(x, y).a > 0.5, "idle plate outline at row %d" % y)
-		check(img.get_pixel(x + 1, y).a < 0.5, "nothing outside the plate at row %d" % y)
-	check(img.get_pixel(x, top - 1).a < 0.5 and img.get_pixel(x, bottom).a < 0.5, "rim spans the slab only")
+	var spec := load("res://assets/enemies/shield_sheet.tres") as SpriteSheetSpec
+	var img := (load(spec.texture_path) as Texture2D).get_image()
+	# Every pose the guard is up in (GuardFrontal: idle/move/WINDUP/ACTIVE/RECOVER).
+	for a in spec.animations:
+		if not a.name in [&"idle", &"move", &"windup", &"attack"]:
+			continue
+		var o := spec.origin_for(a.name)
+		for f in a.frame_count:
+			var edges := LookShieldPlate.plate_edges(spec, a.name, f)
+			var tag := "%s %d" % [a.name, f]
+			check(edges.size() - 1 >= 24, "%s: slab spans %d rows" % [tag, edges.size() - 1])
+			if edges.size() < 2:
+				continue
+			var cx := (a.first_frame + f) * spec.cell_size.x + o.x
+			var cy := a.row * spec.cell_size.y + o.y
+			check(edges[0] <= -30 and edges[0] + edges.size() - 1 <= -4, "%s: rim rows %d..%d on the slab" % [tag, edges[0], edges[0] + edges.size() - 2])
+			for r in range(1, edges.size()):
+				var px := cx + edges[r]
+				var py := cy + edges[0] + r - 1
+				check(img.get_pixel(px, py).a > 0.5, "%s: rim on the plate at row %d" % [tag, py - cy])
+				check(img.get_pixel(px + 1, py).a < 0.5, "%s: nothing outside the plate at row %d" % [tag, py - cy])
+			check(img.get_pixel(cx + edges[1], cy + edges[0] - 1).a < 0.5, "%s: nothing above the slab top" % tag)
+	# A tilted wind-up rim follows the slab (it leans back at the top).
+	var wu := LookShieldPlate.plate_edges(spec, &"windup", 3)
+	check(wu[1] < wu[wu.size() - 1] - 3, "wind-up rim follows the tilt: %s" % wu)
+	# Mirrored when facing left; the idle constant stays the fallback.
+	var right := LookShieldPlate.rim_rects(PackedInt32Array([-10, 5, 5, 6]), true)
+	var left := LookShieldPlate.rim_rects(PackedInt32Array([-10, 5, 5, 6]), false)
+	check(right == [Rect2(5, -10, 1, 2), Rect2(6, -8, 1, 1)], "runs of rows: %s" % [right])
+	check(left == [Rect2(-6, -10, 1, 2), Rect2(-7, -8, 1, 1)], "mirrored: %s" % [left])
+	var fb := LookShieldPlate.rim_rects(PackedInt32Array(), true)
+	check(fb == [Rect2(15, -36, 1, 28)], "fallback rim: %s" % [fb])
+	check(LookShieldPlate.plate_edges(spec, &"no_such_row", 0).is_empty(), "missing row -> fallback")
+
+
+func test_shield_rim_draws_in_sprite_mode() -> void:
+	var d := load("res://data/enemies/shield.tres") as EnemyData
+	var e := _spawn(d)
+	var actor := _step(e)
+	check(actor != null and actor.spec != null, "shield sprite")
+	_set_ai(e, Enemy.AI.WINDUP, d.attacks[0] if not d.attacks.is_empty() else null)
+	_step(e)
+	await _frames(3)
+	var edges := LookShieldPlate.plate_edges(actor.spec, actor.animation, actor.frame)
+	check(edges.size() > 20, "rim measured for %s %d" % [actor.animation, actor.frame])
 
 
 func test_windup_tint_and_high_contrast_outline_in_sprite_mode() -> void:
