@@ -237,7 +237,7 @@ func add_label(text: String, color: Color = UiTheme.TEXT, size: int = UiTheme.FO
 ## out, so the page's height is unchanged. Nothing without the kit.
 func _draw_divider(l: Label) -> void:
 	var src := UiKit.region("menu_kit", "divider")
-	if not src.has_area() or l.text == "":
+	if not src.has_area() or l.text == "" or l.has_meta(&"no_divider"):
 		return
 	var w := minf(src.size.x, l.size.x)
 	var x := 0.0 if not l.is_layout_rtl() else l.size.x - w
@@ -312,15 +312,21 @@ func focused_index() -> int:
 ## Theme and panel width for the current contrast and UI size.
 func _apply_look() -> void:
 	_root.theme = UiTheme.get_theme()
+	apply_kit_panel()
+	if _declared_width < 0.0:
+		_declared_width = _panel.custom_minimum_size.x
+	_panel.custom_minimum_size.x = panel_width_for(_declared_width)
+	_fit_scroll()
+
+
+## The kit's panel frame on this screen's panel (or the theme's without the
+## kit). _apply_look runs it; screens that open without it (the title) call it.
+func apply_kit_panel() -> void:
 	var kit_panel := panel_box(UiTheme.high_contrast())
 	if kit_panel != null:
 		_panel.add_theme_stylebox_override("panel", kit_panel)
 	else:
 		_panel.remove_theme_stylebox_override("panel")
-	if _declared_width < 0.0:
-		_declared_width = _panel.custom_minimum_size.x
-	_panel.custom_minimum_size.x = panel_width_for(_declared_width)
-	_fit_scroll()
 
 
 ## The kit's panel (menu_kit panel_9slice) with the theme panel's content

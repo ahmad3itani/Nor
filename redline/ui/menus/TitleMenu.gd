@@ -42,6 +42,7 @@ func open_menu() -> void:
 	visible = true
 	_opened_frame = Engine.get_process_frames()
 	_page = &"main"
+	apply_kit_panel()
 	rebuild()
 	focus_index(_default_focus)
 
@@ -124,6 +125,8 @@ func _apply_logo(label: Label, tag: String) -> void:
 	if logo.is_empty():
 		return
 	_logo_label = label
+	# The logo is centred; the heading divider would sit off under its left.
+	label.set_meta(&"no_divider", true)
 	label.custom_minimum_size.y = UiTheme.scaled(int(LOGO_ROW_HEIGHT))
 	label.add_theme_color_override("font_color", Color(0, 0, 0, 0))
 	label.draw.connect(_draw_logo.bind(label, logo, tag))
