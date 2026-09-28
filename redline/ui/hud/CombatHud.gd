@@ -72,8 +72,8 @@ const KIT_CORE_FILL := Rect2(10, 3, 60, 3)
 ## The boss frame's caps reach this far past the fill on each side.
 const KIT_BOSS_CAP := 16.0
 const KIT_PLAQUE_H := 9.0
-## Rank glyph region offset from the rank anchor (glyph art is centred in its cell).
-const KIT_RANK_OFFSET := Vector2(-8, -14)
+## The rank glyph's ink sits this far above the rank anchor (its baseline).
+const KIT_RANK_RISE := 12.0
 
 var _player: Player
 var _root: Control
@@ -481,7 +481,7 @@ func _draw_banner_and_rank(font: Font, lay: Dictionary, red: Color) -> void:
 	if meter.points < 1.0:
 		col = DIM
 	col = rank_color(col, _rank_flash > 0.0, Settings.flash_reduction)
-	if not (kit_on() and UiKit.draw_fill(_root, "style_ranks", rank, pos + KIT_RANK_OFFSET, col)):
+	if not (kit_on() and UiKit.draw_fill(_root, "style_ranks", rank, kit_rank_origin(pos, rank), col)):
 		_root.draw_string(font, pos, rank, HORIZONTAL_ALIGNMENT_LEFT, -1, rank_size, col)
 	var mbar := Rect2(pos + Vector2(0, 4), Vector2(62, 2))
 	_root.draw_rect(mbar, DIM)
@@ -649,7 +649,8 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 		var size := 16 if rank.length() <= 3 else 11
 		var r := _left_text_rect(font, rank, pos, size).merge(Rect2(pos + Vector2(0, 4), Vector2(62, 2)))
 		if kit and UiKit.has_region("style_ranks", rank):
-			r = r.merge(Rect2(pos + KIT_RANK_OFFSET, UiKit.region("style_ranks", rank).size))
+			var ink := UiKit.used_rect("style_ranks", rank)
+			r = r.merge(Rect2(kit_rank_origin(pos, rank) + ink.position, ink.size))
 		out["rank"] = r.merge(_left_text_rect(font, style_label(9999), pos + Vector2(0, 12), fs() - 1))
 	if content.has("banner"):
 		var r := text_rect(font, content["banner"], lay["banner_y"], 12, view)
@@ -657,6 +658,13 @@ static func element_rects(view: Vector2, font: Font, content: Dictionary) -> Dic
 	if content.has("lore"):
 		out["lore"] = lay["lore_card"]
 	return out
+
+
+## Where a rank glyph's cell is drawn so its ink starts at the rank anchor's
+## x and ends on its baseline (the glyphs are centred in wider cells).
+static func kit_rank_origin(pos: Vector2, rank: String) -> Vector2:
+	var ink := UiKit.used_rect("style_ranks", rank)
+	return pos - Vector2(ink.position.x, ink.end.y) if ink.has_area() else pos - Vector2(0, KIT_RANK_RISE)
 
 
 ## The Core frame's box (kit layout).

@@ -120,6 +120,28 @@ static func region(atlas_id: String, region_id: String, frame: int = 0) -> Rect2
 	return a["regions"].get(rid, Rect2())
 
 
+## The painted part of a region (region-local, from the fill mask when the
+## atlas has one): glyphs centred in wider cells align by their ink. Cached.
+static func used_rect(atlas_id: String, region_id: String) -> Rect2:
+	var a := atlas(atlas_id)
+	var src := region(atlas_id, region_id)
+	if a.is_empty() or not src.has_area():
+		return Rect2()
+	var cache: Dictionary = a.get("used", {})
+	if cache.has(region_id):
+		return cache[region_id]
+	var tex: Texture2D = a["fill"] if a["fill"] != null else a["texture"]
+	var img := tex.get_image()
+	var used := Rect2(Vector2.ZERO, src.size)
+	if img != null:
+		if img.is_compressed():
+			img.decompress()
+		used = Rect2(img.get_region(Rect2i(src)).get_used_rect())
+	cache[region_id] = used
+	a["used"] = cache
+	return used
+
+
 static func has_region(atlas_id: String, region_id: String) -> bool:
 	return region(atlas_id, region_id).has_area()
 
