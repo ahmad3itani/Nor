@@ -65,6 +65,8 @@ static func unlock_all() -> void:
 		flags.append("map_%s" % d)
 	for f in flags:
 		Game.set_flag(f, 1)
+	# Every upgrade at its Act I maximum (D-182); later-act tiers stay as they are.
+	UpgradeLibrary.apply_act_max(1, true)
 	for r in Game.world_map.rooms:
 		if not st.visited_rooms.has(r.room_path):
 			st.visited_rooms.append(r.room_path)

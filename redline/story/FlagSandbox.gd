@@ -38,7 +38,9 @@ static func begin() -> Callable:
 ## 2. bool true for every produced flag that is not a counter and does not
 ##    already hold a number;
 ## 3. the counters last: memories_remembered, every arc_<npc>_stage at its
-##    Act I top, every mem_seen_<scene>, and every shop upgrade at least 1.
+##    Act I top, every mem_seen_<scene>, every shop upgrade at least 1, and
+##    every upgrade (upg_<id>, D-182) at its Act I maximum tier: later-act
+##    tiers and branches stay 0, so the Act I max state is truthful.
 ##
 ## M9: the profile is dev-tainted (no achievements, D-145), and M9 system
 ## flags are never written by the produced-flag loop: ng_* and demo_*, every
@@ -66,10 +68,14 @@ static func apply_act1_max_state() -> void:
 			Game.set_flag(a.index_flag(), a.stages.size())
 	# A quest reward can store `true` in a shop counter (chart_lowlight's
 	# reward_flags map_lens); counters end as ints >= 1 here.
+	var upg := UpgradeLibrary.all_flags()
 	for f in _upgrade_flags():
+		if upg.has(f):
+			continue
 		var cur: Variant = Game.state.flags.get(f)
 		if (typeof(cur) != TYPE_INT and typeof(cur) != TYPE_FLOAT) or Game.flag_int(f) < 1:
 			Game.set_flag(f, maxi(Game.flag_int(f), 1))
+	UpgradeLibrary.apply_act_max(1)
 
 
 ## M9 system flags the Act I max state never sets itself.
@@ -80,9 +86,9 @@ static func _m9_system_flag(f: String, v: ContentValidator) -> bool:
 	return not paths.is_empty() and paths.all(func(p: String) -> bool: return p.begins_with("res://data/challenges/"))
 
 
-## Flags that hold numbers: memories_remembered, arc_<npc>_stage and every
-## ShopItem.upgrade_flag (ShopMenu stores flag_int + 1). talks_* counters are
-## matched by prefix.
+## Flags that hold numbers: memories_remembered, arc_<npc>_stage, every
+## ShopItem.upgrade_flag (ShopMenu stores flag_int + 1) and every upgrade
+## flag. talks_* counters are matched by prefix.
 static func _int_flags() -> Dictionary:
 	var out := {MemoryLibrary.REMEMBERED_FLAG: true}
 	if Game.arcs:
@@ -93,6 +99,7 @@ static func _int_flags() -> Dictionary:
 	return out
 
 
+## Shop upgrade counters plus UpgradeLibrary.all_flags().
 static func _upgrade_flags() -> PackedStringArray:
 	var out := PackedStringArray()
 	for path in DataDir.list("res://data/shops"):
@@ -102,4 +109,7 @@ static func _upgrade_flags() -> PackedStringArray:
 		for item in shop.items:
 			if item != null and item.upgrade_flag != "" and not out.has(item.upgrade_flag):
 				out.append(item.upgrade_flag)
+	for f in UpgradeLibrary.all_flags():
+		if not out.has(f):
+			out.append(f)
 	return out

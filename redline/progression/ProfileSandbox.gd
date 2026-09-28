@@ -86,6 +86,11 @@ static func kit_state(kit: ChallengeKit, ch: ChallengeData, profile_state: GameS
 		s.equipped_circuits.assign(profile_state.equipped_circuits)
 		s.core_shards = profile_state.core_shards
 		s.abilities = profile_state.abilities.duplicate()
+		# A Mk II blade is part of the kit (D-182): every upgrade flag comes
+		# along. Other kits get none (kit_state never grants an upgrade).
+		for f in UpgradeLibrary.all_flags():
+			if profile_state.flags.has(f):
+				s.flags[f] = profile_state.flags[f]
 	elif kit.campaign_start:
 		var ob := Game.onboarding
 		s.owned_weapons.assign(ob.start_owned_weapons)
