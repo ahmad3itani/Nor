@@ -519,6 +519,18 @@ def build():
     return A
 
 
+def add_mask_palette_key(tres):
+    """SpriteActor reads mask_palette_key as a StringName; pixrig's meta writer only
+    emits plain strings, so the &"accent" line is added here, right after mask_path."""
+    lines = open(tres).read().split("\n")
+    out = []
+    for ln in lines:
+        out.append(ln)
+        if ln.startswith("metadata/mask_path = "):
+            out.append('metadata/mask_palette_key = &"accent"')
+    open(tres, "w").write("\n".join(out))
+
+
 def main():
     check = "--check" in sys.argv
     anims = build()
@@ -529,6 +541,7 @@ def main():
             "mask_note": "white mask of the baked red visor + Core seam (same size as the sheet); tint it in code for colour-blind / high-contrast modes, the baked red stays as the fallback"}
     sheet = write_sheet(anims, (W, H), ORIGIN, png if not check else os.path.join(tempfile.gettempdir(), "_rook_check.png"), "res://assets/rook/rook_sheet.png",
                         os.path.join(out_dir, "rook_sheet.tres") if not check else os.path.join(tempfile.gettempdir(), "_rook_check.tres"), meta=meta)
+    add_mask_palette_key(os.path.join(out_dir, "rook_sheet.tres") if not check else os.path.join(tempfile.gettempdir(), "_rook_check.tres"))
     mask = red_mask(sheet)
     if not check:
         mask.save(os.path.join(out_dir, "rook_sheet_mask.png"), optimize=True)
