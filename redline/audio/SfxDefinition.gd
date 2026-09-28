@@ -2,8 +2,8 @@ class_name SfxDefinition
 extends Resource
 ## A placeholder sound described as data and synthesized at load time.
 ## Lets M1 have readable audio feedback (bible §28: jump/land/dash must be
-## audible) without committing temporary binary assets. Replace a definition
-## with a real AudioStream later by setting `override_stream`.
+## audible) without committing temporary binary assets. A real AudioStream
+## replaces it through `override_stream` (presentation overhaul).
 
 enum Wave { SQUARE, TRIANGLE, SINE, NOISE }
 
@@ -23,4 +23,11 @@ enum Wave { SQUARE, TRIANGLE, SINE, NOISE }
 @export_range(0.0, 0.5) var pitch_jitter: float = 0.05
 ## Minimum seconds between plays of this sound (stops slide/land spam).
 @export var cooldown: float = 0.0
+## A real asset (OGG or AudioStreamRandomizer) that replaces the synth when
+## set; AudioManager falls back to the synth parameters above when it is null
+## (a missing file leaves it null), so the placeholder always stays playable.
 @export var override_stream: AudioStream
+## Mix tier (SOUND_DIRECTION section 3): 1 is never masked (hurt, telegraph,
+## critical heartbeat), 5 is pickup chatter. When every voice is busy a new
+## sound takes the least important, oldest voice, never a more important one.
+@export_range(1, 5) var priority: int = 3

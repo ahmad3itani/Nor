@@ -1,13 +1,13 @@
 class_name SfxSynth
 extends RefCounted
-## Renders an SfxDefinition to a 16-bit mono AudioStreamWAV.
+## Renders an SfxDefinition to a 16-bit mono AudioStreamWAV. Always
+## synthesises, even when the definition has an override_stream: the synth is
+## the fallback AudioManager keeps (it picks the override itself).
 
 const MIX_RATE := 22050
 
 
 static func render(def: SfxDefinition, rng_seed: int = 1) -> AudioStream:
-	if def.override_stream:
-		return def.override_stream
 	var rng := RandomNumberGenerator.new()
 	rng.seed = rng_seed
 	var count := maxi(int(def.duration * MIX_RATE), 1)
