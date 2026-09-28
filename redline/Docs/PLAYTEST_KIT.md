@@ -16,6 +16,7 @@ The game records and summarises most of this by itself. What it can't do is find
 - Use at least one machine that isn't a development PC. Frame times are recorded on real hardware, and that data is exactly what's missing so far (K-2).
 
 ## 2. Build the game for testers
+- **Pinned build (D-181, K-58):** the §44 round uses tag `playtest-44-candidate` (`c0013a68fae6`, the post-overhaul commit). Build it with `tools/build/build.py` from a checkout of that tag (for example `git worktree add --detach ../redline-44 playtest-44-candidate`), never from the branch head: later expansion commits change Act I content.
 - **Easiest:** testers run it from the Godot 4.3 editor (open `redline/project.godot`, press F5). That's fine for in-person sessions.
 - **Exported build (M9, D-166):** `export_presets.cfg` is checked in (8 presets: Windows, Linux, macOS universal and Web nothreads, each full and demo). Install the Godot 4.3.stable export templates (`~/.local/share/godot/export_templates/4.3.stable`), then from `redline/`:
   - `python3 -B tools/build/build.py --check`: the preset invariants and the no-network check on the tools (needs no Godot).
