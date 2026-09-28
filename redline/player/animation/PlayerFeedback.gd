@@ -13,6 +13,8 @@ extends Node
 @export var sfx_slide_jump: StringName = &"jump_slide"
 @export var sfx_land_soft: StringName = &"land_soft"
 @export var sfx_land_hard: StringName = &"land_hard"
+## A soft landing on water (a collider tagged surface=water or a water room).
+@export var sfx_land_water: StringName = &"land_water"
 @export var sfx_slide: StringName = &"slide"
 @export var sfx_dodge: StringName = &"dodge"
 @export var sfx_dash: StringName = &"dash"
@@ -55,7 +57,7 @@ func _ready() -> void:
 
 ## Every sound id this node can request; used by tests to catch typos.
 func sound_ids() -> Array[StringName]:
-	return [sfx_jump, sfx_slide_jump, sfx_land_soft, sfx_land_hard, sfx_slide, sfx_dodge, sfx_dash, sfx_respawn]
+	return [sfx_jump, sfx_slide_jump, sfx_land_soft, sfx_land_hard, sfx_land_water, sfx_slide, sfx_dodge, sfx_dash, sfx_respawn]
 
 
 func _world() -> Node:
@@ -108,7 +110,8 @@ func _on_landed(impact_speed: float) -> void:
 		return
 	var hard := impact_speed >= player.config.hard_land_speed
 	var t := clampf(impact_speed / player.config.fast_fall_speed, 0.0, 1.0)
-	AudioManager.play_sfx(sfx_land_hard if hard else sfx_land_soft, lerpf(0.5, 1.0, t))
+	var land := sfx_land_hard if hard else (sfx_land_water if on_water() else sfx_land_soft)
+	AudioManager.play_sfx(land, lerpf(0.5, 1.0, t))
 	if _dust(&"land_hard" if hard else &"land", player.global_position) != null:
 		return
 	# Two low sideways puffs read as "impact" and stay visible past the body.

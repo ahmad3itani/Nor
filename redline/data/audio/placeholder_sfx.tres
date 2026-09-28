@@ -1,58 +1,7 @@
-[gd_resource type="Resource" script_class="SfxBank" load_steps=111 format=3]
+[gd_resource type="Resource" script_class="SfxBank" load_steps=60 format=3]
 
 [ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
 [ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/jump.tres" id="s_jump"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/jump_slide.ogg" id="s_jump_slide"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/land_soft.ogg" id="s_land_soft"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/land_hard.ogg" id="s_land_hard"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/slide.ogg" id="s_slide"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/dodge.ogg" id="s_dodge"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/dash.ogg" id="s_dash"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/respawn.ogg" id="s_respawn"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/slash.tres" id="s_slash"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/slash_heavy.ogg" id="s_slash_heavy"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit.tres" id="s_hit"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_heavy.ogg" id="s_hit_heavy"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/block.ogg" id="s_block"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/shoot_scatter.ogg" id="s_shoot_scatter"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/empty.ogg" id="s_empty"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/reload.ogg" id="s_reload"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_telegraph.ogg" id="s_enemy_telegraph"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_attack.ogg" id="s_enemy_attack"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_shoot.ogg" id="s_enemy_shoot"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_die.ogg" id="s_enemy_die"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/player_hurt.ogg" id="s_player_hurt"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/perfect_dodge.ogg" id="s_perfect_dodge"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/heartbeat.ogg" id="s_heartbeat"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/burnout.ogg" id="s_burnout"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/rank_up.ogg" id="s_rank_up"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/anchor.ogg" id="s_anchor"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/scrap_pickup.ogg" id="s_scrap_pickup"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/scrap_recover.ogg" id="s_scrap_recover"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/heal_start.ogg" id="s_heal_start"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/heal.ogg" id="s_heal"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/collect.ogg" id="s_collect"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wall_break.ogg" id="s_wall_break"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/repeater.ogg" id="s_repeater"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/quest_complete.ogg" id="s_quest_complete"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/ui_tick.tres" id="s_ui_tick"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/purchase.ogg" id="s_purchase"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/gate.ogg" id="s_gate"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_roar.ogg" id="s_boss_roar"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_slam.ogg" id="s_boss_slam"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ability_unlock.ogg" id="s_ability_unlock"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/shoot_revolver.ogg" id="s_shoot_revolver"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/radio_static.ogg" id="s_radio_static"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/memory_open.ogg" id="s_memory_open"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/achievement.ogg" id="s_achievement"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/ui_confirm.ogg" id="s_ui_confirm"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/ui_back.ogg" id="s_ui_back"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_defeat.ogg" id="s_boss_defeat"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/secret_found.ogg" id="s_secret_found"]
-[ext_resource type="AudioStream" path="res://assets/audio/footsteps/footstep_concrete.tres" id="s_footstep_concrete"]
-[ext_resource type="AudioStream" path="res://assets/audio/footsteps/footstep_metal.tres" id="s_footstep_metal"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/land_soft.ogg" id="s_land_water"]
 
 [sub_resource type="Resource" id="Sfx_jump"]
 script = ExtResource("1_def")
@@ -67,7 +16,7 @@ volume_db = -13.0
 pitch_jitter = 0.06
 cooldown = 0.0
 priority = 4
-override_stream = ExtResource("s_jump")
+override_path = "res://assets/audio/sfx/jump.tres"
 
 [sub_resource type="Resource" id="Sfx_jump_slide"]
 script = ExtResource("1_def")
@@ -82,7 +31,7 @@ volume_db = -13.0
 pitch_jitter = 0.05
 cooldown = 0.0
 priority = 4
-override_stream = ExtResource("s_jump_slide")
+override_path = "res://assets/audio/sfx/jump_slide.ogg"
 
 [sub_resource type="Resource" id="Sfx_land_soft"]
 script = ExtResource("1_def")
@@ -97,7 +46,7 @@ volume_db = -12.0
 pitch_jitter = 0.1
 cooldown = 0.05
 priority = 4
-override_stream = ExtResource("s_land_soft")
+override_path = "res://assets/audio/sfx/land_soft.ogg"
 
 [sub_resource type="Resource" id="Sfx_land_hard"]
 script = ExtResource("1_def")
@@ -112,7 +61,7 @@ volume_db = -6.0
 pitch_jitter = 0.05
 cooldown = 0.1
 priority = 4
-override_stream = ExtResource("s_land_hard")
+override_path = "res://assets/audio/sfx/land_hard.ogg"
 
 [sub_resource type="Resource" id="Sfx_slide"]
 script = ExtResource("1_def")
@@ -127,7 +76,7 @@ volume_db = -14.0
 pitch_jitter = 0.08
 cooldown = 0.15
 priority = 4
-override_stream = ExtResource("s_slide")
+override_path = "res://assets/audio/sfx/slide.ogg"
 
 [sub_resource type="Resource" id="Sfx_dodge"]
 script = ExtResource("1_def")
@@ -141,7 +90,7 @@ tone = 0.45
 volume_db = -12.0
 pitch_jitter = 0.05
 cooldown = 0.0
-override_stream = ExtResource("s_dodge")
+override_path = "res://assets/audio/sfx/dodge.ogg"
 
 [sub_resource type="Resource" id="Sfx_dash"]
 script = ExtResource("1_def")
@@ -155,7 +104,7 @@ tone = 0.4
 volume_db = -10.0
 pitch_jitter = 0.04
 cooldown = 0.0
-override_stream = ExtResource("s_dash")
+override_path = "res://assets/audio/sfx/dash.ogg"
 
 [sub_resource type="Resource" id="Sfx_respawn"]
 script = ExtResource("1_def")
@@ -169,7 +118,7 @@ tone = 0.6
 volume_db = -14.0
 pitch_jitter = 0.0
 cooldown = 0.0
-override_stream = ExtResource("s_respawn")
+override_path = "res://assets/audio/sfx/respawn.ogg"
 
 [sub_resource type="Resource" id="Sfx_slash"]
 script = ExtResource("1_def")
@@ -183,7 +132,7 @@ tone = 0.55
 volume_db = -12.0
 pitch_jitter = 0.12
 cooldown = 0.0
-override_stream = ExtResource("s_slash")
+override_path = "res://assets/audio/sfx/slash.tres"
 
 [sub_resource type="Resource" id="Sfx_slash_heavy"]
 script = ExtResource("1_def")
@@ -197,7 +146,7 @@ tone = 0.35
 volume_db = -10.0
 pitch_jitter = 0.08
 cooldown = 0.0
-override_stream = ExtResource("s_slash_heavy")
+override_path = "res://assets/audio/sfx/slash_heavy.ogg"
 
 [sub_resource type="Resource" id="Sfx_hit"]
 script = ExtResource("1_def")
@@ -212,7 +161,7 @@ volume_db = -7.0
 pitch_jitter = 0.1
 cooldown = 0.02
 priority = 2
-override_stream = ExtResource("s_hit")
+override_path = "res://assets/audio/sfx/hit.tres"
 
 [sub_resource type="Resource" id="Sfx_hit_heavy"]
 script = ExtResource("1_def")
@@ -227,7 +176,7 @@ volume_db = -5.0
 pitch_jitter = 0.06
 cooldown = 0.03
 priority = 2
-override_stream = ExtResource("s_hit_heavy")
+override_path = "res://assets/audio/sfx/hit_heavy.ogg"
 
 [sub_resource type="Resource" id="Sfx_block"]
 script = ExtResource("1_def")
@@ -242,7 +191,7 @@ volume_db = -9.0
 pitch_jitter = 0.05
 cooldown = 0.03
 priority = 2
-override_stream = ExtResource("s_block")
+override_path = "res://assets/audio/sfx/block.ogg"
 
 [sub_resource type="Resource" id="Sfx_shoot_pistol"]
 script = ExtResource("1_def")
@@ -269,7 +218,7 @@ tone = 0.22
 volume_db = -7.0
 pitch_jitter = 0.05
 cooldown = 0.0
-override_stream = ExtResource("s_shoot_scatter")
+override_path = "res://assets/audio/sfx/shoot_scatter.ogg"
 
 [sub_resource type="Resource" id="Sfx_empty"]
 script = ExtResource("1_def")
@@ -283,7 +232,7 @@ tone = 0.8
 volume_db = -16.0
 pitch_jitter = 0.0
 cooldown = 0.05
-override_stream = ExtResource("s_empty")
+override_path = "res://assets/audio/sfx/empty.ogg"
 
 [sub_resource type="Resource" id="Sfx_reload"]
 script = ExtResource("1_def")
@@ -297,7 +246,7 @@ tone = 0.6
 volume_db = -15.0
 pitch_jitter = 0.0
 cooldown = 0.2
-override_stream = ExtResource("s_reload")
+override_path = "res://assets/audio/sfx/reload.ogg"
 
 [sub_resource type="Resource" id="Sfx_enemy_telegraph"]
 script = ExtResource("1_def")
@@ -312,7 +261,7 @@ volume_db = -10.0
 pitch_jitter = 0.03
 cooldown = 0.05
 priority = 1
-override_stream = ExtResource("s_enemy_telegraph")
+override_path = "res://assets/audio/sfx/enemy_telegraph.ogg"
 
 [sub_resource type="Resource" id="Sfx_enemy_attack"]
 script = ExtResource("1_def")
@@ -326,7 +275,7 @@ tone = 0.3
 volume_db = -12.0
 pitch_jitter = 0.1
 cooldown = 0.0
-override_stream = ExtResource("s_enemy_attack")
+override_path = "res://assets/audio/sfx/enemy_attack.ogg"
 
 [sub_resource type="Resource" id="Sfx_enemy_shoot"]
 script = ExtResource("1_def")
@@ -340,7 +289,7 @@ tone = 0.6
 volume_db = -12.0
 pitch_jitter = 0.05
 cooldown = 0.0
-override_stream = ExtResource("s_enemy_shoot")
+override_path = "res://assets/audio/sfx/enemy_shoot.ogg"
 
 [sub_resource type="Resource" id="Sfx_enemy_die"]
 script = ExtResource("1_def")
@@ -354,7 +303,7 @@ tone = 0.18
 volume_db = -8.0
 pitch_jitter = 0.1
 cooldown = 0.0
-override_stream = ExtResource("s_enemy_die")
+override_path = "res://assets/audio/sfx/enemy_die.ogg"
 
 [sub_resource type="Resource" id="Sfx_player_hurt"]
 script = ExtResource("1_def")
@@ -369,7 +318,7 @@ volume_db = -5.0
 pitch_jitter = 0.0
 cooldown = 0.1
 priority = 1
-override_stream = ExtResource("s_player_hurt")
+override_path = "res://assets/audio/sfx/player_hurt.ogg"
 
 [sub_resource type="Resource" id="Sfx_perfect_dodge"]
 script = ExtResource("1_def")
@@ -384,7 +333,7 @@ volume_db = -9.0
 pitch_jitter = 0.0
 cooldown = 0.1
 priority = 2
-override_stream = ExtResource("s_perfect_dodge")
+override_path = "res://assets/audio/sfx/perfect_dodge.ogg"
 
 [sub_resource type="Resource" id="Sfx_heartbeat"]
 script = ExtResource("1_def")
@@ -399,7 +348,7 @@ volume_db = -7.0
 pitch_jitter = 0.0
 cooldown = 0.2
 priority = 1
-override_stream = ExtResource("s_heartbeat")
+override_path = "res://assets/audio/sfx/heartbeat.ogg"
 
 [sub_resource type="Resource" id="Sfx_burnout"]
 script = ExtResource("1_def")
@@ -414,7 +363,7 @@ volume_db = -8.0
 pitch_jitter = 0.0
 cooldown = 0.3
 priority = 2
-override_stream = ExtResource("s_burnout")
+override_path = "res://assets/audio/sfx/burnout.ogg"
 
 [sub_resource type="Resource" id="Sfx_rank_up"]
 script = ExtResource("1_def")
@@ -429,7 +378,7 @@ volume_db = -15.0
 pitch_jitter = 0.0
 cooldown = 0.1
 priority = 5
-override_stream = ExtResource("s_rank_up")
+override_path = "res://assets/audio/sfx/rank_up.ogg"
 
 [sub_resource type="Resource" id="Sfx_anchor"]
 script = ExtResource("1_def")
@@ -444,7 +393,7 @@ volume_db = -9.0
 pitch_jitter = 0.0
 cooldown = 0.3
 priority = 2
-override_stream = ExtResource("s_anchor")
+override_path = "res://assets/audio/sfx/anchor.ogg"
 
 [sub_resource type="Resource" id="Sfx_scrap_pickup"]
 script = ExtResource("1_def")
@@ -459,7 +408,7 @@ volume_db = -20.0
 pitch_jitter = 0.12
 cooldown = 0.03
 priority = 5
-override_stream = ExtResource("s_scrap_pickup")
+override_path = "res://assets/audio/sfx/scrap_pickup.ogg"
 
 [sub_resource type="Resource" id="Sfx_scrap_recover"]
 script = ExtResource("1_def")
@@ -474,7 +423,7 @@ volume_db = -11.0
 pitch_jitter = 0.0
 cooldown = 0.2
 priority = 5
-override_stream = ExtResource("s_scrap_recover")
+override_path = "res://assets/audio/sfx/scrap_recover.ogg"
 
 [sub_resource type="Resource" id="Sfx_heal_start"]
 script = ExtResource("1_def")
@@ -488,7 +437,7 @@ tone = 0.5
 volume_db = -15.0
 pitch_jitter = 0.0
 cooldown = 0.2
-override_stream = ExtResource("s_heal_start")
+override_path = "res://assets/audio/sfx/heal_start.ogg"
 
 [sub_resource type="Resource" id="Sfx_heal"]
 script = ExtResource("1_def")
@@ -502,7 +451,7 @@ tone = 0.6
 volume_db = -11.0
 pitch_jitter = 0.0
 cooldown = 0.1
-override_stream = ExtResource("s_heal")
+override_path = "res://assets/audio/sfx/heal.ogg"
 
 [sub_resource type="Resource" id="Sfx_collect"]
 script = ExtResource("1_def")
@@ -517,7 +466,7 @@ volume_db = -11.0
 pitch_jitter = 0.0
 cooldown = 0.1
 priority = 5
-override_stream = ExtResource("s_collect")
+override_path = "res://assets/audio/sfx/collect.ogg"
 
 [sub_resource type="Resource" id="Sfx_wall_break"]
 script = ExtResource("1_def")
@@ -531,7 +480,7 @@ tone = 0.2
 volume_db = -6.0
 pitch_jitter = 0.05
 cooldown = 0.1
-override_stream = ExtResource("s_wall_break")
+override_path = "res://assets/audio/sfx/wall_break.ogg"
 
 [sub_resource type="Resource" id="Sfx_repeater"]
 script = ExtResource("1_def")
@@ -546,7 +495,7 @@ volume_db = -10.0
 pitch_jitter = 0.0
 cooldown = 0.2
 priority = 5
-override_stream = ExtResource("s_repeater")
+override_path = "res://assets/audio/sfx/repeater.ogg"
 
 [sub_resource type="Resource" id="Sfx_quest_complete"]
 script = ExtResource("1_def")
@@ -561,7 +510,7 @@ volume_db = -10.0
 pitch_jitter = 0.0
 cooldown = 0.5
 priority = 2
-override_stream = ExtResource("s_quest_complete")
+override_path = "res://assets/audio/sfx/quest_complete.ogg"
 
 [sub_resource type="Resource" id="Sfx_ui_tick"]
 script = ExtResource("1_def")
@@ -575,7 +524,7 @@ tone = 0.9
 volume_db = -18.0
 pitch_jitter = 0.0
 cooldown = 0.02
-override_stream = ExtResource("s_ui_tick")
+override_path = "res://assets/audio/ui/ui_tick.tres"
 
 [sub_resource type="Resource" id="Sfx_purchase"]
 script = ExtResource("1_def")
@@ -589,7 +538,7 @@ tone = 0.8
 volume_db = -12.0
 pitch_jitter = 0.0
 cooldown = 0.1
-override_stream = ExtResource("s_purchase")
+override_path = "res://assets/audio/ui/purchase.ogg"
 
 [sub_resource type="Resource" id="Sfx_gate"]
 script = ExtResource("1_def")
@@ -604,7 +553,7 @@ volume_db = -10.0
 pitch_jitter = 0.0
 cooldown = 0.2
 priority = 5
-override_stream = ExtResource("s_gate")
+override_path = "res://assets/audio/sfx/gate.ogg"
 
 [sub_resource type="Resource" id="Sfx_boss_roar"]
 script = ExtResource("1_def")
@@ -619,7 +568,7 @@ volume_db = -5.0
 pitch_jitter = 0.0
 cooldown = 0.5
 priority = 2
-override_stream = ExtResource("s_boss_roar")
+override_path = "res://assets/audio/sfx/boss_roar.ogg"
 
 [sub_resource type="Resource" id="Sfx_boss_slam"]
 script = ExtResource("1_def")
@@ -634,7 +583,7 @@ volume_db = -4.0
 pitch_jitter = 0.0
 cooldown = 0.2
 priority = 2
-override_stream = ExtResource("s_boss_slam")
+override_path = "res://assets/audio/sfx/boss_slam.ogg"
 
 [sub_resource type="Resource" id="Sfx_ability_unlock"]
 script = ExtResource("1_def")
@@ -649,7 +598,7 @@ volume_db = -7.0
 pitch_jitter = 0.0
 cooldown = 0.5
 priority = 2
-override_stream = ExtResource("s_ability_unlock")
+override_path = "res://assets/audio/sfx/ability_unlock.ogg"
 
 [sub_resource type="Resource" id="Sfx_shoot_revolver"]
 script = ExtResource("1_def")
@@ -663,7 +612,7 @@ tone = 0.4
 volume_db = -7.0
 pitch_jitter = 0.04
 cooldown = 0.0
-override_stream = ExtResource("s_shoot_revolver")
+override_path = "res://assets/audio/sfx/shoot_revolver.ogg"
 
 [sub_resource type="Resource" id="Sfx_radio_static"]
 script = ExtResource("1_def")
@@ -677,7 +626,7 @@ tone = 0.45
 volume_db = -16.0
 pitch_jitter = 0.08
 cooldown = 0.15
-override_stream = ExtResource("s_radio_static")
+override_path = "res://assets/audio/sfx/radio_static.ogg"
 
 [sub_resource type="Resource" id="Sfx_memory_open"]
 script = ExtResource("1_def")
@@ -693,7 +642,7 @@ volume_db = -10.0
 pitch_jitter = 0.0
 cooldown = 0.5
 priority = 2
-override_stream = ExtResource("s_memory_open")
+override_path = "res://assets/audio/sfx/memory_open.ogg"
 
 [sub_resource type="Resource" id="Sfx_memory_beat"]
 script = ExtResource("1_def")
@@ -749,7 +698,7 @@ tone = 0.7
 volume_db = -12.0
 pitch_jitter = 0.0
 cooldown = 0.5
-override_stream = ExtResource("s_achievement")
+override_path = "res://assets/audio/ui/achievement.ogg"
 
 [sub_resource type="Resource" id="Sfx_ui_confirm"]
 script = ExtResource("1_def")
@@ -763,7 +712,7 @@ tone = 0.5
 volume_db = -15.0
 pitch_jitter = 0.0
 cooldown = 0.03
-override_stream = ExtResource("s_ui_confirm")
+override_path = "res://assets/audio/ui/ui_confirm.ogg"
 
 [sub_resource type="Resource" id="Sfx_ui_back"]
 script = ExtResource("1_def")
@@ -777,7 +726,7 @@ tone = 0.5
 volume_db = -16.0
 pitch_jitter = 0.0
 cooldown = 0.03
-override_stream = ExtResource("s_ui_back")
+override_path = "res://assets/audio/ui/ui_back.ogg"
 
 [sub_resource type="Resource" id="Sfx_boss_defeat"]
 script = ExtResource("1_def")
@@ -792,7 +741,7 @@ volume_db = -5.0
 pitch_jitter = 0.0
 cooldown = 1.0
 priority = 2
-override_stream = ExtResource("s_boss_defeat")
+override_path = "res://assets/audio/sfx/boss_defeat.ogg"
 
 [sub_resource type="Resource" id="Sfx_secret_found"]
 script = ExtResource("1_def")
@@ -807,7 +756,7 @@ volume_db = -10.0
 pitch_jitter = 0.0
 cooldown = 0.5
 priority = 2
-override_stream = ExtResource("s_secret_found")
+override_path = "res://assets/audio/sfx/secret_found.ogg"
 
 [sub_resource type="Resource" id="Sfx_footstep_concrete"]
 script = ExtResource("1_def")
@@ -822,7 +771,7 @@ volume_db = -20.0
 pitch_jitter = 0.06
 cooldown = 0.08
 priority = 4
-override_stream = ExtResource("s_footstep_concrete")
+override_path = "res://assets/audio/footsteps/footstep_concrete.tres"
 
 [sub_resource type="Resource" id="Sfx_footstep_metal"]
 script = ExtResource("1_def")
@@ -837,7 +786,7 @@ volume_db = -21.0
 pitch_jitter = 0.06
 cooldown = 0.08
 priority = 4
-override_stream = ExtResource("s_footstep_metal")
+override_path = "res://assets/audio/footsteps/footstep_metal.tres"
 
 [sub_resource type="Resource" id="Sfx_footstep_water"]
 script = ExtResource("1_def")
@@ -880,7 +829,7 @@ volume_db = -12.0
 pitch_jitter = 0.05
 cooldown = 0.08
 priority = 4
-override_stream = ExtResource("s_land_water")
+override_path = "res://assets/audio/sfx/land_soft.ogg"
 
 [resource]
 script = ExtResource("2_bank")

@@ -367,6 +367,15 @@ func _after_change(d: SettingDef) -> void:
 		&"sfx":
 			AudioManager.apply_volume()
 			AudioManager.play_sfx(&"ui_tick")
+		&"effects":
+			# An SFX-bus sound, so the Effects slider previews what it moves.
+			AudioManager.apply_volume()
+			AudioManager.play_sfx(&"hit")
+		&"ambience":
+			# A drip on the Ambience bus (the beds keep playing while paused).
+			AudioManager.apply_volume()
+			if AudioManager.ambience:
+				AudioManager.ambience.preview()
 	if d.key == &"ui_scale" or d.key == &"high_contrast":
 		_restyle()
 		return

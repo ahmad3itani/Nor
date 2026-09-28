@@ -11,6 +11,12 @@ hub = "res://assets/audio/music/mus_relay.ogg"
 flow = "res://assets/audio/music/mus_flow.ogg"
 boss = "res://assets/audio/music/mus_boss.ogg"
 aftermath_gain = 0.6
+mix_db = -13.0
+slot_db = {
+"boss": 3.0,
+"flow": 3.0,
+"title": 6.0
+}
 boss_by_room = {}
 extras = {}
 
@@ -19,12 +25,14 @@ script = ExtResource("1_set")
 district = &"undercity"
 explore = "res://assets/audio/music/mus_undercity_explore.ogg"
 aftermath_gain = 0.6
+mix_db = -13.0
 
 [sub_resource type="Resource" id="Set_lowlight"]
 script = ExtResource("1_set")
 district = &"lowlight"
 explore = "res://assets/audio/music/mus_lowlight_explore.ogg"
 aftermath_gain = 0.6
+mix_db = -13.0
 
 [resource]
 script = ExtResource("2_lib")

@@ -29,7 +29,17 @@ var _headless: bool = false
 var _players: Array[AudioStreamPlayer] = [null, null]
 
 
+## Whether the tree was paused last frame (the pause low-pass follows it).
+var _was_paused: bool = false
+
+
 func _ready() -> void:
+	# Beds and drips keep playing through a paused tree (dialogue, menus,
+	# memory vignettes): a pausable AudioStreamPlayer stream-pauses on
+	# NOTIFICATION_PAUSED and would cut the rain dead. While paused the
+	# Ambience bus is low-passed instead (SOUND_DIRECTION section 3), and the
+	# Ambience slider stays audible in the paused settings menu.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_headless = DisplayServer.get_name() == "headless"
 	if ResourceLoader.exists(BANK_PATH):
 		bank = load(BANK_PATH) as AmbienceBank
@@ -114,6 +124,23 @@ func _set_slot(slot: int, bed: StringName) -> void:
 	_players[slot] = p
 	var fade_in := create_tween()
 	fade_in.tween_property(p, "volume_db", bank.volume_for(id), FADE)
+
+
+func _process(_delta: float) -> void:
+	var paused := get_tree().paused
+	if paused == _was_paused:
+		return
+	_was_paused = paused
+	var mgr := get_parent()
+	if mgr != null and mgr.has_method(&"set_ambience_muffled"):
+		mgr.call(&"set_ambience_muffled", paused)
+
+
+## A one-shot drip on the Ambience bus: the Ambience volume row's preview
+## (plays while paused, like the beds).
+func preview() -> void:
+	if emitter != null:
+		emitter.play_once()
 
 
 func _exit_tree() -> void:

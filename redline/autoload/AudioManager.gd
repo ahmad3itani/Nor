@@ -6,7 +6,7 @@ extends Node
 ## slider, so a player can quiet combat without losing menu feedback.
 ##
 ## Presentation overhaul (SOUND_DIRECTION sections 3, 6, 7):
-## - each id plays its real asset (`override_stream`: an OGG or an
+## - each id plays its real asset (`override_path`: an OGG or an
 ##   AudioStreamRandomizer of takes) and falls back to the SfxSynth render of
 ##   its parameters when there is none, so a missing file never goes silent;
 ## - 16 voices; when all are busy a sound takes the least important
@@ -14,7 +14,8 @@ extends Node
 ## - an "Ambience" bus (sfx_volume x ambience_volume) with the
 ##   AmbienceDirector child (beds per room, drip emitter) and a
 ##   FootstepDirector child (steps per surface);
-## - a mild duck of the Music bus under loud SFX (a sidechained compressor).
+## - a mild duck of the Music bus under loud SFX (a sidechained compressor),
+##   one SFX reverb set per room preset and an Ambience low-pass while paused.
 ## Pitch jitter uses this node's own RandomNumberGenerator, never the global
 ## one, so sound never shifts gameplay randomness.
 
@@ -25,6 +26,20 @@ const MUSIC_BUS := &"Music"
 const AMBIENCE_BUS := &"Ambience"
 const AMBIENCE_FX_BUS := &"AmbienceFx"
 const VOICES := 16
+## Ambience low-pass cutoff while the tree is paused (SOUND_DIRECTION section 3).
+const PAUSE_LOWPASS_HZ := 1200.0
+## SFX reverb per RoomPresentation.reverb preset: [room_size, damping, wet]
+## (SOUND_DIRECTION section 3). Unknown or empty presets play dry.
+const REVERB_TABLE := {
+	&"ward": [0.45, 0.5, 0.14],
+	&"shaft": [0.65, 0.35, 0.18],
+	&"tunnel": [0.8, 0.3, 0.2],
+	&"street": [0.3, 0.7, 0.06],
+	&"interior": [0.25, 0.6, 0.09],
+	&"roof": [0.15, 0.8, 0.03],
+	&"relay": [0.3, 0.75, 0.08],
+	&"void": [0.9, 0.2, 0.24],
+}
 ## Seconds a voice counts as busy when its stream has no known length.
 const UNKNOWN_LENGTH := 1.0
 
@@ -42,6 +57,8 @@ var _voice_priority: PackedInt32Array = PackedInt32Array()
 var _voice_start: PackedInt64Array = PackedInt64Array()
 var _voice_end: PackedInt64Array = PackedInt64Array()
 var _rng := RandomNumberGenerator.new()
+## The reverb preset the SFX bus is set to (&"" = dry); tests read it.
+var reverb_preset: StringName = &""
 
 
 func _ready() -> void:
@@ -68,7 +85,19 @@ func _ready() -> void:
 	# Stingers the bus already announces (SOUND_DIRECTION section 5, C5).
 	EventBus.boss_defeated.connect(func(_id: String) -> void: play_sfx(&"boss_defeat"))
 	EventBus.secret_found.connect(func(_id: String) -> void: play_sfx(&"secret_found"))
+	EventBus.room_loaded.connect(func(r: Node) -> void: apply_room_reverb(r))
 	apply_volume()
+
+
+## The definition's real asset, or null when it has none, its file is gone
+## (a stripped build) or it fails to load (a randomizer missing a take): the
+## caller then plays the synth. Paths, not ext_resources (see SfxDefinition).
+static func override_for(def: SfxDefinition) -> AudioStream:
+	if def.override_stream:
+		return def.override_stream
+	if def.override_path == "" or not ResourceLoader.exists(def.override_path):
+		return null
+	return load(def.override_path) as AudioStream
 
 
 ## The real asset when the definition has one, else the synth render.
@@ -81,7 +110,8 @@ func load_bank(bank: SfxBank) -> void:
 		return
 	for def in bank.sounds:
 		_defs[def.id] = def
-		_streams[def.id] = def.override_stream if def.override_stream else SfxSynth.render(def, hash(def.id))
+		var real := override_for(def)
+		_streams[def.id] = real if real else SfxSynth.render(def, hash(def.id))
 		_lengths[def.id] = stream_length(_streams[def.id])
 
 
@@ -190,6 +220,48 @@ func busy_ids(now: int = Time.get_ticks_msec()) -> Array[StringName]:
 	return out
 
 
+## Sets the SFX reverb from a room's presentation row (its own entry, else
+## its district default); labs and unmapped rooms play dry.
+func apply_room_reverb(room: Node) -> void:
+	var pres: RoomPresentation = PresentationIndex.for_room_node(room) if is_instance_valid(room) else null
+	set_reverb(pres.reverb if pres != null else &"")
+
+
+func set_reverb(preset: StringName) -> void:
+	reverb_preset = preset if REVERB_TABLE.has(preset) else &""
+	var sfx := AudioServer.get_bus_index(SFX_BUS)
+	var i := _effect_index(sfx, "AudioEffectReverb") if sfx >= 0 else -1
+	if i < 0:
+		return
+	var rv := AudioServer.get_bus_effect(sfx, i) as AudioEffectReverb
+	var row: Array = REVERB_TABLE.get(reverb_preset, [0.3, 0.5, 0.0])
+	rv.room_size = row[0]
+	rv.damping = row[1]
+	rv.wet = row[2]
+	rv.dry = 1.0
+
+
+## The Ambience low-pass on while the tree is paused (AmbienceDirector).
+func set_ambience_muffled(on: bool) -> void:
+	var amb := AudioServer.get_bus_index(AMBIENCE_BUS)
+	var i := _effect_index(amb, "AudioEffectLowPassFilter") if amb >= 0 else -1
+	if i >= 0:
+		AudioServer.set_bus_effect_enabled(amb, i, on)
+
+
+func ambience_muffled() -> bool:
+	var amb := AudioServer.get_bus_index(AMBIENCE_BUS)
+	var i := _effect_index(amb, "AudioEffectLowPassFilter") if amb >= 0 else -1
+	return i >= 0 and AudioServer.is_bus_effect_enabled(amb, i)
+
+
+static func _effect_index(bus: int, cls: String) -> int:
+	for i in AudioServer.get_bus_effect_count(bus):
+		if AudioServer.get_bus_effect(bus, i).get_class() == cls:
+			return i
+	return -1
+
+
 ## Frees every voice (tests use it between stealing checks).
 func stop_all() -> void:
 	for i in _voices.size():
@@ -198,8 +270,13 @@ func stop_all() -> void:
 		_voice_end[i] = 0
 
 
+## SFX is created last on purpose: AudioServer runs the buses from the
+## highest index down, applying each bus's effects and then its fader in
+## place. Music's sidechain compressor reads the SFX buffer, so SFX must be
+## processed (and faded) before Music: with a higher index the duck follows
+## the Effects slider (at 0 the music never pumps).
 func _ensure_bus() -> void:
-	for bus_name: StringName in [SFX_BUS, UI_BUS, MUSIC_BUS, AMBIENCE_BUS, AMBIENCE_FX_BUS]:
+	for bus_name: StringName in [UI_BUS, MUSIC_BUS, AMBIENCE_BUS, AMBIENCE_FX_BUS, SFX_BUS]:
 		if AudioServer.get_bus_index(bus_name) >= 0:
 			continue
 		AudioServer.add_bus()
@@ -215,6 +292,21 @@ func _setup_mix() -> void:
 	var fx := AudioServer.get_bus_index(AMBIENCE_FX_BUS)
 	if fx >= 0 and AudioServer.get_bus_effect_count(fx) == 0:
 		AudioServer.add_bus_effect(fx, AudioEffectPanner.new())
+	# SOUND_DIRECTION section 3: the Ambience low-pass while paused (disabled
+	# until the tree pauses, AmbienceDirector toggles it) and one SFX reverb
+	# whose size/damping/wet follow the room's preset (dry until set).
+	var amb := AudioServer.get_bus_index(AMBIENCE_BUS)
+	if amb >= 0 and _effect_index(amb, "AudioEffectLowPassFilter") < 0:
+		var lp := AudioEffectLowPassFilter.new()
+		lp.cutoff_hz = PAUSE_LOWPASS_HZ
+		AudioServer.add_bus_effect(amb, lp, -1)
+		AudioServer.set_bus_effect_enabled(amb, AudioServer.get_bus_effect_count(amb) - 1, false)
+	var sfx := AudioServer.get_bus_index(SFX_BUS)
+	if sfx >= 0 and _effect_index(sfx, "AudioEffectReverb") < 0:
+		var rv := AudioEffectReverb.new()
+		rv.dry = 1.0
+		rv.wet = 0.0
+		AudioServer.add_bus_effect(sfx, rv)
 	var music := AudioServer.get_bus_index(MUSIC_BUS)
 	if music < 0:
 		return

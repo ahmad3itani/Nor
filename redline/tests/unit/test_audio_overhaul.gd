@@ -66,9 +66,11 @@ func test_every_bank_id_resolves_to_a_stream() -> void:
 	for def in bank.sounds:
 		var s := AudioManager.stream_for(def.id)
 		check(s != null, "%s has no stream" % def.id)
-		if def.override_stream != null:
+		check(def.override_stream == null, "%s: the bank stores paths, never streams" % def.id)
+		if def.override_path != "":
 			overridden += 1
-			check(s == def.override_stream, "%s must play its override" % def.id)
+			check(ResourceLoader.exists(def.override_path), "%s: override file %s exists" % [def.id, def.override_path])
+			check(not (s is AudioStreamWAV), "%s must play its override" % def.id)
 		else:
 			check(s is AudioStreamWAV, "%s without an override must play the synth" % def.id)
 		# The synth stays the fallback for every id: render always synthesises.
@@ -77,13 +79,13 @@ func test_every_bank_id_resolves_to_a_stream() -> void:
 		check(def.priority >= 1 and def.priority <= 5, "%s: priority tier %d" % [def.id, def.priority])
 	check(overridden >= 45, "the phase-A assets are wired (%d overrides)" % overridden)
 	for id in SYNTH_ONLY:
-		check(_def(bank, id) != null and _def(bank, id).override_stream == null, "%s stays on the synth" % id)
+		check(_def(bank, id) != null and _def(bank, id).override_path == "", "%s stays on the synth" % id)
 
 
 func test_randomizer_ids_and_ui_assets() -> void:
 	var bank := load(BANK_PATH) as SfxBank
 	for id: StringName in [&"jump", &"slash", &"hit", &"ui_tick", &"footstep_concrete", &"footstep_metal"]:
-		check(_def(bank, id).override_stream is AudioStreamRandomizer, "%s plays a randomizer of takes" % id)
+		check(AudioManager.stream_for(id) is AudioStreamRandomizer, "%s plays a randomizer of takes" % id)
 	for id: StringName in [&"ui_confirm", &"ui_back", &"achievement"]:
 		check(AudioManager.bus_for(id) == &"UI", "%s rides the UI bus" % id)
 	check(AudioManager.bus_for(&"footstep_concrete") == &"SFX", "footsteps ride the SFX bus")
@@ -91,19 +93,37 @@ func test_randomizer_ids_and_ui_assets() -> void:
 
 
 func test_missing_override_falls_back_to_synth() -> void:
-	var def := SfxDefinition.new()
-	def.id = &"t08_missing"
-	def.duration = 0.1
-	# A missing file loads as null: exactly what a stripped build sees.
-	var missing := "res://assets/audio/sfx/%s.ogg" % "t08_not_there"
-	def.override_stream = load(missing) as AudioStream if ResourceLoader.exists(missing) else null
+	# The real failure: the shipped bank text with one row pointing at a file
+	# that is not there (a stripped build or a removed asset). The bank must
+	# still load (no [ext_resource] to a missing file), that id plays the
+	# synth and every other id keeps its asset.
+	var text := FileAccess.get_file_as_string(BANK_PATH)
+	var gone := 'override_path = "res://assets/audio/sfx/%s.ogg"' % "t08_not_there"
+	var edited := text.replace('override_path = "res://assets/audio/sfx/dash.ogg"', gone)
+	check(edited != text, "the bank has a dash override row to break")
+	var dir := "user://test_audio_bank"
+	DirAccess.make_dir_recursive_absolute(dir)
+	var path := dir + "/bank.tres"
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(edited)
+	f.close()
+	var bank := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as SfxBank
+	DirAccess.remove_absolute(path)
+	DirAccess.remove_absolute(dir)
+	check(bank != null, "a bank with a missing override file still loads")
+	if bank == null:
+		return
+	AudioManager.load_bank(bank)
+	check(AudioManager.stream_for(&"dash") is AudioStreamWAV, "the missing override falls back to the synth")
+	check(AudioManager.stream_for(&"dodge") is AudioStreamOggVorbis, "other ids keep their files")
+	check(AudioManager.stream_for(&"jump") is AudioStreamRandomizer, "randomizer ids keep their takes")
+	# An in-memory stream still wins (tools and tests).
 	var real := SfxDefinition.new()
 	real.id = &"t08_real"
 	real.override_stream = load("res://assets/audio/sfx/dash.ogg") as AudioStream
-	var bank := SfxBank.new()
-	bank.sounds = [def, real]
-	AudioManager.load_bank(bank)
-	check(AudioManager.stream_for(&"t08_missing") is AudioStreamWAV, "a missing override falls back to the synth")
+	var b2 := SfxBank.new()
+	b2.sounds = [real]
+	AudioManager.load_bank(b2)
 	check(AudioManager.stream_for(&"t08_real") is AudioStreamOggVorbis, "a present override plays the file")
 
 
@@ -186,6 +206,57 @@ func test_ambience_bus_follows_sfx_times_ambience_volume() -> void:
 		if AudioServer.get_bus_effect(music, i) is AudioEffectCompressor:
 			duck = AudioServer.get_bus_effect(music, i)
 	check(duck != null and duck.sidechain == &"SFX" and duck.ratio <= 3.0, "music ducks mildly under SFX")
+	# AudioServer runs buses from the highest index down: SFX must come after
+	# Music so the sidechain reads the post-fader SFX (Effects at 0 = no pump).
+	check(AudioServer.get_bus_index(&"SFX") > music, "SFX is processed (faded) before Music reads it")
+
+
+func test_room_reverb_presets_reach_the_sfx_bus() -> void:
+	var sfx := AudioServer.get_bus_index(&"SFX")
+	var rv: AudioEffectReverb = null
+	for i in AudioServer.get_bus_effect_count(sfx):
+		if AudioServer.get_bus_effect(sfx, i) is AudioEffectReverb:
+			rv = AudioServer.get_bus_effect(sfx, i)
+	check(rv != null, "the SFX bus has one reverb")
+	if rv == null:
+		return
+	for preset: StringName in PresentationIndex.REVERB_PRESETS:
+		check(AudioManager.REVERB_TABLE.has(preset), "reverb table covers %s" % preset)
+	AudioManager.set_reverb(&"tunnel")
+	check_near(rv.room_size, 0.8, 0.001, "tunnel room size")
+	check_near(rv.wet, 0.2, 0.001, "tunnel wet")
+	check_near(rv.dry, 1.0, 0.001, "dry stays at 1")
+	var pres := PresentationIndex.for_room("res://world/rooms/lowlight/NeonRoofs.tscn")
+	check(pres != null and pres.reverb == &"roof", "Neon Roofs uses the roof preset")
+	AudioManager.set_reverb(pres.reverb)
+	check_near(rv.wet, 0.03, 0.001, "roof wet")
+	AudioManager.set_reverb(&"")
+	check_near(rv.wet, 0.0, 0.001, "no preset plays dry")
+	check(AudioManager.reverb_preset == &"", "dry preset recorded")
+
+
+func test_ambience_keeps_playing_through_pause() -> void:
+	var amb := AudioManager.ambience
+	check(amb.process_mode == Node.PROCESS_MODE_ALWAYS, "beds are not stream-paused by a paused tree")
+	check(amb.emitter.can_process(), "the drip emitter inherits it")
+	get_tree().paused = true
+	for i in 3:
+		await get_tree().process_frame
+	var muffled := AudioManager.ambience_muffled()
+	get_tree().paused = false
+	for i in 3:
+		await get_tree().process_frame
+	check(muffled, "the Ambience bus is low-passed while paused")
+	check(not AudioManager.ambience_muffled(), "and open again after")
+	check(amb.emitter.stream == null or amb.emitter.play_once(), "the Ambience preview drip plays")
+
+
+func test_water_landing_uses_land_water() -> void:
+	var fb_script := load("res://player/animation/PlayerFeedback.gd") as GDScript
+	var fb: Node = fb_script.new()
+	check(fb.get(&"sfx_land_water") == &"land_water", "a water landing id exists")
+	check(AudioManager.has_sfx(&"land_water"), "and the bank plays it")
+	fb.free()
 
 
 # --- ambience ---------------------------------------------------------------
@@ -357,8 +428,12 @@ func test_track_for_every_state_and_district() -> void:
 			var got := MusicDirector._track_for(st, d, "")
 			check(got.has("path") and got.has("gain"), "%s/%d returns a track record" % [d, st])
 	var after := MusicDirector._track_for(S.AFTERMATH, &"undercity", "")
-	check_near(float(after["gain"]), 0.6, 0.001, "aftermath plays the explore track lower")
-	check_near(float(MusicDirector._track_for(S.BOSS, &"lowlight", "")["gain"]), 1.0, 0.001, "boss at full gain")
+	var boss := float(MusicDirector._track_for(S.BOSS, &"lowlight", "")["gain"])
+	var explore := float(MusicDirector._track_for(S.EXPLORE, &"lowlight", "")["gain"])
+	check_near(float(after["gain"]), explore * 0.6, 0.001, "aftermath plays the explore track lower")
+	# SOUND_DIRECTION section 3: music is the lowest tier; boss sits above explore.
+	check(explore < db_to_linear(-8.0), "explore music sits well under 0 dB (%.3f)" % explore)
+	check(boss > explore and boss < 1.0, "boss louder than explore, still under unity (%.3f)" % boss)
 
 
 func test_track_mode_details() -> void:

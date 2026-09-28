@@ -50,7 +50,7 @@ description = "Combat, movement and world sounds."
 assist_tag = &""
 dev_only = false
 emits_settings_changed = true
-preview = &"sfx"
+preview = &"effects"
 action = &""
 persisted = true
 
@@ -84,7 +84,7 @@ description = "Rain, hum, drips and other room sounds."
 assist_tag = &""
 dev_only = false
 emits_settings_changed = true
-preview = &"sfx"
+preview = &"ambience"
 action = &""
 persisted = true
 

@@ -217,7 +217,8 @@ func _track_stem_mix(s: State) -> Dictionary:
 	return mix
 
 
-## {path, gain, resumable} for a state in a music district; path "" means
+## {path, gain, resumable} for a state in a music district (gain: the set's
+## MusicSet.gain_for level, times aftermath_gain for AFTERMATH); path "" means
 ## "no track here: play the stems". Asks the district's set, then the
 ## default set; a path whose file is missing counts as none.
 func _track_for(s: int, district: StringName = _music_district, room_path: String = _room_path) -> Dictionary:
@@ -229,18 +230,18 @@ func _track_for(s: int, district: StringName = _music_district, room_path: Strin
 		for ms in chain:
 			var p := str(ms.boss_by_room.get(room_path, ""))
 			if _exists(p):
-				return {"path": p, "gain": 1.0, "resumable": false}
+				return {"path": p, "gain": ms.gain_for(&"boss"), "resumable": false}
 	var slot: StringName = SLOTS[s]
 	for ms in chain:
 		var p := ms.slot(slot)
 		if _exists(p):
 			# Explore and the hub resume where they left off; flow and boss restart.
-			return {"path": p, "gain": 1.0, "resumable": s == State.HUB or s == State.EXPLORE}
+			return {"path": p, "gain": ms.gain_for(slot), "resumable": s == State.HUB or s == State.EXPLORE}
 	if s == State.AFTERMATH:
 		for ms in chain:
 			var p := ms.slot(&"explore")
 			if _exists(p):
-				return {"path": p, "gain": ms.aftermath_gain, "resumable": true}
+				return {"path": p, "gain": ms.gain_for(&"explore") * ms.aftermath_gain, "resumable": true}
 	return none
 
 
@@ -345,10 +346,12 @@ func _apply_decks(path: String, gain: float, resumable: bool, fade: float) -> vo
 ## HUB extras (MusicSet.extras): free-time loops over the hub track.
 func _apply_extras(track_mode: bool, fade: float) -> void:
 	var extras := {}
+	var extras_gain := 1.0
 	if track_mode and state == State.HUB and _library != null:
 		for ms in _library.chain(_music_district):
 			if not ms.extras.is_empty():
 				extras = ms.extras
+				extras_gain = ms.gain_for(&"hub")
 				break
 	var mix := _mix_for(State.HUB) if state == State.HUB else {}
 	for stem: Variant in extras:
@@ -365,7 +368,7 @@ func _apply_extras(track_mode: bool, fade: float) -> void:
 			p.play()
 			_extra_players[sn] = p
 	for sn: StringName in _extra_players:
-		var target := linear_to_db(maxf(float(mix.get(sn, 0.0)) if extras.has(sn) else 0.0, 0.0001))
+		var target := linear_to_db(maxf(float(mix.get(sn, 0.0)) * extras_gain if extras.has(sn) else 0.0, 0.0001))
 		var tw := create_tween()
 		tw.tween_property(_extra_players[sn], "volume_db", target, maxf(fade, 0.01))
 

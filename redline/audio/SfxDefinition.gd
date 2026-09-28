@@ -23,10 +23,17 @@ enum Wave { SQUARE, TRIANGLE, SINE, NOISE }
 @export_range(0.0, 0.5) var pitch_jitter: float = 0.05
 ## Minimum seconds between plays of this sound (stops slide/land spam).
 @export var cooldown: float = 0.0
-## A real asset (OGG or AudioStreamRandomizer) that replaces the synth when
-## set; AudioManager falls back to the synth parameters above when it is null
-## (a missing file leaves it null), so the placeholder always stays playable.
-@export var override_stream: AudioStream
+## The real asset (an OGG or an AudioStreamRandomizer .tres of takes) that
+## replaces the synth, as a res:// path string. A path, not an ext_resource:
+## in Godot 4.3 one missing [ext_resource] makes the whole bank .tres fail to
+## load, which would silence every id. AudioManager loads it lazily behind
+## ResourceLoader.exists and falls back to the synth parameters above when the
+## file is missing or fails to load, so removing or excluding a file needs no
+## code or data change.
+@export_file("*.ogg", "*.tres", "*.wav") var override_path: String = ""
+## An in-memory override (tests, tools); wins over override_path when set.
+## Not exported, so it is never saved in the bank (see above).
+var override_stream: AudioStream
 ## Mix tier (SOUND_DIRECTION section 3): 1 is never masked (hurt, telegraph,
 ## critical heartbeat), 5 is pickup chatter. When every voice is busy a new
 ## sound takes the least important, oldest voice, never a more important one.

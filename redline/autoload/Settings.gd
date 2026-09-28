@@ -68,8 +68,8 @@ var memories_at_anchors: bool = true
 ## [audio] Menu and UI sounds (the "UI" bus).
 var ui_volume: float = 0.8:
 	set(v): ui_volume = clampf(v, 0.0, 1.0)
-## [audio] Ambience beds and room sounds (presentation overhaul; the
-## AmbienceDirector applies it).
+## [audio] Ambience beds and room sounds (presentation overhaul;
+## AudioManager.apply_volume() sets the Ambience bus to sfx x ambience).
 var ambience_volume: float = 0.8:
 	set(v): ambience_volume = clampf(v, 0.0, 1.0)
 ## [accessibility] High-contrast UI and world cues.

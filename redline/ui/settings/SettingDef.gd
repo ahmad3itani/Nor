@@ -39,7 +39,8 @@ const LOC_EXEMPT := ["key", "section", "cfg_key", "assist_tag", "preview", "acti
 ## Emit settings_changed as soon as the value changes (rows that restyle
 ## visible UI); every row still emits it when Settings closes.
 @export var emits_settings_changed: bool = true
-## &"shake" pulses the camera, &"sfx" plays ui_tick after a change.
+## &"shake" pulses the camera, &"sfx" plays ui_tick (UI bus), &"effects" an
+## SFX-bus hit and &"ambience" an Ambience-bus drip after a change.
 @export var preview: StringName = &""
 ## ACTION rows: which handler SettingsMenu runs (&"variant", &"language",
 ## &"device", ...).

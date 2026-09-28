@@ -75,6 +75,19 @@ func step(delta: float) -> bool:
 	return true
 
 
+## One centred drip now, outside the schedule (the Ambience volume preview);
+## false when there is no stream. Never touches the RNG.
+func play_once() -> bool:
+	if stream == null:
+		return false
+	if _player:
+		_set_pan(0.0)
+		_player.stream = stream
+		_player.volume_db = volume_db
+		_player.play()
+	return true
+
+
 func _process(delta: float) -> void:
 	step(delta)
 
