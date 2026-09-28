@@ -7,6 +7,25 @@
 - [ ] Try the M6 editor tools in Godot: drop `GapChallenge`, `ClimbSteps`, `Doorway` and `JumpArcPreview` into a room and check the baking, rebuilds and warnings (K-40).
 - [ ] Confirm or overrule D-053 (M6 before §44) and D-056 (Python generator as a dev dependency).
 
+## Presentation overhaul: humans
+- [ ] **Listen to every audio asset** (K-OV-1): SFX takes, ambience beds and the six music tracks, the loop points (K-OV-2), `amb_relay_hub` for speech, and Relay growth over `mus_relay` (D-171).
+- [ ] Check the free ElevenLabs plan's commercial terms for every "check plan terms" row in `assets/SOURCES.csv` before any public build (D-170, K-OV-9).
+- [ ] Confirm or overrule the overhaul flags: D-170 (AI and code art as final), D-171 (full tracks, stems as fallback), D-172 (480 px planes, background-only grade), D-173 (4 alpha levels for atmosphere), D-174 (ambient motion setting), D-176 (Lowlight green neon left as is), D-180 (web budget: raise to about 20 MB or drop more tracks).
+- [ ] Look at the before/after pairs in `OVERHAUL_REPORT.md` §3 and at `--tour=overhaul`. Judge the code-painted depth (K-OV-8) and Krail's readability (K-OV-7).
+- [ ] Approve or refuse the F2 recolour of Lowlight's green neon to rose `#ff7ab0`: a roomgen change (D-176).
+
+## Presentation overhaul follow-ups
+- [ ] **AI regeneration queue**, when credits or a connected generator (Pika was asked for, not connected) exist. Every item keeps its file name, size and spec ids, so no code changes (`OVERHAUL_REPORT.md` §8):
+  - [ ] Environments: the 41 env items in `tools/assetgen/env_queue.json` (about 8.9k credits; `env_process.py <id>` makes each plane from its raw download and `paint_env.py` then leaves it alone).
+  - [ ] `title_logo` first (about 380 credits), then the menu and dialogue frames as a filigree probe (K-OV-5).
+  - [ ] Audio: the staged nodes in `tools/assetgen/redo_gen_plan.json` and `sfx_nodes.txt`. About 260 credits for the remaining P1 SFX and missing takes, about 370 for P2/P3, and about 900 per 60 s of music: regenerate `mus_boss` and `mus_flow` at 90–120 s, then make `mus_memory`, `mus_boss_krail`, `mus_lowlight_flow` and the 8 missing beds (K-OV-3). Redo `shoot_pistol` (K-OV-4).
+- [ ] Web: decide D-180. If the budget stays, stream or drop more tracks for the full web build (K-OV-10).
+- [ ] Move the six older capture tours into the TourSandbox (K-M9-T4) now that the before frames exist.
+- [ ] **Later phases the user asked for, not started** (each needs its own plan; bible §44 and redline/CLAUDE.md say no new districts before the playtest unless the user asks):
+  - [ ] **Power effects and upgrades:** this phase added the presentation hooks only (`PowerFlourish` on circuit, weapon and ability grants; `CoreAura` in Flow; `JuiceDirector`). New upgrade gameplay (what an upgrade does, where it is bought) is a design change for DECISIONS.
+  - [ ] **The Ironworks district** (M7 batch 2): the presentation side plugs in as data (`CONTENT_PIPELINE.md`, "How a new district plugs in"). The district still needs its thesis in `DISTRICTS.md`, rooms, enemies and a boss.
+  - [ ] **More Act I rooms:** each one needs a roomgen script, a route test and a `rooms.tres` row. Its backdrop kind is reused or added to `OverhaulTour.KIND_ROOMS`.
+
 ## M9 (endgame / accessibility): humans
 - [ ] Confirm or overrule the M9 flags: D-140 (Act I scope, before §44), D-141 (no storefront adapter built; Steam stays a documented slot), D-142 (one profile, global settings), D-144, D-146 (incl. style_s / style_redline without reachability evidence, K-M9-S1), D-148 (challenge set, no weapon mastery), D-149 (neutral tags, medal ladder), D-150 (rig ghosts, medal ratios), D-153 (NG+ after Act I, no player restore of the archive), D-154 (the Deep Rig after Act I, 'Deep Rig' name, pars), D-155, D-156, D-157 (rumble on by default, settings global), D-158 (ui_* fixed), D-160, D-161, D-162 (source-text msgids), D-163 (memory mark stand-ins •/◊ vs D-114/D-120), D-164, D-165 (Undercity demo, CTA copy), D-166 (release settings, bundle ids), D-168, D-169 (the training rig until Bramm).
 - [ ] Approve or replace the demo CTA copy and the bundle ids before any public build (D-165, D-166).

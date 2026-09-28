@@ -1,5 +1,38 @@
 # REDLINE Changelog
 
+## 0.9.x-overhaul: presentation overhaul
+
+Art, animation, VFX, atmosphere, UI and audio in the Hollow Knight mood, inside the Art Bible frame. Presentation only: no collision, room geometry, route, gameplay number, economy value or save key changed. Every placeholder system stays as the fallback. Report with before/after frames: `OVERHAUL_REPORT.md`. Decisions D-170..D-180. The user's later request ("use pika for the assets… levels… power effect… upgrades") is covered here only by power-effect hooks. Pika is not connected and the generator accounts were at 0 credits, so no generation calls were made in this phase. Levels and upgrade gameplay are TODO.
+
+### Assets and pipeline
+- **`assets/`**: character sheets for Rook, 7 enemies, both bosses, the Sweeper, the Collector Eye and 5 NPCs, plus portraits and weapons, all built as code pixel rigs. Also: VFX grey-mask sheets, the UI kit, the Deep Rig tiles, and code-painted parallax planes, tilesets, foreground sets and critters for every backdrop kind. Generator output: 2 images (`title_sky`, `uc_far`), 6 music tracks, ambience beds and SFX/UI/footstep takes.
+- **`tools/assetgen/`**: every builder, rig, painter and audio processor. `assetgen.py --check` covers rebuild drift, provenance, loop flags and reserved colours. Sources live in `art/source/`.
+- **`assets/SOURCES.csv`**: provenance for every file. 9,790.2 credits in total; generator rows are marked "check plan terms" (D-170).
+- ArtValidator: soft alpha is allowed in `assets/vfx/atmos/` (4 levels, D-173), and the name rule now admits single-word names.
+
+### World and atmosphere
+- **Painted backdrops** (D-172, D-177): 14 `BackdropSet`s of 480 px A/B planes with a motion ladder from sky to foreground. They add fog bands, light shafts, lamp and neon glows, a vignette, a background-only district grade, ambient particles and ambient life (moths, rats, gulls, eels, drips, steam, a train), plus swaying cables and cloth. The title has its own layered backdrop with Rook on the ledge. `GrayboxBlock` draws the district tileset. The procedural skyline and rain remain the fallback.
+- **Per-room presentation as data** (`data/presentation/rooms.tres`): backdrop kind, ambience, reverb, footstep surface and music district. Room scenes are unchanged.
+- **Ambient motion** setting (Full / Reduced / Off, D-174). Background dim covers the new planes.
+
+### Characters and combat juice
+- Rook's sprite covers every state and attack, with new hooks (turn, land, hard land, idle fidget, death, interact, rest, per-weapon shots), a mask-tint overlay for the visor and Core seam, and live-frame afterimages (D-178).
+- Enemy, boss and NPC sprites have hit reactions, death animations, boss attack families and phase poses, and colour moves off reserved hues (D-175).
+- Sprite hit sparks and slash smears, death bursts, dust and splash, muzzle flashes and projectile heads, shockwaves and arcs, heal and anchor-rest blooms, the perfect-dodge flourish, Pulse motes, the Core aura in Flow, and **power flourishes** on circuit, weapon and ability grants (`PowerFlourish`, the hook for the later power-effects/upgrades phase).
+
+### UI
+- UI kit: HUD ampoule pips and Core frame, the boss bar, menu and dialogue frames, the ember cursor, per-line dialogue portraits, map icons, style-rank glyphs and the title logo with the ember crack.
+
+### Audio
+- SFX assets through `override_stream`, with the synth as the fallback. New ids, 16 voices with priority stealing, footsteps per surface and a music duck (D-179).
+- Ambience beds per room on a new Ambience bus, and a drip emitter.
+- **Music track mode** (D-171): full tracks per district and intensity on two crossfading decks. The 5 synth stems remain the fallback and the Relay growth layers.
+
+### Performance, builds and tools
+- `PerfProbe -- --budget` checks per backdrop kind (mean within 115 % of before or under 4 ms, p95 under 8 ms, ambient and VFX caps). Every room stays under 2 ms mean headless.
+- Web and demo presets leave out some music and beds behind string-path guards: web gz is 13.55 MB full (over budget, D-180) and 12.56 MB demo.
+- `--tour=overhaul` capture tour (37 frames, exits 1 on a missing shot) and before/after frames in `Docs/media/overhaul/`.
+
 ## 0.9.0-m9: Endgame / Steam / Accessibility (Act I scope)
 
 Bible §36 M9: "achievements, leaderboards/ghosts where viable, NG+, The Null, settings, localization readiness and demo flow." Act I scope, started before the §44 playtest because the user asked (D-140). Report: `M9_ENDGAME_REPORT.md`. Decisions D-140..D-169.
