@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SfxBank" load_steps=60 format=3]
+[gd_resource type="Resource" script_class="SfxBank" load_steps=70 format=3]
 
 [ext_resource type="Script" path="res://audio/SfxDefinition.gd" id="1_def"]
 [ext_resource type="Script" path="res://audio/SfxBank.gd" id="2_bank"]
@@ -831,6 +831,156 @@ cooldown = 0.08
 priority = 4
 override_path = "res://assets/audio/sfx/land_soft.ogg"
 
+[sub_resource type="Resource" id="Sfx_charge_start"]
+script = ExtResource("1_def")
+id = &"charge_start"
+wave = 2
+duration = 0.35
+freq_start = 90.0
+freq_end = 180.0
+noise_mix = 0.15
+tone = 0.3
+attack = 0.08
+volume_db = -20.0
+pitch_jitter = 0.03
+cooldown = 0.2
+priority = 3
+
+[sub_resource type="Resource" id="Sfx_charge_ready"]
+script = ExtResource("1_def")
+id = &"charge_ready"
+wave = 1
+duration = 0.25
+freq_start = 880.0
+freq_end = 1320.0
+noise_mix = 0.0
+tone = 0.9
+attack = 0.004
+volume_db = -16.0
+pitch_jitter = 0.0
+cooldown = 0.1
+priority = 3
+
+[sub_resource type="Resource" id="Sfx_charge_release"]
+script = ExtResource("1_def")
+id = &"charge_release"
+wave = 3
+duration = 0.4
+freq_start = 140.0
+freq_end = 60.0
+noise_mix = 0.8
+tone = 0.3
+attack = 0.004
+volume_db = -14.0
+pitch_jitter = 0.05
+cooldown = 0.05
+priority = 3
+
+[sub_resource type="Resource" id="Sfx_surge"]
+script = ExtResource("1_def")
+id = &"surge"
+wave = 2
+duration = 0.9
+freq_start = 220.0
+freq_end = 45.0
+noise_mix = 0.35
+tone = 0.5
+attack = 0.08
+volume_db = -12.0
+pitch_jitter = 0.0
+cooldown = 0.3
+priority = 2
+
+[sub_resource type="Resource" id="Sfx_surge_hit"]
+script = ExtResource("1_def")
+id = &"surge_hit"
+wave = 0
+duration = 0.18
+freq_start = 400.0
+freq_end = 120.0
+noise_mix = 0.5
+tone = 0.6
+attack = 0.004
+volume_db = -11.0
+pitch_jitter = 0.08
+cooldown = 0.03
+priority = 2
+
+[sub_resource type="Resource" id="Sfx_surge_end"]
+script = ExtResource("1_def")
+id = &"surge_end"
+wave = 3
+duration = 0.4
+freq_start = 1200.0
+freq_end = 200.0
+noise_mix = 0.9
+tone = 0.4
+attack = 0.01
+volume_db = -22.0
+pitch_jitter = 0.0
+cooldown = 0.2
+priority = 4
+
+[sub_resource type="Resource" id="Sfx_parry"]
+script = ExtResource("1_def")
+id = &"parry"
+wave = 0
+duration = 0.5
+freq_start = 1800.0
+freq_end = 1500.0
+noise_mix = 0.3
+tone = 0.85
+attack = 0.002
+volume_db = -13.0
+pitch_jitter = 0.02
+cooldown = 0.05
+priority = 2
+
+[sub_resource type="Resource" id="Sfx_riposte"]
+script = ExtResource("1_def")
+id = &"riposte"
+wave = 0
+duration = 0.3
+freq_start = 700.0
+freq_end = 220.0
+noise_mix = 0.45
+tone = 0.6
+attack = 0.004
+volume_db = -15.0
+pitch_jitter = 0.05
+cooldown = 0.05
+priority = 2
+
+[sub_resource type="Resource" id="Sfx_core_ready"]
+script = ExtResource("1_def")
+id = &"core_ready"
+wave = 2
+duration = 0.3
+freq_start = 330.0
+freq_end = 660.0
+noise_mix = 0.0
+tone = 0.5
+attack = 0.05
+volume_db = -24.0
+pitch_jitter = 0.0
+cooldown = 0.5
+priority = 4
+
+[sub_resource type="Resource" id="Sfx_upgrade_install"]
+script = ExtResource("1_def")
+id = &"upgrade_install"
+wave = 1
+duration = 0.8
+freq_start = 500.0
+freq_end = 1600.0
+noise_mix = 0.25
+tone = 0.7
+attack = 0.004
+volume_db = -16.0
+pitch_jitter = 0.0
+cooldown = 0.2
+priority = 5
+
 [resource]
 script = ExtResource("2_bank")
-sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up"), SubResource("Sfx_anchor"), SubResource("Sfx_scrap_pickup"), SubResource("Sfx_scrap_recover"), SubResource("Sfx_heal_start"), SubResource("Sfx_heal"), SubResource("Sfx_collect"), SubResource("Sfx_wall_break"), SubResource("Sfx_repeater"), SubResource("Sfx_quest_complete"), SubResource("Sfx_ui_tick"), SubResource("Sfx_purchase"), SubResource("Sfx_gate"), SubResource("Sfx_boss_roar"), SubResource("Sfx_boss_slam"), SubResource("Sfx_ability_unlock"), SubResource("Sfx_shoot_revolver"), SubResource("Sfx_radio_static"), SubResource("Sfx_memory_open"), SubResource("Sfx_memory_beat"), SubResource("Sfx_memory_tear"), SubResource("Sfx_memory_detail"), SubResource("Sfx_achievement"), SubResource("Sfx_ui_confirm"), SubResource("Sfx_ui_back"), SubResource("Sfx_boss_defeat"), SubResource("Sfx_secret_found"), SubResource("Sfx_footstep_concrete"), SubResource("Sfx_footstep_metal"), SubResource("Sfx_footstep_water"), SubResource("Sfx_footstep_wood"), SubResource("Sfx_land_water")])
+sounds = Array[ExtResource("1_def")]([SubResource("Sfx_jump"), SubResource("Sfx_jump_slide"), SubResource("Sfx_land_soft"), SubResource("Sfx_land_hard"), SubResource("Sfx_slide"), SubResource("Sfx_dodge"), SubResource("Sfx_dash"), SubResource("Sfx_respawn"), SubResource("Sfx_slash"), SubResource("Sfx_slash_heavy"), SubResource("Sfx_hit"), SubResource("Sfx_hit_heavy"), SubResource("Sfx_block"), SubResource("Sfx_shoot_pistol"), SubResource("Sfx_shoot_scatter"), SubResource("Sfx_empty"), SubResource("Sfx_reload"), SubResource("Sfx_enemy_telegraph"), SubResource("Sfx_enemy_attack"), SubResource("Sfx_enemy_shoot"), SubResource("Sfx_enemy_die"), SubResource("Sfx_player_hurt"), SubResource("Sfx_perfect_dodge"), SubResource("Sfx_heartbeat"), SubResource("Sfx_burnout"), SubResource("Sfx_rank_up"), SubResource("Sfx_anchor"), SubResource("Sfx_scrap_pickup"), SubResource("Sfx_scrap_recover"), SubResource("Sfx_heal_start"), SubResource("Sfx_heal"), SubResource("Sfx_collect"), SubResource("Sfx_wall_break"), SubResource("Sfx_repeater"), SubResource("Sfx_quest_complete"), SubResource("Sfx_ui_tick"), SubResource("Sfx_purchase"), SubResource("Sfx_gate"), SubResource("Sfx_boss_roar"), SubResource("Sfx_boss_slam"), SubResource("Sfx_ability_unlock"), SubResource("Sfx_shoot_revolver"), SubResource("Sfx_radio_static"), SubResource("Sfx_memory_open"), SubResource("Sfx_memory_beat"), SubResource("Sfx_memory_tear"), SubResource("Sfx_memory_detail"), SubResource("Sfx_achievement"), SubResource("Sfx_ui_confirm"), SubResource("Sfx_ui_back"), SubResource("Sfx_boss_defeat"), SubResource("Sfx_secret_found"), SubResource("Sfx_footstep_concrete"), SubResource("Sfx_footstep_metal"), SubResource("Sfx_footstep_water"), SubResource("Sfx_footstep_wood"), SubResource("Sfx_land_water"), SubResource("Sfx_charge_start"), SubResource("Sfx_charge_ready"), SubResource("Sfx_charge_release"), SubResource("Sfx_surge"), SubResource("Sfx_surge_hit"), SubResource("Sfx_surge_end"), SubResource("Sfx_parry"), SubResource("Sfx_riposte"), SubResource("Sfx_core_ready"), SubResource("Sfx_upgrade_install")])
