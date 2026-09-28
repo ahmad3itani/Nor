@@ -394,7 +394,7 @@ func test_slice_stats_demo_counts_undercity_only() -> void:
 	for path in DataDir.list_scenes(UNDERCITY):
 		var inst := (load(path) as PackedScene).instantiate()
 		for n in inst.find_children("*", "", true, false):
-			if (n is Collectible and (n as Collectible).kind != Collectible.Kind.SCRAP_BUNDLE) or n is BreakableWall:
+			if (n is Collectible and Collectible.counts_as_secret((n as Collectible).kind)) or n is BreakableWall:
 				ids += 1
 		inst.free()
 	check((SliceStats.totals()["secret_ids"] as Array).size() == ids, "secrets = a direct Undercity scan (%d)" % ids)

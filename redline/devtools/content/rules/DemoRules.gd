@@ -232,7 +232,8 @@ static func scope(c: DemoConfig) -> Dictionary:
 			if n is Collectible:
 				var col := n as Collectible
 				sc["collectibles"][col.persist_id] = true
-				if col.kind == Collectible.Kind.SCRAP_BUNDLE:
+				# The runtime's one secret rule (SliceStats.totals).
+				if not Collectible.counts_as_secret(col.kind):
 					continue
 				sc["totals"]["secrets"] += 1
 				if col.kind == Collectible.Kind.MEMORY_FRAGMENT:

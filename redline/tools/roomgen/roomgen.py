@@ -147,10 +147,13 @@ class RoomGen:
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("lever"), 'flag_id = %s' % q(flag)]
         if text: p.append('used_text = %s' % q(text))
         return self.add("Interactables", "Lever", "Area2D", p)
-    def collectible(self, kind, pid, x, y, scrap=25, fragment=None):
+    def collectible(self, kind, pid, x, y, scrap=25, fragment=None, schematic=None):
+        """kind 3 = SCHEMATIC (D-184): pass schematic="<SchematicList id>" and
+        the persist id "schem_<id>"."""
         p = ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("collect"), 'persist_id = %s' % q(pid), 'kind = %d' % kind]
         if kind == 0: p.append('scrap_amount = %d' % scrap)
         if fragment: p.append('fragment = %s' % self._res("frag_" + fragment, "Resource", "res://data/lore/%s.tres" % fragment))
+        if schematic: p.append('schematic_id = %s' % q(schematic))
         return self.add("Interactables", "Collectible", "Area2D", p)
     def enemy(self, kind, x, y, facing=-1, ai=True, data=""):
         sc = self._res("scene_" + kind, "PackedScene", SCENES[kind])
@@ -224,11 +227,14 @@ class RoomGen:
         return self.add("Geometry", "Shutter_", "StaticBody2D", ['position = Vector2(%d, %d)' % (x, y), 'script = %s' % self._script("shutter"),
             'size = Vector2(%d, %d)' % (w, h), 'shutter_id = %s' % q(sid), 'circuit = &%s' % q(circuit),
             'timing = %s' % self._level(timing), 'latch_flag = %s' % q(latch_flag)], "Shutter_" + sid)
-    def clamp(self, cid, x, top_y, width, raised_bottom, timing, circuits, hint_id="", hint=""):
+    def clamp(self, cid, x, top_y, width, raised_bottom, timing, circuits, hint_id="", hint="", boss_id=None):
+        """boss_id: the enemy data id the slab targets (GridClamp default
+        warden_krail; e.g. "enforcer" for an optional clamp exam, D-209)."""
         p = ['position = Vector2(%d, %d)' % (x, top_y), 'script = %s' % self._script("clamp"), 'clamp_id = %s' % q(cid),
              'width = %s' % num(width), 'raised_bottom = %s' % num(raised_bottom), 'timing = %s' % self._level(timing),
              'circuits = Array[StringName]([%s])' % ", ".join("&" + q(c) for c in circuits),
              'attack = %s' % self._res("clamp_attack", "Resource", "res://data/combat/grid_clamp_attack.tres")]
+        if boss_id: p.append('boss_id = %s' % q(boss_id))
         if hint_id:
             p.append('arm_hint_id = %s' % q(hint_id))
             p.append('arm_hint = %s' % q(hint))
