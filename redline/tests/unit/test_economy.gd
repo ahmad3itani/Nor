@@ -4,6 +4,14 @@ extends RedlineTestCase
 ## respawning enemies should be possible but slow.
 
 
+## test_pending_district_excluded flips the cached Lowlight theme; put it
+## back even if that test stops early.
+func after_each() -> void:
+	var th := load("res://data/districts/lowlight.tres") as DistrictTheme
+	if th != null:
+		th.economy_final = true
+
+
 func test_scrap_sources_vs_sinks() -> void:
 	var e := EconomyAudit.compute()
 	print("ECONOMY %s" % JSON.stringify(e))
