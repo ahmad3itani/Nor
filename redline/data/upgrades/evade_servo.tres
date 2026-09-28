@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://progression/UpgradeData.gd" id="1_upg"]
+[ext_resource type="Script" path="res://progression/UpgradeTier.gd" id="2_tier"]
+
+[sub_resource type="Resource" id="Tier_1"]
+script = ExtResource("2_tier")
+price = 80
+requires = PackedStringArray("flag:met_mara")
+summary = "Perfect dodge window +0.02 s. Dodge recovers 10% faster."
+multipliers = {
+"dodge_cooldown": 0.9
+}
+values = {
+"perfect_window_bonus": 0.02
+}
+
+[resource]
+script = ExtResource("1_upg")
+id = "evade_servo"
+display_name = "Evade Servo"
+description = "A quicker servo in the legs. Dodges come back sooner, and late ones still count."
+category = 1
+station = 0
+weapon_id = ""
+act = 1
+tiers = Array[ExtResource("2_tier")]([SubResource("Tier_1")])

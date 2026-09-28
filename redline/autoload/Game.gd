@@ -194,7 +194,7 @@ func flag_int(id: String) -> int:
 ## Small condition language shared by map markers, world-state switches and
 ## the M8 story data: "flag:x", "ability:dash", "collected:id",
 ## "atleast:flag:n" (int flags such as talk counts), "count:<metric>:n"
-## (fragments, shards, circuits, secrets; see count_metric), "" (always true);
+## (fragments, shards, circuits, secrets, upgrades; see count_metric), "" (always true);
 ## prefix "!" to negate. One grammar, no AND/OR (D-119): a rule that needs
 ## several conditions lists them. Keeps world consequences in data instead of
 ## one-off scripts.
@@ -232,6 +232,9 @@ func count_metric(name: String) -> int:
 			return state.owned_circuits.size()
 		"secrets":
 			return SliceStats.secrets_found()
+		"upgrades":
+			# Tiers bought with Scrap (story-granted tiers are not purchases).
+			return UpgradeLibrary.total_owned()
 	push_warning("Game.count_metric: unknown metric '%s'" % name)
 	return -1
 
@@ -255,7 +258,7 @@ func add_scrap(amount: int) -> void:
 # --- Circuits (bible §11) ------------------------------------------------------------
 
 func core_capacity() -> int:
-	return catalog.base_core_capacity + state.core_shards
+	return catalog.base_core_capacity + state.core_shards + int(upgrade_value(&"core_capacity_bonus"))
 
 
 func capacity_used() -> int:
@@ -304,11 +307,39 @@ func circuit_value(stat: StringName) -> float:
 	return v
 
 
+# --- Upgrades (D-182) ------------------------------------------------------------------
+# Like Circuits, gameplay asks for a stat and never for an upgrade. A WEAPON
+# upgrade counts only for its own weapon: a query with weapon_id "" reads the
+# global upgrades only, a query naming a weapon adds that weapon's.
+
+## Product of owned upgrade tiers' multipliers for a stat (1.0 if none).
+func upgrade_mult(stat: StringName, weapon_id: String = "") -> float:
+	var m := 1.0
+	for u in UpgradeLibrary.all():
+		if u.weapon_id != "" and u.weapon_id != weapon_id:
+			continue
+		for t in UpgradeLibrary.stats_for(u):
+			m *= float(t.multipliers.get(stat, 1.0))
+	return m
+
+
+## Sum of owned upgrade tiers' values for a stat (0.0 if none).
+func upgrade_value(stat: StringName, weapon_id: String = "") -> float:
+	var v := 0.0
+	for u in UpgradeLibrary.all():
+		if u.weapon_id != "" and u.weapon_id != weapon_id:
+			continue
+		for t in UpgradeLibrary.stats_for(u):
+			v += float(t.values.get(stat, 0.0))
+	return v
+
+
 ## Extra injector charges bought in shops. Each shop keeps its own upgrade
 ## flag (Mara's Spare Injector, Iko's Bootleg Injector) so ShopMenu.is_owned
-## can mark each item owned independently; the bonuses stack.
+## can mark each item owned independently; the bonuses stack. Luma's Field
+## Injector adds through the injector_bonus upgrade stat (D-213).
 func injector_bonus() -> int:
-	return flag_int("injector_upgrades") + flag_int("injector_upgrades_bootleg")
+	return flag_int("injector_upgrades") + flag_int("injector_upgrades_bootleg") + int(upgrade_value(&"injector_bonus"))
 
 
 func equip_weapon(id: String) -> void:
@@ -368,6 +399,9 @@ func apply_dialogue(d: DialogueData, choice: int = -1) -> void:
 	add_scrap(d.give_scrap)
 	grant_circuit(d.give_circuit)
 	grant_weapon(d.give_weapon)
+	# D-218: a story beat installs a granted tier free (never a purchase).
+	if d.give_upgrade != "":
+		UpgradeLibrary.give(d.give_upgrade)
 	if d.open_menu != &"":
 		EventBus.menu_requested.emit(d.open_menu)
 

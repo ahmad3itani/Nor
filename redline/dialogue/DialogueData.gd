@@ -11,6 +11,9 @@ extends Resource
 @export var give_scrap: int = 0
 @export var give_circuit: String = ""
 @export var give_weapon: String = ""
+## An UpgradeData id whose next tier is a granted one (D-218): installed
+## free on close through UpgradeLibrary.give. Validator-checked.
+@export var give_upgrade: String = ""
 ## Menu to open after the conversation (e.g. "shop_vell", "shop_mara").
 @export var open_menu: StringName = &""
 

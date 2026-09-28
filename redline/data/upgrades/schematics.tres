@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="SchematicList" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/SchematicList.gd" id="1_sch"]
+
+[resource]
+script = ExtResource("1_sch")
+names = {
+"foundry_pattern": "Foundry pattern",
+"deflector": "Deflector plate",
+"servo_coil": "Servo coil",
+"resonator": "Surge resonator",
+"drain_baffle": "Pump baffle",
+"arc_capacitor": "Annex capacitor",
+"guard_breaker": "Warden plate"
+}
+districts = {
+"foundry_pattern": "ironworks",
+"deflector": "ironworks",
+"servo_coil": "ironworks",
+"resonator": "ironworks",
+"drain_baffle": "undercity",
+"arc_capacitor": "lowlight",
+"guard_breaker": "lowlight"
+}

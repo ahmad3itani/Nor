@@ -38,7 +38,9 @@ const CODE_FLAGS: PackedStringArray = ["emergency_loop_spent", "hint_first_flow"
 const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_", "seen_seq_", "mem_seen_", "mem_detail_",
 	"ending_seen_", "arc_", "arcbeat_", "thread_",
 	# M9: Null sandbox bookkeeping and NG+ carry flags.
-	"null_", "ng_"]
+	"null_", "ng_",
+	# Expansion: upgrade tiers are read by code (Game.upgrade_mult/value).
+	"upg_"]
 ## M9 validator rule modules (devtools/content/rules/<Name>.gd), run when the
 ## file exists: `static func run(v: ContentValidator) -> void` appends
 ## "[<RULE-ID>] ..." to v.errors / v.warnings; an optional
@@ -47,7 +49,9 @@ const BOOKKEEPING_PREFIXES: PackedStringArray = ["hint_", "talks_", "met_", "see
 const RULE_MODULES: PackedStringArray = ["PlatformRules", "AchievementRules", "ChallengeRules", "NullRules", "RemixRules",
 	"SettingsRules", "AccessRules", "StringRules", "DemoRules", "ExportRules", "CrossRules"]
 ## Metrics a `count:<metric>:<n>` condition may name (Game.count_metric).
-const COUNT_METRICS: PackedStringArray = ["fragments", "shards", "circuits", "secrets"]
+## "upgrades" = tiers bought with Scrap (UpgradeLibrary.total_owned). No
+## metric counts schematics (D-184).
+const COUNT_METRICS: PackedStringArray = ["fragments", "shards", "circuits", "secrets", "upgrades"]
 ## Bible §18: the four endings, exactly (D-126).
 const ENDING_IDS: PackedStringArray = ["crown", "redline", "release", "sever"]
 ## Where future flags may be read: ending data (and their own declaration).
@@ -210,6 +214,7 @@ func check_resource(res: Resource, path: String) -> void:
 						errors.append("%s: weapon '%s' not in catalog" % [path.get_file(), item.item_id])
 				_:
 					_produce(item.upgrade_flag, path)
+	_check_schematic_readers(res, path)
 	_register_story(res, path)
 	# Resource content protocol (M8): a separate `if` after the typed
 	# branches, so any resource (sequences, arcs, endings, memory scenes,
@@ -222,6 +227,33 @@ func check_resource(res: Resource, path: String) -> void:
 				warnings.append("%s: %s" % [path.get_file(), e.trim_prefix("WARN: ")])
 			else:
 				errors.append("%s: %s" % [path.get_file(), e])
+
+
+## D-184 (repair 2): a schematic only unlocks an upgrade tier. Its sch_ flag
+## may be read by UpgradeTier.requires and by dialogue or hint conditions,
+## never by achievements (conditions, reveal_when, stat), quests or a count
+## metric (COUNT_METRICS has none for schematics).
+func _check_schematic_readers(res: Resource, path: String) -> void:
+	var reads := PackedStringArray()
+	var what := ""
+	if res is AchievementData:
+		var a := res as AchievementData
+		what = "achievement"
+		reads.append_array(a.conditions)
+		reads.append(a.reveal_when)
+		reads.append(String(a.stat_id))
+	elif res is QuestData:
+		var q := res as QuestData
+		what = "quest"
+		reads.append(q.start_flag)
+		for st in q.stages:
+			reads.append_array(st.complete_flags)
+	for e in reads:
+		var f := e.trim_prefix("!")
+		if f.begins_with("flag:") or f.begins_with("atleast:"):
+			f = f.get_slice(":", 1)
+		if f.begins_with("sch_"):
+			errors.append("%s: %s reads schematic flag '%s' (schematics only unlock upgrade tiers, D-184)" % [path.get_file(), what, f])
 
 
 func ok() -> bool:
@@ -292,6 +324,13 @@ func _check_dialogue(d: DialogueData, where: String, catalog: ItemCatalog) -> vo
 		errors.append("%s: dialogue %s gives unknown circuit %s" % [where.get_file(), d.id, d.give_circuit])
 	if d.give_weapon != "" and catalog.weapon(d.give_weapon) == null:
 		errors.append("%s: dialogue %s gives unknown weapon %s" % [where.get_file(), d.id, d.give_weapon])
+	if d.give_upgrade != "":
+		# D-218: only a granted tier can be given (never a sold one).
+		var u := UpgradeLibrary.get_upgrade(d.give_upgrade)
+		if u == null:
+			errors.append("%s: dialogue %s gives unknown upgrade %s" % [where.get_file(), d.id, d.give_upgrade])
+		elif not u.tiers.any(func(t: UpgradeTier) -> bool: return t != null and t.granted):
+			errors.append("%s: dialogue %s gives upgrade %s, which has no granted tier (tiers are bought)" % [where.get_file(), d.id, d.give_upgrade])
 	var menu := String(d.open_menu)
 	if menu != "" and not MENU_IDS.has(menu) and not ResourceLoader.exists("res://data/shops/%s.tres" % menu):
 		errors.append("%s: dialogue %s opens unknown menu '%s'" % [where.get_file(), d.id, menu])
@@ -366,7 +405,7 @@ func _check_world_room(room: Room, path: String, persistent: Dictionary) -> void
 			elif persistent.has(pid):
 				errors.append("%s: persist_id '%s' also used in %s" % [tag, pid, persistent[pid]])
 			persistent[pid] = id
-			var kind: String = "wall" if n is BreakableWall else ["scrap", "fragment", "core_shard"][clampi(int((n as Collectible).kind), 0, 2)]
+			var kind: String = "wall" if n is BreakableWall else ["scrap", "fragment", "core_shard", "schematic"][clampi(int((n as Collectible).kind), 0, 3)]
 			(collectibles[id] as Array).append({"id": pid, "kind": kind})
 		elif n is HintTrigger:
 			var h := n as HintTrigger

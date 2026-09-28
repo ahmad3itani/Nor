@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://progression/UpgradeData.gd" id="1_upg"]
+[ext_resource type="Script" path="res://progression/UpgradeTier.gd" id="2_tier"]
+
+[sub_resource type="Resource" id="Tier_1"]
+script = ExtResource("2_tier")
+price = 240
+requires = PackedStringArray("count:shards:3", "flag:met_vell")
+summary = "Core Capacity +1."
+multipliers = {}
+values = {
+"core_capacity_bonus": 1.0
+}
+
+[resource]
+script = ExtResource("1_upg")
+id = "capacity_lattice"
+display_name = "Capacity Lattice"
+description = "Vell threads a lattice through the Core seat. Room for one more Circuit."
+category = 2
+station = 1
+weapon_id = ""
+act = 1
+tiers = Array[ExtResource("2_tier")]([SubResource("Tier_1")])

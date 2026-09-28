@@ -68,7 +68,9 @@ func _exit_tree() -> void:
 	NewGamePlus.clear_cache()
 	for p: String in ["platform/AchievementLibrary", "platform/StatCatalog", "challenges/ChallengeLibrary",
 			"challenges/RankLadder", "challenges/ChallengeConfig", "accessibility/Palette",
-			"input/InputBindings", "input/RebindCatalog"]:
+			"input/InputBindings", "input/RebindCatalog",
+			# Expansion (power): the upgrade list and the schematic names.
+			"progression/UpgradeLibrary", "progression/SchematicList"]:
 		var path := "res://%s.gd" % p
 		if ResourceLoader.exists(path):
 			(load(path) as GDScript).call("clear_cache")

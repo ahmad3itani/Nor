@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://progression/UpgradeData.gd" id="1_upg"]
+[ext_resource type="Script" path="res://progression/UpgradeTier.gd" id="2_tier"]
+
+[sub_resource type="Resource" id="Tier_1"]
+script = ExtResource("2_tier")
+price = 160
+requires = PackedStringArray("flag:warden_krail_defeated", "flag:met_mara")
+summary = "Surge: spend Core for a burst. Damage up while it lasts."
+multipliers = {}
+values = {
+"surge": 1.0
+}
+granted = true
+
+[resource]
+script = ExtResource("1_upg")
+id = "surge"
+display_name = "Surge Coupling"
+description = "Couples the Core to a burst. Spend it all at once when a fight needs it."
+category = 2
+station = 0
+weapon_id = ""
+act = 1
+tiers = Array[ExtResource("2_tier")]([SubResource("Tier_1")])

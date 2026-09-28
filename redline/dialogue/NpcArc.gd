@@ -163,7 +163,7 @@ func validate() -> PackedStringArray:
 			if not r.dialogue.set_flags.is_empty() or not r.dialogue.choices.is_empty():
 				errors.append("%s: idle %s must set nothing and offer no choice" % [npc_id, r.dialogue.id])
 	for d in dialogues():
-		if d.give_scrap != 0 or d.give_circuit != "" or d.give_weapon != "":
+		if d.give_scrap != 0 or d.give_circuit != "" or d.give_weapon != "" or d.give_upgrade != "":
 			errors.append("%s: dialogue %s gives items (arcs are economy-neutral, D-122)" % [npc_id, d.id])
 	for t in threads:
 		if not produced.has(t):

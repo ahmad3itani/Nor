@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://progression/UpgradeData.gd" id="1_upg"]
+[ext_resource type="Script" path="res://progression/UpgradeTier.gd" id="2_tier"]
+
+[sub_resource type="Resource" id="Tier_1"]
+script = ExtResource("2_tier")
+price = 110
+requires = PackedStringArray("flag:met_mara")
+summary = "Mk II: +1 round. Reloads 15% faster."
+multipliers = {
+"reload_time": 0.85
+}
+values = {
+"ammo_bonus": 1.0
+}
+
+[resource]
+script = ExtResource("1_upg")
+id = "heavy_revolver"
+display_name = "Heavy Revolver"
+description = "A seventh chamber and a smoother gate."
+category = 0
+station = 0
+weapon_id = "heavy_revolver"
+act = 1
+tiers = Array[ExtResource("2_tier")]([SubResource("Tier_1")])
