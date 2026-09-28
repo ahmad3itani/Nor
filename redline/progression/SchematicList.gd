@@ -6,6 +6,9 @@ extends Resource
 ## table; display always goes through Loc.t(name).
 
 const PATH := "res://data/upgrades/schematics.tres"
+## The districts a schematic may name (Ironworks may not be on the map yet,
+## so this is a fixed list rather than Game.world_map.districts()).
+const DISTRICTS := ["undercity", "lowlight", "ironworks"]
 
 ## Localization (D5 §4.1): "names" matches the l10n text-field pattern and
 ## LocFields extracts Dictionary values, so every name is in the catalog.
@@ -53,6 +56,8 @@ func validate() -> PackedStringArray:
 			errors.append("schematic '%s' needs an id and a name" % id)
 		if not districts.has(id):
 			errors.append("schematic '%s' has no district" % id)
+		elif not DISTRICTS.has(String(districts[id])):
+			errors.append("schematic '%s' names unknown district '%s' (one of %s)" % [id, districts[id], DISTRICTS])
 	for id: Variant in districts:
 		if not names.has(id):
 			errors.append("schematic '%s' has a district but no name" % id)

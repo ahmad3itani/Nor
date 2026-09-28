@@ -246,6 +246,7 @@ func _check_schematic_readers(res: Resource, path: String) -> void:
 		var q := res as QuestData
 		what = "quest"
 		reads.append(q.start_flag)
+		reads.append(q.complete_flag)
 		for st in q.stages:
 			reads.append_array(st.complete_flags)
 	for e in reads:
