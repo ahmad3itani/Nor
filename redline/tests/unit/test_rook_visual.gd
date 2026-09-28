@@ -282,6 +282,25 @@ func test_high_contrast_adds_the_outline_in_sprite_mode() -> void:
 	check(not nodes[0].is_visible_in_tree(), "hidden again with high contrast off")
 
 
+func test_high_contrast_outline_never_lags_the_live_frame() -> void:
+	# The actor advances after the visual's _process: the outline must follow
+	# the actor's own frame changes, or it trails a frame on fast attack rows.
+	await _spawn()
+	Settings.high_contrast = true
+	visual.advance(0.0)
+	var anim: StringName = &"blade_light" if visual.actor.sprite_frames.has_animation(&"blade_light") else &"run"
+	visual.actor.play(anim)
+	var n: int = visual.actor.sprite_frames.get_frame_count(anim)
+	for f in n:
+		visual.actor.frame = f
+		var live: Texture2D = visual.actor.sprite_frames.get_frame_texture(anim, f)
+		check(visual.outline_texture() == live, "%s frame %d: outline shows the live frame" % [anim, f])
+	visual.actor.play(&"idle")
+	check(visual.outline_texture() == visual.actor.sprite_frames.get_frame_texture(&"idle", visual.actor.frame), "an animation change syncs at once")
+	Settings.high_contrast = false
+	visual.advance(0.0)
+
+
 func test_mask_overlay_blinks_with_hurt_iframes_and_tints_the_seam() -> void:
 	await _spawn()
 	player.combat.hurt_invuln_timer = 0.5

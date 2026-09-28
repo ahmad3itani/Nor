@@ -509,3 +509,15 @@ func test_title_backdrop_layers_and_rook() -> void:
 	var rook: SpriteActor = title.call("title_rook")
 	check(rook != null and rook.animation == &"title_stand", "Rook stands on the ledge")
 	check(rook.get_global_transform_with_canvas().origin.x >= VIEW.x * 2.0 / 3.0 - 16.0, "the ledge is in the right third")
+	# F11: the grade and the dim reach the ledge plane, never Rook.
+	Settings.background_dim = 2
+	EventBus.settings_changed.emit()
+	var n: Node = rook
+	var tint := Color.WHITE
+	while n != null and n != title:
+		if n is CanvasItem:
+			tint *= (n as CanvasItem).modulate
+		n = n.get_parent()
+	check(tint == Color.WHITE, "Rook carries no grade or dim (%s)" % tint)
+	var plane := rook.get_parent().get_node_or_null(^"LedgePlane") as CanvasItem
+	check(plane != null and plane.modulate != Color.WHITE, "the ledge plane is graded and dimmed")

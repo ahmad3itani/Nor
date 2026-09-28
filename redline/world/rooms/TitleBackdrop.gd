@@ -26,6 +26,7 @@ var _camera: Camera2D
 var _backdrop: DistrictBackdrop
 var _ledge_layer: CanvasLayer
 var _ledge_root: Node2D
+var _ledge_plane: Sprite2D
 var _rook: SpriteActor
 var _t: float = 0.0
 var _ledge_base: Vector2 = Vector2.ZERO
@@ -61,6 +62,7 @@ func _build_ledge() -> void:
 	ledge.centered = false
 	ledge.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_ledge_root.add_child(ledge)
+	_ledge_plane = ledge
 	var info := UiKit.read_json(LEDGE_JSON)
 	var stand_x: Array = info.get("stand_x", [24, 140])
 	var stand_y := float(info.get("stand_y", 44))
@@ -90,7 +92,10 @@ func _apply_look() -> void:
 	if _ledge_root == null:
 		return
 	var grade := _backdrop.backdrop_set.grade if _backdrop and _backdrop.backdrop_set else Color.WHITE
-	_ledge_root.modulate = grade * DistrictBackdrop.dim_modulate(Settings.background_dim)
+	# Grade and dim go on the ledge plane only (F11 / D-172): Rook, a
+	# character with a reserved-red mask overlay (D-178), stays ungraded.
+	_ledge_plane.modulate = grade * DistrictBackdrop.dim_modulate(Settings.background_dim)
+	_ledge_root.modulate = Color.WHITE
 
 
 ## The Rook on the ledge (null when the sheet is missing).

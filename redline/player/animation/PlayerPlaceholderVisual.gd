@@ -492,6 +492,18 @@ func _update_outline(alpha: float) -> void:
 	_outline_layer.visible = hc
 	if not hc:
 		return
+	_sync_outline_frame()
+	for s in _outlines:
+		s.modulate = Color(1, 1, 1, alpha)
+
+
+## Copies the actor's live frame into the outline copies. Also run from the
+## actor's frame_changed / animation_changed: the parent's _process runs
+## before the child AnimatedSprite2D advances, so copying only there left the
+## outline a frame behind on 18-24 fps attack rows (a white ghost).
+func _sync_outline_frame() -> void:
+	if _outlines.is_empty() or actor == null or not _outline_layer.visible:
+		return
 	var tex := actor.sprite_frames.get_frame_texture(actor.animation, actor.frame) if actor.sprite_frames.has_animation(actor.animation) else null
 	for i in _outlines.size():
 		var s := _outlines[i]
@@ -501,7 +513,11 @@ func _update_outline(alpha: float) -> void:
 		s.flip_v = actor.flip_v
 		s.scale = actor.scale
 		s.position = actor.position + OUTLINE_OFFSETS[i]
-		s.modulate = Color(1, 1, 1, alpha)
+
+
+## The texture each outline copy shows (tests).
+func outline_texture() -> Texture2D:
+	return _outlines[0].texture if not _outlines.is_empty() else null
 
 
 func _build_outline() -> void:
@@ -522,9 +538,11 @@ func _build_outline() -> void:
 
 func _on_actor_animation_changed() -> void:
 	_rise_first = actor.animation == &"jump_rise"
+	_sync_outline_frame()
 
 
 func _on_actor_frame_changed() -> void:
+	_sync_outline_frame()
 	if actor.frame != 0:
 		_rise_first = false
 	if actor.animation == &"run" and actor.frame in RUN_CONTACT_FRAMES:
