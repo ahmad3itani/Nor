@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BackdropSet" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="BackdropSet" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://world/districts/BackdropSet.gd" id="1_set"]
 [ext_resource type="Script" path="res://world/districts/PlaneSpec.gd" id="2_plane"]
@@ -22,15 +22,9 @@ texture_path = "res://assets/lowlight/ll_tower_near.png"
 motion = Vector2(0.55, 0.2)
 tile_y = true
 
-[sub_resource type="Resource" id="p3"]
-script = ExtResource("2_plane")
-texture_path = "res://assets/lowlight/ll_fg_set.png"
-motion = Vector2(1.2, 1.2)
-is_foreground = true
-
 [resource]
 script = ExtResource("1_set")
-planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3")])
+planes = Array[Resource("res://world/districts/PlaneSpec.gd")]([SubResource("p0"), SubResource("p1"), SubResource("p2")])
 fog_color = Color(0.1804, 0.1686, 0.2706, 1)
 fog_alpha_a = 0
 fog_alpha_b = 0.8

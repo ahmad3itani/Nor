@@ -105,6 +105,24 @@ func _init_glow(color: Color) -> void:
 	add_to_group(GROUP)
 
 
+## Background dim (§24) reaches the glows too: they live in the world canvas
+## (z GLOW_Z), not on the backdrop layer, so each glow follows the setting
+## itself (DistrictBackdrop.apply_dim covers the backdrop layer's nodes).
+func _enter_tree() -> void:
+	apply_dim()
+	if not EventBus.settings_changed.is_connected(apply_dim):
+		EventBus.settings_changed.connect(apply_dim)
+
+
+func _exit_tree() -> void:
+	if EventBus.settings_changed.is_connected(apply_dim):
+		EventBus.settings_changed.disconnect(apply_dim)
+
+
+func apply_dim() -> void:
+	modulate = DistrictBackdrop.dim_modulate(Settings.background_dim)
+
+
 func set_level(v: float) -> void:
 	if not is_equal_approx(v, level):
 		level = v

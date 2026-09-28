@@ -32,6 +32,9 @@ const FOREGROUND_LAYER := 2
 const FG_MOTION := 1.2
 const FG_TOP_BAND := 40.0
 const FG_FADE_ALPHA := 0.35
+## Bottom band of the view that floor pieces never reach: the HUD rows
+## (view.y - 30), the prompt (view.y - 46) and the hint caption (view.y - 58).
+const FG_HUD_BAND := 62.0
 const FG_HAZARD_GROUPS: Array[StringName] = [&"enemies", &"hazard", &"hazards"]
 const TRAIN_PATH := "res://assets/lowlight/ll_train_far.png"
 const TRAIN_SPEED := 46.0
@@ -466,6 +469,10 @@ func _follow_foreground(cam: Vector2, delta: float) -> void:
 		node.position = Vector2(sx, y)
 		var rect := Rect2(node.position, size)
 		node.visible = rect.end.x > 0.0 and rect.position.x < VIEW.x and rect.position.y < VIEW.y
+		# A floor piece never sits under the HUD, hint caption or prompt band
+		# (dark silhouettes there read as a hole in the floor behind text).
+		if not p["top"] and rect.end.y > VIEW.y - FG_HUD_BAND:
+			node.visible = false
 		var target := 1.0
 		for h in hazards:
 			if rect.grow(16.0).has_point(h):

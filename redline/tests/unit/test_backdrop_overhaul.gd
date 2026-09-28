@@ -309,6 +309,35 @@ func test_glows_sit_below_characters() -> void:
 		check(_abs_z(s) < pz, "critter behind the player")
 
 
+func test_glows_follow_background_dim_and_hold_at_motion_off() -> void:
+	var room := _room(STREET_ROOM)
+	await physics_frames(2)
+	var glows := get_tree().get_nodes_in_group(LampGlow.GROUP).filter(func(g: Node) -> bool: return room.is_ancestor_of(g))
+	check(not glows.is_empty(), "the street has glows")
+	Settings.background_dim = 2
+	EventBus.settings_changed.emit()
+	var dim := DistrictBackdrop.dim_modulate(2)
+	for g in glows:
+		check((g as CanvasItem).modulate == dim, "glow %s dimmed with the background" % g.get_parent().name)
+	Settings.background_dim = 0
+	EventBus.settings_changed.emit()
+	for g in glows:
+		check((g as CanvasItem).modulate == Color.WHITE, "glow undimmed at Off")
+	# Ambient motion Off: every Decor lamp halo holds one level.
+	Settings.ambient_motion = 2
+	var lamps: Array[LampGlow] = []
+	for d in room.find_children("*", "Decor", true, false):
+		var lg: LampGlow = (d as Decor).lamp_glow()
+		# A lamp in a disabled subtree (a world-state variant) never runs.
+		if lg != null and (d as Node).can_process():
+			lamps.append(lg)
+	await physics_frames(2)
+	var levels := lamps.map(func(l: LampGlow) -> float: return l.level)
+	await physics_frames(10)
+	for i in lamps.size():
+		check(is_equal_approx(lamps[i].level, levels[i]) and is_equal_approx(levels[i], Decor.HELD_GLOW), "lamp halo holds still at Motion Off (%.3f)" % lamps[i].level)
+
+
 func test_signs_glow_by_colour_and_broken_half() -> void:
 	var host := Node2D.new()
 	add_child(host)

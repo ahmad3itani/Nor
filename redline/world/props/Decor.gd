@@ -25,6 +25,8 @@ enum Kind { PILLAR, LAMP, CRATES, BENCH, TRAIN_CAR, RADIO, WORKBENCH, PIPES, AC_
 		queue_redraw()
 
 var _t: float = 0.0
+## The halo level a held (not pulsing) lamp keeps: the pulse's mean.
+const HELD_GLOW := 0.875
 ## Runtime-only dressing (presentation overhaul): a lamp halo, a swaying
 ## cable, a rippling banner. Created only outside the editor and never
 ## owned, so saving a room scene cannot write them (REPAIR c).
@@ -53,10 +55,22 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint() or (kind != Kind.LAMP and kind != Kind.RADIO):
 		return
+	if not animates():
+		# Ambient motion Off (and flash reduction, like LightShaft.breathing):
+		# the lamp, its halo and the radio LEDs hold still, and nothing
+		# redraws every frame.
+		if _glow:
+			_glow.set_level(HELD_GLOW)
+		return
 	_t += delta
 	if _glow:
 		_glow.set_level(0.75 + 0.25 * sin(_t * 2.0 + position.x))
 	queue_redraw()
+
+
+## Whether lamps pulse and radio LEDs blink (Motion.gd contract).
+static func animates() -> bool:
+	return Motion.animate_ambient() and not Settings.flash_reduction
 
 
 ## The runtime halo / cable / banner node (null in the editor or when skipped).
