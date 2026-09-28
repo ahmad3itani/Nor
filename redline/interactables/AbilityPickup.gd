@@ -48,7 +48,9 @@ func _on_body_entered(body: Node2D) -> void:
 	Game.set_flag(flag_id)
 	AudioManager.play_sfx(&"ability_unlock")
 	EventBus.camera_shake_requested.emit(0.3)
-	HitSpark.spawn(get_parent(), global_position + Vector2(0, -12), Vector2.UP, Color("e8283c"), 24, 160.0)
+	# T06: the larger, flash-safe power flourish (its placeholder is these
+	# same sparks: PowerFlourish.KINDS ability fallback).
+	PowerFlourish.spawn(get_parent(), global_position + Vector2(0, -12), &"ability", body)
 	EventBus.hint_requested.emit(Loc.f(hint_text, {"action": InputGlyphs.label(hint_action)}), 5.0)
 	queue_free()
 

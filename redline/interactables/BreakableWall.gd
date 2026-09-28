@@ -75,12 +75,26 @@ func _break() -> void:
 	AudioManager.play_sfx(&"wall_break")
 	EventBus.camera_shake_requested.emit(0.2)
 	var center := global_position + size * 0.5
-	for i in 3:
-		HitSpark.spawn(get_parent(), center + Vector2(0, (i - 1) * size.y * 0.3), Vector2(randf_range(-1, 1), -1), Color("8a8398"), 10, 140.0)
+	_break_vfx(center)
 	if scrap_inside > 0:
 		ScrapPickup.burst(get_parent(), center, scrap_inside)
 	EventBus.secret_found.emit(persist_id)
 	queue_free()
+
+
+## Presentation (T06): concrete chunks tumble out of the wall with a hard
+## dust puff at its foot; the old sparks (and a dust burst) are the
+## placeholder when the debris sheet is missing. Own RNG: visual only.
+func _break_vfx(center: Vector2) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(persist_id) ^ hash(global_position.round())
+	var count := clampi(int(size.x * size.y / 96.0), 6, 12)
+	if DustBurst.debris(get_parent(), Rect2(global_position, size), &"concrete", count, rng) > 0:
+		DustBurst.puff(get_parent(), &"land_hard", global_position + Vector2(size.x * 0.5, size.y))
+		return
+	for i in 3:
+		HitSpark.spawn(get_parent(), center + Vector2(0, (i - 1) * size.y * 0.3), Vector2(randf_range(-1, 1), -1), Color("8a8398"), 10, 140.0)
+	DustBurst.spawn(get_parent(), global_position + Vector2(size.x * 0.5, size.y), 8, Vector2.UP, 60.0, 60.0)
 
 
 func _process(delta: float) -> void:

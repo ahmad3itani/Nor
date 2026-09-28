@@ -80,7 +80,10 @@ func _on_body_entered(body: Node2D) -> void:
 	Game.grant_weapon(weapon_id)
 	Game.set_flag(effective_flag())
 	AudioManager.play_sfx(&"ability_unlock")
-	HitSpark.spawn(get_parent(), global_position + Vector2(0, -16), Vector2.UP, ACCENT, 16, 120.0)
+	# T06: Game.grant_weapon's weapon_granted already raised Rook's weapon
+	# flourish (JuiceDirector); these sparks remain when none is playing.
+	if PowerFlourish.live_count(&"weapon") == 0:
+		HitSpark.spawn(get_parent(), global_position + Vector2(0, -16), Vector2.UP, ACCENT, 16, 120.0)
 	EventBus.camera_shake_requested.emit(0.2)
 	queue_free()
 

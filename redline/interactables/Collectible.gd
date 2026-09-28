@@ -70,8 +70,17 @@ func _on_body_entered(body: Node2D) -> void:
 	# After the counts change, so listeners (arcs, telemetry) read the new totals.
 	EventBus.collectible_taken.emit(persist_id, kind)
 	AudioManager.play_sfx(&"collect")
-	HitSpark.spawn(get_parent(), global_position + Vector2(0, -9), Vector2.UP, _color(), 14, 90.0)
+	_take_vfx(body)
 	queue_free()
+
+
+## Presentation (T06): the pickup's colour streams into Rook as Pulse motes;
+## the old sparks are the placeholder.
+func _take_vfx(body: Node2D) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(persist_id)
+	if PulseMotes.spawn(get_parent(), global_position + Vector2(0, -9), body, 8, rng, _color()) == null:
+		HitSpark.spawn(get_parent(), global_position + Vector2(0, -9), Vector2.UP, _color(), 14, 90.0)
 
 
 func _color() -> Color:
@@ -83,6 +92,17 @@ func _color() -> Color:
 	return Color("ffd36b")
 
 
+## The sprite and its tint (T06): scrap takes Palette currency, a memory
+## shard its own colour (_color, as before), a Core shard Palette accent.
+func art() -> Array:
+	match kind:
+		Kind.MEMORY_FRAGMENT:
+			return [&"memory_shard", _color()]
+		Kind.CORE_SHARD:
+			return [&"core_shard", Palette.color(&"accent")]
+	return [&"scrap_spin", Palette.color(&"currency")]
+
+
 func _draw() -> void:
 	var bob := sin(_t * 2.5) * 2.0
 	var c := _color()
@@ -90,6 +110,9 @@ func _draw() -> void:
 		# The empty socket of a recovered shard: an outline, no glint, no bob.
 		c.a = 0.35
 		draw_rect(Rect2(-3, -14, 6, 8), c, false, 1.0)
+		return
+	var a := art()
+	if ScrapPickup.draw_art(self, a[0], _t, a[1], Vector2(0, roundf(-9.0 + bob))):
 		return
 	match kind:
 		Kind.MEMORY_FRAGMENT:
