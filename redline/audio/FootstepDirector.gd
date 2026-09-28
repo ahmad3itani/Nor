@@ -107,7 +107,8 @@ func _physics_process(_delta: float) -> void:
 		play_step()
 
 
-func _on_step_contact() -> void:
+## The visual passes the planted foot (0/1); the step sound ignores it.
+func _on_step_contact(_foot: int = 0) -> void:
 	if _player != null and is_instance_valid(_player) and _running(_player):
 		play_step()
 
