@@ -26,6 +26,7 @@ the same rule ids.
 """
 import argparse
 import ast
+import fnmatch
 import gzip
 import hashlib
 import json
@@ -98,6 +99,14 @@ USER_DIRS = {
              "~/.local/share/godot/app_userdata/REDLINE"),
     "demo": ("%APPDATA%\\REDLINE Demo", "~/Library/Application Support/REDLINE Demo", "~/.local/share/REDLINE Demo"),
 }
+# Web gz payload budget (wasm + pck + js, gzip -9). Measured at T09 (overhaul):
+# wasm 7.98 MB + js 0.09 MB are fixed; the full asset set made the pck 8.80 MB
+# (16.86 MB in all). The web presets ship a partial audio set (beds, mus_title,
+# mus_undercity_explore; the rest falls back to the synth stems): 13.55 MB
+# full; the demo also drops the Lowlight/Relay-only beds and art: 12.56 MB,
+# inside 12 MiB (12.58 MB). The full web build is still over, so the raise to
+# ~20 MB is proposed as D-180 with these numbers; the budget is not raised
+# here (the build WARNs).
 BUDGET_WEB_GZ = 12 * 1024 * 1024
 BUDGET_DESKTOP_ZIP = 40 * 1024 * 1024
 BUDGET_MACOS_ZIP = 60 * 1024 * 1024  # universal: two architectures (measured 53.4 MB)
@@ -158,6 +167,91 @@ def numeric(version):
 
 # --- Invariants (EX-1..EX-11 as ExportRules.gd, plus PY-NET) --------------------
 
+# EX-4 detail (overhaul T09, no new rule id: RULE_IDS stay in step with
+# ExportRules.gd): an exclude_filter entry under assets/ may only drop
+# optional files. Every file it matches must be referenced, if at all, as a
+# plain string path by data or code whose loader guards it with
+# ResourceLoader.exists (the MusicLibrary / ambience bed / backdrop /
+# tileset paths), never by an ext_resource or a preload, so the build falls
+# back (synth stems, silence, the procedural backdrop, flat tiles).
+OPTIONAL_ASSET_PREFIX = "assets/"
+# referrer (glob, relative to redline/) -> the runtime file whose loader guards its paths
+GUARDED_REFERRERS = [
+    ("data/audio/music/*.tres", "autoload/MusicDirector.gd"),
+    ("data/audio/ambience/*.tres", "audio/AmbienceBank.gd"),
+    ("data/presentation/backdrops/*.tres", "world/districts/PlaneSpec.gd"),
+    ("data/districts/*.tres", "world/graybox/GrayboxBlock.gd"),
+    ("world/districts/DistrictBackdrop.gd", "world/districts/DistrictBackdrop.gd"),
+]
+TEXT_EXTS = (".tres", ".tscn", ".gd", ".godot", ".cfg")
+SCAN_SKIP = ("tests/", "tools/", "build/", ".godot/", "art/", "Docs/")
+_repo_cache = {}
+
+
+def repo_index(root=ROOT):
+    """{"files": [rel paths], "texts": {rel: text}} of the project (cached)."""
+    if root in _repo_cache:
+        return _repo_cache[root]
+    files, texts = [], {}
+    for base, dirs, names in os.walk(root):
+        rel_base = os.path.relpath(base, root).replace(os.sep, "/")
+        rel_base = "" if rel_base == "." else rel_base + "/"
+        dirs[:] = [d for d in dirs if not (rel_base + d + "/").startswith(SCAN_SKIP) and not d.startswith(".")]
+        for f in names:
+            rel = rel_base + f
+            files.append(rel)
+            if f.endswith(TEXT_EXTS):
+                with open(os.path.join(base, f), encoding="utf-8", errors="replace") as fh:
+                    texts[rel] = fh.read()
+    _repo_cache[root] = {"files": sorted(files), "texts": texts}
+    return _repo_cache[root]
+
+
+def excluded_assets(excludes, files):
+    """Files (no .import) that the assets/ entries of an exclude_filter drop."""
+    pats = [x for x in excludes if x.startswith(OPTIONAL_ASSET_PREFIX)]
+    return pats, [f for f in files if not f.endswith(".import") and any(fnmatch.fnmatchcase(f, p) for p in pats)]
+
+
+def optional_asset_problems(preset, excludes, index=None):
+    index = index or repo_index()
+    files, texts = index["files"], index["texts"]
+    pats, dropped = excluded_assets(excludes, files)
+    errs = []
+    for p in pats:
+        if not any(fnmatch.fnmatchcase(f, p) for f in files):
+            errs.append("[EX-4] '%s': exclude_filter %s matches no file" % (preset, p))
+    dropped_set = set(dropped)
+    for f in dropped:
+        res = "res://" + f
+        hard = re.compile(r'(ext_resource[^\n]*path="%s")|(preload\(\s*"%s")' % (re.escape(res), re.escape(res)))
+        for ref, text in texts.items():
+            if ref in dropped_set or res not in text:
+                continue
+            if hard.search(text):
+                errs.append("[EX-4] '%s': excludes %s, but %s loads it as a hard reference" % (preset, f, ref))
+                continue
+            guard = next((g for glob, g in GUARDED_REFERRERS if fnmatch.fnmatchcase(ref, glob)), None)
+            if guard is None:
+                errs.append("[EX-4] '%s': excludes %s, but %s names it outside a guarded loader" % (preset, f, ref))
+            elif "ResourceLoader.exists" not in texts.get(guard, ""):
+                errs.append("[EX-4] '%s': excludes %s, but %s (the loader for %s) has no ResourceLoader.exists guard" % (preset, f, guard, ref))
+    return errs
+
+
+def payload_report(presets, root=ROOT, index=None):
+    """One line per preset that drops optional assets: files and bytes."""
+    index = index or repo_index(root)
+    out = []
+    for p in presets:
+        _pats, dropped = excluded_assets(split_list(p.get("exclude_filter", "")), index["files"])
+        if dropped:
+            size = sum(os.path.getsize(os.path.join(root, f)) for f in dropped)
+            out.append("EX-4 %s: leaves out %d optional asset files (%.2f MB; the runtime falls back)" % (
+                p.get("name", "?"), len(dropped), size / 1e6))
+    return out
+
+
 def check_invariants(presets, project, gitignore):
     errs = []
     by_name = {}
@@ -202,6 +296,7 @@ def check_invariants(presets, project, gitignore):
         for x in FORBIDDEN_EXCLUDES:
             if x in excludes:
                 errs.append("[EX-4] '%s': exclude_filter must not exclude %s (runtime code lives there)" % (n, x))
+        errs += optional_asset_problems(n, excludes)
         for k, v in o.items():
             if SECRET_KEY_RE.search(k) and isinstance(v, str) and v != "":
                 errs.append("[EX-5] '%s': credential-like option %s has a value" % (n, k))
@@ -303,6 +398,17 @@ def self_test():
     no_ghosts = dict(SELF_TEST_SMOKE_OK, data={})
     if not any("ghosts" in e for e in smoke_problems(no_ghosts, "full", False, 1)):
         errs.append("[SELF-TEST] smoke_problems accepts a record without a ghosts count")
+    fake = {"files": ["assets/m/a.ogg", "assets/m/b.png", "data/audio/music/lib.tres", "autoload/MusicDirector.gd",
+                      "ui/X.tscn"],
+            "texts": {"data/audio/music/lib.tres": 'title = "res://assets/m/a.ogg"',
+                      "autoload/MusicDirector.gd": "if ResourceLoader.exists(path):",
+                      "ui/X.tscn": '[ext_resource type="Texture2D" path="res://assets/m/b.png" id="1"]'}}
+    if optional_asset_problems("T", ["assets/m/a.*"], fake):
+        errs.append("[SELF-TEST] EX-4 rejects a guarded string path: %s" % optional_asset_problems("T", ["assets/m/a.*"], fake))
+    if not any("hard reference" in e for e in optional_asset_problems("T", ["assets/m/b.png"], fake)):
+        errs.append("[SELF-TEST] EX-4 accepts excluding a hard-referenced asset")
+    if not any("matches no file" in e for e in optional_asset_problems("T", ["assets/none/*"], fake)):
+        errs.append("[SELF-TEST] EX-4 accepts a stale exclude pattern")
     one_locale = dict(SELF_TEST_SMOKE_OK, locales=["en"])
     if not any("locale" in e for e in smoke_problems(one_locale, "full", False, 2)):
         errs.append("[SELF-TEST] smoke_problems accepts 1 locale with --min-locales 2")
@@ -315,6 +421,8 @@ def run_check():
     for e in errs:
         print("DRIFT: " + e)
     if not errs:
+        for line in payload_report(presets):
+            print(line)
         print("export presets OK (%d presets, EX-1..EX-11, PY-NET)" % len(presets))
     return 1 if errs else 0
 
@@ -446,11 +554,13 @@ def build_one(godot, target, kind, version, debug, out_dir, gzip_web):
             fh.write(template("SERVE_NOTES.txt", kind, version, label))
         gz_bytes = sum(os.path.getsize(os.path.join(gz_dir, f)) for f in os.listdir(gz_dir) if f.endswith(".gz"))
         if gz_bytes > BUDGET_WEB_GZ:
-            print("WARN: web gz payload %.1f MB > %.0f MB budget" % (gz_bytes / 1e6, BUDGET_WEB_GZ / 1e6))
+            print("WARN: web gz payload %.2f MB > %.2f MB budget (D-180)" % (gz_bytes / 1e6, BUDGET_WEB_GZ / 1e6))
+        else:
+            print("web gz payload %.2f MB (budget %.2f MB)" % (gz_bytes / 1e6, BUDGET_WEB_GZ / 1e6))
     elif target != "web":
         budget = BUDGET_MACOS_ZIP if target == "macos" else BUDGET_DESKTOP_ZIP
         if artifacts[0]["bytes"] > budget:
-            print("WARN: %s is %.1f MB > %.0f MB budget" % (name, artifacts[0]["bytes"] / 1e6, budget / 1e6))
+            print("WARN: %s is %.1f MB > %.1f MB budget" % (name, artifacts[0]["bytes"] / 1e6, budget / 1e6))
     return artifacts, out_path
 
 
