@@ -9,11 +9,23 @@ extends MenuScreen
 ## "Labs & dev starts…" page (debug builds), Quit (not on the web); build label.
 ## Rows whose feature a build disables or whose screen has not landed are
 ## simply absent.
+##
+## Presentation overhaul (T07): with assets/title/title_logo(_crack).png the
+## wordmark row draws the engraved logo with its crack tinted by the Palette
+## accent and an ember crawling along the crack every CRACK_PERIOD seconds
+## (no crawl under flash reduction). The wordmark text stays on the row,
+## invisible, as the fallback and for the localisation tests.
 
 signal lab_requested(path: String)
 
 const RELAY_START_LABEL := "Slice (Relay start)"
 const LABS := {"Combat Lab": "res://world/rooms/CombatLab.tscn", "Movement Lab": "res://world/rooms/MovementLab.tscn"}
+
+## Logo row geometry and the crack's ember crawl.
+const LOGO_ROW_HEIGHT := 44.0
+const CRACK_PERIOD := 6.0
+const CRACK_SPEED := 90.0
+const CRACK_WINDOW := 14.0
 
 ## Row focused before another screen opened; MenuHost refocuses it on close.
 var last_focus: int = 0
@@ -21,6 +33,9 @@ var last_focus: int = 0
 var _page: StringName = &"main"
 ## Row to focus after a rebuild of the main page (Continue, else New Game).
 var _default_focus: int = 0
+## The wordmark row while it draws the logo (redrawn every frame for the crawl).
+var _logo_label: Label = null
+var _logo_t: float = 0.0
 
 
 func open_menu() -> void:
@@ -37,7 +52,10 @@ func close_menu() -> void:
 
 
 ## ui_cancel does nothing on the main page; on the labs page it goes back.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_logo_t += delta
+	if visible and _logo_label != null and is_instance_valid(_logo_label) and not Settings.flash_reduction:
+		_logo_label.queue_redraw()
 	if visible and _page == &"labs" and Engine.get_process_frames() != _opened_frame and cancel_pressed():
 		_show_page(&"main")
 
@@ -53,7 +71,8 @@ func rebuild() -> void:
 func _main_page() -> void:
 	var tag := BuildInfo.title_tag()
 	# l10n: ignore(brand)
-	add_label("R E D L I N E" + ("  " + tag if tag != "" else ""), UiTheme.ACCENT, 16)
+	var wordmark := add_label("R E D L I N E" + ("  " + tag if tag != "" else ""), UiTheme.ACCENT, 16)
+	_apply_logo(wordmark, tag)
 	add_label(Loc.t("Movement is life. Violence buys time. Curiosity reveals the truth."), UiTheme.MUTED)
 	add_label(BuildInfo.title_subtitle(), UiTheme.MUTED)
 	# Be upfront about recording (M4): what, where, and how to turn it off.
@@ -95,6 +114,46 @@ func _main_page() -> void:
 	if BuildInfo.can_quit():
 		add_button(Loc.t("Quit"), func() -> void: get_tree().quit())
 	add_label(BuildInfo.label(), UiTheme.MUTED, UiTheme.FONT_SIZE - 1)
+
+
+## The logo replaces the wordmark's look (not its text) when both logo
+## textures exist; otherwise the text wordmark stays as it was.
+func _apply_logo(label: Label, tag: String) -> void:
+	_logo_label = null
+	var logo := UiKit.title_logo()
+	if logo.is_empty():
+		return
+	_logo_label = label
+	label.custom_minimum_size.y = UiTheme.scaled(int(LOGO_ROW_HEIGHT))
+	label.add_theme_color_override("font_color", Color(0, 0, 0, 0))
+	label.draw.connect(_draw_logo.bind(label, logo, tag))
+
+
+func _draw_logo(label: Label, logo: Dictionary, tag: String) -> void:
+	var tex: Texture2D = logo["logo"]
+	var crack: Texture2D = logo["crack"]
+	var size := tex.get_size()
+	var at := Vector2(roundf((label.size.x - size.x) * 0.5), roundf((label.size.y - size.y) * 0.5) - 1.0)
+	var accent := Palette.color(&"accent")
+	label.draw_texture(tex, at, UiTheme.HC_TEXT if UiTheme.high_contrast() else Color.WHITE)
+	label.draw_texture(crack, at, accent)
+	var x := crack_ember_x(_logo_t, Settings.flash_reduction, size.x)
+	if x >= 0.0:
+		var src := Rect2(x, 0, minf(CRACK_WINDOW, size.x - x), size.y)
+		label.draw_texture_rect_region(crack, Rect2(at + src.position, src.size), src, accent.lerp(Color.WHITE, 0.65))
+	if tag != "":
+		var font := UiTheme.font()
+		var fsz := UiTheme.font_size()
+		label.draw_string(font, at + Vector2(size.x + 4, size.y - 2), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz, accent)
+
+
+## Left edge of the crack's bright ember window at time t, or -1 (resting
+## between crawls, or held still under flash reduction).
+static func crack_ember_x(t: float, reduced: bool, width: float) -> float:
+	if reduced:
+		return -1.0
+	var x := fmod(t, CRACK_PERIOD) * CRACK_SPEED - CRACK_WINDOW
+	return x if x >= 0.0 and x < width else -1.0
 
 
 ## Debug builds only (D-059): the pre-campaign slice start, kept for the
