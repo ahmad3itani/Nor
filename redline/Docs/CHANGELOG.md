@@ -24,14 +24,15 @@ Art, animation, VFX, atmosphere, UI and audio in the Hollow Knight mood, inside 
 - UI kit: HUD ampoule pips and Core frame, the boss bar, menu and dialogue frames, the ember cursor, per-line dialogue portraits, map icons, style-rank glyphs and the title logo with the ember crack.
 
 ### Audio
-- SFX assets through `override_stream`, with the synth as the fallback. New ids, 16 voices with priority stealing, footsteps per surface and a music duck (D-179).
-- Ambience beds per room on a new Ambience bus, and a drip emitter.
-- **Music track mode** (D-171): full tracks per district and intensity on two crossfading decks. The 5 synth stems remain the fallback and the Relay growth layers.
+- SFX assets through `override_path` (string paths: a missing file falls back to the synth for that id only), with the synth as the fallback. New ids, 16 voices with priority stealing, footsteps per surface, a music duck and a per-room SFX reverb (D-179, D-177).
+- Ambience beds per room on a new Ambience bus, and a drip emitter. They keep playing (low-passed) while the game is paused.
+- New **Ambience volume** row on the Audio page (under the Effects volume, D-179).
+- **Music track mode** (D-171): full tracks per district and intensity on two crossfading decks, at a per-set level (`MusicSet.mix_db`) under the SFX. The 5 synth stems remain the fallback and the Relay growth layers.
 
 ### Performance, builds and tools
-- `PerfProbe -- --budget` checks per backdrop kind (mean within 115 % of before or under 4 ms, p95 under 8 ms, ambient and VFX caps). Every room stays under 2 ms mean headless.
-- Web and demo presets leave out some music and beds behind string-path guards: web gz is 13.55 MB full (over budget, D-180) and 12.56 MB demo.
-- `--tour=overhaul` capture tour (37 frames, exits 1 on a missing shot) and before/after frames in `Docs/media/overhaul/`.
+- `PerfProbe -- --budget` checks per backdrop kind (mean under max(before × 1.15, 4 ms), p95 under 8 ms, ambient and VFX caps). Every room stays under 2 ms mean headless, but headless mean CPU rose 33–86 % over the overhaul: only the 4 ms floor holds (K-OV-13).
+- Web and demo presets leave out some music and beds behind string-path guards (D-180); `build.py` fails an over-budget artifact. Sizes: `OVERHAUL_REPORT.md` §4.
+- `--tour=overhaul` capture tour (38 frames incl. a post-hit-stop frame, exits 1 on a missing shot) and before/after frames in `Docs/media/overhaul/`.
 
 ## 0.9.0-m9: Endgame / Steam / Accessibility (Act I scope)
 

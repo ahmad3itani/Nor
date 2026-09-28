@@ -24,10 +24,10 @@ This phase changes presentation only: art, animation, VFX, atmosphere, UI and au
 | Enemies, bosses, NPCs | coloured bodies with `Look*` modules | sheets for 7 enemies, the Collector Drone, Warden Krail, the Sweeper, the Collector Eye and 5 NPCs. They add hit reactions, death corpses, boss attack families and phase poses, NPC idle/talk/signature animations and per-line dialogue portraits | T05, T07 |
 | Combat juice | `HitSpark`/`DustBurst`/`SlashArc` particles | sprite hit sparks and slash smears built from the real hitboxes, death bursts, dust and splash, muzzle flashes, projectile heads, shockwaves, electric arcs, heal and anchor-rest blooms, the perfect-dodge flourish, Pulse motes, the Core aura in Flow, and **power flourishes** on circuit, weapon and ability grants | T06 |
 | UI | plain panels and bars | a UI kit: HUD ampoule pips (break/refill), the Core frame and flow fill, the boss bar with phase ticks, 9-slice menu and dialogue frames, the ember cursor, nameplates, map icons, style-rank glyphs, and the title logo with the ember crack | T07 |
-| SFX | SfxSynth renders only | assets through `override_stream`, with the synth as the fallback. Randomized takes, new ids, 16 voices with priority stealing and footsteps per surface. UI sounds go on the UI bus. | T08 |
-| Ambience | none | beds per room on an Ambience bus, plus a drip emitter. Rooms without a bed are silent. | T08 |
-| Music | 5 synth stems faded by state | full tracks per district and state on two crossfading decks. Stems play for MEMORY, SILENT, Relay explore, the Deep Rig and any left-out file (D-171). | T08 |
-| Accessibility | M9 settings | `ambient_motion` Full/Reduced/Off (D-174). Background dim covers every new plane. Flash reduction scales VFX highlights. High contrast drops the vignette. Colour-blind palettes retint the masks. | T01, T03, T06 |
+| SFX | SfxSynth renders only | assets through `override_path` (a string path, loaded behind `ResourceLoader.exists`: a missing file falls back to the synth for that id only; audit repair), with the synth as the fallback. Randomized takes, new ids, 16 voices with priority stealing and footsteps per surface. UI sounds go on the UI bus. One SFX reverb set per room preset (`RoomPresentation.reverb`, audit repair). | T08 |
+| Ambience | none | beds per room on an Ambience bus, plus a drip emitter. Rooms without a bed are silent. The beds keep playing through dialogue, menus and memories (low-passed while paused; audit repair). A new **Ambience volume** row on the Audio page scales the bus under the Effects volume. | T01, T08 |
+| Music | 5 synth stems faded by state | full tracks per district and state on two crossfading decks, at `MusicSet.mix_db` (-13 dB, flow/boss +3, title +6) so EXPLORE sits under the weapon SFX (audit repair; measured, not heard). Stems play for MEMORY, SILENT, the Deep Rig's **explore** state and any left-out file; the Deep Rig's flow and boss states use the default `mus_flow` / `mus_boss`. The Relay is always HUB: it plays `mus_relay` with the lead and pad growth stems on top (D-171). | T08 |
+| Accessibility | M9 settings | `ambient_motion` Full/Reduced/Off (D-174): at Off lamps and halos hold still too (audit repair). Background dim covers every new plane, fog band, shaft and the lamp/neon glows (the glows since the audit repair). Flash reduction scales VFX highlights. High contrast drops the vignette and outlines the kit Core and boss fills. Colour-blind palettes retint the masks. | T01, T03, T06 |
 | Tools | none | `tools/assetgen/` (`assetgen.py --check`), `PerfProbe -- --budget`, `--tour=overhaul` | T01, T09, T10 |
 
 ## 2. How the frames were made
@@ -93,16 +93,22 @@ Headless CPU, the PerfProbe fight script, mean ms over 600 frames (`PerfProbe --
 | Pulse Pit (pulse_pit) | 0.88 | 1.15 | 2.19 | 1.07× |
 | Combat Lab (graybox) | 0.88 | 1.50 | 2.89 | 0.99× |
 
-- Every room is within its budget: mean ≤ max(before × 1.15, 4 ms) and p95 ≤ 8 ms. Every ambient-life, particle and VFX cap held at every sample.
-- At most 2 translucent full-screen layers are drawn in any room.
+- **Headless mean CPU rose 33–86 % in every room** (like for like: the same probe on b578c35). Only the 4 ms floor and the 8 ms p95 hold; the 1.15× growth rule is broken everywhere (K-OV-13). Until the audit repair `BEFORE_MEAN_MS` held old-probe numbers (2.20 / 2.29 / 1.69 ms, with 999 HUD pips), so the growth rule could not bite; it now holds the numbers above. A same-session CombatLab profile (0.97 → ~1.7 ms): sprite actors ~0.3–0.4 ms, the kit HUD redraw ~0.2 ms, VFX one-shots ~0.1 ms, juice/aura/feedback ~0.2 ms. Every ambient-life, particle and VFX cap held at every sample.
+- At most 2 translucent full-screen layers are drawn in any room. That count covers full-height planes, the sky and the vignette only; fog bands, light shafts, additive glows and particles / rain are partial-height overdraw it does not count, so it is not an overdraw budget.
 - GPU cost on real hardware is unmeasured (K-OV-11).
 
-| Size | Before (b578c35) | After |
+| Size | Before (b578c35) | After (audit repair, measured with `build.py --targets linux,windows,macos,web --kinds full,demo --gzip-web --smoke`) |
 |---|---|---|
-| Tracked `redline/` (git ls-files, bytes) | 8,209,300 | about 20.9 MB before the frames in `Docs/media/overhaul/` (about +2.6 MB with them); assets 9.0 MB, `art/source` 3.3 MB, `tools/assetgen` 0.9 MB |
-| Web full gz payload (wasm + pck + js) | 9.6 MB zip | 13.55 MB with a partial audio set (4 music tracks left out). **Over the 12 MiB budget** (D-180 proposes about 20 MB) |
-| Web demo gz payload | – | 12.56 MB (within 12 MiB; the Lowlight/Relay-only beds and art are left out too) |
-| Desktop zips | 31.7 MB win / 53.4 MB macOS (measured before phase B) | not re-measured in T10; desktop presets ship the full audio set; budgets 40 MB / 60 MB (build.py) |
+| Tracked `redline/` (git ls-files, bytes) | 8,209,300 | 23,145,473 in all: `assets/` 7,871,904, `Docs/media/overhaul/` 2,191,455, `art/source` 3,293,768, `tools/assetgen` 927,111 |
+| Web full gz payload (wasm + pck + js .gz) | 9.55 MB (9,545,531 B) | 11.86 MB of 12.58 MB (12 MiB): the web presets leave out `mus_relay`, `mus_lowlight_explore`, `mus_flow`, `mus_boss` and `mus_title`, and the full one the Lowlight beds (D-180). T09's 13.55 MB (with `mus_title` and the beds) was over |
+| Web demo gz payload | 9.55 MB (9,545,501 B) | 11.59 MB (also drops the Relay bed and the Lowlight/Relay-only art) |
+| Windows zip (full / demo) | 31.7 MB full | 39.06 / 36.08 MB of 41.94 MB (40 MiB): 2.9 MB headroom |
+| macOS zip (full / demo) | 53.4 MB full | 60.74 / 57.77 MB of 62.91 MB (60 MiB): 2.2 MB headroom |
+| Linux zip (full / demo) | 25.7 MB full | 33.00 / 30.03 MB of 41.94 MB |
+
+- The desktop **full** presets ship every asset. The three desktop **demo** presets leave out `mus_relay`, `mus_lowlight_explore`, the Lowlight and Relay beds and the `assets/lowlight/ll_*` and `assets/relay/*` art (38 files, 2.99 MB; `build.py --check` EX-4).
+- The earlier "9.6 MB zip" before figure was the b578c35 web demo zip, not a gz payload; both before rows above are gz payloads measured the same way as the after rows.
+- `build.py` now FAILs an artifact over its budget and WARNs under 0.5 MB of headroom. macOS (2.2 MB left) and Windows (2.9 MB left) are near their budgets: about one more music track each (D-180).
 
 ## 5. Asset provenance summary
 
@@ -183,4 +189,4 @@ python3 -B tools/assetgen/assetgen.py --check                                   
 godot --headless --fixed-fps 60 res://devtools/PerfProbe.tscn -- --budget      # overhaul: per backdrop kind CPU budget + ambient/VFX caps (exit 1 over budget)
 xvfb-run -a godot --fixed-fps 60 --rendering-driver opengl3 res://devtools/CaptureTour.tscn -- --out=/abs/dir --tour=overhaul [--only=b,c,u,v]   # exits 1 on a missing shot
 ```
-Also suggested: add `overhaul` to the CaptureTour line's tour list. Add a Conventions line: "Presentation: art/audio live in `assets/` with provenance in `assets/SOURCES.csv`; per-room presentation is `data/presentation/rooms.tres`; keep every placeholder as the fallback; presentation nodes use their own RandomNumberGenerator."
+Also suggested: replace the status line "Art and audio are procedural placeholders (D-026). Don't mass-produce final assets" with "Art and audio: `assets/` holds final-spec code-drawn art plus AI audio/images with provenance (D-170, presentation overhaul, `Docs/OVERHAUL_REPORT.md`); placeholders stay as the fallback; anything new follows `Docs/ART_BIBLE.md`", and add `overhaul` to the CaptureTour line's tour list. Add a Conventions line: "Presentation: art/audio live in `assets/` with provenance in `assets/SOURCES.csv`; per-room presentation is `data/presentation/rooms.tres`; keep every placeholder as the fallback; presentation nodes use their own RandomNumberGenerator."

@@ -773,9 +773,10 @@ The user asked for a presentation pass in the Hollow Knight mood, inside the Art
 ## D-171: Music ships as full tracks per district and intensity with a two-deck crossfader; the 5 synth stems stay as the fallback and as Relay growth (amends Art Bible §10) (FLAG)
 - FLAG vs Art Bible §10 ("five synced stems per district").
 - Generated music cannot produce sample-locked stems. `MusicSet` / `MusicLibrary` (`data/audio/music/music_library.tres`) hold string paths per state slot (title, hub, explore, flow, boss, memory, aftermath) per music district, plus a default set. A missing file falls through to the next set and then to the stems.
-- Transitions have their own fade times: boss 0.6 s, flow 1.0 s, flow→explore 3.0 s, aftermath 2.5 s, memory 1.2 s, default 2.0 s. The crossfade is equal-power. Explore tracks resume and flow/boss tracks restart. AFTERMATH plays the explore track at 0.6 gain. MEMORY, SILENT, Relay explore and the Deep Rig keep the stems.
+- Transitions have their own fade times: boss 0.6 s, flow 1.0 s, flow→explore 3.0 s, aftermath 2.5 s, memory 1.2 s, default 2.0 s. The crossfade is equal-power. Explore tracks resume and flow/boss tracks restart. AFTERMATH plays the explore track at 0.6 gain. MEMORY, SILENT and the Deep Rig's **explore** state keep the stems; the Deep Rig's flow and boss states fall back to the default set's `mus_flow` / `mus_boss`. The Relay is always in the HUB state: it plays `mus_relay` with the lead and pad growth stems on top.
 - Relay growth keeps only the arrhythmic synth layers (lead, pad) over `mus_relay` until a listening pass.
 - As built (T08): `MusicDirector` track mode. Headless runs create no players.
+- Audit repair: tracks play at `MusicSet.mix_db` (-13 dB = the manifest's -2 plus 11 dB headroom; `slot_db` flow/boss +3, title +6), so EXPLORE sits under the tier-3 weapon SFX (SOUND_DIRECTION §3/§4). Until then every track played at 0 dB, several LU above tier 1-4 SFX. The offsets come from measured LUFS, not from listening; the listening pass (K-OV-1, TODO) tunes them.
 
 ## D-172: Parallax planes repeat every 480 px with A/B variants; new motion scales for near, backwall, fog and foreground; the district grade applies to background planes only (amends Art Bible §8; F8/F11) (FLAG)
 - FLAG vs Art Bible §8 (960 px period, sky/far/mid only).
@@ -794,6 +795,7 @@ The user asked for a presentation pass in the Hollow Knight mood, inside the Art
 - `Settings.ambient_motion` is read through `vfx/Motion.gd`, with count scales in `accessibility_config.tres`. It never affects telegraphs, hit feedback or gameplay VFX. Those follow flash reduction.
 - Background dim also dims every new plane, fog band and glow.
 - As built (T01, T03): overhaul tour frames `ov_v_still_*` and `ov_v_dim_*`.
+- Audit repair: the lamp and neon glows (`LampGlow`, world canvas, z -2) were not dimmed until then; each glow now applies `dim_modulate` itself. Decor lamps, their halos and radio LEDs hold still at Off (and under flash reduction).
 
 ## D-175: Colour moves off reserved hues (F3–F6, F10)
 - Collector cargo `#b8e0d0` and Krail baton tip `#cfe4f2`.
@@ -809,6 +811,7 @@ The user asked for a presentation pass in the Hollow Knight mood, inside the Art
 - Per-room presentation (backdrop kind, ambience bed, reverb, footstep surface, music district, foreground allowed) is data keyed by room scene path: `data/presentation/rooms.tres` (`PresentationIndex`, with district defaults). It is not a Room export.
 - Room `.tscn` bytes and `roomgen --check` stay unchanged. A new district adds rows, not code (`CONTENT_PIPELINE.md`, "Art & audio assets").
 - As built (T01, T03): `FogBand`, `LightShaft`, `LampGlow`, `AmbientLife`, `AmbientParticles`, `SwayCable`, `ClothStrip` and `Vignette` (`world/ambient/`) have no collision and are invisible to EncounterDirector and RouteBot. Each uses its own RandomNumberGenerator.
+- Audit repair: `RoomPresentation.reverb` had no consumer until then. AudioManager now keeps one `AudioEffectReverb` on the SFX bus and sets room size / damping / wet from the SOUND_DIRECTION §3 table on every `room_loaded` (labs and unmapped rooms play dry). On web it does nothing (sample playback, K-OV-14).
 
 ## D-178: New animation hooks and a mask-tint overlay for reserved-red parts (F9)
 - **Rook:** turn, land, land_hard, idle_fidget, death, interact, rest, and per-weapon shots mapped from the attack ids.
@@ -818,15 +821,19 @@ The user asked for a presentation pass in the Hollow Knight mood, inside the Art
 - SpriteActor fallbacks keep partial art working.
 - `*_mask.png` sheets (Rook, Krail) draw a Palette-tinted overlay, so the colour-blind and high-contrast modes retint the visor and Core seam. The baked red stays as the fallback under the mask.
 
-## D-179: SFX: AudioManager chooses override_stream (SfxSynth always synthesises); new ids, 16 voices with priority stealing, an Ambience bus under the SFX volume, footsteps per surface; the synth stays the fallback
+## D-179: SFX: AudioManager chooses the override asset (SfxSynth always synthesises); new ids, 16 voices with priority stealing, an Ambience bus under the SFX volume, footsteps per surface; the synth stays the fallback
 - This corrects the phase-A note: `test_feedback` requires `SfxSynth.render()` to return a WAV, so AudioManager picks the override and the synth renders the fallback.
 - No new EventBus signal.
 - `shoot_pistol` keeps the synth (its take is on hold), as do the memory ids.
 - As built (T08).
+- FLAG (new setting): **Ambience volume** (`Settings.ambience_volume`, default 0.8, Audio page, new strings). `AudioManager.apply_volume()` sets the Ambience bus to sfx_volume × ambience_volume. Its preview plays a drip on the Ambience bus; the Effects row previews an SFX-bus hit (audit repair).
+- Audit repair: the bank stores `override_path` strings, not `override_stream` ext_resources. In Godot 4.3 one missing `[ext_resource]` fails the whole `.tres`, so a removed or excluded file would have silenced every id; now only that id falls back to the synth.
 
 ## D-180: Web and demo builds may leave out music and ambience beds (synth or silence fallback); the full web budget raise is proposed with measured numbers (FLAG)
 - FLAG (release budget).
-- As built (T09): the web presets leave out `mus_relay`, `mus_lowlight_explore`, `mus_flow` and `mus_boss`, whose states play the synth stems. The web demo also leaves out the Lowlight/Relay-only beds and art.
-- Measured web gz payload: 13.55 MB full and 12.56 MB demo, against the 12 MiB (12.58 MB) budget. The demo fits. The full web build is over budget and `build.py` WARNs.
+- As built (T09): the web presets leave out `mus_relay`, `mus_lowlight_explore`, `mus_flow` and `mus_boss`, whose states play the synth stems. The web demo also leaves out the Lowlight/Relay-only beds and art. The three **desktop demo** presets leave out `mus_relay`, `mus_lowlight_explore`, the Lowlight and Relay beds and the `assets/lowlight/ll_*` / `assets/relay/*` art as well (38 files, 2.99 MB; the demo never reaches those rooms).
+- Measured web gz payload (T09): 13.55 MB full and 12.56 MB demo, against the 12 MiB (12.58 MB) budget. The full web build was over budget and `build.py` only WARNed.
+- Audit repair: both web presets also leave out `mus_title` (the title plays the stems) and the full web preset the Lowlight beds (silence there). Measured: web gz 11.86 MB full, 11.59 MB demo (b578c35: 9.55 MB both, same `--gzip-web` path). `build.py` now FAILs any artifact over its budget and WARNs under 0.5 MB of headroom.
+- Desktop zips (audit repair, all measured): Windows 39.06 / 36.08 MB (full / demo) against 41.94 MB, macOS 60.74 / 57.77 MB against 62.91 MB, Linux 33.00 / 30.03 MB. **FLAG:** macOS has 2.2 MB and Windows 2.9 MB of headroom, about one more music track each; the next audio batch needs this decision too (raise the desktop budgets, or give desktop full the same partial set).
 - **Proposal for the lead:** raise the full-web budget to about 20 MB, or keep dropping tracks. The budget is not raised here.
 - `build.py --check` (EX-4) proves every excluded asset is only named as a string path behind a `ResourceLoader.exists` guard.

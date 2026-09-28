@@ -9,8 +9,11 @@
 
 ## Presentation overhaul: humans
 - [ ] **Listen to every audio asset** (K-OV-1): SFX takes, ambience beds and the six music tracks, the loop points (K-OV-2), `amb_relay_hub` for speech, and Relay growth over `mus_relay` (D-171).
+  - [ ] Tune the music level against the SFX by ear. Chosen by measurement in the audit repair (D-171): `MusicSet.mix_db` -13 dB for every set, `slot_db` flow +3, boss +3, title +6 (EXPLORE about -37 LUFS at the default sliders, tier-3 weapons about -33, tier-4 movement about -36..-46). Also check the per-room reverb wet levels (D-177) and the pause low-pass on the beds.
+  - [ ] Profile the headless CPU growth on real hardware and recover what can be (K-OV-13: HUD kit redraw, shared SpriteFrames per sheet).
+  - [ ] Apply the `redline/CLAUDE.md` lines suggested in `OVERHAUL_REPORT.md` §9 (K-OV-16).
 - [ ] Check the free ElevenLabs plan's commercial terms for every "check plan terms" row in `assets/SOURCES.csv` before any public build (D-170, K-OV-9).
-- [ ] Confirm or overrule the overhaul flags: D-170 (AI and code art as final), D-171 (full tracks, stems as fallback), D-172 (480 px planes, background-only grade), D-173 (4 alpha levels for atmosphere), D-174 (ambient motion setting), D-176 (Lowlight green neon left as is), D-180 (web budget: raise to about 20 MB or drop more tracks).
+- [ ] Confirm or overrule the overhaul flags: D-170 (AI and code art as final), D-171 (full tracks, stems as fallback), D-172 (480 px planes, background-only grade), D-173 (4 alpha levels for atmosphere), D-174 (ambient motion setting), D-176 (Lowlight green neon left as is), D-180 (web budget: raise to about 20 MB or keep the partial set; the desktop zips are 2-3 MB under their budgets).
 - [ ] Look at the before/after pairs in `OVERHAUL_REPORT.md` §3 and at `--tour=overhaul`. Judge the code-painted depth (K-OV-8) and Krail's readability (K-OV-7).
 - [ ] Approve or refuse the F2 recolour of Lowlight's green neon to rose `#ff7ab0`: a roomgen change (D-176).
 

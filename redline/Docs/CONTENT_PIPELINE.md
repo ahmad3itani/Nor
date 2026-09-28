@@ -234,7 +234,7 @@ The rules are in `Docs/ART_BIBLE.md`. Mechanically:
    - sheet size is a multiple of the cell;
    - animations fit inside the sheet;
    - palette size (a warning above 64 colours);
-   - reserved gameplay colours outside `ui/` and `vfx/`;
+   - reserved gameplay colours outside `ui/` and `vfx/` (any `*_mask.png` / `*_fill.png` is exempt: masks are tinted at runtime, D-178);
    - the project's nearest filtering.
 
 ## Art & audio assets (presentation overhaul)
@@ -267,11 +267,11 @@ Every PNG and OGG under `assets/` is named in an `out_files` cell of `assets/SOU
 |---|---|---|
 | `assets/**/<id>_sheet.tres` | `SpriteSheetSpec` | cell, origin, `SpriteAnim`s (per-anim origin), `metadata/mask_path` for tint masks. Point `EnemyData.sprite`, `NpcProfile.sprite` or the player visual's `sprite` at it |
 | `data/vfx/vfx_library.tres` | `VfxLibrary` | VFX id → spec path, `palette_key` or colour, additive, live cap. `VfxOneShot.spawn(parent, id, row, pos, opts)` plays one |
-| `data/presentation/backdrops/<kind>.tres` | `BackdropSet` of `PlaneSpec`s | planes back to front (texture, B variant, motion, anchor), fog, shafts, grade, vignette, glows, particles, life |
-| `data/presentation/rooms.tres` | `PresentationIndex` → `RoomPresentation` | per room scene path (and per district default): backdrop kind, ambience bed, reverb, footstep surface, music district, foreground allowed |
+| `data/presentation/backdrops/<kind>.tres` | `BackdropSet` of `PlaneSpec`s | planes back to front (texture, B variant, motion, anchor), fog, shafts, grade, vignette, particles, life (lamp/neon glows are not backdrop data: `Decor` and `NeonSign` attach a `LampGlow` in the world canvas) |
+| `data/presentation/rooms.tres` | `PresentationIndex` → `RoomPresentation` | per room scene path (and per district default): backdrop kind, ambience bed, reverb (applied to the SFX bus on `room_loaded`; desktop only, K-OV-14), footstep surface, music district, foreground allowed |
 | `data/districts/<d>.tres` | `DistrictTheme` (Presentation group) | `backdrop_kind_default`, tileset + layout json, dust colour |
-| `data/audio/placeholder_sfx.tres` | `SfxDefinition`s | synth parameters (the fallback) + `override_stream`, priority, mix |
-| `data/audio/music/music_library.tres` | `MusicLibrary` of `MusicSet`s | per music district: title/hub/explore/flow/boss/memory/aftermath track paths, `boss_by_room`, hub `extras` |
+| `data/audio/placeholder_sfx.tres` | `SfxDefinition`s | synth parameters (the fallback) + `override_path` (string, never an ext_resource), priority, mix |
+| `data/audio/music/music_library.tres` | `MusicLibrary` of `MusicSet`s | per music district: title/hub/explore/flow/boss/memory/aftermath track paths, `boss_by_room`, hub `extras`, level `mix_db` + per-slot `slot_db` |
 | `data/audio/ambience/beds.tres` | `AmbienceBank` | bed id → OGG path (or "" = silence) and mix dB; the drip emitter |
 
 Paths to optional assets are Strings guarded by `ResourceLoader.exists` (web and demo builds leave some out, D-180), never preloads. A missing asset falls back: plane → procedural skyline, sheet → placeholder drawing, SFX → SfxSynth, track → synth stems, bed → silence.

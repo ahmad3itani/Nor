@@ -132,7 +132,7 @@ World state and memory vignettes add no new reserved colour. The rules (D-115, D
 | foreground | 1.2 | in front of the world, see above |
 
 - **Planes are 480 px wide with A/B variants.** A plane alternates A, B, A… (`PlaneSpec.alt_path`), so the 480 px source never repeats visibly. The procedural skyline's 960 px period (`DistrictBackdrop.PERIOD`) applies only to the fallback.
-- **The district grade applies to background planes only** (`BackdropSet.grade`, from `assets/vfx/atmos/district_grades.json` `bg_modulate`). It never touches the world, characters, VFX or the HUD (F11). Background dim (§24) multiplies every plane, fog band and glow. High contrast skips the vignette.
+- **The district grade applies to background planes only** (`BackdropSet.grade`, from `assets/vfx/atmos/district_grades.json` `bg_modulate`). It never touches the world, characters, VFX or the HUD (F11). Background dim (§24) multiplies every plane, fog band and shaft (`DistrictBackdrop.apply_dim`) and the lamp/neon glows, which live in the world canvas and dim themselves (`LampGlow.apply_dim`). High contrast skips the vignette. The title's Rook stands on the graded ledge but is not graded himself.
 - A missing plane texture drops that plane, and the procedural skyline comes back. Nothing in a `BackdropSet` collides or reaches gameplay (D-177).
 
 ## 9. Naming and export
@@ -140,6 +140,7 @@ World state and memory vignettes add no new reserved colour. The rules (D-115, D
 - Sprite sheets are horizontal strips with a fixed cell size per character (for example Rook at 48×48, origin at bottom-centre, cell x = 24 and y = 46). Frame counts go in the import metadata, not the filename.
 - Export as PNG, 8-bit indexed where possible, with no premultiplied alpha. Import with the Lossless preset and nearest filtering (the project default).
 - Folder layout: `art/<district or character>/...` for source files and `assets/...` for exported, imported files.
+- **Reserved-colour exemption as enforced:** `ArtValidator` warns on reserved gameplay colours in any PNG except those under `assets/ui/` and `assets/vfx/` and any `*_mask.png` or `*_fill.png` anywhere under `assets/` (the mask-tint rule, D-178: masks and fills are tinted by `Palette.color()` at runtime).
 - **Name rule as enforced:** `ArtValidator.NAME_RULE` is `^[a-z0-9]+(_[a-z0-9]+)*\.png$`. The `(_[a-z0-9]+)*` was relaxed from `+` in the overhaul (T01), so single-word subjects such as `vignette.png` pass. Sheets use `<id>_sheet.png`.
 
 **Folders added in the presentation overhaul:**
@@ -156,7 +157,7 @@ World state and memory vignettes add no new reserved colour. The rules (D-115, D
 
 ## 10. Audio (companion notes)
 - The placeholder SFX and music are synthesized from data (`data/audio/placeholder_sfx.tres`, `audio/MusicSynth.gd`).
-- **Replacements must keep the same ids.** SFX: set `override_stream` (an OGG or an `AudioStreamRandomizer` of takes). AudioManager plays it and falls back to the SfxSynth render when it is missing (D-179).
+- **Replacements must keep the same ids.** SFX: set `override_path` (a `res://` string to an OGG or an `AudioStreamRandomizer` `.tres` of takes, never an ext_resource: one missing ext_resource fails the whole bank). AudioManager loads it behind `ResourceLoader.exists` and falls back to the SfxSynth render for that id when the file is missing or fails to load (D-179).
 - **Music ships as full tracks (D-171, amends the old five-stem rule):** one finished loop per district and intensity (title, hub, explore, flow, boss, memory, aftermath) in a `MusicSet` of `data/audio/music/music_library.tres`. `MusicDirector` crossfades two decks. A state or district without a track, or a build that left the file out, plays the five synth stems (pad, bass, drums, arp, lead) as before. **Stems are the fallback, not the format.** In the Relay only the arrhythmic growth stems (lead, pad) play over the hub track.
 - Ambience beds (`data/audio/ambience/beds.tres`, about 28 s loops at -26 LUFS) play on the Ambience bus per `RoomPresentation.ambience`. Loudness targets: SFX -18, ambience -26, music -20 LUFS.
 
