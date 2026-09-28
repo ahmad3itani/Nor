@@ -74,7 +74,7 @@ const BUDGET_ROOMS: Array[Array] = [
 ## table above). perf_before.txt's 2.20 / 2.29 / 1.69 came from the old probe,
 ## which drew 999 HUD pips, and must not be used. max(before * 1.15, 4 ms)
 ## is still the 4 ms floor for every room: headless mean CPU rose 33-86 %
-## over the overhaul (K-OV-12), so only the floor and the 8 ms p95 hold.
+## over the overhaul (K-OV-13), so only the floor and the 8 ms p95 hold.
 const BEFORE_MEAN_MS := {
 	&"Wake": 0.75, &"CollectorBay": 0.81, &"FirstPursuit": 0.81, &"EscapeTunnel": 0.86,
 	&"MaintenanceShaft": 0.89, &"FloodedAlley": 1.13, &"SmugglerRoute": 1.05, &"NeonRoofs": 1.11,

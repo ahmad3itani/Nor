@@ -45,6 +45,11 @@ const KIND_ROOMS: Array[Array] = [
 ]
 const COMBAT_SHOTS: PackedStringArray = ["ov_c_01_hit_sparks", "ov_c_02_death_burst", "ov_c_03_collector_phase2",
 	"ov_c_04_krail_phase2"]
+## The frame after hit-stop of the hit-sparks shot: at the hit frame the
+## smear, flash and sparks cover the struck enemy, so this one shows whether
+## it stays readable under hit VFX.
+const HIT_LATE_SHOT := "ov_c_01_hit_sparks_late"
+const HIT_LATE_FRAMES := 9
 const UI_SHOTS: PackedStringArray = ["ov_u_01_hud_100", "ov_u_02_hud_150", "ov_u_03_dialogue_portrait", "ov_u_04_pause"]
 ## [variant id, {Settings property: value}]: one accessibility setting at a
 ## time, everything else at its default.
@@ -93,6 +98,7 @@ static func shots(section: String) -> PackedStringArray:
 				out.append(backdrop_shot(k))
 		"c":
 			out = COMBAT_SHOTS.duplicate()
+			out.insert(1, HIT_LATE_SHOT)
 		"u":
 			out = UI_SHOTS.duplicate()
 		"v":
@@ -258,9 +264,10 @@ func _backdrop(kind: String, name: String) -> void:
 
 
 ## Walks Rook into a Needle standing still in the Flooded Alley and shoots
-## the frame after the light hit lands (spark + smear). `lethal` leaves the
+## the frame after the light hit lands (spark + smear), and with `late` the
+## frame after hit-stop too. `lethal` leaves the
 ## Needle one hit from death and shoots the burst instead.
-func _hit(name: String, lethal: bool = false) -> void:
+func _hit(name: String, lethal: bool = false, late: String = "") -> void:
 	var room := await _goto(FLOODED_ALLEY, &"from_relay")
 	if room == null or not is_instance_valid(room.player):
 		return
@@ -284,6 +291,9 @@ func _hit(name: String, lethal: bool = false) -> void:
 	if landed:
 		await _frames(5 if lethal else 2)
 		await _shot(name)
+		if late != "":
+			await _frames(HIT_LATE_FRAMES)
+			await _shot(late)
 	await _frames(30)
 
 
@@ -328,7 +338,7 @@ func _section_b() -> void:
 # --- c: combat ---------------------------------------------------------------------------
 
 func _section_c() -> void:
-	await _hit(COMBAT_SHOTS[0])
+	await _hit(COMBAT_SHOTS[0], false, HIT_LATE_SHOT)
 	await _reset_world()
 	await _hit(COMBAT_SHOTS[1], true)
 	await _reset_world()
