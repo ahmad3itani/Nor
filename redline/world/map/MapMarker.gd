@@ -46,7 +46,7 @@ func content_errors(room: Node) -> PackedStringArray:
 		out.append("NOTE label must be 1..%d characters (has %d)" % [NOTE_LABEL_MAX, label.length()])
 	var here := WorldMapIndex.local_pos(self, room)
 	for n in room.find_children("*", "", true, false):
-		var secret := n is BreakableWall or (n is Collectible and (n as Collectible).kind != Collectible.Kind.SCRAP_BUNDLE)
+		var secret := n is BreakableWall or (n is Collectible and Collectible.counts_as_secret((n as Collectible).kind))
 		if secret and WorldMapIndex.local_pos(n, room).distance_to(here) < NOTE_SECRET_CLEARANCE:
 			out.append("NOTE '%s' is within %d px of secret %s (notes never say where)" % [label, int(NOTE_SECRET_CLEARANCE), n.name])
 	return out

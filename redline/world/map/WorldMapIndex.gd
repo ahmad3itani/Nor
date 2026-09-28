@@ -40,7 +40,7 @@ static func room_info(room_path: String) -> Dictionary:
 		elif n is RoomExit:
 			var e := n as RoomExit
 			info["exits"].append({"rect": Rect2(p, e.size), "target": e.target_room, "entry": String(e.target_entry), "flag": e.requires_flag})
-		elif n is Collectible and (n as Collectible).kind != Collectible.Kind.SCRAP_BUNDLE:
+		elif n is Collectible and Collectible.counts_as_secret((n as Collectible).kind):
 			info["secrets"].append({"id": (n as Collectible).persist_id, "pos": p})
 		elif n is BreakableWall:
 			info["secrets"].append({"id": (n as BreakableWall).persist_id, "pos": p})

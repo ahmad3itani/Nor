@@ -5,7 +5,8 @@ extends RedlineTestCase
 
 const SAVE_V3 := "res://tests/fixtures/save_v3_slice.json"
 const ROOM_A := "res://tests/fixtures/WorldA.tscn"
-## Written for one test and removed at once (never committed): a scene in a
+## Written for one test and removed in its body after the last scan, and
+## again in after_each (never committed): a scene in a
 ## world-room folder, so every secret scan sees it as the runtime would.
 const TMP_ROOM := "res://world/rooms/undercity/ZzTestSchematicFixture.tscn"
 const PHASE1 := ["pulse_blade", "split_katars", "service_pistol", "scattergun", "heavy_revolver", "dash_coil",
@@ -25,6 +26,7 @@ func after_each() -> void:
 		DirAccess.remove_absolute(TMP_ROOM)
 		SliceStats.clear_cache()
 		NewGamePlus.clear_cache()
+		WorldMapIndex.clear_cache()
 	UpgradeLibrary.clear_cache()
 	Game.new_game()
 
@@ -413,5 +415,16 @@ func test_schematic_never_a_secret() -> void:
 	for e: Dictionary in v.collectibles.get("ZzTestSchematicFixture", []):
 		kinds[e["id"]] = e["kind"]
 	check(kinds.get("schem_drain_baffle", "") == "schematic", "the tracker labels it 'schematic': %s" % [kinds])
+	WorldMapIndex.clear_cache()
+	var map_ids := []
+	for sp: Dictionary in WorldMapIndex.room_info(TMP_ROOM)["secrets"]:
+		map_ids.append(sp["id"])
+	WorldMapIndex.clear_cache()
+	check(map_ids == ["test_schem_wall"], "the map counts the wall only: %s" % [map_ids])
+	# Removed here, not only in after_each, so a killed run cannot leave it in
+	# a shipped room folder.
+	DirAccess.remove_absolute(TMP_ROOM)
+	SliceStats.clear_cache()
+	NewGamePlus.clear_cache()
 	check(not Collectible.counts_as_secret(Collectible.Kind.SCHEMATIC) and not Collectible.counts_as_secret(Collectible.Kind.SCRAP_BUNDLE)
 		and Collectible.counts_as_secret(Collectible.Kind.CORE_SHARD), "counts_as_secret")
