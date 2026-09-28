@@ -159,6 +159,15 @@ func _ready() -> void:
 	EventBus.locale_changed.connect(func(locale: String) -> void: _event("locale", {"locale": locale}))
 	EventBus.demo_boundary_reached.connect(func(from: String, to: String) -> void:
 		_event("demo_end", {"from": from, "to": to}))
+	# Power (expansion): upgrades, Surge, charged heavies, parries.
+	EventBus.upgrade_purchased.connect(func(id: String, tier: int, price: int) -> void:
+		_event("upgrade", {"id": id, "tier": tier, "price": price}))
+	EventBus.surge_changed.connect(func(active: bool, seconds: float) -> void:
+		_event("surge", {"active": active, "seconds": snappedf(seconds, 0.01)}))
+	EventBus.surge_started.connect(func() -> void: _event("surge_start"))
+	EventBus.charged_attack_released.connect(func(attack_id: StringName) -> void:
+		_event("charge_release", {"attack": String(attack_id)}))
+	EventBus.player_parried.connect(func(_attacker: Node2D) -> void: _event("parry"))
 
 
 func recording_allowed() -> bool:

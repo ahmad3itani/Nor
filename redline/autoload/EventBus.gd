@@ -186,3 +186,21 @@ signal assist_suggestion_answered(context: String, answer: StringName, setting_k
 signal locale_changed(locale: String)
 ## Demo builds: Rook reached an exit into content outside the demo.
 signal demo_boundary_reached(from_room: String, target_room: String)
+
+## --- Power (expansion, D-182/D-183) ---
+# Declared ahead of their emitters (PW1): the combat runtime emits the
+# surge, charge and parry signals. Each is a Playtest hook (local only).
+## An upgrade tier was installed (UpgradeLibrary.buy / grant / rebranch).
+## tier = tiers owned after it; price = Scrap paid (0 = installed free by a
+## story beat, D-218; a rebranch keeps the tier and pays its swap price).
+signal upgrade_purchased(upgrade_id: String, tier: int, price: int)
+## The Pulse Surge window opened (active, seconds = its length) or closed
+## (false, 0.0).
+signal surge_changed(active: bool, seconds: float)
+## A Pulse Surge fired (start only, before surge_changed(true)), so a
+## data-only haptic row pulses once.
+signal surge_started()
+## A charged heavy left the charge (attack_id = the released AttackData id).
+signal charged_attack_released(attack_id: StringName)
+## Rook parried an attack; attacker = the enemy whose attack was parried.
+signal player_parried(attacker: Node2D)
