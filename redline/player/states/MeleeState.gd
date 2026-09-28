@@ -14,6 +14,8 @@ var _started_on_floor: bool = true
 ## M7 D2b: whiffed hangs let a jump + chained air lights (+ an air dodge)
 ## glide past every Dash gate and lift a floor jump ~30 px.
 var _hung: bool = false
+## Presentation only (T06): this swing's smear (sprite or arc) is out.
+var _smeared: bool = false
 
 
 func enter(_previous: StringName) -> void:
@@ -31,8 +33,13 @@ func enter(_previous: StringName) -> void:
 		player.velocity.x = player.facing * maxf(attack.lunge_speed, carried)
 	elif attack.sets_air_velocity and not attack.air_velocity_on_hit:
 		_take_hang()
-	SlashArc.spawn(player.get_parent(), attack.world_hitbox(player.global_position, player.facing),
-		player.facing, Color("ffe9ef"), attack.hitstop >= 0.08)
+	# T06: a sprite smear waits for the active window; the arc placeholder
+	# still draws from the swing's start when no smear exists for this id.
+	_smeared = false
+	if not SlashArc.has_smear(attack.id):
+		_smeared = true
+		SlashArc.spawn(player.get_parent(), attack.world_hitbox(player.global_position, player.facing),
+			player.facing, Color("ffe9ef"), attack.hitstop >= 0.08)
 
 
 func exit(_next: StringName) -> void:
@@ -51,6 +58,8 @@ func physics_update(input: PlayerInputFrame, delta: float) -> StringName:
 			return &"air"
 
 	if attack.is_active_at(t):
+		if not _smeared:
+			_spawn_smear()
 		var landed := player.combat.melee_query(attack, _hit_ids)
 		# The air hang: a connecting air swing holds Rook up (limited uses).
 		if landed > 0 and not _started_on_floor and not player.is_on_floor() \
@@ -70,6 +79,15 @@ func physics_update(input: PlayerInputFrame, delta: float) -> StringName:
 	if t >= attack.total_time():
 		return &"air" if not player.is_on_floor() else settle_state(input)
 	return &""
+
+
+## The sprite smear on the first active tick, carried with Rook; the arc
+## placeholder when the sheet cannot spawn one (cap, missing frames).
+func _spawn_smear() -> void:
+	_smeared = true
+	var rect := attack.world_hitbox(player.global_position, player.facing)
+	if SlashArc.smear(player.get_parent(), attack.id, rect, player.facing, player) == null:
+		SlashArc.spawn(player.get_parent(), rect, player.facing, Color("ffe9ef"), attack.hitstop >= 0.08)
 
 
 func _take_hang() -> void:
