@@ -315,3 +315,74 @@ func test_missing_sheet_falls_back_to_the_placeholder() -> void:
 	for i in 36:
 		visual.advance(1.0 / 60.0)
 	check(feet.size() == 2, "the placeholder still marks two steps per cycle, got %d" % feet.size())
+
+
+## Review fix: a non-looping base row (crouch, slide) plays once and holds its
+## last frame while the state lasts; replaying it every tick bobbed Rook
+## between stand and crouch.
+func test_non_looping_base_rows_hold_their_last_frame() -> void:
+	await _spawn()
+	for state: StringName in [&"crouch", &"slide", &"dodge"]:
+		_force(state)
+		var frames: SpriteFrames = visual.actor.sprite_frames
+		check(not frames.get_animation_loop(state), "%s is a one-pass row" % state)
+		var last: int = frames.get_frame_count(state) - 1
+		await physics_frames(30)
+		var held: Array = []
+		for i in 5:
+			await physics_frames(8)
+			held.append(visual.actor.frame)
+		check(visual.actor.animation == state, "%s still plays %s" % [state, visual.actor.animation])
+		check(held.all(func(f: int) -> bool: return f == last), "%s holds frame %d over 1 s, got %s" % [state, last, held])
+		_force(&"idle")
+	# Entering the state again replays the row from the start.
+	_force(&"crouch")
+	check(visual.actor.frame == 0 and visual.actor.is_playing(), "re-entering crouch replays it")
+
+
+## Review fix: the outline copies draw flat white (the sprite's own colours
+## would give a dark fringe). Headless runs cannot read pixels back, so the
+## shader itself is checked.
+func test_high_contrast_outline_shader_is_flat_white() -> void:
+	await _spawn()
+	Settings.high_contrast = true
+	visual.advance(0.0)
+	var nodes: Array = visual.outline_nodes()
+	check(not nodes.is_empty(), "outline copies exist")
+	var mat := (nodes[0] as Sprite2D).material as ShaderMaterial
+	check(mat != null and mat.shader != null, "the copies use the outline shader")
+	var code: String = mat.shader.code.replace(" ", "")
+	check("COLOR=vec4(1.0,1.0,1.0," in code, "the fragment writes flat white")
+	check(not "COLOR.rgb" in code and not "texture(TEXTURE,UV).rgb" in code, "no sprite colour reaches the outline")
+	check("texture(TEXTURE,UV).a" in code, "the frame's alpha shapes the silhouette")
+	check("v_mod.a" in code, "the modulate alpha (hurt blink) is kept")
+
+
+## Review fix: a shot pose ends when Rook jumps, slides, crouches or heals.
+func test_a_shot_yields_to_air_slide_crouch_and_heal() -> void:
+	await _spawn()
+	var w: WeaponData = load("res://data/weapons/service_pistol.tres")
+	for state: StringName in [&"air", &"slide", &"crouch", &"heal"]:
+		_force(&"idle")
+		player.velocity.y = -120.0
+		player.combat.fired.emit(w)
+		visual.advance(0.0)
+		check(visual.overlay() == &"shoot_pistol", "the shot plays")
+		_force(state)
+		check(visual.overlay() == &"", "%s ends the shot" % state)
+		check(visual.actor.animation != &"shoot_pistol", "%s shows its own row, got %s" % [state, visual.actor.animation])
+	player.velocity.y = 0.0
+
+
+## Review fix: only the first pass of jump_rise's frame 0 is an authored
+## squash; the looping row coming back to frame 0 is not.
+func test_rise_squash_only_on_the_first_frame() -> void:
+	await _spawn()
+	player.velocity.y = -120.0
+	_force(&"air")
+	check(visual.actor.animation == &"jump_rise" and visual.actor.frame == 0, "rise starts on frame 0")
+	check(visual.call("_authored_squash_playing"), "the first frame is authored squash")
+	visual.actor.frame = 1
+	visual.actor.frame = 0
+	check(not visual.call("_authored_squash_playing"), "the loop back to frame 0 is not")
+	player.velocity.y = 0.0
