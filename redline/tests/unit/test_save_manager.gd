@@ -132,6 +132,18 @@ func test_v3_fixture_loads_with_m8_defaults() -> void:
 	Game.new_game()
 
 
+## Expansion (D-182): upgrades are int flags with no schema bump. An M7 save
+## reads every upg_ flag as 0 and keeps its Core capacity.
+func test_v3_fixture_has_no_upgrades() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SAVE_V3))
+	Game.state = GameState.from_dict(SaveManager.migrate(raw))
+	for f in UpgradeLibrary.all_flags():
+		check(Game.flag_int(f) == 0, "%s is 0 in an M7 save" % f)
+	check(Game.core_capacity() == Game.catalog.base_core_capacity + Game.state.core_shards, "capacity unchanged")
+	check(UpgradeLibrary.total_owned() == 0, "nothing owned")
+	Game.new_game()
+
+
 # --- M9 (T01): AtomicJson, archive, optional keys (D-087/D-090, D-142) ---
 
 func test_atomic_json_bak_recovery() -> void:
