@@ -18,12 +18,17 @@ extends Node2D
 ## - priorities: death > hurt > melee > dodge/dash > shot > land/turn/fidget/
 ##   interact/rest. An overlay never blocks or delays gameplay state: a state
 ##   of higher priority cancels it, and land/turn/fidget/interact/rest also
-##   yield to any state change (fidget and rest to any input);
+##   yield to any state change (fidget and rest to any input); a shot pose
+##   stays over idle <-> run but ends on air, slide, crouch or heal;
+## - non-looping base rows (crouch, slide, dodge, swings) play once and hold
+##   their last frame while the state lasts;
 ## - code squash is scaled down while an authored squash frame plays, so the
 ##   two never multiply;
 ## - the Core seam mask brightens with the reactor (critical pulse, static
 ##   under flash reduction) and turns heal-green while healing; the hurt blink
-##   reaches it through SpriteActor's alpha copy;
+##   reaches it through SpriteActor's alpha copy. The sheet has one mask for
+##   visor and seam, so the visor follows the seam tint (a split mask is a
+##   later art task);
 ## - afterimages are copies of the live frame, a high-contrast mode adds a
 ##   1 px white silhouette outline, and `step_contact` marks foot plants.
 ## Everything here is visual only; it never touches the player's state.
@@ -79,7 +84,11 @@ const SEAM_CRITICAL_VALUE := 1.0
 const SEAM_PULSE_DEPTH := 0.25
 const SEAM_PULSE_HZ := 0.5
 const OUTLINE_OFFSETS: Array[Vector2] = [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1)]
-const OUTLINE_SHADER := "shader_type canvas_item;\nvoid fragment() {\n\tCOLOR = vec4(COLOR.rgb, COLOR.a * texture(TEXTURE, UV).a);\n}\n"
+## Flat white in the frame's alpha. In a canvas_item fragment COLOR already
+## holds modulate x texture colour, so the modulate is carried over from the
+## vertex stage (its alpha keeps the hurt blink) and the texture gives only
+## the silhouette.
+const OUTLINE_SHADER := "shader_type canvas_item;\nvarying vec4 v_mod;\nvoid vertex() {\n\tv_mod = COLOR;\n}\nvoid fragment() {\n\tCOLOR = vec4(1.0, 1.0, 1.0, v_mod.a * texture(TEXTURE, UV).a);\n}\n"
 
 ## Overlay one-shots and their priority (a state of higher priority cancels).
 const PRIO_LOW := 1
@@ -88,6 +97,10 @@ const STATE_PRIORITY := {&"dodge": 3, &"dash": 3, &"melee": 4, &"hurt": 5}
 ## Overlays that yield to any state change, and those that yield to any input.
 const YIELD_ON_STATE := [&"turn", &"land", &"land_hard", &"idle_fidget", &"interact", &"rest"]
 const YIELD_ON_INPUT := [&"idle_fidget", &"rest"]
+## A shot pose is a standing pose: a change into one of these states ends it
+## (the base row takes over), so it never slides through a jump or a slide.
+## Idle <-> run keeps it (the shot reads over locomotion).
+const SHOT_BREAKERS := [&"air", &"slide", &"crouch", &"heal"]
 const AUTHORED_SQUASH := [&"land", &"land_hard"]
 
 static var _outline_shader: Shader
@@ -118,6 +131,11 @@ var _last_facing: int = 1
 var _idle_time: float = 0.0
 var _fidget_at: float = 0.0
 var _dead_played: bool = false
+## The next base play restarts from frame 0 (state entered, attack started).
+var _base_restart: bool = true
+## jump_rise's first frame is an authored squash only on the first pass of
+## the (looping) row: set when the row starts, cleared once frame 0 advances.
+var _rise_first: bool = false
 var _foot: int = 0
 var _run_phase: float = 0.0
 var _time: float = 0.0
@@ -141,6 +159,7 @@ func _ready() -> void:
 			add_child(actor)
 			actor.one_shot_finished.connect(_on_one_shot_finished)
 			actor.frame_changed.connect(_on_actor_frame_changed)
+			actor.animation_changed.connect(_on_actor_animation_changed)
 	_last_facing = player.facing
 	player.jumped.connect(func(_kind: StringName) -> void: _scale = Vector2(0.72, 1.3))
 	player.landed.connect(_on_landed)
@@ -148,6 +167,7 @@ func _ready() -> void:
 	var combat := player.get_node_or_null("Combat") as PlayerCombat
 	if combat:
 		combat.fired.connect(_on_fired)
+		combat.attack_started.connect(func(_a: AttackData) -> void: _base_restart = true)
 	EventBus.dialogue_requested.connect(_on_dialogue_requested)
 	EventBus.anchor_rested.connect(_on_anchor_rested)
 	EventBus.player_respawned.connect(_on_player_respawned)
@@ -197,7 +217,8 @@ func _on_player_respawned(p: Node2D, _spawn: StringName) -> void:
 	_fidget_at = _next_fidget()
 	_last_facing = player.facing
 	if actor:
-		actor.play_first([&"idle"])
+		_base_restart = true
+		_play_base(&"idle")
 
 
 func _process(delta: float) -> void:
@@ -306,17 +327,22 @@ func _update_actor(delta: float) -> void:
 		# the next tick is the landing itself, not a new state to yield to.
 		var settle := _last_state == &"air" and (state == &"idle" or state == &"run") and _overlay in AUTHORED_SQUASH
 		if _overlay != &"":
-			if prio > _overlay_prio or (changed and not settle and _overlay in YIELD_ON_STATE) or (_overlay in YIELD_ON_INPUT and _input_active(input)):
+			var shot_break := _overlay_prio == PRIO_SHOT and changed and state in SHOT_BREAKERS
+			if prio > _overlay_prio or shot_break or (changed and not settle and _overlay in YIELD_ON_STATE) or (_overlay in YIELD_ON_INPUT and _input_active(input)):
 				_clear_overlay()
+				_base_restart = true
 		_tick_fidget(delta, state, input, changed)
 		if player.facing != _last_facing and (state == &"run" or state == &"idle") and player.is_on_floor():
 			_start_overlay(&"turn", PRIO_LOW)
+		if changed:
+			_base_restart = true
 		if _overlay == &"":
-			actor.play_first(_base_names(state))
+			_play_base(state)
 		elif not actor.is_playing_one_shot() and _overlay != &"rest":
 			# The overlay's anim is missing or was replaced: fall back to the base.
 			_clear_overlay()
-			actor.play_first(_base_names(state))
+			_base_restart = true
+			_play_base(state)
 	_last_facing = player.facing
 	var k := AUTHORED_SQUASH_KEEP if _authored_squash_playing() else 1.0
 	actor.scale = Vector2.ONE + (_scale - Vector2.ONE) * k
@@ -324,6 +350,28 @@ func _update_actor(delta: float) -> void:
 	actor.self_modulate = Color(1, 1, 1, a)
 	_update_seam(state)
 	_update_outline(a)
+
+
+## Plays the state's base row. A looping row keeps cycling; a non-looping one
+## (crouch, slide, dodge, a swing, hurt) plays once and holds its last frame
+## for as long as the state lasts, restarting only when the state is entered
+## again or a new attack starts (AnimatedSprite2D.play() on a finished row
+## would rewind it every tick).
+func _play_base(state: StringName) -> void:
+	var restart := _base_restart
+	_base_restart = false
+	for item in _base_names(state):
+		var n := StringName(item)
+		if not actor.sprite_frames.has_animation(n):
+			continue
+		if actor.animation != n:
+			actor.play(n)
+		elif restart:
+			actor.stop()
+			actor.play(n)
+		elif not actor.is_playing() and actor.sprite_frames.get_animation_loop(n):
+			actor.play(n)
+		return
 
 
 func _base_names(state: StringName) -> Array:
@@ -375,7 +423,8 @@ func _on_one_shot_finished(anim: StringName) -> void:
 	if next != &"":
 		_start_overlay(next, PRIO_LOW)
 	elif actor:
-		actor.play_first(_base_names(player.current_state_id()))
+		_base_restart = true
+		_play_base(player.current_state_id())
 
 
 func _tick_fidget(delta: float, state: StringName, input: PlayerInputFrame, changed: bool) -> void:
@@ -398,7 +447,7 @@ func _next_fidget() -> float:
 func _authored_squash_playing() -> bool:
 	if actor.animation in AUTHORED_SQUASH and actor.is_playing():
 		return true
-	return actor.animation == &"jump_rise" and actor.frame == 0
+	return _rise_first and actor.animation == &"jump_rise" and actor.frame == 0
 
 
 ## Core seam: accent (or the colour-blind/high-contrast key) at 0.8, full with
@@ -458,7 +507,13 @@ func _build_outline() -> void:
 		_outlines.append(s)
 
 
+func _on_actor_animation_changed() -> void:
+	_rise_first = actor.animation == &"jump_rise"
+
+
 func _on_actor_frame_changed() -> void:
+	if actor.frame != 0:
+		_rise_first = false
 	if actor.animation == &"run" and actor.frame in RUN_CONTACT_FRAMES:
 		_emit_step()
 
