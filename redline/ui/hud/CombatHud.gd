@@ -47,6 +47,8 @@ const DIM := Color(1, 1, 1, 0.18)
 const HOLLOW := Color(1, 1, 1, 0.35)
 const HC_OUTLINE := Color.WHITE
 const HC_CARD := Color(0.04, 0.03, 0.07, 1.0)
+## The hint card's alpha outside high contrast.
+const HINT_CARD_ALPHA := 0.72
 const INJECTOR_COLOR := Color("7dff9a")
 const AMMO_COLOR := Color("ffe28a")
 const SCRAP_COLOR := Color("ffd36b")
@@ -72,6 +74,12 @@ const KIT_CORE_FILL := Rect2(10, 3, 60, 3)
 ## The boss frame's caps reach this far past the fill on each side.
 const KIT_BOSS_CAP := 16.0
 const KIT_PLAQUE_H := 9.0
+## The plaque's top sits this far above the fill (it tucks behind the bar's
+## top edge, so it rises no higher than the M9 title line over low floors).
+const KIT_PLAQUE_RISE := 8.0
+## Opaque trough behind the kit Core and boss fills: their frames are hollow,
+## so without it the empty part of a bar shows the room (brick, tile) behind.
+const KIT_TROUGH := Color(0.05, 0.04, 0.08, 1.0)
 ## The rank glyph's ink sits this far above the rank anchor (its baseline).
 const KIT_RANK_RISE := 12.0
 
@@ -425,9 +433,10 @@ func _draw_hud() -> void:
 		_draw_centered(font, t, lay["prompt_y"], fs() + 1, Color.WHITE)
 	if _hint_time > 0.0:
 		var c := Color(1, 1, 1, clampf(_hint_time * 2.0, 0.0, 1.0))
-		if hc:
-			# High contrast: the hint sits on an opaque card.
-			_root.draw_rect(text_rect(font, _hint, lay["hint_y"], fs() + 1, view).grow(2.0), Color(HC_CARD, c.a))
+		# The hint sits on a card: opaque in high contrast, translucent
+		# otherwise (the painted floors are busy; white on a yellow spawn
+		# plate or brick must still read).
+		_root.draw_rect(text_rect(font, _hint, lay["hint_y"], fs() + 1, view).grow(2.0), Color(HC_CARD, c.a * (1.0 if hc else HINT_CARD_ALPHA)))
 		_draw_centered(font, _hint, lay["hint_y"], fs() + 1, c)
 
 	# Memory Fragment card: short, readable, never pauses play (bible §2.7 story through play).
@@ -685,7 +694,26 @@ static func kit_boss_frame(bar_r: Rect2) -> Rect2:
 ## The name plaque centred above the bar, wide enough for the title.
 static func kit_plaque_rect(font: Font, title: String, bar_r: Rect2) -> Rect2:
 	var w := maxf(UiKit.region("boss_bar", "name_plaque").size.x, ceilf(font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs()).x) + 12.0)
-	return Rect2(roundf(bar_r.get_center().x - w * 0.5), bar_r.position.y - 11, w, KIT_PLAQUE_H)
+	return Rect2(roundf(bar_r.get_center().x - w * 0.5), bar_r.position.y - KIT_PLAQUE_RISE, w, KIT_PLAQUE_H)
+
+
+## The Core fill channel (frame-relative KIT_CORE_FILL) in HUD space.
+static func kit_core_fill_rect(bar: Rect2) -> Rect2:
+	return Rect2(bar.position + KIT_CORE_FILL.position, KIT_CORE_FILL.size)
+
+
+## The opaque trough under the Core fill: the channel plus the 1 px gaps
+## between the frame's inner and outer rails (frame rows 1..7, x 10..69).
+static func kit_core_trough(bar: Rect2) -> Rect2:
+	var fill := kit_core_fill_rect(bar)
+	return Rect2(fill.position - Vector2(0, 2), fill.size + Vector2(0, 4))
+
+
+## The opaque trough under the boss fill: the fill row band out to the
+## frame's inner rails (bar_3slice rows 6..9, 4 px past the fill each side).
+static func kit_boss_trough(bar_r: Rect2) -> Rect2:
+	var h := UiKit.region("boss_bar", "fill").size.y if UiKit.has_atlas("boss_bar") else bar_r.size.y
+	return Rect2(bar_r.position - Vector2(4, 0), Vector2(bar_r.size.x + 8, maxf(h, bar_r.size.y)))
 
 
 func _draw_kit_pips(base: Vector2, hc: bool, red: Color) -> void:
@@ -726,12 +754,19 @@ func _draw_kit_tick(at: Vector2, full: bool, hc: bool, tint: Color) -> void:
 
 func _draw_kit_boss(font: Font, bar_r: Rect2, hc: bool, red: Color) -> void:
 	var frame_tint := HC_OUTLINE if hc else Color.WHITE
+	var title := Loc.t(_boss_title)
+	_root.draw_rect(kit_boss_trough(bar_r), KIT_TROUGH)
 	UiKit.draw_three(_root, "boss_bar", "bar_3slice", kit_boss_frame(bar_r), frame_tint)
+	# The plaque tucks behind the bar: drawn before the fill, which covers
+	# its bottom rail.
+	UiKit.draw_stretched(_root, "boss_bar", "name_plaque", kit_plaque_rect(font, title, bar_r), [6.0, 0.0, 6.0, 0.0], frame_tint)
 	var f := clampf(_boss.health / _boss.data.max_health, 0.0, 1.0)
 	var src := UiKit.region("boss_bar", "fill")
 	var tex: Texture2D = UiKit.atlas("boss_bar")["fill"]
 	if tex != null and f > 0.0:
 		_root.draw_texture_rect_region(tex, Rect2(bar_r.position, Vector2(bar_r.size.x * f, src.size.y)), Rect2(src.position, Vector2(src.size.x * f, src.size.y)), red)
+	if hc:
+		_root.draw_rect(Rect2(bar_r.position, Vector2(bar_r.size.x, src.size.y)).grow(1.0), HC_OUTLINE, false, 1.0)
 	# The 50 % tick (3x8) straddles the fill; its shatter (9x12) is centred on it.
 	var tick := bar_r.position + Vector2(roundf(bar_r.size.x * 0.5) - 1, -2)
 	if _shatter_t >= 0.0:
@@ -740,8 +775,6 @@ func _draw_kit_boss(font: Font, bar_r: Rect2, hc: bool, red: Color) -> void:
 			UiKit.draw_region(_root, "boss_bar", "tick_shatter", tick - Vector2(3, 2), fr)
 	elif not _phase_broken:
 		UiKit.draw_region(_root, "boss_bar", "phase_tick", tick)
-	var title := Loc.t(_boss_title)
-	UiKit.draw_stretched(_root, "boss_bar", "name_plaque", kit_plaque_rect(font, title, bar_r), [6.0, 0.0, 6.0, 0.0], frame_tint)
 	_draw_centered(font, title, bar_r.position.y - 3, fs(), Color.WHITE)
 
 
@@ -759,12 +792,17 @@ func _draw_core(font: Font, base: Vector2) -> void:
 		fill_color = red.lerp(Color.WHITE, 0.5 + 0.5 * sin(_time * 12.0))
 	if kit:
 		var hc := UiTheme.high_contrast()
+		_root.draw_rect(kit_core_trough(bar), KIT_TROUGH)
 		UiKit.draw_region(_root, "hud_kit", "core_frame", bar.position, 0, HC_OUTLINE if hc else Color.WHITE)
 		UiKit.draw_fill(_root, "hud_kit", "core_socket_fill", bar.position + Vector2(3, 3), fill_color)
 		var flow := core_flow_frame(_time, Settings.flash_reduction)
 		var w := roundf(KIT_CORE_FILL.size.x * frac)
 		if w > 0.0:
 			UiKit.draw_fill(_root, "hud_kit", "core_fill_flow", bar.position + KIT_CORE_FILL.position, fill_color, flow, Rect2(0, 0, w, KIT_CORE_FILL.size.y))
+		if hc:
+			# The M9 white outline around the fill area (the fill edge reads
+			# against the outline, not only the frame).
+			_root.draw_rect(kit_core_fill_rect(bar).grow(1.0), HC_OUTLINE, false, 1.0)
 	else:
 		_root.draw_rect(bar, DIM)
 		_root.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), fill_color)

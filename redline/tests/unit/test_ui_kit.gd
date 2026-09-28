@@ -56,6 +56,90 @@ func test_loads_every_atlas_and_region() -> void:
 	check(UiKit.used_rect("style_ranks", "D") == Rect2(8, 2, 7, 12), "a rank glyph's ink box (%s)" % UiKit.used_rect("style_ranks", "D"))
 
 
+func _png(id: String, fill: bool = false) -> Image:
+	return Image.load_from_file(ProjectSettings.globalize_path("%s/%s%s.png" % [UiKit.DEFAULT_DIR, id, "_fill" if fill else ""]))
+
+
+## A frame pixel (frame space `at`, atlas region `src`) as the HUD composites
+## it: over the trough where `trough` covers it, else over `backdrop`.
+static func _mix(img: Image, src: Rect2, at: Vector2i, trough: Rect2, trough_col: Color, backdrop: Color) -> Color:
+	var under := trough_col if trough.has_point(Vector2(at) + Vector2(0.5, 0.5)) else backdrop
+	var c := img.get_pixel(int(src.position.x) + at.x, int(src.position.y) + at.y)
+	return under.lerp(Color(c.r, c.g, c.b, 1.0), c.a)
+
+
+func test_kit_bars_have_an_opaque_trough() -> void:
+	# The Core frame and the boss 3-slice are hollow: the empty part of a bar
+	# must show the trough, never the room. Composite the frames as drawn over
+	# two floor colours (Lowlight brick and tile) and require identical pixels
+	# across each frame's hollow interior.
+	var hud := load(HUD_PATH) as GDScript
+	var trough_col: Color = hud.get_script_constant_map().get("KIT_TROUGH", Color.TRANSPARENT)
+	check(trough_col.a == 1.0, "the trough is opaque")
+	var floors := [Color8(84, 57, 74), Color8(54, 50, 72)]
+	var img := _png("hud_kit")
+	var bimg := _png("boss_bar")
+	check(img != null and bimg != null, "hud_kit / boss_bar load as images")
+	if img == null or bimg == null:
+		return
+	# Core: the channel between the end joints (x 10..69), rows 1..7.
+	var frame := UiKit.region("hud_kit", "core_frame")
+	var bar := Rect2(Vector2.ZERO, frame.size)
+	var trough: Rect2 = hud.call("kit_core_trough", bar)
+	check(trough.encloses(hud.call("kit_core_fill_rect", bar)), "the Core trough covers the fill channel")
+	var leaks := 0
+	for y in range(1, 8):
+		for x in range(10, 70):
+			var a := _mix(img, frame, Vector2i(x, y), trough, trough_col, floors[0])
+			var b := _mix(img, frame, Vector2i(x, y), trough, trough_col, floors[1])
+			if not a.is_equal_approx(b):
+				leaks += 1
+	check(leaks == 0, "the Core bar shows the room through %d px" % leaks)
+	# Boss: between the inner rails (rows 6..9), from the jaws in (x 12..219).
+	var bframe := UiKit.region("boss_bar", "bar_3slice")
+	var bar_r := Rect2(Vector2(16, 6), Vector2(bframe.size.x - 32, 4))
+	var btrough: Rect2 = hud.call("kit_boss_trough", bar_r)
+	check(btrough.encloses(bar_r), "the boss trough covers the fill")
+	leaks = 0
+	for y in range(6, 10):
+		for x in range(12, int(bframe.size.x) - 12):
+			var a := _mix(bimg, bframe, Vector2i(x, y), btrough, trough_col, floors[0])
+			var b := _mix(bimg, bframe, Vector2i(x, y), btrough, trough_col, floors[1])
+			if not a.is_equal_approx(b):
+				leaks += 1
+	check(leaks == 0, "the boss bar shows the room through %d px" % leaks)
+	# The plaque tucks behind the bar: it rises at most KIT_PLAQUE_RISE.
+	var plaque: Rect2 = hud.call("kit_plaque_rect", ThemeDB.fallback_font, "COLLECTOR DRONE", bar_r)
+	check(plaque.position.y >= bar_r.position.y - 8.0, "plaque rises at most 8 px (%s)" % plaque)
+
+
+func test_injectors_read_as_heal_mask() -> void:
+	# The heal count is a combat decision: a full injector is mostly heal-
+	# tinted mask (>= 3x5 art px), an empty one is a hollow outline.
+	var fill := _png("hud_kit", true)
+	var frame := _png("hud_kit")
+	check(fill != null and frame != null, "hud_kit images load")
+	if fill == null or frame == null:
+		return
+	var full := UiKit.region("hud_kit", "injector_full")
+	var empty := UiKit.region("hud_kit", "injector_empty")
+	var n_full := 0
+	var n_empty := 0
+	for y in int(full.size.y):
+		for x in int(full.size.x):
+			if fill.get_pixel(int(full.position.x) + x, int(full.position.y) + y).a > 0.5:
+				n_full += 1
+			if fill.get_pixel(int(empty.position.x) + x, int(empty.position.y) + y).a > 0.5:
+				n_empty += 1
+	check(n_full >= 15, "a full injector shows >= 15 heal mask px (%d)" % n_full)
+	check(n_empty == 0, "an empty injector has no heal mask (%d)" % n_empty)
+	# Hollow: the empty vial's centre is see-through inside an outline.
+	var ex := int(empty.position.x) + 2
+	var ey := int(empty.position.y) + 4
+	check(frame.get_pixel(ex, ey).a == 0.0 and frame.get_pixel(ex + 1, ey).a == 0.0 and frame.get_pixel(ex - 1, ey).a > 0.5,
+		"the empty injector is a hollow outline")
+
+
 func test_missing_atlas_keeps_the_flat_look() -> void:
 	UiKit.reset(MISSING_DIR, MISSING_DIR)
 	for id in UiKit.ATLAS_IDS:

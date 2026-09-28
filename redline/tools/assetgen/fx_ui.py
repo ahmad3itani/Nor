@@ -229,10 +229,14 @@ def build_hud():
                 fr[2 + 1][2 + c] = "C"
         put_cell(f"pip_refill_{k}", fr, fl)
     # --- injectors 4x7 in 6x9 cells, ammo ticks 2x5 in 4x7 cells
-    INJ = ["cccc", ".cc.", "oooo", "o..o", "o..o", "oooo", ".o.."]
-    INJF = ["....", "....", "....", ".WM.", ".MM.", "....", "...."]
-    A.paint(1, 17, INJ, target="frame"); A.paint(1, 17, INJF, target="fill"); A.regions["injector_full"] = [0, 16, 6, 9]
-    A.paint(7, 17, INJ, target="frame"); A.paint(7, 17, ["....", "....", "....", "....", ".dd."], target="frame")
+    # Full: a plunger cap over a solid heal-tinted vial (4x5 mask, the heal
+    # count must read at a glance, ART_DIRECTION: gameplay colours ship as
+    # masks). Empty: the same silhouette as a hollow outline (like pip_empty).
+    INJ_CAP = ["cccc", "....", "....", "....", "....", "....", ".o.."]
+    INJF = ["....", "WMMM", "WMMM", "WMMM", "WMMM", "MMMD", "...."]
+    INJ_EMPTY = ["cccc", "oooo", "o..o", "o..o", "o..o", "oooo", ".o.."]
+    A.paint(1, 17, INJ_CAP, target="frame"); A.paint(1, 17, INJF, target="fill"); A.regions["injector_full"] = [0, 16, 6, 9]
+    A.paint(7, 17, INJ_EMPTY, target="frame")
     A.regions["injector_empty"] = [6, 16, 6, 9]
     A.paint(14, 17, ["WM", "WM", "WM", "WM", "MD"], target="fill"); A.regions["ammo_tick_full"] = [13, 16, 4, 7]
     A.paint(18, 17, ["dd", "d.", "d.", "d.", "dd"], target="frame"); A.regions["ammo_tick_empty"] = [17, 16, 4, 7]
@@ -373,15 +377,17 @@ EMBER_FRAMES = [
 def build_menu():
     A = Atlas(128, 96)
     g = frame_box(64, 64, bracket=14)
-    # ornamental corners: a quarter-arc curl and a diamond in each 16 px corner
+    # ornamental corners: a quarter-arc curl and a diamond in each corner, kept
+    # within 4 px of the edge: MenuScreen's content margin is 6 px, so titles,
+    # first glyphs and the version label never touch the ornaments.
     for (ox, oy, sx, sy) in ((0, 0, 1, 1), (63, 0, -1, 1), (0, 63, 1, -1), (63, 63, -1, -1)):
         for k in range(0, 91, 6):
             a = math.radians(k)
-            x = ox + sx * int(round(4 + 6 * (1 - math.cos(a))))
-            y = oy + sy * int(round(4 + 6 * (1 - math.sin(a))))
+            x = ox + sx * int(round(2 + 2 * (1 - math.cos(a))))
+            y = oy + sy * int(round(2 + 2 * (1 - math.sin(a))))
             if g[y][x] in ("p", "d"):
                 g[y][x] = "o"
-        dx, dy = ox + sx * 7, oy + sy * 7
+        dx, dy = ox + sx * 3, oy + sy * 3
         for (px, py, ch) in ((0, 0, "C"), (1, 0, "c"), (-1, 0, "c"), (0, 1, "c"), (0, -1, "c")):
             g[dy + py][dx + px] = ch
         for k in range(3, 12, 4):  # rivets along the bracket arms
@@ -405,7 +411,10 @@ def build_menu():
     A.paint(0, 66, rows_of(dv), name="divider", target="frame")
     for f, rows in enumerate(EMBER_FRAMES):
         A.paint(66 + f * 8, 0, rows, name=f"cursor_{f}", target="fill")
-    # tapered row-selection bar, 3-slice 48x9 (caps 8): mask tinted accent
+    # tapered row-selection bar, 3-slice 48x9 (caps 8): mask tinted accent.
+    # A flat dark body behind the label and the bright smear only on the
+    # bottom rows (below the baseline), so the selected text never reads as
+    # struck through.
     rb = grid(48, 9)
     for x in range(48):
         edge = min(x, 47 - x)
@@ -413,7 +422,7 @@ def build_menu():
         for y in range(9):
             d = abs(y - 4)
             if d <= half:
-                rb[y][x] = "W" if d == 0 else ("M" if d <= 1 else "D")
+                rb[y][x] = "W" if y == 8 else ("M" if y == 7 else "D")
     A.paint(66, 10, rows_of(rb), name="row_bar_3slice", target="fill")
     meta = {"nine_slice": {"panel_9slice": [16, 16, 16, 16]}, "three_slice": {"row_bar_3slice": [8, 8]},
             "frames": {"cursor": [f"cursor_{f}" for f in range(4)]}, "fps": {"cursor": 6},
