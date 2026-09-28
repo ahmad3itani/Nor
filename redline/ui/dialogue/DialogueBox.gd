@@ -25,6 +25,17 @@ extends CanvasLayer
 ## .text_auto_advance) moves fully typed lines on after a reading time;
 ## choices always wait. In NG+ a conversation whose flags the player already
 ## set in an earlier cycle shows each line fully typed (R11.13).
+##
+## Presentation overhaul (T07, UiKit): with assets/ui/dialogue_frame the box
+## is the 9-slice frame (its alpha is still SubtitleStyle's background
+## setting), the speaker sits on a nameplate tab, a cable flourish hangs from
+## the top-left corner and an ember marks "more" (held still under flash
+## reduction). A 48x48 portrait sits on the box's top edge when the line's
+## speaker has one: resolved per line from line.speaker (else the NPC's
+## name, like the speaker label) through NpcProfile.portrait, plus
+## SPEAKER_PORTRAITS for voices without a profile (Rook, Krail). Frame 0 is
+## neutral, frame 1 shows while the line types. box_rect() and the text
+## layout do not move; without the kit or a portrait the M9 box draws.
 
 const CHARS_PER_SECOND := 70.0
 const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", &"attack_light"]
@@ -32,6 +43,12 @@ const ADVANCE_ACTIONS: Array[StringName] = [&"interact", &"ui_accept", &"jump", 
 const CHOICE_UP_ACTIONS: Array[StringName] = [&"move_up", &"ui_up"]
 const CHOICE_DOWN_ACTIONS: Array[StringName] = [&"move_down", &"ui_down"]
 const CHOICE_CONFIRM_ACTIONS: Array[StringName] = [&"ui_accept", &"jump"]
+## Speakers with a portrait but no NpcProfile -> assets/portraits/<id>.png.
+const SPEAKER_PORTRAITS := {"Rook": "portrait_rook", "Krail": "portrait_krail", "Warden Krail": "portrait_krail"}
+const PORTRAIT_DIR := "res://assets/portraits"
+const PORTRAIT_SIZE := Vector2(48, 48)
+## Where the cable flourish hangs from the box's top-left corner.
+const FLOURISH_OFFSET := Vector2(-2, -1)
 
 var dialogue: DialogueData
 var line_index: int = 0
@@ -366,13 +383,24 @@ func _draw_box() -> void:
 	var fs := SubtitleStyle.font_size()
 	var box := box_rect()
 	var alpha := SubtitleStyle.box_alpha()
-	if alpha > 0.0:
+	var kit := UiKit.has_atlas("dialogue_frame")
+	var portrait := current_portrait()
+	if portrait != null:
+		_draw_portrait(portrait, box, alpha, kit)
+	if alpha > 0.0 and kit:
+		UiKit.draw_nine(_root, "dialogue_frame", "panel_9slice", box, Color(1, 1, 1, alpha))
+		UiKit.draw_region(_root, "dialogue_frame", "cable_flourish", box.position + FLOURISH_OFFSET, 0, Color(1, 1, 1, alpha))
+	elif alpha > 0.0:
 		_root.draw_rect(box, Color(SubtitleStyle.BG, alpha))
 		_root.draw_rect(Rect2(box.position, Vector2(box.size.x, 1)), SubtitleStyle.ACCENT)
 	var line := _current_line()
 	if SubtitleStyle.show_label():
 		var speaker := Loc.upper(line.speaker if line.speaker != "" else _npc_name)
 		var lpos := box.position + Vector2(SubtitleStyle.PAD_X, SubtitleStyle.label_y())
+		if kit and speaker != "" and alpha > 0.0:
+			var w := font.get_string_size(speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			var tab := Rect2(lpos.x - 4, lpos.y - font.get_ascent(fs) - 1, w + 8, font.get_ascent(fs) + font.get_descent(fs) + 2)
+			UiKit.draw_nine(_root, "dialogue_frame", "nameplate_9slice", tab, Color(1, 1, 1, alpha))
 		if SubtitleStyle.outline():
 			_root.draw_string_outline(font, lpos, speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color.BLACK)
 		_root.draw_string(font, lpos, speaker, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, SubtitleStyle.ACCENT)
@@ -382,9 +410,53 @@ func _draw_box() -> void:
 	if _choosing:
 		_draw_choices(box, font, fs)
 		return
+	if shown_chars >= full.length() and kit:
+		var ember := UiKit.loop_frame("dialogue_frame", "continue_ember", Time.get_ticks_msec() / 1000.0, Settings.flash_reduction)
+		UiKit.draw_fill(_root, "dialogue_frame", "continue_ember", box.end - Vector2(34, 12), SubtitleStyle.ACCENT, ember)
 	if shown_chars >= full.length() and int(Time.get_ticks_msec() / 400) % 2 == 0:
 		# l10n: ignore(key glyph in brackets)
 		_root.draw_string(font, box.end - Vector2(24, 6), "[%s]" % InputGlyphs.label(&"interact"), HORIZONTAL_ALIGNMENT_LEFT, -1, fs - 1, Color(1, 1, 1, 0.7))
+
+
+## The portrait for a speaker: a profile-less voice from SPEAKER_PORTRAITS,
+## else the NpcProfile whose display name it is. null = none (the subtitle-
+## only layout).
+static func portrait_for(speaker: String) -> Texture2D:
+	if speaker == "":
+		return null
+	if SPEAKER_PORTRAITS.has(speaker):
+		var path := "%s/%s.png" % [PORTRAIT_DIR, SPEAKER_PORTRAITS[speaker]]
+		return load(path) as Texture2D if ResourceLoader.exists(path) else null
+	var p := NpcProfile.find_by_display_name(speaker)
+	return p.portrait if p else null
+
+
+## The current line's portrait: its own speaker's, or the NPC's when the line
+## names no speaker (the same fallback as the speaker label). A named speaker
+## without a portrait shows none (never someone else's face).
+func current_portrait() -> Texture2D:
+	if dialogue == null:
+		return null
+	var line := _current_line()
+	return portrait_for(line.speaker if line.speaker != "" else _npc_name)
+
+
+## Portrait frame: 1 (talking) while the line types, else 0 (neutral).
+## Strips with one cell always show it.
+func portrait_frame(tex: Texture2D) -> int:
+	if tex == null or tex.get_width() < PORTRAIT_SIZE.x * 2:
+		return 0
+	return 1 if shown_chars < shown_text().length() else 0
+
+
+func _draw_portrait(tex: Texture2D, box: Rect2, alpha: float, kit: bool) -> void:
+	var at := Vector2(box.position.x + 6, box.position.y - PORTRAIT_SIZE.y)
+	var back := Rect2(at - Vector2(3, 3), PORTRAIT_SIZE + Vector2(6, 4))
+	if alpha > 0.0:
+		if not (kit and UiKit.draw_nine(_root, "dialogue_frame", "panel_9slice", back, Color(1, 1, 1, alpha))):
+			_root.draw_rect(back, Color(SubtitleStyle.BG, alpha))
+	var src := Rect2(Vector2(portrait_frame(tex) * PORTRAIT_SIZE.x, 0), PORTRAIT_SIZE)
+	_root.draw_texture_rect_region(tex, Rect2(at, PORTRAIT_SIZE), src)
 
 
 ## Options under the text rows: "> " marker plus the accent colour on the
