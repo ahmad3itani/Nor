@@ -11,6 +11,12 @@ signal impacted(result: int)
 
 ## High-contrast outline under the tracer and head.
 const OUTLINE_COLOR := Color(0.02, 0.02, 0.04, 1.0)
+## Presentation overhaul T06 (visual only): the vfx/projectiles head sprite
+## per player attack id; shots aimed at Rook use the enemy rows. Without a
+## row or sheet the placeholder head square draws as before.
+const PLAYER_ROWS := {&"pistol_shot": &"pistol_bolt", &"scatter_pellet": &"pellet", &"revolver_shot": &"revolver_round"}
+## vfx/muzzle row per ranged weapon id (origin at the barrel tip).
+const MUZZLE_ROWS := {&"service_pistol": &"pistol", &"scattergun": &"scatter", &"heavy_revolver": &"revolver"}
 
 var attack: AttackData
 var attacker: Node2D
@@ -28,6 +34,8 @@ var _trail_from: Vector2
 ## point-blank shots hit an enemy the muzzle is already inside of.
 var _first_ray_from: Vector2
 var _first_tick: bool = true
+## The head sprite (a VfxOneShot child), or null: the placeholder head draws.
+var head_sprite: VfxOneShot
 
 
 static func spawn(parent: Node, p_attacker: Node2D, p_attack: AttackData, at: Vector2,
@@ -45,7 +53,40 @@ static func spawn(parent: Node, p_attacker: Node2D, p_attack: AttackData, at: Ve
 	p._trail_from = at
 	p._first_ray_from = ray_origin if ray_origin != Vector2.INF else at
 	parent.add_child(p)
+	p._attach_head()
 	return p
+
+
+## The sprite row this shot draws (&"" = placeholder head).
+func head_row() -> StringName:
+	if attack == null or attack.projectile == null:
+		return &""
+	if (target_mask & CombatLayers.PLAYER_HURTBOX) != 0:
+		if attack.projectile.ground_wave:
+			return &"ground_wave"
+		return &"collector_tag" if String(attack.id).begins_with("collector_tag") else &"enemy_bolt"
+	return PLAYER_ROWS.get(attack.id, &"")
+
+
+func _attach_head() -> void:
+	var row := head_row()
+	if row == &"":
+		return
+	var key := &"ammo"
+	if (target_mask & CombatLayers.PLAYER_HURTBOX) != 0:
+		key = &"collector_warning" if row == &"collector_tag" else &"danger"
+	head_sprite = VfxOneShot.spawn(self, &"projectiles", row, Vector2.ZERO, {"direction": velocity, "palette_key": key})
+
+
+## Muzzle flash at the barrel tip (T06), or the placeholder sparks.
+static func muzzle_flash(parent: Node, at: Vector2, aim: Vector2, weapon: WeaponData) -> Node2D:
+	var row: StringName = MUZZLE_ROWS.get(weapon.id, &"")
+	var fx: VfxOneShot = null
+	if row != &"":
+		fx = VfxOneShot.spawn(parent, &"muzzle", row, at, {"direction": aim})
+	if fx:
+		return fx
+	return HitSpark.spawn(parent, at, aim, weapon.shot.projectile.color, 4, 90.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -87,10 +128,10 @@ func _physics_process(delta: float) -> void:
 		if pierce_left > 0 and outcome != CombatResult.BLOCKED:
 			pierce_left -= 1
 			_excluded.append(box.get_rid())
-			HitSpark.spawn(get_parent(), global_position, velocity.normalized(), attack.projectile.color, 4)
+			HitSpark.play(get_parent(), global_position, velocity.normalized(), &"spark_small", shot_color(), 4)
 			impacted.emit(outcome)
 			return
-	HitSpark.spawn(get_parent(), global_position, -velocity.normalized(), attack.projectile.color, 4)
+	HitSpark.play(get_parent(), global_position, -velocity.normalized(), &"spark_small", shot_color(), 4)
 	impacted.emit(outcome)
 	queue_free()
 
@@ -103,7 +144,8 @@ func _draw() -> void:
 		draw_line(tail, Vector2.ZERO, OUTLINE_COLOR, 3.0)
 		draw_rect(Rect2(-2, -2, 4, 4), OUTLINE_COLOR)
 	draw_line(tail, Vector2.ZERO, shot_color(), 1.0)
-	draw_rect(Rect2(-1, -1, 2, 2), Color.WHITE)
+	if not is_instance_valid(head_sprite):
+		draw_rect(Rect2(-1, -1, 2, 2), Color.WHITE)
 
 
 ## The tracer colour: the weapon's own, or Palette danger for enemy shots when
