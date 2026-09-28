@@ -17,6 +17,15 @@ extends CanvasLayer
 ##   stale flag) resumes as before, so "Skip scene" and "Resume" never leave
 ##   the world frozen with nothing on screen.
 ## - A footer line pinned under the scroll area (Settings' row descriptions).
+##
+## Presentation overhaul (T07, UiKit): with assets/ui/menu_kit the panel is
+## the 9-slice frame (a per-panel StyleBoxTexture override with the theme
+## panel's content margins, so widths, heights and scrolling are unchanged;
+## opaque in high contrast), headings get the divider under them (drawn, no
+## layout), and the focused row gets the accent row bar and the ember cursor
+## (UiKitRowBox; high contrast keeps its bordered bar). Accept plays
+## ui_confirm and back plays ui_back (UiKit.play_ui). Without the kit, the M9
+## flat theme draws everything, as before.
 
 signal closed
 
@@ -106,6 +115,27 @@ func _ready() -> void:
 	_footer.add_theme_color_override("font_color", UiTheme.MUTED)
 	_frame.add_child(_footer)
 	_footer.minimum_size_changed.connect(_fit_scroll)
+	# Animates the focused row's ember cursor whatever _process a subclass has.
+	var ticker := KitTicker.new()
+	ticker.menu = self
+	add_child(ticker)
+
+
+## Redraws the focused row each frame while the menu shows (the cursor's
+## frames); a separate node, so subclasses that override _process keep it.
+class KitTicker extends Node:
+	var menu: MenuScreen
+
+	func _ready() -> void:
+		process_mode = Node.PROCESS_MODE_ALWAYS
+
+	func _process(_delta: float) -> void:
+		if menu == null or not menu.visible or not UiKit.has_atlas("menu_kit") or UiKit.flash_reduced():
+			return
+		var vp := menu.get_viewport()
+		var f := vp.gui_get_focus_owner() if vp != null else null
+		if f is Button and menu.is_ancestor_of(f):
+			(f as Button).queue_redraw()
 
 
 func is_open() -> bool:
@@ -172,11 +202,15 @@ func _process(_delta: float) -> void:
 ## ui_back is ignored while a text field has focus, so Backspace edits the text.
 func cancel_pressed() -> bool:
 	if Input.is_action_just_pressed(&"ui_cancel"):
+		UiKit.play_ui(UiKit.SFX_BACK)
 		return true
 	if not Input.is_action_just_pressed(&"ui_back"):
 		return false
 	var focus := get_viewport().gui_get_focus_owner() if get_viewport() != null else null
-	return not (focus is LineEdit or focus is TextEdit)
+	if focus is LineEdit or focus is TextEdit:
+		return false
+	UiKit.play_ui(UiKit.SFX_BACK)
+	return true
 
 
 func clear_body() -> void:
@@ -192,8 +226,23 @@ func add_label(text: String, color: Color = UiTheme.TEXT, size: int = UiTheme.FO
 	# The locale's size floor lifts every label (0 in English, D5 §10).
 	l.add_theme_font_size_override("font_size", UiTheme.scaled(size + UiTheme.font_lift()))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# Headings (accent, larger) carry the kit divider under their text.
+	if color == UiTheme.ACCENT and size > UiTheme.FONT_SIZE:
+		l.draw.connect(_draw_divider.bind(l))
 	_body.add_child(l)
 	return l
+
+
+## The menu_kit divider under a heading: drawn over the row gap, never laid
+## out, so the page's height is unchanged. Nothing without the kit.
+func _draw_divider(l: Label) -> void:
+	var src := UiKit.region("menu_kit", "divider")
+	if not src.has_area() or l.text == "":
+		return
+	var w := minf(src.size.x, l.size.x)
+	var x := 0.0 if not l.is_layout_rtl() else l.size.x - w
+	var tint := UiTheme.HC_TEXT if UiTheme.high_contrast() else Color(1, 1, 1, 0.8)
+	UiKit.draw_stretched(l, "menu_kit", "divider", Rect2(x, l.size.y - 2, w, src.size.y), [0.0, 0.0, 0.0, 0.0], tint)
 
 
 func add_button(text: String, on_press: Callable, on_focus: Callable = Callable(), enabled := true) -> Button:
@@ -220,6 +269,10 @@ func _setup_button(b: Button, text: String, on_press: Callable, on_focus: Callab
 	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.disabled = not enabled
 	b.focus_mode = Control.FOCUS_ALL
+	if UiKit.has_atlas("menu_kit") and not UiTheme.high_contrast():
+		b.add_theme_stylebox_override("focus", row_focus_box())
+	# The accept sound comes before the action (which may close the menu).
+	b.pressed.connect(func() -> void: UiKit.play_ui(UiKit.SFX_CONFIRM))
 	b.pressed.connect(on_press)
 	if on_focus.is_valid():
 		b.focus_entered.connect(on_focus)
@@ -259,10 +312,43 @@ func focused_index() -> int:
 ## Theme and panel width for the current contrast and UI size.
 func _apply_look() -> void:
 	_root.theme = UiTheme.get_theme()
+	var kit_panel := panel_box(UiTheme.high_contrast())
+	if kit_panel != null:
+		_panel.add_theme_stylebox_override("panel", kit_panel)
+	else:
+		_panel.remove_theme_stylebox_override("panel")
 	if _declared_width < 0.0:
 		_declared_width = _panel.custom_minimum_size.x
 	_panel.custom_minimum_size.x = panel_width_for(_declared_width)
 	_fit_scroll()
+
+
+## The kit's panel (menu_kit panel_9slice) with the theme panel's content
+## margins, so every page keeps its M9 geometry; opaque in high contrast,
+## the theme's see-through BG otherwise. null without the kit.
+static func panel_box(hc: bool) -> StyleBoxTexture:
+	var base := UiKit.stylebox("menu_kit", "panel_9slice")
+	if base == null:
+		return null
+	var sb := base.duplicate() as StyleBoxTexture
+	var flat := UiTheme.get_theme().get_stylebox("panel", "PanelContainer")
+	for side: Side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		sb.set_content_margin(side, flat.get_margin(side) if flat else 6.0)
+	sb.modulate_color = Color.WHITE if hc else Color(1, 1, 1, UiTheme.BG.a)
+	return sb
+
+
+## One shared row-focus box (it reads the accent and the clock at draw time).
+static var _row_box: UiKitRowBox = null
+
+
+static func row_focus_box() -> UiKitRowBox:
+	if _row_box == null:
+		_row_box = UiKitRowBox.new()
+		var flat := UiTheme.get_theme().get_stylebox("focus", "Button")
+		for side: Side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			_row_box.set_content_margin(side, flat.get_margin(side) if flat else 2.0)
+	return _row_box
 
 
 ## A 360 px panel takes AccessibilityConfig.menu_panel_width for the UI size;
