@@ -40,7 +40,15 @@ extends Node
 ##   PulsePit          0.88    1.15   2.19      | 26.8 -> 28.6 (1.07x)
 ##   CombatLab         0.88    1.50   2.89      | 21.6 -> 21.3 (0.99x)
 ## At most 2 translucent full-screen layers in any room (BellTower: the
-## near plane and the vignette over an opaque sky); every cap held.
+## near plane and the vignette over an opaque sky); every cap held. The
+## layer count covers full-height planes, the sky and the vignette only: it
+## is not an overdraw budget. Fog bands, light shafts, additive lamp glows
+## and ambient particles / rain are partial-height translucent or additive
+## overdraw it does not count; real GPU cost is unmeasured (K-OV-11).
+## Profiling the CombatLab growth (0.97 -> ~1.7 ms, same session): sprite
+## actors (Rook + enemies, AnimatedSprite2D + visual logic) ~0.3-0.4 ms,
+## the kit HUD redraw ~0.2 ms, VFX one-shots ~0.1 ms, the rest (juice,
+## aura, feedback) ~0.2 ms. SpriteActor now skips _process without a mask.
 
 ## One room per backdrop kind a room uses, the heaviest of its kind (most
 ## planes, life and enemies); the plan's ten rooms plus the chase, tunnel,
@@ -62,9 +70,17 @@ const BUDGET_ROOMS: Array[Array] = [
 	[&"pulse_pit", "res://world/rooms/challenge/PulsePit.tscn"],
 	[&"", "res://world/rooms/CombatLab.tscn"],
 ]
-## Headless means before the overhaul (overhaul/perf_before.txt, same fight
-## script); rooms without a number use the 4 ms floor.
-const BEFORE_MEAN_MS := {&"CombatLab": 2.20, &"NeonRoofs": 2.29, &"CollectorBay": 1.69}
+## Headless means of the M9 gate tree b578c35 measured with THIS probe (the
+## table above). perf_before.txt's 2.20 / 2.29 / 1.69 came from the old probe,
+## which drew 999 HUD pips, and must not be used. max(before * 1.15, 4 ms)
+## is still the 4 ms floor for every room: headless mean CPU rose 33-86 %
+## over the overhaul (K-OV-12), so only the floor and the 8 ms p95 hold.
+const BEFORE_MEAN_MS := {
+	&"Wake": 0.75, &"CollectorBay": 0.81, &"FirstPursuit": 0.81, &"EscapeTunnel": 0.86,
+	&"MaintenanceShaft": 0.89, &"FloodedAlley": 1.13, &"SmugglerRoute": 1.05, &"NeonRoofs": 1.11,
+	&"ApartmentStack": 1.13, &"BellTower": 1.23, &"Relay": 0.65, &"NullFloor": 0.71,
+	&"PulsePit": 0.88, &"CombatLab": 0.88,
+}
 const MEAN_GROWTH := 1.15
 const MEAN_FLOOR_MS := 4.0
 const P95_MAX_MS := 8.0

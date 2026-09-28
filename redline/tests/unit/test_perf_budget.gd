@@ -72,7 +72,12 @@ func test_budget_rooms_cover_every_room_backdrop_kind() -> void:
 
 
 func test_mean_budget_formula() -> void:
-	check_near(PROBE.mean_budget(&"CombatLab"), 4.0, 0.001, "CombatLab: the 4 ms floor wins over 2.20 * 1.15")
+	# Like-for-like before numbers (b578c35 with this probe) for every room.
+	for row: Array in PROBE.BUDGET_ROOMS:
+		var room := StringName(String(row[1]).get_file().get_basename())
+		check(PROBE.BEFORE_MEAN_MS.has(room), "%s has a before number" % room)
+		check(float(PROBE.BEFORE_MEAN_MS.get(room, 9.0)) < 2.0, "%s before is a like-for-like figure (< 2 ms)" % room)
+	check_near(PROBE.mean_budget(&"CombatLab"), 4.0, 0.001, "CombatLab: the 4 ms floor wins over 0.88 * 1.15")
 	check_near(PROBE.mean_budget(&"Unknown"), PROBE.MEAN_FLOOR_MS, 0.001, "no before number: the floor")
 	var st: Dictionary = PROBE.frame_stats([1.0, 2.0, 3.0, 4.0] as Array[float])
 	check_near(st["mean"], 2.5, 0.001, "frame_stats mean")

@@ -42,6 +42,9 @@ static func create(p_spec: SpriteSheetSpec) -> SpriteActor:
 	a.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	a._apply_offset()
 	a._build_mask()
+	# Only a mask overlay needs the per-frame alpha copy; enemies and VFX
+	# without one skip _process entirely (T09 repair: headless CPU).
+	a.set_process(a.mask != null)
 	a.animation_changed.connect(a._on_animation_changed)
 	a.frame_changed.connect(a.sync_mask)
 	a.animation_finished.connect(a._on_animation_finished)
@@ -125,10 +128,15 @@ func sync_mask() -> void:
 		mask.animation = animation
 	if mask.frame != frame:
 		mask.frame = frame
-	mask.flip_h = flip_h
-	mask.flip_v = flip_v
-	mask.offset = offset
-	mask.self_modulate.a = self_modulate.a
+	# Guarded writes: a same-value set still queues a redraw.
+	if mask.flip_h != flip_h:
+		mask.flip_h = flip_h
+	if mask.flip_v != flip_v:
+		mask.flip_v = flip_v
+	if mask.offset != offset:
+		mask.offset = offset
+	if mask.self_modulate.a != self_modulate.a:
+		mask.self_modulate.a = self_modulate.a
 
 
 func _apply_offset() -> void:
