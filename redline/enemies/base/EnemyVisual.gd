@@ -122,6 +122,7 @@ func _update_actor(delta: float) -> void:
 	# Knock and hitstop shake (visual only).
 	_knock_t = maxf(_knock_t - delta, 0.0)
 	var pos := _knock if _knock_t > 0.0 else Vector2.ZERO
+	pos += _sprite_offset()
 	if enemy.hitstop_timer > 0.0:
 		pos.x += roundf(_rng.randf_range(-1.0, 1.0))
 	actor.position = pos
@@ -296,7 +297,7 @@ func spawn_corpse(parent: Node) -> VfxOneShot:
 	if actor == null or not actor.sprite_frames.has_animation(&"death"):
 		return null
 	var m := enemy.data.sprite_modulate
-	var fx := VfxOneShot.spawn_frames(parent, actor.sprite_frames, &"death", _local_in(parent, enemy.global_position), {
+	var fx := VfxOneShot.spawn_frames(parent, actor.sprite_frames, &"death", _local_in(parent, enemy.global_position + _sprite_offset()), {
 		"facing": enemy.facing, "offset": actor.spec.offset_for(&"death"), "hold_last": true,
 		"tint": Color(m.r * CORPSE_DIM, m.g * CORPSE_DIM, m.b * CORPSE_DIM, m.a), "z_index": enemy.z_index})
 	if fx == null:
@@ -311,6 +312,10 @@ func spawn_corpse(parent: Node) -> VfxOneShot:
 	tw.tween_interval(remaining + CORPSE_HOLD)
 	tw.tween_property(fx, "modulate:a", 0.0, CORPSE_FADE)
 	return fx
+
+
+func _sprite_offset() -> Vector2:
+	return enemy.behavior.sprite_offset() if is_instance_valid(enemy.behavior) else Vector2.ZERO
 
 
 static func _local_in(parent: Node, global: Vector2) -> Vector2:

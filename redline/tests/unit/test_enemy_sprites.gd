@@ -357,6 +357,20 @@ func test_collector_maps_every_attack() -> void:
 	check(_step(e).animation == &"phase2", "phase 2 pause row")
 
 
+func test_collector_sheet_lifts_off_the_floor() -> void:
+	var e := _spawn(load("res://data/enemies/collector_drone.tres") as EnemyData, COLLECTOR_SCENE)
+	var b := e.behavior
+	var origin := e.global_position - b.call(&"room_pos") as Vector2
+	e.global_position = origin + Vector2(80, -120)
+	check(b.sprite_offset() == Vector2.ZERO, "high drone: no lift")
+	check(_step(e).position == Vector2.ZERO, "high drone sprite at the body")
+	e.global_position = origin + Vector2(80, 0)
+	check(b.sprite_offset() == Vector2(0, -18), "landed drone: cage lifted to the floor line")
+	check(_step(e).position == Vector2(0, -18), "sprite follows the lift")
+	e.global_position = origin + Vector2(80, -10)
+	check(b.sprite_offset() == Vector2(0, -8), "partial lift near the floor")
+
+
 func test_krail_maps_every_attack() -> void:
 	var e := _check_boss_map(KRAIL_SCENE, "res://data/enemies/warden_krail.tres")
 	var b := e.behavior

@@ -34,6 +34,11 @@ const CELL_COLOR := Color("b8e0d0")
 const CAGE_FLARE_TIME := 1.2
 ## Sprite mode: the lamp lens on the sheet (from the feet, facing right).
 const SPRITE_LAMP_AT := Vector2(18, -15)
+## Sprite mode: the sheet's hanging cage reaches this far below the feet
+## (origin (48, 64), cage bars to y 81). Near the floor the sheet lifts so the
+## cage bottom never draws under the floor line (visual only; the body and
+## its hurtbox stay where they are).
+const SPRITE_CAGE_BELOW := 18.0
 
 @export_group("Lanes (room y)")
 @export var cruise_y: float = -144.0
@@ -583,10 +588,19 @@ func debug_text() -> String:
 
 # --- Drawing ---------------------------------------------------------------------------
 
+## The sheet's lift near the floor: 0 while the cage clears the floor, up to
+## SPRITE_CAGE_BELOW px when the drone has landed.
+func sprite_offset() -> Vector2:
+	if enemy == null:
+		return Vector2.ZERO
+	return Vector2(0, -roundf(clampf(SPRITE_CAGE_BELOW + room_pos().y, 0.0, SPRITE_CAGE_BELOW)))
+
+
 func draw_extras(canvas: Node2D) -> void:
 	var size := enemy.data.body_size
 	var floor_y := -room_pos().y
 	var sprite := LookModule.sprite_mode(canvas)
+	var lift := sprite_offset() if sprite else Vector2.ZERO
 	# Cargo cage of salvage cells (brighter once phase 2 cracks it open). The
 	# sheet draws cage and cells; the phase-2 flare glows over either.
 	var cage := Rect2(-10, 0, 20, 7)
@@ -601,10 +615,10 @@ func draw_extras(canvas: Node2D) -> void:
 		if sprite:
 			# Over the sheet's hanging cage (x -4..12 facing right, y 4..18).
 			var f := float(enemy.facing)
-			var sc := Rect2(minf(-4.0 * f, 12.0 * f), 4, 16, 14)
+			var sc := Rect2(Vector2(minf(-4.0 * f, 12.0 * f), 4) + lift, Vector2(16, 14))
 			canvas.draw_rect(sc.grow(1.0), Color(glow, glow.a * 0.35))
 			for i in 3:
-				canvas.draw_rect(Rect2(f * (-1 + i * 5) - (3.0 if f < 0 else 0.0), 8, 3, 7), glow)
+				canvas.draw_rect(Rect2(Vector2(f * (-1 + i * 5) - (3.0 if f < 0 else 0.0), 8) + lift, Vector2(3, 7)), glow)
 		else:
 			canvas.draw_rect(cage.grow(2.0), Color(glow, glow.a * 0.35))
 			for i in 3:
@@ -615,7 +629,7 @@ func draw_extras(canvas: Node2D) -> void:
 	# reduction).
 	var lamp_at := Vector2(enemy.facing * (size.x * 0.5 - 4), -size.y + 4.5)
 	if sprite:
-		lamp_at = SPRITE_LAMP_AT * Vector2(enemy.facing, 1)  # on the sheet's lens housing
+		lamp_at = SPRITE_LAMP_AT * Vector2(enemy.facing, 1) + lift  # on the sheet's lens housing
 	if lamp_locked():
 		var lamp := Palette.color(&"danger")
 		if _active_family == &"volley" and lamp_blink(enemy.ai_time, Settings.flash_reduction):

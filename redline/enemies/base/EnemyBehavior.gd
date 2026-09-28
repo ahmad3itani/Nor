@@ -39,6 +39,12 @@ func anim_names(_ai: int, _attack: AttackData) -> Array[StringName]:
 	return []
 
 
+## Presentation hook (T05): where the sheet draws, relative to the body, in
+## sprite mode (a lift that keeps hanging art off the floor). Visual only.
+func sprite_offset() -> Vector2:
+	return Vector2.ZERO
+
+
 ## Optional extra drawing (shield plate, eye) on the enemy's visual.
 func draw_extras(_canvas: Node2D) -> void:
 	pass
