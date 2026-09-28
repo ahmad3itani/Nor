@@ -190,6 +190,17 @@ func test_guard_break_plays_on_a_broken_guard() -> void:
 	check(actor.animation == &"guard_break", "guard break row: %s" % actor.animation)
 
 
+func test_shield_rim_sits_on_the_sheet_plate() -> void:
+	var img := (load("res://assets/enemies/shield_sheet.png") as Texture2D).get_image()
+	var x := 24 + int(LookShieldPlate.SPRITE_RIM_X)
+	var top := 46 + int(LookShieldPlate.SPRITE_RIM_TOP)
+	var bottom := 46 + int(LookShieldPlate.SPRITE_RIM_BOTTOM)
+	for y in range(top, bottom):
+		check(img.get_pixel(x, y).a > 0.5, "idle plate outline at row %d" % y)
+		check(img.get_pixel(x + 1, y).a < 0.5, "nothing outside the plate at row %d" % y)
+	check(img.get_pixel(x, top - 1).a < 0.5 and img.get_pixel(x, bottom).a < 0.5, "rim spans the slab only")
+
+
 func test_windup_tint_and_high_contrast_outline_in_sprite_mode() -> void:
 	var d := load("res://data/enemies/needle.tres") as EnemyData
 	var e := _spawn(d)
