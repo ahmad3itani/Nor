@@ -73,6 +73,8 @@ Each district's act comes from `DistrictTheme.act` (default 1), quests from `Que
 
 A district still being built sets `economy_final = false` in its theme. Its rooms, and every quest, shop item and upgrade tier of an act with no final district yet, go to `pending` only, until its economy merge flips the flag (`compute(false, true)` audits them anyway). Today every district is final and everything is Act I.
 
+**Known limit:** NPC dialogue `give_scrap` is always booked to Act I, because `NpcProfile` and `DialogueData` carry no act. Today all dialogue Scrap is Act I, so the bands are exact; when Act II NPCs (Ironworks) give Scrap, derive the act (an `NpcProfile.act`, or the district of the NPC's room) before trusting the per-act bands.
+
 ## Targets (tested)
 
 | Rule | Target | Now |
