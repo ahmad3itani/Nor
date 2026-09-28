@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AmbienceBank" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://audio/AmbienceBank.gd" id="1_bank"]
+
+[resource]
+script = ExtResource("1_bank")
+paths = {
+&"amb_undercity_ward": "res://assets/audio/ambience/amb_undercity_ward.ogg",
+&"amb_undercity_shaft": "",
+&"amb_undercity_tunnel": "",
+&"amb_lowlight_street": "res://assets/audio/ambience/amb_lowlight_street.ogg",
+&"amb_lowlight_interior": "res://assets/audio/ambience/amb_lowlight_interior.ogg",
+&"amb_lowlight_roof": "res://assets/audio/ambience/amb_lowlight_roof.ogg",
+&"amb_lowlight_power": "",
+&"amb_relay_hub": "res://assets/audio/ambience/amb_relay_hub.ogg",
+&"amb_deeprig_void": ""
+}
+mix_db = {
+&"amb_undercity_ward": -2.0,
+&"amb_undercity_shaft": -2.0,
+&"amb_undercity_tunnel": -2.0,
+&"amb_lowlight_street": -1.0,
+&"amb_lowlight_interior": -2.0,
+&"amb_lowlight_roof": -2.0,
+&"amb_lowlight_power": -3.0,
+&"amb_relay_hub": -2.0,
+&"amb_deeprig_void": -4.0
+}
+drip_beds = Array[StringName]([&"amb_undercity_ward", &"amb_lowlight_interior"])
+drip_path = "res://assets/audio/ambience/amb_drip.tres"
+drip_mix_db = -18.0
+drip_interval = Vector2(4, 11)
+drip_volume_jitter = 3.0
+drip_pan_jitter = 0.6
