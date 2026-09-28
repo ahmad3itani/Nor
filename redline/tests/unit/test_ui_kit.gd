@@ -303,6 +303,18 @@ func test_dialogue_portrait_for_orr_and_none() -> void:
 	box.abort()
 
 
+func test_dialogue_portrait_sits_away_from_the_player() -> void:
+	var box := Rect2(24, 200, 432, 40)
+	var size := DialogueBox.PORTRAIT_SIZE
+	var left := DialogueBox.portrait_pos(box, 90.0)
+	check(left.x > box.get_center().x, "player on the left: the portrait goes right (%s)" % left)
+	check(left.x + size.x <= box.end.x, "and stays over the box")
+	var right := DialogueBox.portrait_pos(box, 400.0)
+	check(right.x + size.x < box.get_center().x, "player on the right: the portrait goes left (%s)" % right)
+	check(DialogueBox.portrait_pos(box, NAN).x == box.position.x + 6.0, "no player: the M9-overhaul left slot")
+	check(left.y == box.position.y - size.y, "on the box's top edge")
+
+
 func test_dialogue_portrait_per_line_speaker() -> void:
 	var box := _box()
 	box.open(_dialogue(["Rook", "Krail", "", "GUARD", "Radio"]), "Mara")

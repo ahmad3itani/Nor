@@ -30,7 +30,8 @@ extends CanvasLayer
 ## is the 9-slice frame (its alpha is still SubtitleStyle's background
 ## setting), the speaker sits on a nameplate tab, a cable flourish hangs from
 ## the top-left corner and an ember marks "more" (held still under flash
-## reduction). A 48x48 portrait sits on the box's top edge when the line's
+## reduction). A 48x48 portrait sits on the box's top edge (at the end away
+## from the player, portrait_pos) when the line's
 ## speaker has one: resolved per line from line.speaker (else the NPC's
 ## name, like the speaker label) through NpcProfile.portrait, plus
 ## SPEAKER_PORTRAITS for voices without a profile (Rook, Krail). Frame 0 is
@@ -449,8 +450,26 @@ func portrait_frame(tex: Texture2D) -> int:
 	return 1 if shown_chars < shown_text().length() else 0
 
 
+## Where the portrait sits: on the box's top edge at the end away from the
+## player (the portrait is opaque and stands over the play area, so on the
+## player's side it would hide whoever talks at the left of the screen).
+static func portrait_pos(box: Rect2, player_x: float) -> Vector2:
+	var right := not is_nan(player_x) and player_x < box.get_center().x
+	var x := box.end.x - 6.0 - PORTRAIT_SIZE.x if right else box.position.x + 6.0
+	return Vector2(x, box.position.y - PORTRAIT_SIZE.y)
+
+
+## The player's x in this box's layout space (NAN when there is no player).
+func _player_layout_x() -> float:
+	var room := SceneRouter.current_room as Room
+	if room == null or not is_instance_valid(room.player):
+		return NAN
+	var sx := room.player.get_global_transform_with_canvas().origin.x
+	return sx / maxf(_root.scale.x, 0.01)
+
+
 func _draw_portrait(tex: Texture2D, box: Rect2, alpha: float, kit: bool) -> void:
-	var at := Vector2(box.position.x + 6, box.position.y - PORTRAIT_SIZE.y)
+	var at := portrait_pos(box, _player_layout_x())
 	var back := Rect2(at - Vector2(3, 3), PORTRAIT_SIZE + Vector2(6, 4))
 	if alpha > 0.0:
 		if not (kit and UiKit.draw_nine(_root, "dialogue_frame", "panel_9slice", back, Color(1, 1, 1, alpha))):
