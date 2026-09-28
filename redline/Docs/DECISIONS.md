@@ -837,3 +837,49 @@ The user asked for a presentation pass in the Hollow Knight mood, inside the Art
 - Desktop zips (audit repair, all measured): Windows 39.06 / 36.08 MB (full / demo) against 41.94 MB, macOS 60.74 / 57.77 MB against 62.91 MB, Linux 33.00 / 30.03 MB. **FLAG:** macOS has 2.2 MB and Windows 2.9 MB of headroom, about one more music track each; the next audio batch needs this decision too (raise the desktop budgets, or give desktop full the same partial set).
 - **Proposal for the lead:** raise the full-web budget to about 20 MB, or keep dropping tracks. The budget is not raised here.
 - `build.py --check` (EX-4) proves every excluded asset is only named as a string path behind a `ResourceLoader.exists` guard.
+
+## D-181: The expansion (power, Ironworks, Act I optional rooms) lands before the §44 playtest because the user asked; the §44 build is the tag `playtest-44-candidate` on the post-overhaul commit; D-068 (entry point) stays open (FLAG)
+- FLAG (process): bible §44 says not to scale content before the slice passes. The user asked for power effects, upgrades, the Ironworks and more Act I rooms now.
+- P0 created the annotated tag `playtest-44-candidate` (`c0013a68fae6`) and recorded it in `PLAYTEST_KIT.md` §2 and K-58. D-068 never pinned a commit; the tag does.
+- Nothing is auto-owned, so every existing route, boss, ghost and challenge result stays byte-stable.
+
+## D-182: Upgrades are UpgradeData/UpgradeTier data at three stations (Mara's workbench, Vell "Core work", Luma's clinic), stored as int flags `upg_<id>` (+ `upg_<id>_branch`); no GameState key, no schema bump
+- `progression/UpgradeData.gd`, `UpgradeTier.gd` and `UpgradeLibrary.gd` (static, DataDir-listed, cached, cleared by `Cinematics._exit_tree`). Files in `data/upgrades/`.
+- Gameplay queries stats, never ownership: `Game.upgrade_mult(stat, weapon_id)` / `upgrade_value(stat, weapon_id)`, like Circuits. A WEAPON upgrade counts only for its weapon. `Game.core_capacity()` adds `core_capacity_bonus`, `Game.injector_bonus()` adds `injector_bonus`, and `count:upgrades:n` counts tiers bought.
+- Old saves read 0 through `flag_int` (tested on `save_v3_slice.json`). NG+ carries every upgrade flag through `NewGamePlus._upgrade_flags()`; the Deep Rig copies them from the profile; other kits get none.
+
+## D-183: Pulse Surge is the Core's burst (late Act I, Surge Coupling), not the Machine Crown "Overdrive" (bible §5) (FLAG)
+- FLAG (bible §5). Overdrive may later extend Surge through `PlayerAbilities.overdrive`; no text says Overdrive.
+- PW1 declares the signals (`surge_changed`, `surge_started`); the combat runtime (PW2) emits them.
+
+## D-184: Upgrade "materials" are Schematics (bible §21 "weapon schematics"): key-item Collectibles (`Kind.SCHEMATIC`), never spent or stacked, not secrets, not counted by achievements, completion, HUD or journal, carried by NG+ (`sch_`); 7 exist (FLAG vs §12 currency bloat)
+- FLAG (§12 "avoid currency bloat"): a schematic only unlocks an upgrade tier.
+- Persist ids are `schem_<id>` (never the `sch_` flag prefix). `Collectible.counts_as_secret(kind)` is the one secret rule; SliceStats, DemoRules, NG+ and the tests all use it, so Act I secrets stay 22.
+- Validator rule: an `sch_` flag may be read by `UpgradeTier.requires` and by dialogue or hint conditions, never by achievements, quests or a count metric. A schematic whose flag is already set (an earlier NG+ cycle) draws a husk: no pickup, no banner.
+- Names in `data/upgrades/schematics.tres` (`SchematicList`, `LOC_FIELDS {names}`): 4 Ironworks, 1 Undercity, 2 Lowlight. The lock line names the district (PW3).
+
+## D-185: Parry = a grounded heavy's first window, unlocked by the Act II Deflector; never required; taught by an install-time hint plus a once-per-save glyph pip over the first parryable windup (FLAG vs §8/§23/§41)
+- FLAG. PW1 lands the install hint (`hint_parry`, in `UpgradeLibrary._after_install`) and `EventBus.player_parried`; PW5 builds the parry.
+
+## D-186: Core capacity can be bought (Capacity Lattice I at Vell, 240 Scrap, needs 3 shards); shards are still never sold (FLAG vs §12/ECONOMY)
+- FLAG. Act I capacity band: 4 + 5 shards + 1 = 10 of the catalog's 21 (48 %, `test_upgrades::test_capacity_lattice`). Lattice II is deferred (D-211).
+
+## D-187: Economy: K-49 fixed by 1,050 Act I upgrade sinks (1,210 of stock; Surge I is granted, D-218); per-act cumulative bands; `DistrictTheme.act` + `economy_final` keep an unfinished district's income and its act's stock out of the audit until its economy merge
+- `EconomyAudit.compute(remix, include_pending)`: upgrade tiers are sinks (one price per Mk III branch group, the highest; granted tiers none), `sinks_by_act` / `one_time_by_act` / `per_clear_by_act`, `pending` for non-final districts, `repeatable_sinks` for the 40 Scrap rebranch. `ShopItem.act` and `QuestData.act` default to 1.
+- After PW1: sinks 3,280, one-time 1,772 (54.0 %), re-clear 332 against a cap of 492 (headroom 160). K-49 is closed (remedy 3 in ECONOMY.md).
+
+## D-188: New palette roles core, core_ready, power; Core red stays on the Core seam/HUD bar only; Surge draws in white-hot power tones, parry in ember, never guard blue (FLAG vs Art Bible §3)
+- FLAG. Landed by the power FX task (PW4); D-220 amends it.
+
+## D-189: Action `surge` defaults to Y / L3 (option: LB+RB chord); dev-only `debug_toggle` keeps F1 and loses its L3 pad binding (amends D-158: R3 stays the dev pad button)
+- Landed by PW2 (input). The install hint in `UpgradeLibrary` shows the binding once the action exists.
+
+## D-190: Pika was requested but is not connected: power and Ironworks art is code-drawn under stable names with an offline clip_to_sheet route for a later Pika/AI pass (extends D-170) (FLAG)
+- FLAG. PW1's schematic pickup draws a code plate (brass, etched, rivets, glint) until the PW4 sheet `assets/props/schematic_pickup.tres` exists; the Collectible then draws the sheet with no code change.
+- The ten power SFX ids (`charge_start`, `charge_ready`, `charge_release`, `surge`, `surge_hit`, `surge_end`, `parry`, `riposte`, `core_ready`, `upgrade_install`) are synth rows in `placeholder_sfx.tres` with empty override paths.
+
+## D-218: Surge Coupling I is installed free by Mara after Krail (`DialogueData.give_upgrade` -> `UpgradeLibrary.grant`; granted tiers are not sinks); Surge retuned: burst 28 dmg / 60 poise, damage x1.35 for 4 s (FLAG vs §12 "upgrades are bought")
+- FLAG (§12). Numbered in the expansion plan's range; written here with PW1's grant path, the Mara rule lands with PW6 and the tuning with PW2.
+- `UpgradeTier.granted`; `UpgradeLibrary.grant` / `give` set the tier at 0 Scrap and emit `upgrade_purchased(id, tier, 0)`. Only dialogue reaches it: never kits, sandbox states or challenges. The validator rejects a `give_upgrade` of an unknown id or of an upgrade with no granted tier, and arcs may not carry it (D-122).
+- `total_owned()` (and so `count:upgrades`) counts purchases only. Act I sinks 3,440 -> 3,280 (54.0 %).
+- Install hints (`hint_charge`, `hint_surge`, `hint_parry`) live in `UpgradeLibrary._after_install`, called by buy and grant, once per save.
