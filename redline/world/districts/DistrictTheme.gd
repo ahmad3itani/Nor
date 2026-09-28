@@ -9,6 +9,12 @@ extends Resource
 const LOC_FIELDS := {"district_name": 24}
 
 @export var district_name: String = ""
+## Economy (D-187): the act this district belongs to, and whether its income
+## is final. A district still being built sets economy_final = false, so the
+## audit keeps its Scrap (and its act's stock) under "pending" until its
+## economy merge.
+@export var act: int = 1
+@export var economy_final: bool = true
 @export_group("Sky & skyline")
 @export var sky_top: Color = Color("0b0a12")
 @export var sky_bottom: Color = Color("24162a")

@@ -21,6 +21,8 @@ const LOC_FIELDS := {"title": 40, "giver": 24}
 @export var reward_flags: PackedStringArray = []
 ## Set when the quest completes (world changes key off this, e.g. the Relay radio).
 @export var complete_flag: String = ""
+## Economy act of the reward (EconomyAudit per-act bands, D-187).
+@export var act: int = 1
 
 
 func is_started() -> bool:

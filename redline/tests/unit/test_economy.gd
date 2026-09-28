@@ -81,3 +81,88 @@ func test_remix_never_inflates_economy() -> void:
 	check(float(ng["ng_secret_bundles"]) <= 0.15 * float(base["sinks"]), "refilled stashes stay under the re-clear cap (%d)" % ng["ng_secret_bundles"])
 	# The audit forces each remix on its own copy; nothing stays forced.
 	check(not RemixLibrary.force_active, "compute(true) does not flip the global force")
+
+
+# --- Upgrades and per-act bands (expansion PW1, D-187, D-218) --------------------
+
+## Upgrade tiers are sinks at list price: one price per Mk III branch group
+## (the highest, only one can be bought) and none for a granted tier.
+## Phase 1: 1,210 of workbench/Vell stock, 1,050 counted (Surge I is
+## installed free by Mara, D-218).
+func test_upgrade_sinks_counted() -> void:
+	var e := EconomyAudit.compute()
+	check(int(e["upgrade_sinks"]) == UpgradeLibrary.sink_total(), "audit %d = library %d" % [e["upgrade_sinks"], UpgradeLibrary.sink_total()])
+	check(int(e["upgrade_sinks"]) == 1050, "Phase-1 upgrade sinks 1,050 (%d)" % e["upgrade_sinks"])
+	var items: Dictionary = e["sink_items"]
+	check(int(items.get("upgrades_workbench", -1)) == 810 and int(items.get("upgrades_vell", -1)) == 240
+		and int(items.get("upgrades_luma", -1)) == 0, "per station: %s" % [items])
+	check(UpgradeLibrary.sink_of(UpgradeLibrary.get_upgrade("surge")) == 0, "the granted Surge I is no sink")
+	var u := UpgradeData.new()
+	u.id = "test_econ_branch"
+	for spec in [[50, 0], [100, 1], [160, 2], [90, 3]]:
+		var t := UpgradeTier.new()
+		t.price = spec[0]
+		t.branch = spec[1]
+		t.values = {"riposte": 1}
+		u.tiers.append(t)
+	check(UpgradeLibrary.sink_of(u) == 210, "a branch group counts its highest price once (%d)" % UpgradeLibrary.sink_of(u))
+	u.tiers[3].act = 2
+	u.tiers[1].act = 2
+	u.tiers[2].act = 2
+	check(UpgradeLibrary.sink_of(u, 1) == 50 and UpgradeLibrary.sink_of(u, 2) == 210, "per-act: the group is in its first tier's act")
+	check(UpgradeLibrary.sink_of(u, 99, [1]) == 50, "a non-final act is left out")
+
+
+## Each finished act, counted with everything before it, stays in the bands
+## the flat test uses, so later stock never hides an over-generous Act I.
+## Acts 2+ also hold alone. Pins the PW1 numbers (ECONOMY.md).
+func test_act_cumulative_bands() -> void:
+	var e := EconomyAudit.compute()
+	print("ECONOMY_ACTS %s" % JSON.stringify({"sinks_by_act": e["sinks_by_act"], "one_time_by_act": e["one_time_by_act"],
+		"per_clear_by_act": e["per_clear_by_act"], "final_acts": e["final_acts"], "pending": e["pending"]}))
+	var acts: Array = e["final_acts"]
+	check(acts.has(1), "Act I is final")
+	for a: int in acts:
+		var sinks := EconomyAudit.up_to(e["sinks_by_act"], a)
+		var one := EconomyAudit.up_to(e["one_time_by_act"], a)
+		var per := EconomyAudit.up_to(e["per_clear_by_act"], a)
+		var cov := float(one) / maxf(1.0, float(sinks))
+		check(cov >= 0.45 and cov <= 0.85, "acts <= %d: one-time covers %d%% of stock (%d / %d)" % [a, roundi(cov * 100.0), one, sinks])
+		check(float(per) <= 0.15 * float(sinks), "acts <= %d: re-clear %d over 15%% of %d" % [a, per, sinks])
+		if a >= 2:
+			var s1 := int(e["sinks_by_act"].get(a, 0))
+			var o1 := int(e["one_time_by_act"].get(a, 0))
+			var c1 := float(o1) / maxf(1.0, float(s1))
+			check(c1 >= 0.45 and c1 <= 0.85, "act %d alone: %d%%" % [a, roundi(c1 * 100.0)])
+	check(int(e["sinks"]) == 3280 and int(e["one_time"]) == 1772 and int(e["per_clear"]) == 332,
+		"PW1 pins: sinks 3,280, one-time 1,772, re-clear 332 (%d / %d / %d)" % [e["sinks"], e["one_time"], e["per_clear"]])
+	check(EconomyAudit.up_to(e["sinks_by_act"], 99) == int(e["sinks"]), "per-act sinks add up")
+	check(EconomyAudit.up_to(e["one_time_by_act"], 99) == int(e["one_time"]), "per-act one-time adds up")
+
+
+## K-49 closed (remedy 3, D-187): the re-clear sits at least 150 Scrap under
+## its cap, so new respawning enemies have room again.
+func test_k49_headroom() -> void:
+	var e := EconomyAudit.compute()
+	var headroom := 0.15 * float(e["sinks"]) - float(e["per_clear"])
+	check(headroom >= 150.0, "re-clear headroom %.1f (cap %.1f, re-clear %d)" % [headroom, 0.15 * float(e["sinks"]), e["per_clear"]])
+
+
+## A district still being built (economy_final = false) contributes only to
+## r["pending"]: its rooms leave the totals and the district table.
+func test_pending_district_excluded() -> void:
+	var base := EconomyAudit.compute()
+	var th := load("res://data/districts/lowlight.tres") as DistrictTheme
+	th.economy_final = false
+	var e := EconomyAudit.compute()
+	var with_all := EconomyAudit.compute(false, true)
+	th.economy_final = true
+	var low: Dictionary = base["by_district"]["lowlight"]
+	check(not (e["by_district"] as Dictionary).has("lowlight"), "a pending district leaves the table")
+	check(int(e["pending"]["enemies_first_clear"]) == int(low["enemies_first_clear"]) and int(e["pending"]["bundles"]) == int(low["bundles"])
+		and int(e["pending"]["walls"]) == int(low["walls"]) and int(e["pending"]["boss"]) == int(low["boss"]), "its Scrap is pending: %s" % [e["pending"]])
+	check(int(e["one_time"]) == int(base["one_time"]) - int(low["one_time"]), "one-time drops by the district's")
+	check(int(e["per_clear"]) == int(base["per_clear"]) - int(low["per_clear"]), "re-clear drops too")
+	check(int(e["sinks"]) == int(base["sinks"]), "Act I stock stays (Undercity is a final Act I district)")
+	check(int(with_all["one_time"]) == int(base["one_time"]), "include_pending audits it anyway")
+	check((e["pending"]["districts"] as Array).has("lowlight"), "pending names the district")

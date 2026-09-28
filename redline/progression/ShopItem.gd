@@ -14,6 +14,8 @@ const LOC_FIELDS := {"display_name": 32, "description": 140}
 @export var price: int = 0
 ## Stock appears only once this flag is set (e.g. after the boss).
 @export var requires_flag: String = ""
+## Economy act of this stock (EconomyAudit per-act bands, D-187).
+@export var act: int = 1
 
 @export_group("Upgrade")
 @export var display_name: String = ""
