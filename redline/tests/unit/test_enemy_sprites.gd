@@ -292,6 +292,32 @@ func test_killed_enemy_leaves_a_corpse_that_frees_itself() -> void:
 	check(freed, "corpse never freed")
 
 
+func test_corpse_keeps_the_visor_mask() -> void:
+	var e := _spawn(load("res://data/enemies/warden_krail_null.tres") as EnemyData, KRAIL_SCENE)
+	_set_ai(e, Enemy.AI.DEAD)
+	var actor := _step(e)
+	var corpse := _visual(e).call(&"spawn_corpse", _root) as VfxOneShot
+	check(corpse != null, "krail corpse")
+	if corpse == null:
+		return
+	var mask := corpse.sprite.get_node_or_null(^"Mask") as AnimatedSprite2D
+	check(mask != null and mask.modulate == actor.mask.modulate and mask.modulate == Color.WHITE, "corpse visor keeps the null white")
+	check(mask != null and mask.frame == corpse.sprite.frame and mask.flip_h == corpse.sprite.flip_h, "mask follows the corpse frame")
+	corpse.stop()
+
+
+func test_guard_break_follows_a_brain_override() -> void:
+	var e := _spawn(load("res://data/enemies/needle.tres") as EnemyData)
+	var shield_brain := (load("res://data/enemies/shield.tres") as EnemyData).brain
+	(e.behavior as ModularBehavior).brain_override = shield_brain
+	_step(e)
+	check(_visual(e).get(&"_guard") == shield_brain.guard, "visual listens to the override's guard")
+	(e.behavior as ModularBehavior).brain_override = null
+	_step(e)
+	check(_visual(e).get(&"_guard") == null, "no guard once the override is gone")
+	check(not shield_brain.guard.guard_broken.is_connected(_visual(e).get(&"_on_guard_broken")), "override guard released")
+
+
 func test_burst_tint_is_readable_and_rows_exist() -> void:
 	var enforcer := Color("5a2a30")
 	check(EnemyVisual_lstar(EnemyVisual_burst(enforcer)) >= 60.0, "enforcer burst L* %.1f" % EnemyVisual_lstar(EnemyVisual_burst(enforcer)))

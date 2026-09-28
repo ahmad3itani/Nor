@@ -75,18 +75,35 @@ func _ready() -> void:
 			actor.modulate = enemy.data.sprite_modulate
 			add_child(actor)
 			EventBus.enemy_damaged.connect(_on_enemy_damaged)
-			# The data's brain (children are ready before the Enemy sets up
-			# its behavior, so ask the data, not the behavior).
-			var brain := enemy.data.brain
-			if brain and brain.guard:
-				_guard = brain.guard
-				_guard.guard_broken.connect(_on_guard_broken)
+			# The guard is bound on the first update: children are ready before
+			# the Enemy sets up its behavior, whose brain() (brain_override
+			# first) is the one that guards.
 
 
 func _exit_tree() -> void:
 	# Guard modules are shared resources: never leave a callable behind.
+	_bind_guard(null)
+
+
+## Follows the guard module the behavior actually uses (a brain_override
+## may bring its own, or none).
+func _bind_guard(guard: GuardModule) -> void:
+	if guard == _guard:
+		return
 	if _guard and _guard.guard_broken.is_connected(_on_guard_broken):
 		_guard.guard_broken.disconnect(_on_guard_broken)
+	_guard = guard
+	if _guard and not _guard.guard_broken.is_connected(_on_guard_broken):
+		_guard.guard_broken.connect(_on_guard_broken)
+
+
+func _behavior_guard() -> GuardModule:
+	var brain: EnemyBrain = null
+	if is_instance_valid(enemy.behavior) and enemy.behavior is ModularBehavior and (enemy.behavior as ModularBehavior).enemy:
+		brain = (enemy.behavior as ModularBehavior).brain()
+	elif enemy.data:
+		brain = enemy.data.brain
+	return brain.guard if brain else null
 
 
 func uses_sprite() -> bool:
@@ -101,6 +118,7 @@ func _process(delta: float) -> void:
 
 ## AI state -> animation, with fallbacks so partial art sets still play.
 func _update_actor(delta: float) -> void:
+	_bind_guard(_behavior_guard())
 	actor.face(enemy.facing)
 	var one_shot := actor.is_playing_one_shot()
 	if one_shot and (enemy.ai == Enemy.AI.WINDUP or enemy.ai == Enemy.AI.ACTIVE or enemy.ai == Enemy.AI.DEAD):
@@ -308,10 +326,33 @@ func spawn_corpse(parent: Node) -> VfxOneShot:
 	var fps := maxf(actor.sprite_frames.get_animation_speed(&"death"), 1.0)
 	var remaining := float(count - fx.sprite.frame) / fps
 	fx.lifetime = remaining + CORPSE_HOLD + CORPSE_FADE + 0.05
+	_corpse_mask(fx)
 	var tw := fx.create_tween()
 	tw.tween_interval(remaining + CORPSE_HOLD)
 	tw.tween_property(fx, "modulate:a", 0.0, CORPSE_FADE)
 	return fx
+
+
+## The tint-mask overlay (a visor's palette colour, Krail Null's white) rides
+## on the corpse: a child of its sprite, so the corpse's dim and fade apply,
+## following its frame. The high-contrast outline is not copied: the corpse
+## is a dimmed, non-interactive remnant that is gone within about a second.
+func _corpse_mask(fx: VfxOneShot) -> void:
+	if actor.mask == null or not actor.mask.sprite_frames.has_animation(&"death"):
+		return
+	var m := AnimatedSprite2D.new()
+	m.name = "Mask"
+	m.sprite_frames = actor.mask.sprite_frames
+	m.animation = &"death"
+	m.centered = fx.sprite.centered
+	m.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	m.flip_h = fx.sprite.flip_h
+	m.offset = fx.sprite.offset
+	m.modulate = actor.mask.modulate
+	m.frame = fx.sprite.frame
+	fx.sprite.add_child(m)
+	var src := fx.sprite
+	fx.sprite.frame_changed.connect(func() -> void: m.frame = src.frame)
 
 
 func _sprite_offset() -> Vector2:
