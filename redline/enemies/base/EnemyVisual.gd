@@ -56,6 +56,9 @@ var actor: SpriteActor
 var outline_nodes: Array[Sprite2D] = []
 ## [ai, attack, anim] the last pose was asked in (see pose_restarts).
 var _anim_key: Array = []
+## [attack, anim] of the strike the last ACTIVE pose played: RECOVER holds
+## its last frame, even after a hurt or guard_break one-shot cut in.
+var _held_strike: Array = []
 var _knock := Vector2.ZERO
 var _knock_t: float = 0.0
 ## Presentation-only randomness (hitstop shake in sprite mode): never the
@@ -188,7 +191,8 @@ static func generic_anim_names(ai: int, attack: AttackData, ai_enabled: bool, mo
 ## (AnimatedSprite2D.play would restart a finished one); it restarts when the
 ## name or the attack changes, or on a new AI state other than RECOVER: the
 ## boss maps give ACTIVE and RECOVER the same strike row, and RECOVER holds
-## that strike's last frame instead of replaying it.
+## that strike's last frame instead of replaying it (also after a hurt
+## one-shot in the punish window: see holds_strike).
 func _play(names: Array[StringName]) -> void:
 	var n := &""
 	for item in names:
@@ -199,7 +203,19 @@ func _play(names: Array[StringName]) -> void:
 		return
 	var key := [enemy.ai, enemy.current_attack, n]
 	var loops := actor.sprite_frames.get_animation_loop(n)
-	if actor.animation != n or (not loops and pose_restarts(_anim_key, key)):
+	if enemy.ai == Enemy.AI.ACTIVE and not loops:
+		_held_strike = [enemy.current_attack, n]
+	elif enemy.ai != Enemy.AI.RECOVER:
+		_held_strike = []
+	var restart := actor.animation != n or (not loops and pose_restarts(_anim_key, key))
+	if restart and holds_strike(_held_strike, enemy.ai, enemy.current_attack, n):
+		# The punish window after a strike: back on the strike's last frame
+		# (a hurt one-shot may have played over it), never a replay.
+		actor.stop()
+		actor.animation = n
+		actor.frame = actor.sprite_frames.get_frame_count(n) - 1
+		actor.frame_progress = 1.0
+	elif restart:
 		actor.stop()
 		actor.play(n)
 		actor.frame = 0
@@ -217,6 +233,12 @@ static func pose_restarts(prev: Array, key: Array) -> bool:
 	if prev[1] != key[1] or prev[2] != key[2]:
 		return true
 	return prev[0] != key[0] and key[0] != Enemy.AI.RECOVER
+
+
+## Whether RECOVER shows `anim` as the held last frame of the strike that
+## `held` ([attack, anim]) recorded in ACTIVE.
+static func holds_strike(held: Array, ai: int, attack: AttackData, anim: StringName) -> bool:
+	return ai == Enemy.AI.RECOVER and held.size() == 2 and held[0] == attack and held[1] == anim
 
 
 # --- Hit reactions -----------------------------------------------------------------

@@ -430,6 +430,35 @@ func test_krail_strike_holds_through_recover() -> void:
 	check(_step(e).animation == &"windup_slam" and actor.frame == 0, "next wind-up restarts")
 
 
+func test_krail_strike_holds_after_a_punish_hit() -> void:
+	var e := _spawn(load("res://data/enemies/warden_krail.tres") as EnemyData, KRAIL_SCENE)
+	var slam := e.behavior.call(&"attack", &"krail_ground_slam") as AttackData
+	_set_ai(e, Enemy.AI.ACTIVE, slam)
+	var actor := _step(e)
+	var last := actor.sprite_frames.get_frame_count(&"slam") - 1
+	for i in 180:
+		await get_tree().process_frame
+		if actor.frame == last and not actor.is_playing():
+			break
+	check(actor.frame == last and not actor.is_playing(), "slam finished (%d)" % actor.frame)
+	e.ai = Enemy.AI.RECOVER
+	_step(e)
+	# The punish window: a HIT plays the hurt one-shot over the held strike.
+	EventBus.enemy_damaged.emit(e, null, CombatResult.HIT)
+	check(actor.animation == &"hurt" and actor.is_playing(), "hurt one-shot in RECOVER: %s" % actor.animation)
+	for i in 240:
+		await get_tree().process_frame
+		_step(e)
+		if not actor.is_playing_one_shot():
+			break
+	_step(e)
+	await get_tree().process_frame
+	_step(e)
+	check(e.ai == Enemy.AI.RECOVER, "still recovering")
+	check(actor.animation == &"slam" and actor.frame == last and not actor.is_playing(),
+		"punish hit replayed the strike (%s %d %s)" % [actor.animation, actor.frame, actor.is_playing()])
+
+
 func WardenKrailBehavior_tip() -> Color:
 	return (load("res://bosses/WardenKrailBehavior.gd") as GDScript).get(&"BATON_TIP")
 
