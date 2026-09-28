@@ -1653,11 +1653,13 @@ msgid "Redline"
 msgstr ""
 
 #. key: data/challenges/splits/act1_campaign.tres::splits[0].label
+#. key: data/upgrades/pulse_blade.tres::display_name
 #. key: data/weapons/pulse_blade.tres::display_name
 #. SplitDef
+#. UpgradeData
 #. WeaponData
 #. max 24 chars
-#: data/challenges/splits/act1_campaign.tres data/weapons/pulse_blade.tres
+#: data/challenges/splits/act1_campaign.tres data/upgrades/pulse_blade.tres data/weapons/pulse_blade.tres
 msgid "Pulse Blade"
 msgstr ""
 
@@ -5464,32 +5466,258 @@ msgstr ""
 msgid "The Spire has lost a Warden. It will send someone to ask why."
 msgstr ""
 
+#. key: data/upgrades/capacity_lattice.tres::display_name
+#. UpgradeData
+#. max 28 chars
+#: data/upgrades/capacity_lattice.tres
+msgid "Capacity Lattice"
+msgstr ""
+
+#. key: data/upgrades/capacity_lattice.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/capacity_lattice.tres
+msgid "Vell threads a lattice through the Core seat. Room for one more Circuit."
+msgstr ""
+
+#. key: data/upgrades/capacity_lattice.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/capacity_lattice.tres
+msgid "Core Capacity +1."
+msgstr ""
+
+#. key: data/upgrades/dash_coil.tres::display_name
+#. UpgradeData
+#. max 28 chars
+#: data/upgrades/dash_coil.tres
+msgid "Dash Coil"
+msgstr ""
+
+#. key: data/upgrades/dash_coil.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/dash_coil.tres
+msgid "Rewound coil in the Dash rig. It recharges sooner."
+msgstr ""
+
+#. key: data/upgrades/dash_coil.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/dash_coil.tres
+msgid "Dash recharges 20% faster."
+msgstr ""
+
+#. key: data/upgrades/evade_servo.tres::display_name
+#. UpgradeData
+#. max 28 chars
+#: data/upgrades/evade_servo.tres
+msgid "Evade Servo"
+msgstr ""
+
+#. key: data/upgrades/evade_servo.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/evade_servo.tres
+msgid "A quicker servo in the legs. Dodges come back sooner, and late ones still count."
+msgstr ""
+
+#. key: data/upgrades/evade_servo.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/evade_servo.tres
+msgid "Perfect dodge window +0.02 s. Dodge recovers 10% faster."
+msgstr ""
+
+#. key: data/upgrades/heavy_revolver.tres::display_name
 #. key: data/weapons/heavy_revolver.tres::display_name
+#. UpgradeData
 #. WeaponData
 #. max 24 chars
-#: data/weapons/heavy_revolver.tres
+#: data/upgrades/heavy_revolver.tres data/weapons/heavy_revolver.tres
 msgid "Heavy Revolver"
 msgstr ""
 
+#. key: data/upgrades/heavy_revolver.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/heavy_revolver.tres
+msgid "A seventh chamber and a smoother gate."
+msgstr ""
+
+#. key: data/upgrades/heavy_revolver.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/heavy_revolver.tres
+msgid "Mk II: +1 round. Reloads 15% faster."
+msgstr ""
+
+#. key: data/upgrades/injector_rework.tres::display_name
+#. UpgradeData
+#. max 28 chars
+#: data/upgrades/injector_rework.tres
+msgid "Injector Rework"
+msgstr ""
+
+#. key: data/upgrades/injector_rework.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/injector_rework.tres
+msgid "Mara reroutes the injector feed. Patching up takes less time."
+msgstr ""
+
+#. key: data/upgrades/injector_rework.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/injector_rework.tres
+msgid "Injecting takes 25% less time."
+msgstr ""
+
+#. key: data/upgrades/pulse_blade.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/pulse_blade.tres
+msgid "Mara can rework the edge. Heavier cuts, and a heavy you can hold."
+msgstr ""
+
+#. key: data/upgrades/pulse_blade.tres::tiers[0].summary
+#. key: data/upgrades/split_katars.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/pulse_blade.tres data/upgrades/split_katars.tres
+msgid "Mk II: hold heavy to charge. Damage +10%."
+msgstr ""
+
+#. key: data/upgrades/scattergun.tres::display_name
 #. key: data/weapons/scattergun.tres::display_name
+#. UpgradeData
 #. WeaponData
 #. max 24 chars
-#: data/weapons/scattergun.tres
+#: data/upgrades/scattergun.tres data/weapons/scattergun.tres
 msgid "Scattergun"
 msgstr ""
 
+#. key: data/upgrades/scattergun.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/scattergun.tres
+msgid "A choke and a spare chamber. Fewer wasted pellets."
+msgstr ""
+
+#. key: data/upgrades/scattergun.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/scattergun.tres
+msgid "Mk II: +1 shell. Spread 15% tighter."
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[foundry_pattern]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Foundry pattern"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[deflector]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Deflector plate"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[servo_coil]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Servo coil"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[resonator]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Surge resonator"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[drain_baffle]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Pump baffle"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[arc_capacitor]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Annex capacitor"
+msgstr ""
+
+#. key: data/upgrades/schematics.tres::names[guard_breaker]
+#. SchematicList
+#. max 28 chars
+#: data/upgrades/schematics.tres
+msgid "Warden plate"
+msgstr ""
+
+#. key: data/upgrades/service_pistol.tres::display_name
 #. key: data/weapons/service_pistol.tres::display_name
+#. UpgradeData
 #. WeaponData
 #. max 24 chars
-#: data/weapons/service_pistol.tres
+#: data/upgrades/service_pistol.tres data/weapons/service_pistol.tres
 msgid "Service Pistol"
 msgstr ""
 
+#. key: data/upgrades/service_pistol.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/service_pistol.tres
+msgid "A longer magazine and a cleaner action for the old sidearm."
+msgstr ""
+
+#. key: data/upgrades/service_pistol.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/service_pistol.tres
+msgid "Mk II: +2 rounds. Reloads 15% faster."
+msgstr ""
+
+#. key: data/upgrades/split_katars.tres::display_name
 #. key: data/weapons/split_katars.tres::display_name
+#. UpgradeData
 #. WeaponData
 #. max 24 chars
-#: data/weapons/split_katars.tres
+#: data/upgrades/split_katars.tres data/weapons/split_katars.tres
 msgid "Split Katars"
+msgstr ""
+
+#. key: data/upgrades/split_katars.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/split_katars.tres
+msgid "Mara can rebalance the pair. Hold the heavy and they bite harder."
+msgstr ""
+
+#. key: data/upgrades/surge.tres::display_name
+#. UpgradeData
+#. max 28 chars
+#: data/upgrades/surge.tres
+msgid "Surge Coupling"
+msgstr ""
+
+#. key: data/upgrades/surge.tres::description
+#. UpgradeData
+#. max 140 chars
+#: data/upgrades/surge.tres
+msgid "Couples the Core to a burst. Spend it all at once when a fight needs it."
+msgstr ""
+
+#. key: data/upgrades/surge.tres::tiers[0].summary
+#. UpgradeTier
+#. max 90 chars
+#: data/upgrades/surge.tres
+msgid "Surge: spend Core for a burst. Damage up while it lasts."
 msgstr ""
 
 #. key: data/world/chase/rainline.tres::warn_hint
@@ -5615,6 +5843,12 @@ msgstr ""
 msgid "CORE SHARD  —  Core Capacity +1"
 msgstr ""
 
+#. key: interactables/Collectible.gd::Loc.f
+#. placeholders: {name}
+#: interactables/Collectible.gd
+msgid "SCHEMATIC FOUND  —  {name}"
+msgstr ""
+
 #. key: interactables/FlagSwitch.gd::l10n
 #: interactables/FlagSwitch.gd
 msgid "Pull lever"
@@ -5643,6 +5877,24 @@ msgstr ""
 #. key: player/combat/PlayerCombat.gd::Loc.t
 #: player/combat/PlayerCombat.gd
 msgid "EMERGENCY LOOP"
+msgstr ""
+
+#. key: progression/UpgradeLibrary.gd::Loc.f
+#. placeholders: {action}
+#: progression/UpgradeLibrary.gd
+msgid "Hold heavy to charge  [{action}]"
+msgstr ""
+
+#. key: progression/UpgradeLibrary.gd::Loc.f
+#. placeholders: {action}
+#: progression/UpgradeLibrary.gd
+msgid "SURGE  [{action}]  Spend Core for a burst. Damage up while it lasts."
+msgstr ""
+
+#. key: progression/UpgradeLibrary.gd::Loc.f
+#. placeholders: {action}
+#: progression/UpgradeLibrary.gd
+msgid "PARRY  [{action}]  Heavy just as it swings."
 msgstr ""
 
 #. key: quests/QuestTracker.gd::Loc.f

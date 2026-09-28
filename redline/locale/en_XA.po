@@ -906,7 +906,7 @@ msgstr "[Ğóĺď~~]"
 msgid "Redline"
 msgstr "[Ŕéďĺíñé~~~~]"
 
-#: data/challenges/splits/act1_campaign.tres data/weapons/pulse_blade.tres
+#: data/challenges/splits/act1_campaign.tres data/upgrades/pulse_blade.tres data/weapons/pulse_blade.tres
 msgid "Pulse Blade"
 msgstr "[Púĺšé Bĺáďé~~~~~~]"
 
@@ -2974,21 +2974,145 @@ msgstr "[Šómé óf ŵĥáť ýóú ŕémémbéŕéď ďóéšñ'ť fíť ťó�
 msgid "The Spire has lost a Warden. It will send someone to ask why."
 msgstr "[Ťĥé Špíŕé ĥáš ĺóšť á Ŵáŕďéñ. Íť ŵíĺĺ šéñď šóméóñé ťó ášķ ŵĥý.~~~~~~~~~~~~~~~~~~~~~~]"
 
-#: data/weapons/heavy_revolver.tres
+#: data/upgrades/capacity_lattice.tres
+msgid "Capacity Lattice"
+msgstr "[Çápáçíťý Ĺáťťíçé~~~~~~]"
+
+#: data/upgrades/capacity_lattice.tres
+msgid "Vell threads a lattice through the Core seat. Room for one more Circuit."
+msgstr "[Véĺĺ ťĥŕéáďš á ĺáťťíçé ťĥŕóúğĥ ťĥé Çóŕé šéáť. Ŕóóm fóŕ óñé móŕé Çíŕçúíť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/capacity_lattice.tres
+msgid "Core Capacity +1."
+msgstr "[Çóŕé Çápáçíťý +1.~~~~~~]"
+
+#: data/upgrades/dash_coil.tres
+msgid "Dash Coil"
+msgstr "[Ďášĥ Çóíĺ~~~~~]"
+
+#: data/upgrades/dash_coil.tres
+msgid "Rewound coil in the Dash rig. It recharges sooner."
+msgstr "[Ŕéŵóúñď çóíĺ íñ ťĥé Ďášĥ ŕíğ. Íť ŕéçĥáŕğéš šóóñéŕ.~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/dash_coil.tres
+msgid "Dash recharges 20% faster."
+msgstr "[Ďášĥ ŕéçĥáŕğéš 20% fášťéŕ.~~~~~~~~~~]"
+
+#: data/upgrades/evade_servo.tres
+msgid "Evade Servo"
+msgstr "[Éváďé Šéŕvó~~~~~~]"
+
+#: data/upgrades/evade_servo.tres
+msgid "A quicker servo in the legs. Dodges come back sooner, and late ones still count."
+msgstr "[Á qúíçķéŕ šéŕvó íñ ťĥé ĺéğš. Ďóďğéš çómé báçķ šóóñéŕ, áñď ĺáťé óñéš šťíĺĺ çóúñť.~~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/evade_servo.tres
+msgid "Perfect dodge window +0.02 s. Dodge recovers 10% faster."
+msgstr "[Péŕféçť ďóďğé ŵíñďóŵ +0.02 š. Ďóďğé ŕéçóvéŕš 10% fášťéŕ.~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/heavy_revolver.tres data/weapons/heavy_revolver.tres
 msgid "Heavy Revolver"
 msgstr "[Ĥéávý Ŕévóĺvéŕ~~~~~]"
 
-#: data/weapons/scattergun.tres
+#: data/upgrades/heavy_revolver.tres
+msgid "A seventh chamber and a smoother gate."
+msgstr "[Á šévéñťĥ çĥámbéŕ áñď á šmóóťĥéŕ ğáťé.~~~~~~~~~~~~~~]"
+
+#: data/upgrades/heavy_revolver.tres
+msgid "Mk II: +1 round. Reloads 15% faster."
+msgstr "[Mķ ÍÍ: +1 ŕóúñď. Ŕéĺóáďš 15% fášťéŕ.~~~~~~~~~~~~~]"
+
+#: data/upgrades/injector_rework.tres
+msgid "Injector Rework"
+msgstr "[Íñĵéçťóŕ Ŕéŵóŕķ~~~~~~]"
+
+#: data/upgrades/injector_rework.tres
+msgid "Mara reroutes the injector feed. Patching up takes less time."
+msgstr "[Máŕá ŕéŕóúťéš ťĥé íñĵéçťóŕ fééď. Páťçĥíñğ úp ťáķéš ĺéšš ťímé.~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/injector_rework.tres
+msgid "Injecting takes 25% less time."
+msgstr "[Íñĵéçťíñğ ťáķéš 25% ĺéšš ťímé.~~~~~~~~~~~]"
+
+#: data/upgrades/pulse_blade.tres
+msgid "Mara can rework the edge. Heavier cuts, and a heavy you can hold."
+msgstr "[Máŕá çáñ ŕéŵóŕķ ťĥé éďğé. Ĥéávíéŕ çúťš, áñď á ĥéávý ýóú çáñ ĥóĺď.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/pulse_blade.tres data/upgrades/split_katars.tres
+msgid "Mk II: hold heavy to charge. Damage +10%."
+msgstr "[Mķ ÍÍ: ĥóĺď ĥéávý ťó çĥáŕğé. Ďámáğé +10%.~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/scattergun.tres data/weapons/scattergun.tres
 msgid "Scattergun"
 msgstr "[Šçáťťéŕğúñ~~~~~]"
 
-#: data/weapons/service_pistol.tres
+#: data/upgrades/scattergun.tres
+msgid "A choke and a spare chamber. Fewer wasted pellets."
+msgstr "[Á çĥóķé áñď á špáŕé çĥámbéŕ. Féŵéŕ ŵášťéď péĺĺéťš.~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/scattergun.tres
+msgid "Mk II: +1 shell. Spread 15% tighter."
+msgstr "[Mķ ÍÍ: +1 šĥéĺĺ. Špŕéáď 15% ťíğĥťéŕ.~~~~~~~~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Foundry pattern"
+msgstr "[Fóúñďŕý páťťéŕñ~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Deflector plate"
+msgstr "[Ďéfĺéçťóŕ pĺáťé~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Servo coil"
+msgstr "[Šéŕvó çóíĺ~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Surge resonator"
+msgstr "[Šúŕğé ŕéšóñáťóŕ~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Pump baffle"
+msgstr "[Púmp báffĺé~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Annex capacitor"
+msgstr "[Áññéx çápáçíťóŕ~~~~~~]"
+
+#: data/upgrades/schematics.tres
+msgid "Warden plate"
+msgstr "[Ŵáŕďéñ pĺáťé~~~~~~]"
+
+#: data/upgrades/service_pistol.tres data/weapons/service_pistol.tres
 msgid "Service Pistol"
 msgstr "[Šéŕvíçé Píšťóĺ~~~~~]"
 
-#: data/weapons/split_katars.tres
+#: data/upgrades/service_pistol.tres
+msgid "A longer magazine and a cleaner action for the old sidearm."
+msgstr "[Á ĺóñğéŕ máğážíñé áñď á çĺéáñéŕ áçťíóñ fóŕ ťĥé óĺď šíďéáŕm.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/service_pistol.tres
+msgid "Mk II: +2 rounds. Reloads 15% faster."
+msgstr "[Mķ ÍÍ: +2 ŕóúñďš. Ŕéĺóáďš 15% fášťéŕ.~~~~~~~~~~~~~]"
+
+#: data/upgrades/split_katars.tres data/weapons/split_katars.tres
 msgid "Split Katars"
 msgstr "[Špĺíť Ķáťáŕš~~~~~~]"
+
+#: data/upgrades/split_katars.tres
+msgid "Mara can rebalance the pair. Hold the heavy and they bite harder."
+msgstr "[Máŕá çáñ ŕébáĺáñçé ťĥé páíŕ. Ĥóĺď ťĥé ĥéávý áñď ťĥéý bíťé ĥáŕďéŕ.~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/surge.tres
+msgid "Surge Coupling"
+msgstr "[Šúŕğé Çóúpĺíñğ~~~~~]"
+
+#: data/upgrades/surge.tres
+msgid "Couples the Core to a burst. Spend it all at once when a fight needs it."
+msgstr "[Çóúpĺéš ťĥé Çóŕé ťó á búŕšť. Špéñď íť áĺĺ áť óñçé ŵĥéñ á fíğĥť ñééďš íť.~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+
+#: data/upgrades/surge.tres
+msgid "Surge: spend Core for a burst. Damage up while it lasts."
+msgstr "[Šúŕğé: špéñď Çóŕé fóŕ á búŕšť. Ďámáğé úp ŵĥíĺé íť ĺášťš.~~~~~~~~~~~~~~~~~~~~]"
 
 #: data/world/chase/rainline.tres data/world/chase/rainline_remix.tres data/world/chase/test_chase.tres
 msgid "Something on the line just woke up. Run east."
@@ -3062,6 +3186,10 @@ msgstr "[Úšé~~]"
 msgid "CORE SHARD  —  Core Capacity +1"
 msgstr "[ÇÓŔÉ ŠĤÁŔĎ  —  Çóŕé Çápáçíťý +1~~~~~~~~~~~]"
 
+#: interactables/Collectible.gd
+msgid "SCHEMATIC FOUND  —  {name}"
+msgstr "[ŠÇĤÉMÁŤÍÇ FÓÚÑĎ  —  {name}~~~~~~~]"
+
 #: interactables/FlagSwitch.gd
 msgid "Pull lever"
 msgstr "[Púĺĺ ĺévéŕ~~~~~]"
@@ -3084,6 +3212,18 @@ msgstr "[Ŕéáĺíğñ ŕépéáťéŕ~~~~~~]"
 #: player/combat/PlayerCombat.gd
 msgid "EMERGENCY LOOP"
 msgstr "[ÉMÉŔĞÉÑÇÝ ĹÓÓP~~~~~]"
+
+#: progression/UpgradeLibrary.gd
+msgid "Hold heavy to charge  [{action}]"
+msgstr "[Ĥóĺď ĥéávý ťó çĥáŕğé  [{action}]~~~~~~~~~]"
+
+#: progression/UpgradeLibrary.gd
+msgid "SURGE  [{action}]  Spend Core for a burst. Damage up while it lasts."
+msgstr "[ŠÚŔĞÉ  [{action}]  Špéñď Çóŕé fóŕ á búŕšť. Ďámáğé úp ŵĥíĺé íť ĺášťš.~~~~~~~~~~~~~~~~~~~~~]"
+
+#: progression/UpgradeLibrary.gd
+msgid "PARRY  [{action}]  Heavy just as it swings."
+msgstr "[PÁŔŔÝ  [{action}]  Ĥéávý ĵúšť áš íť šŵíñğš.~~~~~~~~~~~~~]"
 
 #: quests/QuestTracker.gd
 msgid "NEW QUEST  —  {title}"
