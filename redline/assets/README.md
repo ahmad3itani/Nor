@@ -18,4 +18,6 @@ Exported, game-ready art and audio (Art Bible §9). Sources live in `art/source/
 | `audio/sfx/`, `audio/ui/`, `audio/footsteps/` | OGG one-shots; `<id>.tres` = AudioStreamRandomizer over the takes |
 | `audio/ambience/`, `audio/music/` | loops (`loop=true`, `loop_offset=0` in the committed `.import`) |
 
-Provenance: every file has a row in `SOURCES.csv` (`out_files` lists it; `rights` says whether it is own work or generator output). Generator output is marked "ElevenLabs output, check plan terms" until the rights decision is recorded.
+Provenance: every file has a row in `SOURCES.csv` (`out_files` lists it; `rights` says whether it is own work or generator output). Generator output is marked "ElevenLabs output, check plan terms" (D-170): check the plan's commercial terms before any public build.
+
+Swapping in generator or hand-made art or audio: keep the file name, size and spec ids, update the file's `SOURCES.csv` row (and `rights`), then run `assetgen.py --check`, `ValidateContent` and `--tour=overhaul` (`Docs/OVERHAUL_REPORT.md` §8). Rights decision: D-170. Adding a district's assets: `Docs/CONTENT_PIPELINE.md`, "Art & audio assets".
