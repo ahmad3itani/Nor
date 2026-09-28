@@ -259,7 +259,8 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			var p := to_screen(r.offset + a["pos"] + Vector2(0, -16))
 			var pts := PackedVector2Array([p + Vector2(0, -4), p + Vector2(4, 0), p + Vector2(0, 4), p + Vector2(-4, 0)])
 			if state.anchors_rested.has("%s|%s" % [r.room_path, a["id"]]):
-				draw_colored_polygon(pts, Palette.color(&"safe"))
+				if not _icon("anchor", p, Palette.color(&"safe")):
+					draw_colored_polygon(pts, Palette.color(&"safe"))
 			else:
 				draw_polyline(pts + PackedVector2Array([pts[0]]), Palette.color(&"safe"))
 	for g: Dictionary in info["gates"]:
@@ -267,8 +268,9 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 		var rect: Rect2 = g["rect"]
 		if closed and _cell_seen(r, rect.get_center()):
 			var p := to_screen(r.offset + rect.get_center())
-			draw_rect(Rect2(p - Vector2(3, 4), Vector2(6, 8)), Palette.color(&"map_gate"), false, 1.0)
-			draw_line(p + Vector2(-3, 0), p + Vector2(3, 0), Palette.color(&"map_gate"))
+			if not _icon("gate", p, Palette.color(&"map_gate")):
+				draw_rect(Rect2(p - Vector2(3, 4), Vector2(6, 8)), Palette.color(&"map_gate"), false, 1.0)
+				draw_line(p + Vector2(-3, 0), p + Vector2(3, 0), Palette.color(&"map_gate"))
 	for m: Dictionary in info["markers"]:
 		if not WorldMapIndex.marker_active(m):
 			continue
@@ -277,8 +279,9 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 			# Rook), in the quest-note look.
 			if _known(r) and show_quest_notes():
 				var p := to_screen(r.offset + m["pos"])
-				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
-				draw_string(font, p + Vector2(5, 3), Loc.t(String(m["label"])), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
+				if not _icon("note", p, Palette.color(&"map_note")):
+					draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
+				draw_string(font, p + Vector2(_note_label_x(), 3), Loc.t(String(m["label"])), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 		elif _cell_seen(r, m["pos"]):
 			var p := to_screen(r.offset + m["pos"])
 			draw_circle(p, 4.0, Palette.color(&"map_gate"))
@@ -294,11 +297,12 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 		for boss: Dictionary in info["bosses"]:
 			var p := to_screen(r.offset + boss["pos"])
 			var boss_col := Palette.color(&"safe")
-			draw_circle(p, 5.0, boss_col, false, 1.5)
+			if not _icon("boss", p, boss_col):
+				draw_circle(p, 5.0, boss_col, false, 1.5)
 			if Game.has_flag(boss["flag"]):
 				draw_line(p + Vector2(-4, -4), p + Vector2(4, 4), boss_col, 1.5)
 				draw_line(p + Vector2(-4, 4), p + Vector2(4, -4), boss_col, 1.5)
-			else:
+			elif not UiKit.has_atlas("icons"):
 				draw_circle(p, 2.0, boss_col)
 	# Secret hint: that something is left, never where (bible §20).
 	if show_secret_hints():
@@ -316,13 +320,30 @@ func _draw_room_icons(r: MapRoomData, z: float) -> void:
 		var i := q.current_stage()
 		if i < q.stages.size() and q.stages[i].map_room == r.room_id():
 			var p := to_screen(r.offset + q.stages[i].map_pos)
-			draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
-			draw_string(font, p + Vector2(5, 3), Loc.t(q.stages[i].map_note), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
+			if not _icon("note", p, Palette.color(&"map_note")):
+				draw_rect(Rect2(p - Vector2(3, 3), Vector2(6, 6)), Palette.color(&"map_note"))
+			draw_string(font, p + Vector2(_note_label_x(), 3), Loc.t(q.stages[i].map_note), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Palette.color(&"map_note"))
 	# The dropped Scrap cache (bible §7: recoverable).
 	var drop := state.dropped_scrap
 	if drop.get("room", "") == r.room_path and int(drop.get("amount", 0)) > 0:
 		var p := to_screen(r.offset + Vector2(float(drop["x"]), float(drop["y"]) - 8))
-		draw_circle(p, 3.0, COL_PIN)
+		if not _icon("scrap", p, COL_PIN):
+			draw_circle(p, 3.0, COL_PIN)
+
+
+## A UI-kit map icon (assets/ui/icons, 16x16 cells, grey masks) centred on
+## p in `tint` (the same Palette colour the code icon used). False without
+## the kit, and the caller draws its code icon (T07).
+func _icon(id: String, p: Vector2, tint: Color) -> bool:
+	var src := UiKit.region("icons", id)
+	if not src.has_area():
+		return false
+	return UiKit.draw_fill(self, "icons", id, (p - src.size * 0.5).round(), tint)
+
+
+## Note labels start right of the note icon (kit) or the small square.
+func _note_label_x() -> float:
+	return 7.0 if UiKit.has_region("icons", "note") else 5.0
 
 
 ## Guided hints: the objective room's outline and dots on unexplored exits.
