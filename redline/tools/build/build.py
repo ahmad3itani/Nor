@@ -101,15 +101,19 @@ USER_DIRS = {
 }
 # Web gz payload budget (wasm + pck + js, gzip -9). Measured at T09 (overhaul):
 # wasm 7.98 MB + js 0.09 MB are fixed; the full asset set made the pck 8.80 MB
-# (16.86 MB in all). The web presets ship a partial audio set (beds, mus_title,
-# mus_undercity_explore; the rest falls back to the synth stems): 13.55 MB
-# full; the demo also drops the Lowlight/Relay-only beds and art: 12.56 MB,
-# inside 12 MiB (12.58 MB). The full web build is still over, so the raise to
-# ~20 MB is proposed as D-180 with these numbers; the budget is not raised
-# here (the build WARNs).
+# (16.86 MB in all). T09 shipped a partial web audio set (beds, mus_title,
+# mus_undercity_explore): 13.55 MB full (over), 12.56 MB demo (20 KB left).
+# The audit repair also leaves mus_title (0.98 MB) out of both web presets
+# and the Lowlight beds (0.71 MB) out of the full one; the title and those
+# rooms fall back to the synth stems / silence behind ResourceLoader.exists.
+# An over-budget payload now FAILs the build (budget_verdict); measured
+# numbers are in OVERHAUL_REPORT section 4 and D-180.
 BUDGET_WEB_GZ = 12 * 1024 * 1024
 BUDGET_DESKTOP_ZIP = 40 * 1024 * 1024
 BUDGET_MACOS_ZIP = 60 * 1024 * 1024  # universal: two architectures (measured 53.4 MB)
+# Less room than this under a budget WARNs (one more sheet or track would
+# silently cross it).
+BUDGET_HEADROOM = 500 * 1000
 
 
 # --- Godot cfg reading (values are Godot literals, not INI-safe) ------------------
@@ -553,15 +557,26 @@ def build_one(godot, target, kind, version, debug, out_dir, gzip_web):
         with open(os.path.join(gz_dir, "SERVE_NOTES.txt"), "w", encoding="utf-8") as fh:
             fh.write(template("SERVE_NOTES.txt", kind, version, label))
         gz_bytes = sum(os.path.getsize(os.path.join(gz_dir, f)) for f in os.listdir(gz_dir) if f.endswith(".gz"))
-        if gz_bytes > BUDGET_WEB_GZ:
-            print("WARN: web gz payload %.2f MB > %.2f MB budget (D-180)" % (gz_bytes / 1e6, BUDGET_WEB_GZ / 1e6))
-        else:
-            print("web gz payload %.2f MB (budget %.2f MB)" % (gz_bytes / 1e6, BUDGET_WEB_GZ / 1e6))
+        artifacts[0]["web_gz_bytes"] = gz_bytes
+        artifacts[0]["over_budget"] = budget_verdict("%s web gz payload" % kind, gz_bytes, BUDGET_WEB_GZ)
     elif target != "web":
         budget = BUDGET_MACOS_ZIP if target == "macos" else BUDGET_DESKTOP_ZIP
-        if artifacts[0]["bytes"] > budget:
-            print("WARN: %s is %.1f MB > %.1f MB budget" % (name, artifacts[0]["bytes"] / 1e6, budget / 1e6))
+        artifacts[0]["over_budget"] = budget_verdict(name, artifacts[0]["bytes"], budget)
     return artifacts, out_path
+
+
+def budget_verdict(what, size, budget):
+    """Prints the size against its budget. Over budget is a build failure
+    (main returns 1; never raise a budget silently, D-180); under
+    BUDGET_HEADROOM of room left is a WARN so the next asset is noticed."""
+    if size > budget:
+        print("FAIL: %s %.2f MB > %.2f MB budget" % (what, size / 1e6, budget / 1e6))
+        return True
+    if budget - size < BUDGET_HEADROOM:
+        print("WARN: %s %.2f MB is within %.2f MB of its %.2f MB budget" % (what, size / 1e6, BUDGET_HEADROOM / 1e6, budget / 1e6))
+    else:
+        print("%s %.2f MB (budget %.2f MB)" % (what, size / 1e6, budget / 1e6))
+    return False
 
 
 # --- Smoke (Linux exports only: the container can run those) -----------------------
@@ -671,7 +686,11 @@ def main(argv=None):
         json.dump(manifest, fh, indent=1, sort_keys=True)
     for art in artifacts:
         print("%-44s %8.1f MB  %s" % (art["file"], art["bytes"] / 1e6, art["sha256"][:12]))
+    over = [art["file"] for art in artifacts if art.get("over_budget")]
     rc = 0
+    if over:
+        print("FAIL: over budget: %s" % ", ".join(over))
+        rc = 1
     if a.smoke:
         if not linux_bins:
             print("WARN: --smoke runs the Linux exports; add linux to --targets")
