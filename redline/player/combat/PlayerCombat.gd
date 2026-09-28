@@ -158,7 +158,8 @@ func finish_heal() -> void:
 	injectors -= 1
 	health = mini(health + config.heal_amount, config.max_health)
 	AudioManager.play_sfx(&"heal")
-	HitSpark.spawn(player.get_parent(), player.global_position + Vector2(0, -18), Vector2.UP, Color("7dff9a"), 12, 70.0)
+	# The heal rise (sprite, or these sparks as its placeholder) is spawned by
+	# JuiceDirector on player_healed, so every heal source shows it (T06).
 	EventBus.player_healed.emit(health)
 
 
@@ -267,10 +268,11 @@ func _on_hit_result(hit: HitInfo, result: int, target: Node2D, rect: Rect2) -> b
 	var at := target.global_position + Vector2(0, -12) if target else rect.get_center()
 	if result == CombatResult.BLOCKED:
 		AudioManager.play_sfx(&"block")
-		HitSpark.spawn(player.get_parent(), at, Vector2(-player.facing, -0.3), Color("7fd7ff"), 6)
+		HitSpark.play(player.get_parent(), at, Vector2(-player.facing, -0.3), &"spark_guard", HitSpark.GUARD_COLOR, 6)
 	else:
 		AudioManager.play_sfx(hit.attack.hit_sfx)
-		HitSpark.spawn(player.get_parent(), at, hit.direction, Color("ffffff"), 10)
+		HitSpark.play(player.get_parent(), at, hit.direction, HitSpark.row_for(hit.attack, result), HitSpark.NO_TINT, 10,
+			140.0, Color("ffffff"))
 	return true
 
 
@@ -331,7 +333,7 @@ func _try_fire(input: PlayerInputFrame) -> void:
 		p.impacted.connect(_on_projectile_impact.bind(p))
 	_apply_recoil(w, aim)
 	AudioManager.play_sfx(w.fire_sfx)
-	HitSpark.spawn(player.get_parent(), muzzle, aim, w.shot.projectile.color, 4, 90.0)
+	Projectile.muzzle_flash(player.get_parent(), muzzle, aim, w)
 	if w.shot.camera_trauma > 0.0:
 		EventBus.camera_shake_requested.emit(w.shot.camera_trauma)
 	fired.emit(w)
