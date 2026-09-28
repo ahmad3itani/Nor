@@ -254,3 +254,5 @@ func test_ui_confirm_and_back_sounds() -> void:
 	await get_tree().process_frame
 	check(UiKit.played.has(UiKit.SFX_BACK), "back plays ui_back (%s)" % [UiKit.played])
 	check(not m.is_open(), "back still closes the menu")
+	check(AudioManager.has_sfx(UiKit.SFX_CONFIRM), "the SFX bank has ui_confirm")
+	check(AudioManager.has_sfx(UiKit.SFX_BACK), "the SFX bank has ui_back")
