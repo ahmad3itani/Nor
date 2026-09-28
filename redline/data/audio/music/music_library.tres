@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="MusicLibrary" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://audio/MusicSet.gd" id="1_set"]
+[ext_resource type="Script" path="res://audio/MusicLibrary.gd" id="2_lib"]
+
+[sub_resource type="Resource" id="Set_default"]
+script = ExtResource("1_set")
+district = &""
+title = "res://assets/audio/music/mus_title.ogg"
+hub = "res://assets/audio/music/mus_relay.ogg"
+flow = "res://assets/audio/music/mus_flow.ogg"
+boss = "res://assets/audio/music/mus_boss.ogg"
+aftermath_gain = 0.6
+boss_by_room = {}
+extras = {}
+
+[sub_resource type="Resource" id="Set_undercity"]
+script = ExtResource("1_set")
+district = &"undercity"
+explore = "res://assets/audio/music/mus_undercity_explore.ogg"
+aftermath_gain = 0.6
+
+[sub_resource type="Resource" id="Set_lowlight"]
+script = ExtResource("1_set")
+district = &"lowlight"
+explore = "res://assets/audio/music/mus_lowlight_explore.ogg"
+aftermath_gain = 0.6
+
+[resource]
+script = ExtResource("2_lib")
+sets = Array[ExtResource("1_set")]([SubResource("Set_default"), SubResource("Set_undercity"), SubResource("Set_lowlight")])
