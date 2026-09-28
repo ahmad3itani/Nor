@@ -140,6 +140,8 @@ var _foot: int = 0
 var _run_phase: float = 0.0
 var _time: float = 0.0
 var _rng := RandomNumberGenerator.new()
+## 0..1 set by T06's CoreAura while in Flow: lifts the seam toward full.
+var _seam_boost: float = 0.0
 
 @onready var player: Player = get_parent()
 
@@ -457,12 +459,23 @@ func _update_seam(state: StringName) -> void:
 	if actor.mask == null:
 		return
 	var base := Palette.color(&"heal") if state == &"heal" else actor.mask_color()
-	var v := SEAM_VALUE
+	var v := lerpf(SEAM_VALUE, SEAM_CRITICAL_VALUE, _seam_boost)
 	if _reactor_critical():
 		v = SEAM_CRITICAL_VALUE
 		if not Settings.flash_reduction:
 			v += SEAM_PULSE_DEPTH * (0.5 + 0.5 * sin(TAU * SEAM_PULSE_HZ * _time))
 	actor.mask.modulate = Color(base.r * v, base.g * v, base.b * v, base.a)
+
+
+## CoreAura hook (T06): brighten the seam overlay while in Flow (0 = rest).
+func set_seam_boost(amount: float) -> void:
+	_seam_boost = clampf(amount, 0.0, 1.0)
+
+
+## True when the seam is a sprite mask this visual brightens itself, so
+## CoreAura skips its drawn seam glow (placeholder mode has no mask).
+func has_seam_overlay() -> bool:
+	return actor != null and actor.mask != null
 
 
 func _reactor_critical() -> bool:

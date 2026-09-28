@@ -367,16 +367,21 @@ func test_core_aura_only_in_flow_and_no_afterimages() -> void:
 	player.reactor.enter_flow()
 	await physics_frames(3)
 	check(player.get_node_or_null("CoreAura") is CoreAura, "aura in Flow")
+	check(float(player.visual.get("_seam_boost")) == 1.0, "aura boosts the visual's seam")
 	await physics_frames(20)
 	var ghosts: Array = player.visual.get("_ghosts")
 	check(ghosts.is_empty(), "Flow alone makes no afterimages (they mean dodge/dash i-frames)")
-	check(_all(world, func(n: Node) -> bool: return String(n.name).contains("Afterimage")).is_empty(), "no afterimage nodes")
+	if player.visual.has_method(&"afterimages"):
+		check((player.visual.call(&"afterimages") as Array).is_empty(), "no sprite afterimages")
+	# T04's visual keeps a persistent "Afterimages" layer; only its children are afterimages.
+	check(_all(world, func(n: Node) -> bool: return String(n.name).contains("Afterimage") and n.name != &"Afterimages").is_empty(), "no afterimage nodes")
 	player.reactor.charge = 0.0
 	await physics_frames(2)
 	check((player.get_node("CoreAura") as CoreAura).critical(), "critical drip state")
 	player.reactor.exit_flow()
 	await physics_frames(3)
 	check(player.get_node_or_null("CoreAura") == null, "aura gone after Flow")
+	check(float(player.visual.get("_seam_boost")) == 0.0, "seam boost cleared after Flow")
 
 
 # --- anchor, power flourishes, pickups, walls ----------------------------------

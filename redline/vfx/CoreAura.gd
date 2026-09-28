@@ -46,6 +46,15 @@ func _boost(amount: float) -> void:
 		player.visual.call(&"set_seam_boost", amount)
 
 
+## The visual brightens its own seam mask (set_seam_boost), so no drawn glow.
+func _visual_overlay() -> bool:
+	if not (is_instance_valid(player) and player.visual and player.visual.has_method(&"set_seam_boost")):
+		return false
+	if player.visual.has_method(&"has_seam_overlay"):
+		return bool(player.visual.call(&"has_seam_overlay"))
+	return true
+
+
 func critical() -> bool:
 	return is_instance_valid(player) and player.reactor != null and player.reactor.config != null \
 		and player.reactor.is_critical()
@@ -67,7 +76,7 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var accent := Palette.color(&"accent")
 	var reduced := Settings.flash_reduction
-	if not (is_instance_valid(player) and player.visual and player.visual.has_method(&"set_seam_boost")):
+	if not _visual_overlay():
 		var glow := 0.4 if reduced else 0.3 + 0.15 * sin(_t * 5.0)
 		draw_rect(Rect2(SEAM + Vector2(-1, -3), Vector2(2, 6)), Color(accent, glow))
 	for i in ORBIT_MOTES:
