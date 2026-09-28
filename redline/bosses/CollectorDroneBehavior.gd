@@ -35,10 +35,10 @@ const CAGE_FLARE_TIME := 1.2
 ## Sprite mode: the lamp lens on the sheet (from the feet, facing right).
 const SPRITE_LAMP_AT := Vector2(18, -15)
 ## Sprite mode: the sheet's hanging cage reaches this far below the feet
-## (origin (48, 64), cage bars to y 81). Near the floor the sheet lifts so the
-## cage bottom never draws under the floor line (visual only; the body and
-## its hurtbox stay where they are).
-const SPRITE_CAGE_BELOW := 18.0
+## (origin (48, 64); cage, hook and claws reach y 84 in the idle row). Near
+## the floor the sheet lifts so the cage bottom never draws under the floor
+## line (visual only; the body and its hurtbox stay where they are).
+const SPRITE_CAGE_BELOW := 20.0
 
 @export_group("Lanes (room y)")
 @export var cruise_y: float = -144.0

@@ -391,10 +391,10 @@ func test_collector_sheet_lifts_off_the_floor() -> void:
 	check(b.sprite_offset() == Vector2.ZERO, "high drone: no lift")
 	check(_step(e).position == Vector2.ZERO, "high drone sprite at the body")
 	e.global_position = origin + Vector2(80, 0)
-	check(b.sprite_offset() == Vector2(0, -18), "landed drone: cage lifted to the floor line")
-	check(_step(e).position == Vector2(0, -18), "sprite follows the lift")
+	check(b.sprite_offset() == Vector2(0, -20), "landed drone: cage lifted to the floor line")
+	check(_step(e).position == Vector2(0, -20), "sprite follows the lift")
 	e.global_position = origin + Vector2(80, -10)
-	check(b.sprite_offset() == Vector2(0, -8), "partial lift near the floor")
+	check(b.sprite_offset() == Vector2(0, -10), "partial lift near the floor")
 
 
 func test_krail_maps_every_attack() -> void:
