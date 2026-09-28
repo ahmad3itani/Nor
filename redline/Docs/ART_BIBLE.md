@@ -2,7 +2,7 @@
 
 Bible §40 requires this document before any final asset is produced. It fixes the technical frame the placeholder build already uses, so commissioned or in-house art drops in without code changes. **Every asset must be checked against it.**
 
-> **Status:** everything in the current build is procedural placeholder art: rectangles, `Decor` props, `NeonSign`, and the `DistrictBackdrop` skyline and rain. The rules below exist so the placeholders can be replaced one at a time.
+> **Status (presentation overhaul, `OVERHAUL_REPORT.md`):** characters, enemies, bosses, NPCs, portraits, VFX, the UI kit, tiles and every backdrop plane are now final-spec pixel art under `assets/`. Nearly all of it is code-drawn (pixel rigs and painters in `tools/assetgen/`, own work). Two images and all the audio are generator output (D-170). The procedural placeholders (rectangles, `Decor`, `NeonSign`, the `DistrictBackdrop` skyline and rain, `PlayerPlaceholderVisual`, SfxSynth, MusicSynth) stay in the code as fallbacks: a missing asset degrades to them, never to nothing. Any asset can still be replaced one at a time under the same name, size and spec ids.
 
 ---
 
@@ -92,6 +92,7 @@ World state and memory vignettes add no new reserved colour. The rules (D-115, D
 - **Environment:** no outlines. Shape comes from value steps: 3 values per material, plus 1 edge highlight on top edges (the `edge_color` in the theme).
 - **Shading:** hand-placed clusters with a top-left key light unless the room's lighting says otherwise. No dithering gradients on characters; limited ordered dither is allowed on large backgrounds.
 - **Gameplay must stay readable without bloom** (bible §25). Glow is an accent layer only.
+- **Atmosphere textures (D-173):** fog bands, light shafts, lamp glows and the vignette are the only soft-edged art. They live under `assets/vfx/atmos/` and may use **up to 4 quantised alpha levels** besides 0 and 255 (`ArtValidator.ATMOS_MAX_ALPHA_LEVELS`). Everything else keeps hard alpha (0/255). Glows are additive `CanvasItemMaterial` sprites, not lights, so the §5 light budget still holds.
 
 ## 5. Lighting
 - 2D lights are accents: neon spill, the Anchor glow, muzzle flashes. They never replace painted shading.
@@ -114,20 +115,53 @@ World state and memory vignettes add no new reserved colour. The rules (D-115, D
 - **Sky:** a gradient, screen-fixed.
 - **Far layer:** skyline with a motion scale of 0.12 horizontal and 0.03 vertical.
 - **Mid layer:** skyline with a motion scale of 0.3 horizontal and 0.07 vertical.
-- **Foreground silhouettes** (future): a motion scale of 1.15–1.3, never covering the player's collision band.
-- Background layers repeat every 960 px horizontally (`DistrictBackdrop.PERIOD`). Keep them lower-contrast than playable geometry by at least 2 value steps.
+- **Foreground silhouettes:** a motion scale of 1.2, only in the top 40 px and below the floor line, never covering the player's collision band, and only in rooms whose `RoomPresentation.foreground` allows them.
+- Keep every plane lower-contrast than playable geometry by at least 2 value steps. The value ladder is in ART_DIRECTION §0, and the painters check it.
+
+**Painted planes (presentation overhaul, D-172).** A backdrop kind's stack is a `BackdropSet` (`data/presentation/backdrops/<kind>.tres`) of `PlaneSpec`s, back to front:
+
+| Plane | Motion x / y | Notes |
+|---|---|---|
+| sky | 0 / 0 | screen-fixed; may be `opaque` (hides the planes behind it) |
+| far | 0.12 / 0.03 | |
+| fog A | 0.2 / 0.05 | `assets/vfx/atmos/fog_band_*`, drifts (ambient motion) |
+| mid | 0.3 / 0.07 | |
+| near | 0.55 / 0.2 | darkest silhouettes, capped against `solid_color` |
+| fog B | 0.6 / 0.3 | |
+| backwall | 0.85 / 0.85 | tall rooms and interiors, `tile_y` |
+| foreground | 1.2 | in front of the world, see above |
+
+- **Planes are 480 px wide with A/B variants.** A plane alternates A, B, A… (`PlaneSpec.alt_path`), so the 480 px source never repeats visibly. The procedural skyline's 960 px period (`DistrictBackdrop.PERIOD`) applies only to the fallback.
+- **The district grade applies to background planes only** (`BackdropSet.grade`, from `assets/vfx/atmos/district_grades.json` `bg_modulate`). It never touches the world, characters, VFX or the HUD (F11). Background dim (§24) multiplies every plane, fog band and glow. High contrast skips the vignette.
+- A missing plane texture drops that plane, and the procedural skyline comes back. Nothing in a `BackdropSet` collides or reaches gameplay (D-177).
 
 ## 9. Naming and export
 - Files use `snake_case`: `<subject>_<action>_<variant>.png`. Examples: `rook_run.png`, `needle_attack_windup.png`, `lowlight_tiles_concrete.png`.
 - Sprite sheets are horizontal strips with a fixed cell size per character (for example Rook at 48×48, origin at bottom-centre, cell x = 24 and y = 46). Frame counts go in the import metadata, not the filename.
 - Export as PNG, 8-bit indexed where possible, with no premultiplied alpha. Import with the Lossless preset and nearest filtering (the project default).
 - Folder layout: `art/<district or character>/...` for source files and `assets/...` for exported, imported files.
+- **Name rule as enforced:** `ArtValidator.NAME_RULE` is `^[a-z0-9]+(_[a-z0-9]+)*\.png$`. The `(_[a-z0-9]+)*` was relaxed from `+` in the overhaul (T01), so single-word subjects such as `vignette.png` pass. Sheets use `<id>_sheet.png`.
+
+**Folders added in the presentation overhaul:**
+
+| Path | What |
+|---|---|
+| `art/source/` | raw sources: generator downloads (compressed PNG, final trimmed OGG) and pilots. Never imported (`art/.gdignore`) |
+| `tools/assetgen/` | every builder, rig, painter and audio processor. `python3 -B tools/assetgen/assetgen.py --check` rebuilds and compares, validates provenance, import flags and reserved colours |
+| `assets/SOURCES.csv` | provenance: one row per generation or build (`id,kind,tool,model,prompt,credits,raw_file,out_files,notes,rights`). `out_files` is `;`-separated res-relative paths, and every PNG/OGG under `assets/` must be listed |
+| `assets/vfx/atmos/` | the soft-alpha atmosphere textures (§4, D-173) |
+| `assets/audio/{sfx,ui,footsteps,ambience,music}/` | OGG assets. Loops have `loop=true`, `loop_offset=0` in the committed `.import` |
+
+- **The mask-tint rule (D-178).** A character part in a reserved gameplay colour (Rook's visor and Core seam, Krail's visor) is baked into the sheet *and* drawn again from a same-layout `<sheet>_mask.png` (`metadata/mask_path` on the spec). The mask is tinted at runtime with `Palette.color()`, so the colour-blind palettes and high contrast retint it. The baked red is the fallback when the mask is missing. VFX and UI sheets are grey masks (tones 96/176/255) tinted in code. No other art may carry a reserved colour (`assetgen.py --check` step 7, `ArtValidator`).
 
 ## 10. Audio (companion notes)
 - The placeholder SFX and music are synthesized from data (`data/audio/placeholder_sfx.tres`, `audio/MusicSynth.gd`).
-- **Replacements must keep the same ids and stem layout.** SFX: set `override_stream`. Music: supply five synced stems (pad, bass, drums, arp, lead) of equal length per district, so `MusicDirector` can keep fading layers by state.
+- **Replacements must keep the same ids.** SFX: set `override_stream` (an OGG or an `AudioStreamRandomizer` of takes). AudioManager plays it and falls back to the SfxSynth render when it is missing (D-179).
+- **Music ships as full tracks (D-171, amends the old five-stem rule):** one finished loop per district and intensity (title, hub, explore, flow, boss, memory, aftermath) in a `MusicSet` of `data/audio/music/music_library.tres`. `MusicDirector` crossfades two decks. A state or district without a track, or a build that left the file out, plays the five synth stems (pad, bass, drums, arp, lead) as before. **Stems are the fallback, not the format.** In the Relay only the arrhythmic growth stems (lead, pad) play over the hub track.
+- Ambience beds (`data/audio/ambience/beds.tres`, about 28 s loops at -26 LUFS) play on the Ambience bus per `RoomPresentation.ambience`. Loudness targets: SFX -18, ambience -26, music -20 LUFS.
 
 ## 11. Sourcing rules (bible §3, §40)
 - Study the reference games' principles, never their assets, characters, silhouettes or maps.
-- AI-generated imagery may be used for **ideation and reference only**. Final assets need consistency with this document, clean-up, animation compatibility and clear commercial rights.
+- **Amended (D-170):** AI generator output may be used as a **final asset**, as can code-drawn art. Either way it needs consistency with this document, clean-up, animation compatibility and a provenance row in `assets/SOURCES.csv`. **Rights caveat:** generator output carries "ElevenLabs output, check plan terms" until its plan's commercial terms are checked. No such asset ships publicly before that check.
+- **Current final art is code-drawn** (pixel rigs and painters, own work). Only `title_sky`, `uc_far` (source id `uc_far_cistern`), the music, the ambience and the SFX takes are generator output. Any code asset can be swapped for generator or hand-made art under the same file name, size and SpriteSheetSpec ids, followed by `assetgen.py --check` and `ValidateContent` (`OVERHAUL_REPORT.md` §8).
 - **Checklist for any delivered asset:** right canvas and scale? Origin correct? Palette from the district theme? Reserved colors respected? Readable with bloom off and flash reduction on? Named and exported to spec? Story marks (the NPC pending tick, dead lights, memory tones) kept to their §3 story rules, never a reserved gameplay colour outside a vignette?

@@ -758,3 +758,75 @@ Numbers follow the plan (`scratchpad/m9/plan.json`, repair rounds 3-5). D1..D7 d
 - FLAG vs §13 (Bramm, Trainer: movement/mastery/practice is the hub's challenge giver) and vs §44 (new hub content before the playtest).
 - M9 adds one lore-free ChallengeTerminal ('Training rig') to the Relay floor and a title 'Challenges' row, because Bramm is not in Act I content and the brief asks for a Relay entry. It has no dialogue, no NPC and no lore. It stays hidden until the rig opens (act1_complete, or ng_cycle >= 1 in NG+) and then draws dark until a challenge unlocks; the title 'Challenges' row follows the same rule (T04 R04.27, T08 R08.12). Reason: br_collector unlocks before the first Relay visit (CollectorBay → EscapeTunnel → Relay is the only way in), so an unlock-only rule would light the rig mid-story next to Mara and Vell. When Bramm is written (a later act, after §44), the Trainer takes over the entry and the terminal is removed; the Relay tour frame diff is expected.
 - As built (T08): the terminal sits at x 740 with the `challenges` spawn at x 700; the Relay tour frames change only after act1_complete (R14.14).
+
+## Presentation overhaul: art, audio, VFX and UI (D-170..D-180)
+
+The user asked for a presentation pass in the Hollow Knight mood, inside the Art Bible frame: "redo the whole thing, add life, add effects, add more animations". A later request added: "Use pika for the assets and add levels and power effect and all you need and upgrades and everything". Pika is not connected and the generator accounts are at 0 credits, so this phase adds no generation calls. Levels (Ironworks, more Act I rooms) and upgrade gameplay are later phases and are not started (TODO). Report: `OVERHAUL_REPORT.md`. D-170..D-172 appeared only as superseded M9 draft numbers (note above D-140), so these numbers are free. No heading used them before this section.
+
+## D-170: Final assets may come from AI generators and from code rigs and painters (amends Art Bible §11) (FLAG)
+- FLAG vs Art Bible §11 ("AI-generated imagery for ideation and reference only").
+- The user chose AI generators for final assets. The account quota ran out after 9,790.2 credits: 2 images, 6 music tracks, 15 ambience rows and the SFX/UI/footstep takes. The rest of the current final set is code-drawn: pixel rigs for characters, VFX, UI and tiles, plus painters for the environments. That is own work with no AI output.
+- **Rights caveat:** every generator row in `assets/SOURCES.csv` has `rights` = "ElevenLabs output, check plan terms". The free plan's commercial terms must be checked before any public build. Pika was requested but is not connected, so no Pika output exists.
+- Sources are in `art/source/`, the reproducible scripts in `tools/assetgen/`, and provenance is recorded per file. `assetgen.py --check` proves no drift and full provenance.
+- As built (T01..T09): 192 SOURCES rows, 9,790.2 credits in total (music 7,200, ambience 1,580, SFX 551, images 369.2, UI 60, footsteps 30, sprite sheets/tiles 0). 95 rows are own work, 75 are generator output and 22 are failed calls (not charged). An AI or Pika asset replaces a code asset under the same file name, size and SpriteSheetSpec ids with no code change (`OVERHAUL_REPORT.md` §8).
+
+## D-171: Music ships as full tracks per district and intensity with a two-deck crossfader; the 5 synth stems stay as the fallback and as Relay growth (amends Art Bible §10) (FLAG)
+- FLAG vs Art Bible §10 ("five synced stems per district").
+- Generated music cannot produce sample-locked stems. `MusicSet` / `MusicLibrary` (`data/audio/music/music_library.tres`) hold string paths per state slot (title, hub, explore, flow, boss, memory, aftermath) per music district, plus a default set. A missing file falls through to the next set and then to the stems.
+- Transitions have their own fade times: boss 0.6 s, flow 1.0 s, flow→explore 3.0 s, aftermath 2.5 s, memory 1.2 s, default 2.0 s. The crossfade is equal-power. Explore tracks resume and flow/boss tracks restart. AFTERMATH plays the explore track at 0.6 gain. MEMORY, SILENT, Relay explore and the Deep Rig keep the stems.
+- Relay growth keeps only the arrhythmic synth layers (lead, pad) over `mus_relay` until a listening pass.
+- As built (T08): `MusicDirector` track mode. Headless runs create no players.
+
+## D-172: Parallax planes repeat every 480 px with A/B variants; new motion scales for near, backwall, fog and foreground; the district grade applies to background planes only (amends Art Bible §8; F8/F11) (FLAG)
+- FLAG vs Art Bible §8 (960 px period, sky/far/mid only).
+- The source resolution limits clean pixels to about 480 px, so a plane alternates A, B, A… (`PlaneSpec.alt_path`).
+- Motion ladder (x/y): sky 0/0, far 0.12/0.03, fog A 0.2/0.05, mid 0.3/0.07, near 0.55/0.2, fog B 0.6/0.3, backwall 0.85/0.85, foreground 1.2. Foreground silhouettes are allowed only in the top 40 px and below the floor line, and only where `RoomPresentation.foreground` allows them.
+- `BackdropSet.grade` (`district_grades.json` `bg_modulate`) tints only the backdrop layer, never the world, characters or HUD.
+- As built (T02, T03): 14 `BackdropSet`s in `data/presentation/backdrops/`. The procedural skyline is kept as the fallback when a plane texture is missing.
+
+## D-173: Atmosphere textures (fog, shafts, lamp glows, vignette) may use up to 4 quantised alpha levels under assets/vfx/atmos/ (Art Bible §4/§9 and the ArtValidator hard-alpha rule) (FLAG)
+- FLAG vs Art Bible §4/§9 and the ArtValidator alpha 0/255 rule.
+- Soft light cannot be drawn with hard alpha at 480×270 without heavy dither. Everything outside `assets/vfx/atmos/` keeps hard alpha 0/255.
+- As built (T01): `ArtValidator.ATMOS_DIR` / `ATMOS_MAX_ALPHA_LEVELS = 4` (besides 0/255), with a test. The ArtValidator `NAME_RULE` was relaxed to `^[a-z0-9]+(_[a-z0-9]+)*\.png$`, so single-word subjects (`vignette.png`) pass.
+
+## D-174: Ambient motion setting (Full / Reduced / Off) for ambient life, particles, fog drift, cloth and parallax bob (F7; a §24 accessibility addition) (FLAG)
+- FLAG (§24 addition, a new setting row and new strings).
+- `Settings.ambient_motion` is read through `vfx/Motion.gd`, with count scales in `accessibility_config.tres`. It never affects telegraphs, hit feedback or gameplay VFX. Those follow flash reduction.
+- Background dim also dims every new plane, fog band and glow.
+- As built (T01, T03): overhaul tour frames `ov_v_still_*` and `ov_v_dim_*`.
+
+## D-175: Colour moves off reserved hues (F3–F6, F10)
+- Collector cargo `#b8e0d0` and Krail baton tip `#cfe4f2`.
+- `EnemyData.color` moves to the sprite mid-tones: Needle `#c9c2b4`, Enforcer `#5a2a30`, Scout Drone `#7a6034`.
+- Relay windows move to lamp core `#e0a060` (plus `#b8804a`).
+- Visual only: death sparks follow `EnemyData.color`. No gameplay number changed (`tests/fixtures/enemy_data_fields.json` pins every other field).
+
+## D-176: Lowlight green neon (close to the healing green) is NOT recoloured in this phase (F2 deferred) (FLAG)
+- FLAG for the lead.
+- Recolouring it to rose `#ff7ab0` needs `lowlight_style.py` / `lowlight.py` changes and regenerated room scenes, which is roomgen drift. That is a room-data change and needs the lead's approval. The green `NeonSign`s stay as they are (visible in `ov_b_ll_roof`). KNOWN_ISSUES K-OV-6.
+
+## D-177: Per-room presentation is data keyed by room scene path, not Room exports; visual-only dressing nodes are created at runtime and never collide
+- Per-room presentation (backdrop kind, ambience bed, reverb, footstep surface, music district, foreground allowed) is data keyed by room scene path: `data/presentation/rooms.tres` (`PresentationIndex`, with district defaults). It is not a Room export.
+- Room `.tscn` bytes and `roomgen --check` stay unchanged. A new district adds rows, not code (`CONTENT_PIPELINE.md`, "Art & audio assets").
+- As built (T01, T03): `FogBand`, `LightShaft`, `LampGlow`, `AmbientLife`, `AmbientParticles`, `SwayCable`, `ClothStrip` and `Vignette` (`world/ambient/`) have no collision and are invisible to EncounterDirector and RouteBot. Each uses its own RandomNumberGenerator.
+
+## D-178: New animation hooks and a mask-tint overlay for reserved-red parts (F9)
+- **Rook:** turn, land, land_hard, idle_fidget, death, interact, rest, and per-weapon shots mapped from the attack ids.
+- **Enemies:** guard_break and dormant.
+- **Bosses:** press/volley/dive/sweep families, phase2, rotors_cut and stagger.
+- **Maps** for the Sweeper, the Collector Eye and the NPCs (idle / talk / signature).
+- SpriteActor fallbacks keep partial art working.
+- `*_mask.png` sheets (Rook, Krail) draw a Palette-tinted overlay, so the colour-blind and high-contrast modes retint the visor and Core seam. The baked red stays as the fallback under the mask.
+
+## D-179: SFX: AudioManager chooses override_stream (SfxSynth always synthesises); new ids, 16 voices with priority stealing, an Ambience bus under the SFX volume, footsteps per surface; the synth stays the fallback
+- This corrects the phase-A note: `test_feedback` requires `SfxSynth.render()` to return a WAV, so AudioManager picks the override and the synth renders the fallback.
+- No new EventBus signal.
+- `shoot_pistol` keeps the synth (its take is on hold), as do the memory ids.
+- As built (T08).
+
+## D-180: Web and demo builds may leave out music and ambience beds (synth or silence fallback); the full web budget raise is proposed with measured numbers (FLAG)
+- FLAG (release budget).
+- As built (T09): the web presets leave out `mus_relay`, `mus_lowlight_explore`, `mus_flow` and `mus_boss`, whose states play the synth stems. The web demo also leaves out the Lowlight/Relay-only beds and art.
+- Measured web gz payload: 13.55 MB full and 12.56 MB demo, against the 12 MiB (12.58 MB) budget. The demo fits. The full web build is over budget and `build.py` WARNs.
+- **Proposal for the lead:** raise the full-web budget to about 20 MB, or keep dropping tracks. The budget is not raised here.
+- `build.py --check` (EX-4) proves every excluded asset is only named as a string path behind a `ResourceLoader.exists` guard.
