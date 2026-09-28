@@ -357,6 +357,28 @@ func test_krail_maps_every_attack() -> void:
 	check(WardenKrailBehavior_tip() == Color("cfe4f2"), "baton tip moved off guard blue")
 
 
+func test_krail_strike_holds_through_recover() -> void:
+	var e := _spawn(load("res://data/enemies/warden_krail.tres") as EnemyData, KRAIL_SCENE)
+	var slam := e.behavior.call(&"attack", &"krail_ground_slam") as AttackData
+	_set_ai(e, Enemy.AI.ACTIVE, slam)
+	var actor := _step(e)
+	check(actor.animation == &"slam", "slam strike row: %s" % actor.animation)
+	var last := actor.sprite_frames.get_frame_count(&"slam") - 1
+	for i in 180:
+		await get_tree().process_frame
+		if actor.frame == last and not actor.is_playing():
+			break
+	check(actor.frame == last and not actor.is_playing(), "slam finished (%d)" % actor.frame)
+	e.ai = Enemy.AI.RECOVER
+	_step(e)
+	await get_tree().process_frame
+	check(actor.animation == &"slam" and actor.frame == last and not actor.is_playing(),
+		"RECOVER replayed the strike (%s %d %s)" % [actor.animation, actor.frame, actor.is_playing()])
+	# A new wind-up of the same attack still starts its own pose.
+	_set_ai(e, Enemy.AI.WINDUP, slam)
+	check(_step(e).animation == &"windup_slam" and actor.frame == 0, "next wind-up restarts")
+
+
 func WardenKrailBehavior_tip() -> Color:
 	return (load("res://bosses/WardenKrailBehavior.gd") as GDScript).get(&"BATON_TIP")
 

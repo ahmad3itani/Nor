@@ -54,8 +54,7 @@ static var _outline_shader: Shader
 var actor: SpriteActor
 ## High-contrast outline copies (created on first use, sprite mode only).
 var outline_nodes: Array[Sprite2D] = []
-## [ai, attack, anim] the last pose was asked in: a new state or attack
-## restarts a non-looping pose.
+## [ai, attack, anim] the last pose was asked in (see pose_restarts).
 var _anim_key: Array = []
 var _knock := Vector2.ZERO
 var _knock_t: float = 0.0
@@ -167,8 +166,10 @@ static func generic_anim_names(ai: int, attack: AttackData, ai_enabled: bool, mo
 
 
 ## Plays the first existing name. A non-looping pose holds its last frame
-## (AnimatedSprite2D.play would restart a finished one); it restarts only
-## when the name, the AI state or the attack changes.
+## (AnimatedSprite2D.play would restart a finished one); it restarts when the
+## name or the attack changes, or on a new AI state other than RECOVER: the
+## boss maps give ACTIVE and RECOVER the same strike row, and RECOVER holds
+## that strike's last frame instead of replaying it.
 func _play(names: Array[StringName]) -> void:
 	var n := &""
 	for item in names:
@@ -179,8 +180,7 @@ func _play(names: Array[StringName]) -> void:
 		return
 	var key := [enemy.ai, enemy.current_attack, n]
 	var loops := actor.sprite_frames.get_animation_loop(n)
-	var state_changed: bool = _anim_key.size() != 3 or _anim_key[0] != key[0] or _anim_key[1] != key[1]
-	if actor.animation != n or (not loops and state_changed and _anim_key != key):
+	if actor.animation != n or (not loops and pose_restarts(_anim_key, key)):
 		actor.stop()
 		actor.play(n)
 		actor.frame = 0
@@ -188,6 +188,16 @@ func _play(names: Array[StringName]) -> void:
 	elif loops and not actor.is_playing():
 		actor.play(n)
 	_anim_key = key
+
+
+## Whether a non-looping pose with the same name restarts on the move from
+## `prev` to `key` (both [ai, attack, anim]; `prev` empty after a one-shot).
+static func pose_restarts(prev: Array, key: Array) -> bool:
+	if prev.size() != 3:
+		return true
+	if prev[1] != key[1] or prev[2] != key[2]:
+		return true
+	return prev[0] != key[0] and key[0] != Enemy.AI.RECOVER
 
 
 # --- Hit reactions -----------------------------------------------------------------
