@@ -25,13 +25,51 @@ enum Kind { PILLAR, LAMP, CRATES, BENCH, TRAIN_CAR, RADIO, WORKBENCH, PIPES, AC_
 		queue_redraw()
 
 var _t: float = 0.0
+## Runtime-only dressing (presentation overhaul): a lamp halo, a swaying
+## cable, a rippling banner. Created only outside the editor and never
+## owned, so saving a room scene cannot write them (REPAIR c).
+var _glow: LampGlow
+var _sway: SwayCable
+var _cloth: ClothStrip
+
+
+func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
+	match kind:
+		Kind.LAMP:
+			_glow = LampGlow.round_glow(accent, 32 if size.y >= 48.0 else 16)
+			if _glow:
+				_glow.position = Vector2(0, -size.y - 1)
+				add_child(_glow)
+		Kind.CABLES:
+			_sway = SwayCable.create(size, color, hash(Vector2i(position)))
+			add_child(_sway)
+		Kind.BANNER:
+			_cloth = ClothStrip.for_banner(size, color, accent, hash(Vector2i(position)))
+			add_child(_cloth)
 
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint() or (kind != Kind.LAMP and kind != Kind.RADIO):
 		return
 	_t += delta
+	if _glow:
+		_glow.set_level(0.75 + 0.25 * sin(_t * 2.0 + position.x))
 	queue_redraw()
+
+
+## The runtime halo / cable / banner node (null in the editor or when skipped).
+func lamp_glow() -> LampGlow:
+	return _glow
+
+
+func sway_cable() -> SwayCable:
+	return _sway
+
+
+func cloth_strip() -> ClothStrip:
+	return _cloth
 
 
 func _draw() -> void:
@@ -89,6 +127,8 @@ func _draw() -> void:
 			draw_rect(Rect2(base.position.x + 2, -h + 2, w - 4, h - 4), color.darkened(0.2), false, 1.0)
 			draw_line(Vector2(base.position.x + 3, -h * 0.5), Vector2(base.end.x - 3, -h * 0.5), color.lightened(0.2), 1.0)
 		Kind.BANNER:
+			if _cloth:
+				return
 			draw_rect(Rect2(-w * 0.5, -h, w, h), color)
 			draw_rect(Rect2(-w * 0.5 + 2, -h + 3, w - 4, 2), accent)
 			draw_colored_polygon(PackedVector2Array([Vector2(-w * 0.5, 0), Vector2(0, -4), Vector2(w * 0.5, 0)]), Color(0, 0, 0, 0))
@@ -97,6 +137,8 @@ func _draw() -> void:
 			for i in 4:
 				draw_rect(Rect2(-w * 0.5 + 3 + i * (w - 6) / 4.0, -h + (i % 2) * 4, 3, h * 0.6), accent)
 		Kind.CABLES:
+			if _sway:
+				return
 			var pts := PackedVector2Array()
 			for i in 9:
 				var t := i / 8.0
