@@ -1,4 +1,4 @@
-# REDLINE Content Pipeline (M6, extended in M7, M8 and M9)
+# REDLINE Content Pipeline (M6, extended in M7, M8, M9 and the presentation overhaul)
 
 How to add rooms, enemies and art without touching engine code, and how to prove they work. Every command below runs from `redline/`.
 
@@ -12,6 +12,7 @@ for f in tools/roomgen/uc_*.py tools/roomgen/ll_*.py tools/roomgen/fixtures_*.py
 godot --headless res://devtools/l10n/ExtractStrings.tscn -- --check   # M9: the string catalog is current (a gate since StringRules.ENFORCE)
 godot --headless --fixed-fps 60 res://devtools/GhostBake.tscn -- --challenge=all --check   # M9: rig ghosts match their challenges
 python3 -B tools/build/build.py --check                         # M9: export presets and the tools' no-network rule
+python3 -B tools/assetgen/assetgen.py --check                   # overhaul: asset rebuild drift, provenance, loop flags, reserved colours
 ```
 All of these must pass before a content change lands. `--check` exits 1 when a scene no longer matches its script. Use `python3 -B` so no `__pycache__` is written into the repo.
 
@@ -229,12 +230,61 @@ The rules are in `Docs/ART_BIBLE.md`. Mechanically:
 3. Point `EnemyData.sprite`, or the player visual's `sprite`, at the spec. The placeholder is replaced; telegraphs, health bars, afterimages and blinks stay.
 4. Validate. `ArtValidator` checks:
    - snake_case names;
-   - alpha only 0 or 255;
+   - alpha only 0 or 255 (atmosphere textures under `assets/vfx/atmos/` may use up to 4 more levels, D-173);
    - sheet size is a multiple of the cell;
    - animations fit inside the sheet;
    - palette size (a warning above 64 colours);
    - reserved gameplay colours outside `ui/` and `vfx/`;
    - the project's nearest filtering.
+
+## Art & audio assets (presentation overhaul)
+Everything the game draws or plays from a file lives under `assets/`. Everything that made it lives in `art/source/` (raw sources, never imported) and `tools/assetgen/` (scripts). Rules: `ART_BIBLE.md` §4, §8–§11. Report and swap guide: `OVERHAUL_REPORT.md`.
+
+### Commands (from `redline/`, no network, no generator calls)
+```bash
+python3 -B tools/assetgen/assetgen.py --check          # everything below, exit 1 on any problem (--quick skips the rebuild)
+python3 -B tools/assetgen/build_chars.py [--check]     # character sheets: Rook, enemies, bosses, NPCs, portraits, weapons (pixel rigs)
+python3 -B tools/assetgen/fx_vfx.py                    # VFX grey-mask sheets + .json sidecars
+python3 -B tools/assetgen/fx_ui.py                     # UI kit (X.png + X_fill.png + regions .json), title logo
+python3 -B tools/assetgen/tiles_null.py                # Deep Rig tiles
+python3 -B tools/assetgen/paint_env.py [<id>…] [--check] [--review /abs/dir]   # code-painted planes, tilesets, fg sets, critters
+python3 -B tools/assetgen/env_process.py <id> | --all | --check   # process a raw generator image in art/source/raw/ into its plane
+python3 -B tools/assetgen/process_sfx.py --check       # SFX / UI / footstep loudness metadata (-18 LUFS)
+python3 -B tools/assetgen/process_music_amb.py --check # music (-20) and ambience (-26) loops, seam metrics
+python3 -B tools/assetgen/importflags.py --check|--write   # loop=true, loop_offset=0 in every loop's .import
+godot --headless --import                              # after adding files: Godot writes the .import (then run importflags --write)
+godot --headless res://devtools/content/ValidateContent.tscn   # ArtValidator on every PNG
+godot --headless --fixed-fps 60 res://devtools/PerfProbe.tscn -- --budget   # per backdrop kind CPU budget and ambient/VFX caps
+xvfb-run -a godot --fixed-fps 60 --rendering-driver opengl3 res://devtools/CaptureTour.tscn -- --out=/abs/dir --tour=overhaul   # review frames
+```
+The import loop: write the file → `godot --headless --import` → `importflags.py --write` (loops only) → commit the file and its `.import` → `assetgen.py --check` + `ValidateContent`.
+
+### Provenance
+Every PNG and OGG under `assets/` is named in an `out_files` cell of `assets/SOURCES.csv` (`;`-separated, res-relative). Columns: `id,kind,tool,model,prompt,credits,raw_file,out_files,notes,rights`. `rights` is "own work (code), no AI output", "ElevenLabs output, check plan terms" (D-170) or "n/a (failed call…)". A new generator asset adds a row with its credits and prompt, and keeps the raw source in `art/source/` (compressed PNG, or the final trimmed OGG only).
+
+### The data the runtime reads
+| Data | Class | What it holds |
+|---|---|---|
+| `assets/**/<id>_sheet.tres` | `SpriteSheetSpec` | cell, origin, `SpriteAnim`s (per-anim origin), `metadata/mask_path` for tint masks. Point `EnemyData.sprite`, `NpcProfile.sprite` or the player visual's `sprite` at it |
+| `data/vfx/vfx_library.tres` | `VfxLibrary` | VFX id → spec path, `palette_key` or colour, additive, live cap. `VfxOneShot.spawn(parent, id, row, pos, opts)` plays one |
+| `data/presentation/backdrops/<kind>.tres` | `BackdropSet` of `PlaneSpec`s | planes back to front (texture, B variant, motion, anchor), fog, shafts, grade, vignette, glows, particles, life |
+| `data/presentation/rooms.tres` | `PresentationIndex` → `RoomPresentation` | per room scene path (and per district default): backdrop kind, ambience bed, reverb, footstep surface, music district, foreground allowed |
+| `data/districts/<d>.tres` | `DistrictTheme` (Presentation group) | `backdrop_kind_default`, tileset + layout json, dust colour |
+| `data/audio/placeholder_sfx.tres` | `SfxDefinition`s | synth parameters (the fallback) + `override_stream`, priority, mix |
+| `data/audio/music/music_library.tres` | `MusicLibrary` of `MusicSet`s | per music district: title/hub/explore/flow/boss/memory/aftermath track paths, `boss_by_room`, hub `extras` |
+| `data/audio/ambience/beds.tres` | `AmbienceBank` | bed id → OGG path (or "" = silence) and mix dB; the drip emitter |
+
+Paths to optional assets are Strings guarded by `ResourceLoader.exists` (web and demo builds leave some out, D-180), never preloads. A missing asset falls back: plane → procedural skyline, sheet → placeholder drawing, SFX → SfxSynth, track → synth stems, bed → silence.
+
+### How a new district plugs in (the Ironworks hook)
+It needs no new code. Add five pieces of data, plus one id in each of the const id lists named below (the validators reject unknown ids):
+1. **Theme:** `data/districts/ironworks.tres` with a palette (Art Bible §3), `backdrop_kind_default`, a tileset (paint it or process a generated one) and `dust_color`.
+2. **Backdrop set:** add the kind id to `PresentationIndex.BACKDROP_KINDS`, then write `data/presentation/backdrops/<kind>.tres`. Its planes come from a `paint_env.py` item or an `env_process.py` recipe, and each plane needs a `SOURCES.csv` row.
+3. **Presentation rows:** a `districts["Ironworks"]` default in `rooms.tres`, plus a row for any room that differs. `OverhaulTour.KIND_ROOMS` gets one room per new kind (`test_capture_overhaul` fails until it does).
+4. **Music set:** a `MusicSet` with `district = &"ironworks"` in `music_library.tres`, and the id added to `PresentationIndex.MUSIC_DISTRICTS`. Any empty slot falls back to the default set, then to the stems.
+5. **Beds:** a bed id in `PresentationIndex.BED_IDS` with a path in `beds.tres`. Leave the path empty for silence until the asset exists.
+
+Then run `assetgen.py --check`, `ValidateContent`, `PerfProbe -- --budget` (add the kind's heaviest room to `BUDGET_ROOMS`) and `--tour=overhaul`.
 
 ## Dev console (debug builds, backquote key)
 - Teleport to any room entry.
